@@ -1,0 +1,28 @@
+{
+    "name": "ingot/ingot",
+    "description": "I am a desciption",
+    "type": "wordpress-plugin",
+    "keywords": [
+        "wordpress"
+    ],
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Josh Pollock",
+            "homepage": "http://JoshPress.net",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "calderawp/dismissible-notice": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "ingot\\": "classes"
+        },
+        "files": [
+            "includes/functions.php"
+        ]
+    }
+}

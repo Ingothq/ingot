@@ -1,0 +1,6 @@
+Plugin Name -- Ingot
+Text domain -- ingot
+Function prefix -- ingot
+Class prefix -- {{Core_Prefix}}
+Root namespace -- calderawp\ingot
+Hook Prefix -- ingot
