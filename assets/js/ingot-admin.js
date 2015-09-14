@@ -8,17 +8,14 @@ jQuery( document ).ready( function ( $ ) {
     (test_type = function(){
         var val = $( '#ingot-test_config-test_type' ).val();
 
-        if ( 'click' != val ) {
-            hide( '.ingot-click-test-test_type' );
+        if ( 'click' == val ) {
+            hide_by_class( '.ingot-price-test-only' );
+            show_by_class( '.ingot-click-test-only' );
         }else{
-            show( '.ingot-click-test-test_type' );
+            hide_by_class( '.ingot-click-test-only' );
+            show_by_class( '.ingot-price-test-only' );
         }
 
-        if ( 'price' != val ) {
-            hide( '.ingot-price-test-test_type' );
-        }else{
-            show( '.ingot-price-test-test_type' );
-        }
     })();
 
     $( '#ingot-test_config-click_type' ).change( function() {
@@ -28,7 +25,7 @@ jQuery( document ).ready( function ( $ ) {
     var click_type;
     (click_type = function(){
         var val = $( '#ingot-test_config-click_type' ).val();
-        hide( '.ingot-test_config-click_type-desc' );
+        hide_by_class( '.ingot-test_config-click_type-desc' );
         show( '#ingot-click-type-desc-' + val );
 
         if( 'text' == val ) {
@@ -38,11 +35,24 @@ jQuery( document ).ready( function ( $ ) {
         }
     })();
 
-    function hide( el ) {
-        $( el ).css( 'visibility', 'none' ).attr( 'aria-hidden', 'true' );
+    //Dear universe - These util functions were supposed to be more accessiblereplacementss for jQuery hide/show but something in Baldrick screws with the visibility property, so I tacked hide/show on so it would like work and stuff. That's bad, and I feel bad -Josh
+    function hide( selector ) {
+        $( selector ).css( 'visibility', 'none' ).attr( 'aria-hidden', 'true' ).hide();
     }
 
-    function show( el ){
-        $( el ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' );
+    function show( selector ){
+        $( selector ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
+    }
+
+    function hide_by_class( selector ) {
+        $( selector ).each(function() {
+            $(this).css( 'visibility', 'none' ).attr( 'aria-hidden', 'true' ).hide();
+        });
+    }
+
+    function show_by_class( selector ) {
+        $( selector ).each(function() {
+            $(this).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
+        });
     }
 } );

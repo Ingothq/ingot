@@ -12,30 +12,32 @@
 	<span style="position: absolute; margin-left: -18px;" id="ingot-save-indicator">
 		<span style="float: none; margin: 16px 0px -5px 10px;" class="spinner"></span>
 	</span>
-			<div class="updated_notice_box">
+	<div class="updated_notice_box">
 			<?php _e( 'Updated Successfully', 'ingot' ); ?>
-		</div>
-		<div class="error_notice_box">
+	</div>
+	<div class="error_notice_box">
 			<?php _e( 'Could not save changes.', 'ingot' ); ?>
-		</div>
-		<div class="subsubsub ingot-nav-tabs">
+	</div>
+	<div class="subsubsub ingot-nav-tabs">
 					
-					<a class="{{#is _current_tab value="#ingot-panel-general"}}current {{/is}}" href="#ingot-panel-general">
+		<a class="{{#is _current_tab value="#ingot-panel-general"}}current {{/is}}" href="#ingot-panel-general">
 			<?php _e('General', 'ingot') ; ?>
 		</a>
+
 		<a style="color:#666">|</a>
 		
-		</div>		
-		<div class="clear"></div>
+	</div>
+	<div class="clear"></div>
 
 	<span class="wp-baldrick" id="ingot-field-sync" data-event="refresh" data-target="#ingot-main-canvas" data-before="ingot_canvas_reset" data-callback="ingot_canvas_init" data-type="json" data-request="#ingot-live-config" data-template="#main-ui-template"></span>
 </div>
+
 <div class="ingot-sub-headerwordpress">
 	<h2 class="ingot-sub-tabs ingot-nav-tabs nav-tab-wrapper">
 		<a class="{{#is _current_tab value="#ingot-panel-test_config"}}nav-tab-active {{/is}}ingot-nav-tab nav-tab" href="#ingot-panel-test_config">
 			<?php _e('Test Config', 'ingot') ; ?>
 		</a>
-		<a class=" ingot-price-test-only {{#is _current_tab value="#ingot-panel-ecommerce_test_config"}}nav-tab-active {{/is}}ingot-nav-tab nav-tab" href="#ingot-panel-ecommerce_test_config">
+		<a class="ingot-price-test-only {{#is _current_tab value="#ingot-panel-ecommerce_test_config"}}nav-tab-active {{/is}}ingot-nav-tab nav-tab" href="#ingot-panel-ecommerce_test_config">
 			<?php _e('eCommerce Test Config', 'ingot') ; ?>
 		</a>
 
@@ -68,7 +70,7 @@
 	</div>
 	<div id="ingot-panel-click_test_parts" class="ingot-editor-panel" {{#is _current_tab value="#ingot-panel-click_test_parts"}}{{else}} style="display:none;" {{/is}}>		
 		<h4>
-			<?php _e('Add components to test', 'ingot') ; ?>
+			<?php _e('Test Components', 'ingot') ; ?>
 			<small class="description">
 				<?php _e('Click Test Components', 'ingot') ; ?>
 			</small>

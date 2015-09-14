@@ -35,18 +35,18 @@
 		</div>
 		<div class="subsubsub ingot-nav-tabs">
 					
-					<a class="{{#is _current_tab value="#ingot-panel-about_ingot"}}current {{/is}}" href="#ingot-panel-about_ingot">
-			<?php _e('About Ingot', 'ingot') ; ?>
-		</a>
-		<a style="color:#666">|</a>
-		<a class="{{#is _current_tab value="#ingot-panel-support"}}current {{/is}}" href="#ingot-panel-support">
-			<?php _e('Support', 'ingot') ; ?>
-		</a>
-		<a style="color:#666">|</a>
-		<a class="{{#is _current_tab value="#ingot-panel-license"}}current {{/is}}" href="#ingot-panel-license">
-			<?php _e('License', 'ingot') ; ?>
-		</a>
-		<a style="color:#666">|</a>
+			<a class="{{#is _current_tab value="#ingot-panel-about_ingot"}}current {{/is}}" href="#ingot-panel-about_ingot">
+				<?php _e('About Ingot', 'ingot') ; ?>
+			</a>
+			<a style="color:#666">|</a>
+			<a class="{{#is _current_tab value="#ingot-panel-support"}}current {{/is}}" href="#ingot-panel-support">
+				<?php _e('Support', 'ingot') ; ?>
+			</a>
+			<a style="color:#666">|</a>
+			<a class="{{#is _current_tab value="#ingot-panel-license"}}current {{/is}}" href="#ingot-panel-license">
+				<?php _e('License', 'ingot') ; ?>
+			</a>
+			<a style="color:#666">|</a>
 		
 		</div>		
 		<div class="clear"></div>
