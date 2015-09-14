@@ -9,7 +9,7 @@
  * @copyright 2015 Josh Pollock
  */
 
-namespace ingot\testing\tests;
+namespace ingot\testing\tests\click;
 
 
 use ingot\testing\test_types;

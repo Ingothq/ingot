@@ -9,7 +9,7 @@
  * @copyright 2015 Josh Pollock
  */
 
-namespace ingot\testing;
+namespace ingot\testing\crud;
 
 
 class test extends crud {

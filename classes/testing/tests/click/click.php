@@ -9,7 +9,7 @@
  * @copyright 2015 Josh Pollock
  */
 
-namespace ingot\testing\test\click;
+namespace ingot\testing\test\click\test;
 
 
 use ingot\testing\sequence;

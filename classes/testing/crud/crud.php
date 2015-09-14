@@ -9,7 +9,7 @@
  * @copyright 2015 Josh Pollock
  */
 
-namespace ingot\testing;
+namespace ingot\testing\crud;
 
 
 abstract class crud {
@@ -195,7 +195,7 @@ abstract class crud {
 	 * @return array Item config array.
 	 */
 	public static function get( $id ) {
-		return self::get( $id );
+		return self::read( $id );
 	}
 
 

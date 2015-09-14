@@ -12,9 +12,11 @@
 namespace ingot\testing;
 
 
+use ingot\testing\crud\sequence;
+
 class ingot {
 	public function __construct() {
-
+		$this->hooks();
 	}
 
 	public function hooks(){
