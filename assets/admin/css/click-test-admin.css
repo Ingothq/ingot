@@ -1,0 +1,19 @@
+.ingot-admin-wrap{
+    margin: 24px;
+    padding: 24px;
+    background: #ffffff;
+}
+
+.clear {
+    clear: both;
+}
+
+section {
+    width:50%;
+    float: left;
+    display: inline;
+}
+
+section#parts {
+    float: right;
+}
