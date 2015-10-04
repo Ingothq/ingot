@@ -49,7 +49,7 @@ abstract class crud {
 		 */
 		do_action( 'ingot_crud_pre_create', $data, static::what() );
 		$data = apply_filters( 'ingot_crud_create', $data, static::what() );
-		$id = self::save( $data, null, $bypass_cap );
+		$id = static::save( $data, null, $bypass_cap );
 		if ( $id ){
 			/**
 			 * Runs after an object is created
@@ -90,7 +90,7 @@ abstract class crud {
 		 */
 		do_action( 'ingot_crud_pre_update', $data, $id, static::what() );
 		$data = apply_filters( 'ingot_crud_update', $data, static::what() );
-		$id = self::save( $data, $id, $bypass_cap );
+		$id = static::save( $data, $id, $bypass_cap );
 		if ( $id ){
 			/**
 			 * Runs after an object is updated.

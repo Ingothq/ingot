@@ -24,6 +24,9 @@
 		</a>
 	</section>
 	<div class="clear"></div>
+	<div class="navigation button-pair">
+		<?php echo $next_button.$prev_button; ?>
+	</div>
 </div>
 
 

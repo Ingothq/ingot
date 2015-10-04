@@ -37,12 +37,14 @@ class ingot {
 	 */
 	public function hooks(){
 		add_action( 'rest_api_init', array( __CLASS__ , 'boot_rest_api' ) );
-		//$api_class =  "\\ingot\\testing\\api\\temp";
-		//add_action( 'wp_ajax_ingot_click_test', array( $api_class, 'record_click_text' ) );
-		//add_action( 'wp_ajax_nopriv_ingot_click_test', array( $api_class, 'record_click_text' ) );
 		add_action( 'wp_enqueue_scripts', function() {
-			wp_enqueue_script( 'ingot', plugin_dir_url( __FILE__ ) . '/assets/js/ingot.js', array( 'jquery'), INGOT_VER, true );
-			wp_localize_script( 'ingot', 'INGOT', ingot::js_vars() );
+			$version = INGOT_VER;
+			if( WP_DEBUG ) {
+				$version = rand();
+			}
+
+			wp_enqueue_script( 'ingot', INGOT_URL . '/assets/front-end/js/ingot-click-test.js', array( 'jquery'), $version, true );
+			wp_localize_script( 'ingot', 'INGOT_VARS', ingot::js_vars() );
 		});
 
 		add_action( 'ingot_crud_created', array( $this, 'create_hook' ), 10, 2 );
@@ -84,6 +86,9 @@ class ingot {
 			case false === $is_a :
 				$sequence[ 'b_total' ] = $sequence[ 'b_total' ] + 1;
 				break;
+			case is_wp_error( $is_a ) :
+				return $is_a;
+			break;
 		}
 
 		$updated =  sequence::update( $sequence, $sequence_id, true );
@@ -112,7 +117,7 @@ class ingot {
 				break;
 		}
 
-		$updated = sequence::save( $sequence, $sequence_id, true );
+		$updated = sequence::update( $sequence, $sequence_id, true );
 		return $updated;
 
 	}
@@ -140,10 +145,15 @@ class ingot {
 		}
 	}
 
-	public static function js_vars() {
+	/**
+	 * Data to be localize as INGOT_VARS
+	 *
+	 * @return array
+	 */
+	static public function js_vars() {
 		$vars = array(
-			'api_url' => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
-			'nonce' => wp_create_nonce( 'ingot_nonce' )
+			'api_url' => esc_url_raw( self::ingot_api_url() ),
+			'nonce' => wp_create_nonce( 'wp_rest' )
 		);
 
 		return $vars;
@@ -192,6 +202,17 @@ class ingot {
 	 */
 	public  function update_hook( $id, $what){
 
+	}
+
+	/**
+	 * Get the URL for the INGOT REST API
+	 *
+	 * @since 0.0.6
+	 *
+	 * @return string
+	 */
+	static public function ingot_api_url() {
+		return trailingslashit( rest_url( 'ingot/v1' ) );
 	}
 
 

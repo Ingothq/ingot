@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * API route for test groups.
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -83,7 +83,16 @@ class test_group extends route {
 	 */
 	public function update_item( $request ) {
 		$params = $request->get_params();
+		unset( $params[0]);
+		unset( $params[1] );
 		$id = $params[ 'id' ];
+		foreach( $params as $param => $value ) {
+			if( empty( $value ) ) {
+				unset( $params[ $param ] );
+			}
+
+		}
+
 		$updated = group::update( $params, $id );
 		if ( ! is_wp_error( $updated ) && $updated ) {
 			$item = group::read( $updated );
@@ -107,6 +116,8 @@ class test_group extends route {
 	 */
 	public function create_item( $request ) {
 		$params = $request->get_params();
+		unset( $params[0] );
+		unset( $params[1] );
 		$created = group::create( $params );
 		if ( ! is_wp_error( $created ) && is_numeric( $created ) ) {
 			$item = group::read( $created );
@@ -117,6 +128,25 @@ class test_group extends route {
 			}
 
 			return rest_ensure_response( $created, 500 );
+		}
+
+	}
+
+	/**
+	 * Delete a group
+	 *
+	 * @since 0.0.5
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Request
+	 */
+	public function delete_item( $request ) {
+		$id = $request->get_param( 'id' );
+		$deleted = group::delete( $id );
+		if( $deleted ) {
+			return rest_ensure_response( $id );
+		}else{
+			return rest_ensure_response( new \WP_Error( 'unknown-item', __( 'Can not delete a non-existent item', 'ingot' ) ), 404 );
 		}
 
 	}
@@ -188,6 +218,12 @@ class test_group extends route {
 				'default'            => '',
 				'sanitize_callback'  => array( $this, 'url' ),
 				'required'           => true,
+			),
+			'page' => array(
+				'description'        => __( 'Page of resu.', 'ingot' ),
+				'type'               => 'integer',
+				'default'            => 1,
+				'sanitize_callback'  => 'absint',
 			),
 		);
 

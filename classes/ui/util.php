@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * Utilities for UI
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -14,6 +14,16 @@ namespace ingot\ui;
 
 class util {
 
+	/**
+	 * Make HTML select options
+	 *
+	 * @since 0.0.5
+	 *
+	 * @param array $options Options for selector
+	 * @param string $selected Currently selected option
+	 *
+	 * @return string
+	 */
 	public static function select_options( $options, $selected ) {
 		$out = '';
 		foreach( $options as $value => $label ) {
@@ -30,6 +40,13 @@ class util {
 		return $out;
 	}
 
+	/**
+	 * Enqueue front-end scripts
+	 *
+	 * @since 0.0.5
+	 *
+	 * @param string $for
+	 */
 	public static function enqueue_front_end_scripts( $for = 'click') {
 		if ( 'click' == $for ) {
 			wp_enqueue_script( 'ingot-click-test' );
@@ -37,20 +54,55 @@ class util {
 		}
 	}
 
+	/**
+	 * The nonce for verifying click tracking is valid.
+	 *
+	 * @since 0.0.6
+	 *
+	 * @param int $test_id Test ID
+	 * @param int $sequence_id Sequence ID
+	 * @param int $group_id Group ID
+	 *
+	 * @return string
+	 */
 	public static function click_nonce( $test_id, $sequence_id, $group_id  ){
 		$action = self::click_nonce_action( $test_id, $sequence_id, $group_id );
 		return wp_create_nonce( $action );
 	}
 
+	/**
+	 * Verify a click nonce
+	 *
+	 * @since 0.0.6
+	 *
+	 * @param string $nonce The nonce
+	 * @param int $test_id Test ID
+	 * @param int $sequence_id Sequence ID
+	 * @param int $group_id Group ID
+	 *
+	 * @return bool
+	 */
 	public static function verify_click_nonce( $nonce, $test_id, $sequence_id, $group_id ){
 		$action = $action = self::click_nonce_action( $test_id, $sequence_id, $group_id );
 		$valid = wp_verify_nonce( $nonce, $action );
-		return $valid;
+		return (bool) $valid;
 	}
 
+	/**
+	 * The action for a click nonce
+	 *
+	 * @since 0.0.6
+	 *
+	 * @param int $test_id Test ID
+	 * @param int $sequence_id Sequence ID
+	 * @param int $group_id Group ID
+	 *
+	 * @return string
+	 */
 	protected static function click_nonce_action( $test_id, $sequence_id, $group_id ) {
-		$action = $test_id . $sequence_id . $group_id;
+		$action = md5( $test_id . $sequence_id . $group_id );
 		return $action;
+
 	}
 
 }

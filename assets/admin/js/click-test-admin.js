@@ -31,21 +31,50 @@ jQuery( document ).ready( function ( $ ) {
         });
 
 
-
-
-
     });
 
     $( '.part-remove' ).each( function( i, button ){
-        console.log( button );
         $( button ).on( 'click', function(e) {
             swal({
                 title: INGOT.beta_error_header,
-                text: INGOT.cant_remove,
+                text: INGOT.no_stats,
                 type: "error",
                 confirmButtonText: INGOT.close
             });
         });
+    });
+
+    $( document ).on( 'click', '.group-stats', function(e) {
+        swal({
+            title: INGOT.beta_error_header,
+            text: INGOT.cant_remove,
+            type: "error",
+            confirmButtonText: INGOT.close
+        });
+    });
+
+    $( document ).on( 'click', '.group-delete', function(e) {
+        id = $( this ).data( 'group-id' );
+        var url = INGOT.api_url + '/test-group/' + id;
+        $.ajax({
+            url:url,
+            method: "DELETE",
+            success: function( r, textStatus ) {
+                var el = document.getElementById( 'group-' + r );
+                if ( null != el ) {
+                    $( el ).slideUp( "slow", function() {
+                        swal({
+                            title: INGOT.deleted,
+                            text: '',
+                            type: "success",
+                            confirmButtonText: INGOT.close
+                        });
+                        $( el ).remove();
+                    });
+
+                }
+            }
+        })
     });
 
 
@@ -61,7 +90,7 @@ jQuery( document ).ready( function ( $ ) {
         var test_endpoint = INGOT.api_url + '/test/';
 
 
-        var  id, _id, create, name, text, part_data, url;
+        var  id, _id, create, name, text, part_data, url, current;
         var test_ids = {};
 
         $.each( parts, function( i, part ){
@@ -84,14 +113,23 @@ jQuery( document ).ready( function ( $ ) {
                 id: id
             };
 
-            console.log( part_data );
+            current = $( '#' + _id ).data( 'current' );
+            console.log( current.name );
+            console.log( part_data.name );
+            console.log( create );
+            if( false == create && part_data.name == current.name && part_data.text == current.text ) {
+                test_ids[ i ] = id;
+                return;
+            }
 
-            if ( create ) {
+
+            if ( true == create ) {
                 url = test_endpoint;
             }else{
                 url = test_endpoint + id;
             }
 
+            //@todo use a promise to avouid syncronous transfer
             $.ajax( {
                 url: url,
                 async: false,
@@ -119,13 +157,15 @@ jQuery( document ).ready( function ( $ ) {
 
         var group_id = $( '#test-group-id' ).val();
         url = INGOT.api_url + '/test-group/';
-        if ( group_id ) {
+
+        if ( 0 < group_id ) {
             url = url + group_id;
         }
 
         var group_data = {
+            type: 'click',
             name : $( '#group-name' ).val(),
-            type: $( '#group-type' ).val(),
+            click_type: $( '#group-type' ).val(),
             order: test_ids,
             selector: $( '#selector' ).val(),
             initial: $( '#intial' ).val(),

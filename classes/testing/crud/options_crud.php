@@ -57,6 +57,8 @@ abstract class options_crud extends crud {
 	 * @since 0.0.1
 	 *
 	 * @param int|string $id Item id or "all" to delete all
+	 *
+	 * @return bool
 	 */
 	public static function delete( $id ) {
 		/**
@@ -69,7 +71,7 @@ abstract class options_crud extends crud {
 		 */
 		do_action( 'ingot_crud_pre_delete', $id, static::what() );
 		if ( is_numeric( $id ) ) {
-			delete_option( self::key_name( $id ) );
+			return delete_option( self::key_name( $id ) );
 		}
 
 		if ( 'all' == $id ){
