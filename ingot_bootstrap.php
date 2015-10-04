@@ -61,7 +61,7 @@ class ingot_bootstrap {
 
 	protected static function maybe_load_api() {
 		if( ! defined( 'REST_API_VERSION' ) ) {
-			include_once( INGOT_DIR . 'bundled/wp-api/plugin.php' );
+			include_once( INGOT_DIR . '/wp-api/plugin.php' );
 		}
 
 	}
