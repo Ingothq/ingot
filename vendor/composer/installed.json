@@ -1,1 +1,151 @@
-[]
+[
+    {
+        "name": "composer/installers",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/composer/installers.git",
+            "reference": "e420b539e8d7b38b7c6f3f99dccc0386bd3dfe41"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/composer/installers/zipball/e420b539e8d7b38b7c6f3f99dccc0386bd3dfe41",
+            "reference": "e420b539e8d7b38b7c6f3f99dccc0386bd3dfe41",
+            "shasum": ""
+        },
+        "replace": {
+            "roundcube/plugin-installer": "*",
+            "shama/baton": "*"
+        },
+        "require-dev": {
+            "composer/composer": "1.0.*@dev",
+            "phpunit/phpunit": "4.1.*"
+        },
+        "time": "2015-06-13 15:30:38",
+        "type": "composer-installer",
+        "extra": {
+            "class": "Composer\\Installers\\Installer",
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Composer\\Installers\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Kyle Robinson Young",
+                "email": "kyle@dontkry.com",
+                "homepage": "https://github.com/shama"
+            }
+        ],
+        "description": "A multi-framework Composer library installer",
+        "homepage": "http://composer.github.com/installers/",
+        "keywords": [
+            "Craft",
+            "Dolibarr",
+            "Hurad",
+            "MODX Evo",
+            "OXID",
+            "SMF",
+            "Thelia",
+            "WolfCMS",
+            "agl",
+            "aimeos",
+            "annotatecms",
+            "bitrix",
+            "cakephp",
+            "chef",
+            "codeigniter",
+            "concrete5",
+            "croogo",
+            "dokuwiki",
+            "drupal",
+            "elgg",
+            "fuelphp",
+            "grav",
+            "installer",
+            "joomla",
+            "kohana",
+            "laravel",
+            "lithium",
+            "magento",
+            "mako",
+            "mediawiki",
+            "modulework",
+            "moodle",
+            "phpbb",
+            "piwik",
+            "ppi",
+            "puppet",
+            "roundcube",
+            "shopware",
+            "silverstripe",
+            "symfony",
+            "typo3",
+            "wordpress",
+            "zend",
+            "zikula"
+        ]
+    },
+    {
+        "name": "wp-api/wp-api",
+        "version": "1621.x-dev",
+        "version_normalized": "1621.9999999.9999999.9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/WP-API/WP-API.git",
+            "reference": "c547631b2a4407175ced2a98f9b6b970e67723a0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/WP-API/WP-API/zipball/c547631b2a4407175ced2a98f9b6b970e67723a0",
+            "reference": "c547631b2a4407175ced2a98f9b6b970e67723a0",
+            "shasum": ""
+        },
+        "require": {
+            "composer/installers": "~1.0"
+        },
+        "require-dev": {
+            "wp-coding-standards/wpcs": "0.6.0"
+        },
+        "time": "2015-10-02 19:13:10",
+        "type": "wordpress-plugin",
+        "extra": {
+            "installer-name": "json-rest-api"
+        },
+        "installation-source": "source",
+        "scripts": {
+            "post-install-cmd": [
+                "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
+            ],
+            "post-update-cmd": [
+                "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
+            ]
+        },
+        "license": [
+            "GPL2+"
+        ],
+        "authors": [
+            {
+                "name": "WP-API Team",
+                "homepage": "http://wp-api.org/"
+            }
+        ],
+        "description": "Access your WordPress site's data through an easy-to-use HTTP REST API.",
+        "homepage": "http://wp-api.org/",
+        "support": {
+            "issues": "https://github.com/WP-API/WP-API/issues",
+            "forum": "https://wordpress.org/support/plugin/json-rest-api",
+            "source": "https://github.com/WP-API/WP-API/tree/1621"
+        }
+    }
+]

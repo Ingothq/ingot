@@ -45,6 +45,7 @@ class ingot_bootstrap {
 			include_once( $autoloader );
 			new ingot\testing\ingot();
 			new ingot\ui\make();
+			self::maybe_load_api();
 
 			/**
 			 * Runs when Ingot has loaded.
@@ -55,6 +56,13 @@ class ingot_bootstrap {
 			do_action( 'ingot_loaded' );
 		}
 
+
+	}
+
+	protected static function maybe_load_api() {
+		if( ! defined( 'REST_API_VERSION' ) ) {
+			include_once( INGOT_DIR . 'bundled/wp-api/plugin.php' );
+		}
 
 	}
 
