@@ -13,6 +13,8 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\utility\helpers;
+
 class sequence extends options_crud {
 
 	/**
@@ -56,7 +58,7 @@ class sequence extends options_crud {
 			)
 		);
 
-		$find_current = $params[ 'current' ];
+		$find_current = helpers::v( 'current', $params, false );
 		if ( ! empty( $params[ 'ids' ] ) ) {
 			$all = array();
 			foreach( $params[ 'ids' ] as $id ) {
