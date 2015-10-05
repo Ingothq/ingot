@@ -378,7 +378,7 @@ class test_group_crud extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * Test taht when we ask for too high of a page, we get nothing back
+	 * Test that when we ask for too high of a page, we get nothing back
 	 *
 	 * @since 0.0.7
 	 *
