@@ -254,13 +254,17 @@ abstract class crud {
 
 		}
 
+		$data = self::fill_in( $data );
+
 		if ( 'group' == static::what() ) {
-			$data = self::fill_in( $data );
+
+			if ( false == self::validate_type( $data ) ) {
+				return false;
+			}
+
+
 		}
 
-		if( false == self::validate_type( $data ) ) {
-			return false;
-		}
 
 		$data[ 'modified' ] = time();
 
