@@ -29,13 +29,13 @@ class click {
 	public static function increase_total( $test_id, $sequence_id ) {
 		$sequence = sequence::read( $sequence_id );
 		$is_a = self::is_a( $test_id, $sequence );
-		switch( $is_a  ) {
-			case true === $is_a  :
-				$sequence[ 'a_total' ] = $sequence[ 'a_total' ] + 1;
-				break;
-			case false === $is_a :
-				$sequence[ 'b_total' ] = $sequence[ 'b_total' ] + 1;
-				break;
+		if( true === $is_a  ) {
+			$sequence[ 'a_total' ] = $sequence[ 'a_total' ] + 1;
+		}elseif( ! is_wp_error( $is_a ) ) {
+			$sequence[ 'b_total' ] = $sequence[ 'b_total' ] + 1;
+		}else{
+			return;
+
 		}
 
 		$updated =  sequence::update( $sequence, $sequence_id, true );
@@ -56,13 +56,13 @@ class click {
 	public static function increase_victory( $test_id, $sequence_id ) {
 		$sequence = sequence::read( $sequence_id );
 		$is_a = self::is_a( $test_id, $sequence );
-		switch( $is_a  ) {
-			case true === $is_a  :
-				$sequence[ 'a_win' ] = $sequence[ 'a_win' ] + 1;
-				break;
-			case false === $is_a :
+		if( true == $is_a ) {
+			$sequence['a_win'] = $sequence['a_win'] + 1;
+		}elseif( ! is_wp_error( $is_a ) ) {
 				$sequence[ 'b_win' ] = $sequence[ 'b_win' ] + 1;
-				break;
+		}else{
+			return;
+
 		}
 
 		$updated = sequence::update( $sequence, $sequence_id, true );
@@ -139,7 +139,7 @@ class click {
 	 */
 	public static function make_initial_sequence( $group_id ){
 		$group = group::read( $group_id );
-		if( empty( $group[ 'order' ] ) || isset( $group[0]) || ! isset( $group[1] ) ) {
+		if( empty( $group[ 'order' ] ) || ! isset( $group[ 'order' ][0]) || ! isset( $group[ 'order' ][1] ) ) {
 			return new \WP_Error( 'bad-order-for-sequence-creation', __( 'Can not make sequences for group', 'ingot' ) );
 		}
 
