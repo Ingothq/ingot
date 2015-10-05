@@ -33,6 +33,11 @@ abstract class options_crud extends crud {
 		 */
 		do_action( 'ingot_crud_pre_read', $id, static::what() );
 		$item = get_option( self::key_name( $id ), array() );
+
+		if( empty( $item ) ) {
+			return false;
+		}
+
 		$item = self::fill_in( $item );
 		if( ! empty( $item ) && ! isset( $item[ 'ID' ] ) ) {
 			$item[ 'ID' ] = $id;
@@ -91,7 +96,7 @@ abstract class options_crud extends crud {
 	 *
 	 * @return int|bool||WP_Error Item ID if created,or false if not created, or error if not allowed to create.
 	 */
-	protected static function save( $data,$id = null, $bypass_cap = false  ) {
+	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 		$data = self::validate_config( $data );
 		if ( ! is_array( $data ) ) {
 			return new \WP_Error( 'ingot-invalid-config' );
@@ -138,11 +143,21 @@ abstract class options_crud extends crud {
 
 	}
 
+	/**
+	 * Query all, possibly with limit and offset
+	 *
+	 * @since 0.0.5
+	 *
+	 * @param int $limit How many results to return
+	 * @param int $page Page
+	 *
+	 * @return array
+	 */
 	protected static function get_all( $limit, $page = 1) {
 		if ( 1 == $page ) {
 			$offset = 0;
 		}else{
-			$offset = (int) $limit * (int) $page;
+			$offset = ( (int) $limit * ( (int) $page - 1 ) ) - 1;
 		}
 
 		global $wpdb;
@@ -151,13 +166,33 @@ abstract class options_crud extends crud {
 		$sql = sprintf( 'SELECT * FROM `%1s` WHERE `option_name` LIKE "%2s" ORDER BY `option_id` DESC LIMIT %d OFFSET %d', $wpdb->options, $like, $limit, $offset );
 
 		$results = $wpdb->get_results( $sql, ARRAY_A );
-		$all = array();
-		if ( ! empty( $results ) ) {
-			foreach( $results as $result ) {
-				$all[ $result[ 'option_id' ] ] = maybe_unserialize( $result[ 'option_value' ] );
-			}
+
+		return self::format_results_from_sql_query( $results );
+	}
+
+	/**
+	 * Select by IDs
+	 *
+	 * @param array $ids An array of IDs to select
+	 *
+	 * @return array
+	 */
+	protected static function select_by_ids( $ids ) {
+		global $wpdb;
+		$what = static::what();
+		$like_pattern = "'ingot_%s_%d'";
+
+		foreach( $ids as $id ) {
+			$in[] = sprintf( $like_pattern, $what, $id );
 		}
-		return $all;
+
+		$in = implode( ',', $in );
+
+		$sql = sprintf( 'SELECT * FROM `%1s` WHERE `option_name` IN (%2s)', $wpdb->options, $in );
+
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+
+		return self::format_results_from_sql_query( $results );
 	}
 
 	/**
@@ -169,7 +204,7 @@ abstract class options_crud extends crud {
 	 *
 	 * @return array|null|object
 	 */
-	protected function delete_all() {
+	protected static function delete_all() {
 		global $wpdb;
 		$what = static::what();
 		$like = "%ingot_{$what}_%";
@@ -211,9 +246,32 @@ abstract class options_crud extends crud {
 	private static function key_name( $id ) {
 		$what = static::what();
 		return "ingot_{$what}_{$id}";
+
 	}
 
+	/**
+	 * Format results from $wpdb->results()
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @param $results
+	 *
+	 *
+	 * @return array
+	 */
+	protected static function format_results_from_sql_query( $results ) {
+		$all = array();
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $result ) {
+				$all[] = maybe_unserialize( $result['option_value'] );
+			}
+		}
 
+
+		return $all;
+	}
 
 
 }

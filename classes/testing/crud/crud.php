@@ -12,6 +12,8 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\types;
+
 abstract class crud {
 
 	/**
@@ -49,7 +51,12 @@ abstract class crud {
 		 */
 		do_action( 'ingot_crud_pre_create', $data, static::what() );
 		$data = apply_filters( 'ingot_crud_create', $data, static::what() );
+
 		$id = static::save( $data, null, $bypass_cap );
+		if( is_wp_error( $id ) ) {
+			return $id;
+		}
+
 		if ( $id ){
 			/**
 			 * Runs after an object is created
@@ -221,7 +228,7 @@ abstract class crud {
 	 *
 	 * @return array|null|object
 	 */
-	protected function delete_all() {
+	protected static function delete_all() {
 		_doing_it_wrong( __METHOD__ , __( 'Must ovveride in subclass', 'ingot' ), INGOT_VER );
 		return array();
 	}
@@ -247,11 +254,42 @@ abstract class crud {
 
 		}
 
-		$data = self::fill_in( $data );
+		if ( 'group' == static::what() ) {
+			$data = self::fill_in( $data );
+		}
+
+		if( false == self::validate_type( $data ) ) {
+			return false;
+		}
 
 		$data[ 'modified' ] = time();
 
 		return $data;
+	}
+
+	/**
+	 * Validate item types
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @param array $data Item config
+	 *
+	 * @return bool True if valid, false if not
+	 */
+	protected static function validate_type( $data ) {
+		if( ! in_array(  $data['type'], types::allowed_types() ) ) {
+			return false;
+		}
+
+
+		if( 'click' === $data[ 'type' ] && ! in_array( $data[ 'click_type' ], types::allowed_click_types() ) ) {
+			return false;
+
+		}
+
+		return true;
 	}
 
 	/**
@@ -271,7 +309,11 @@ abstract class crud {
 				if ( 'created' == $key ) {
 					$data[ $key ] = time();
 				}elseif( 'name' == $key ){
-					$data[ $key ] = sprintf( '%s - %s', static::what(), $data[ 'ID' ] );
+					if ( isset( $data[ 'ID']) ) {
+						$data[ $key ] = sprintf( '%s - %s', static::what(), $data['ID'] );
+					}else{
+						$data[ $key ] = rand();
+					}
 				} elseif( 'order' == $key || 'sequences' == $key ) {
 					$data[ $key ] = array();
 				} else{
@@ -283,6 +325,14 @@ abstract class crud {
 
 		return $data;
 
+	}
+
+	public static function get_required_fields() {
+		return static::required();
+	}
+
+	public static function get_needed_fields() {
+		return static::needed();
 	}
 
 }

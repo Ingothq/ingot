@@ -1,14 +1,14 @@
 <?php
-
 /**
- * @TODO What this does.
+ * Test that tests work
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
  * @copyright 2015 Josh Pollock
  */
+
 class tests extends \WP_UnitTestCase {
 
 	public function setUp() {

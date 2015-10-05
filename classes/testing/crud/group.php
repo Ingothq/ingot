@@ -20,14 +20,17 @@ class group extends options_crud {
 	 * @since 0.0.5
 	 *
 	 * @param array $params {
-	 *  $ids array Optional. Array of ids to get. DOESN'T WORK YET
-	 *  $limit int Optional. Limit results, default is -1 which gets all.
-	 *  $page int Optional. Page of results, used with $limit. Default is 1
+	 *  $ids array Optional. Array of ids to get
+	 *  $limit int Optional. Limit results, default is -1 which gets all. Ignored if $ids is used.
+	 *  $page int Optional. Page of results, used with $limit. Default is 1. Ignored if $ids is used.
 	 * }
 	 *
 	 * @return array
 	 */
 	public static function get_items( $params ) {
+		if( ! empty( $params[ 'ids' ] ) ) {
+			return self::select_by_ids( $params[ 'ids' ] );
+		}
 		$limit = $page = 1;
 		$args = wp_parse_args(
 			$params,
@@ -45,6 +48,7 @@ class group extends options_crud {
 
 		extract( $args );
 		return self::get_all( $limit, $page );
+
 	}
 
 
@@ -75,7 +79,6 @@ class group extends options_crud {
 	protected static function required() {
 		$required = array(
 			'type',
-
 		);
 
 		return $required;
