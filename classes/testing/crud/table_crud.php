@@ -1,0 +1,172 @@
+<?php
+/**
+ * @TODO What this does.
+ *
+ * @package   @TODO
+ * @author    Josh Pollock <Josh@JoshPress.net>
+ * @license   GPL-2.0+
+ * @link
+ * @copyright 2015 Josh Pollock
+ */
+
+namespace ingot\testing\crud;
+
+
+class table_crud extends crud {
+
+
+	/**
+	 * Get one item from table
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param int $id
+	 *
+	 * @return array|mixed|null|object|void
+	 */
+	public static function read( $id ) {
+		/**
+		 * Runs before an object is read.
+		 *
+		 * @since 0.0.6
+		 *
+		 * @param int $id Item ID
+		 * @param string $what Object name
+		 */
+		do_action( 'ingot_crud_pre_read', $id, static::what() );
+
+		global $wpdb;
+		$sql = $wpdb->prepare( 'SELECT * FROM `%s` WHERE `ID` = %d', self::get_table_name(), $id );
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+
+		/**
+		 * Runs before an object is returned from DB
+		 *
+		 * @since 0.0.6
+		 *
+		 * @param array $item Data to be returned
+		 * @param string $what Object name
+		 */
+		$results = apply_filters( 'ingot_crud_read', $results, static::what() );
+
+		return $results;
+
+	}
+
+	/**
+	 * Delete an item or all items
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param int|string $id Item id or "all" to delete all
+	 *
+	 * @return bool
+	 */
+	public static function delete( $id ) {
+		/**
+		 * Runs before an object is deleted.
+		 *
+		 * @since 0.0.6
+
+		 * @param int $id Item ID
+		 * @param string $what Object name
+		 */
+		do_action( 'ingot_crud_pre_delete', $id, static::what() );
+
+		global $wpdb;
+		$deleted = $wpdb->delete( self::get_table_name(), array( 'ID' => $id ), array( '%d' ) );
+		if( is_numeric( $deleted ) ){
+			return true;
+
+		}else{
+			return false;
+
+		}
+
+	}
+
+	/**
+	 * Delete all rows from table
+	 *
+	 * @since 0.0.7
+	 *
+	 * @return bool
+	 */
+	protected static function delete_all() {
+		global $wpdb;
+		$table = static::get_table_name();
+		$deleted = $wpdb->query(
+			$wpdb->prepare("Truncate table $table" )
+		);
+
+		if( is_numeric( $deleted ) ){
+			return true;
+
+		}else{
+			return false;
+
+		}
+	}
+
+	/**
+	 * Get table name
+	 *
+	 * @since 0.0.7
+	 *
+	 * @return string
+	 */
+	public static function get_table_name() {
+		global $wpdb;
+		return $wpdb->prefix . 'ingot_' . static::what();
+	}
+
+
+	/**
+	 * Generic save for read/update
+	 *
+	 * @since 0.0.4
+	 *
+	 * @param array $data Item con
+	 * @param int $id Optional. Item ID. Not used or needed if using to create.
+	 * @param bool|false $bypass_cap
+	 *
+	 * @return int|bool||WP_Error Item ID if created,or false if not created, or error if not allowed to create.
+	 */
+	protected static function save( $data, $id = null, $bypass_cap = false  ) {
+
+		$data = self::prepare_data( $data );
+		if( is_wp_error( $data ) ) {
+			return $data;
+		}
+
+		if( self::can( $id, $bypass_cap ) ) {
+			global $wpdb;
+			if( $id ) {
+				$wpdb->replace(
+					static::get_table_name(),
+					$data
+
+				);
+			}else{
+				unset( $data[ 'ID' ] );
+				$wpdb->insert(
+					static::get_table_name(),
+					$data
+
+				);
+
+			}
+
+			return $wpdb->insert_id;
+
+		}else{
+			return false;
+
+		}
+
+
+	}
+
+
+
+}

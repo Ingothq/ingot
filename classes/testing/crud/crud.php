@@ -38,7 +38,7 @@ abstract class crud {
 	 * @param array $data Item data
 	 * @param bool|false $bypass_cap
 	 *
-	 * @return array|bool||WP_Error Item config array,or false if not found, or error if not allowed.
+	 * @return ID|bool||WP_Error Item ID,or false if not created, or error if not allowed.
 	 */
 	public static function create( $data, $bypass_cap = false ){
 		/**
@@ -122,7 +122,26 @@ abstract class crud {
 	 * @return array Item config array.
 	 */
 	public static function read( $id ) {
+		/**
+		 * Runs before an object is read.
+		 *
+		 * @since 0.0.6
+		 *
+		 * @param int $id Item ID
+		 * @param string $what Object name
+		 */
+		do_action( 'ingot_crud_pre_read', $id, static::what() );
 		_doing_it_wrong( __FUNCTION__, __( 'Must ovveride', 'ingot' ), '0.0.5' );
+
+		/**
+		 * Runs before an object is returned from DB
+		 *
+		 * @since 0.0.6
+		 *
+		 * @param array $item Data to be returned
+		 * @param string $what Object name
+		 */
+		$item = apply_filters( 'ingot_crud_read', array(), static::what() );
 		return array();
 
 	}
@@ -262,7 +281,6 @@ abstract class crud {
 				return false;
 			}
 
-
 		}
 
 
@@ -323,6 +341,21 @@ abstract class crud {
 				} else{
 					$data[ $key ] = 0;
 				}
+			}else{
+				if( 'order' == $key || 'sequences' == $key ) {
+					if( ! is_array( $data[ $key ] ) ) {
+						$data[ $key ] = array();
+					}
+
+				}elseif( 'created' == $key || 'modified' == $key ) {
+					if( false === strtotime( $data[ 'key' ] ) ) {
+						$data[ $key ] = date();
+					}
+
+				}elseif( is_array( $data[ $key ] ) )  {
+					return new \WP_Error( $key.'-invalid', __( 'Invalid data type', 'ingot' ), array( $key => $data[ $key ] ) );
+				}
+
 			}
 
 		}
@@ -331,12 +364,127 @@ abstract class crud {
 
 	}
 
-	public static function get_required_fields() {
-		return static::required();
+	/**
+	 * Calculate a offset for a paginated query
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param int $limit Total results to show.
+	 * @param int $page Page of results to get
+	 *
+	 * @return int
+	 */
+	protected static function calculate_offset( $limit, $page ) {
+		if ( 1 == $page ) {
+			$offset = 0;
+
+			return $offset;
+
+		} else {
+			$offset = ( (int) $limit * ( (int) $page - 1 ) ) - 1;
+
+			return $offset;
+
+		}
+
 	}
 
+
+	/**
+	 * Get the required fields
+	 *
+	 * @since 0.0.6
+	 *
+	 * @return array
+	 */
+	public static function get_required_fields() {
+		return static::required();
+
+	}
+
+	/**
+	 * Get the needed, but not required fields
+	 *
+	 * @since 0.0.6
+	 *
+	 * @return array
+	 */
 	public static function get_needed_fields() {
 		return static::needed();
+
 	}
+
+	/**
+	 * Get all the fields
+	 *
+	 * @since 0.0.6
+	 *
+	 * @return array
+	 */
+	public static function get_all_fields() {
+		return array_merge( static::get_required_fields(), static::get_needed_fields() );
+
+	}
+
+	/**
+	 * Prepare data for save/update
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param $data
+	 *
+	 * @return array|\WP_Error Data as array or WP_Error if invalid
+	 */
+	protected static function prepare_data( $data ) {
+		$data = self::validate_config( $data );
+		if ( ! is_array( $data ) ) {
+			return new \WP_Error( 'ingot-invalid-config' );
+		}
+
+		$allowed = array_merge( static::required(), static::needed() );
+		foreach ( $data as $k => $v ) {
+			if ( is_numeric( $k ) || ! in_array( $k, $allowed ) ) {
+				unset( $data[ $k ] );
+			}
+		}
+
+		return $data;
+
+	}
+
+	/**
+	 * Check if current user can (if cap check is needed
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @param int $id Item ID
+	 * @param bool $bypass_cap Whether to bypass check
+	 *
+	 * @return bool True if user can, false if not
+	 */
+	protected static function can( $id, $bypass_cap ) {
+		if ( ! $bypass_cap ) {
+			/**
+			 * Sets the capability required to preform update
+			 *
+			 * @since 0.0.5
+			 *
+			 * @param string $cap The capability
+			 */
+			$cap = apply_filters( 'ingot_save_cap', 'manage_options', static::what(), $id );
+			$can = current_user_can( $cap );
+
+		} else {
+			$can = true;
+
+
+		}
+
+
+		return apply_filters( 'ingot_user_can', $can, $id, static::what() );
+	}
+
 
 }

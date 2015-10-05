@@ -165,6 +165,38 @@ class click {
 	}
 
 	public static function make_next_sequence( $group_id, $last_winner_id ) {
+		$group = group::read( $group_id );
+		if ( ! empty( $group ) ) {
+			$current_sequence = sequence::get_items( array( 'current' => true, 'ids' => $group[ 'order' ] ) );
+			$a = $current_sequence[ 'a_id' ];
+			$b = $current_sequence[ 'b_id' ];
+			if( is_wp_error( self::is_a( $a, $current_sequence ) ) || is_wp_error( self::is_a( $b, $current_sequence ) ) ){
+				return new \WP_Error( 'invalid-victor' );
+			}
+
+			$a_key = array_search( $a, $group[ 'order'] );
+			$b_key = array_search( $b, $group[ 'order' ] );
+			if( $a_key > $b_key ) {
+				$next_key = $a_key + 1;
+			}else{
+				$next_key = $b_key + 2;
+			}
+
+			if( isset( $group[ 'order' ][ $next_key ] ) ) {
+				$data = array(
+					'a_id' => $last_winner_id,
+					'b_id' => $group[ 'order' ][ $next_key ],
+					'type' => $group[ 'type' ]
+				);
+
+				$new_sequence = sequence::create( $data );
+				$group[ 'sequences' ][] = $new_sequence;
+				group::update( $group );
+
+				return $new_sequence;
+			}
+
+		}
 
 	}
 

@@ -134,29 +134,15 @@ abstract class options_crud extends crud {
 	 * @return int|bool||WP_Error Item ID if created,or false if not created, or error if not allowed to create.
 	 */
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
-		$data = self::validate_config( $data );
-		if ( ! is_array( $data ) ) {
-			return new \WP_Error( 'ingot-invalid-config' );
-		}
+		$data = self::prepare_data( $data );
 
-		$allowed = array_merge( static::required(), static::needed() );
-		foreach( $data as $k => $v ) {
-			if ( is_numeric( $k ) || ! in_array( $k, $allowed ) ) {
-				unset( $data[ $k ] );
-			}
-		}
+		$can = self::can( $id, $bypass_cap );
 
-
-		if ( ! $bypass_cap ) {
-			$cap = apply_filters( 'ingot_save_cap', 'manage_options', static::what(), $id );
-		} else {
-			$cap = true;
-		}
-
-		if ( $cap ) {
+		if ( $can ) {
 			if ( ! $id ) {
 				$id = self::increment_id();
 			}
+
 			$key = self::key_name( $id );
 
 			if ( ! isset( $data[ 'ID' ] ) || $data[ 'ID' ] != $id ) {
@@ -191,11 +177,7 @@ abstract class options_crud extends crud {
 	 * @return array
 	 */
 	protected static function get_all( $limit, $page = 1) {
-		if ( 1 == $page ) {
-			$offset = 0;
-		}else{
-			$offset = ( (int) $limit * ( (int) $page - 1 ) ) - 1;
-		}
+		$offset = self::calculate_offset( $limit, $page );
 
 		global $wpdb;
 		$what = static::what();

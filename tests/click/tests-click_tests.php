@@ -285,6 +285,68 @@ class test_click_tests extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test that we can create the next sequence arbitrarily
+	 *
+	 * @since 0.0.7
+	 *
+	 * @covers ingot\testing\tests\click\click::make_next_sequence
+	 */
+	public function testMakeNextSequence() {
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_1 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_2 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_3 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_4 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'type' => 'click',
+			'selector' => '.hats',
+			'link' => 'https://hats.com',
+			'order' => array( $test_1, $test_2, $test_3 )
+		);
+		$group_id = \ingot\testing\crud\group::create( $params );
+
+		$group = \ingot\testing\crud\group::read( $group_id );
+		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
+		$new_sequence_id = \ingot\testing\tests\click\click::make_next_sequence( $group_id, $test_1 );
+		$group = \ingot\testing\crud\group::read( $group_id );
+		$this->assertArrayHasKey( 1, $group[ 'sequences'] );
+		$this->assertEquals( $new_sequence_id, $group[ 'sequences' ][1] );
+		$sequence = \ingot\testing\crud\sequence::read( $new_sequence_id );
+		$this->assertFalse( empty( $sequence ) );
+		$this->assertEquals( $sequence[ 'a_id' ], $test_1 );
+		$this->assertEquals( $sequence[ 'b_id' ], $test_3 );
+
+
+	}
+
+	/**
+	 * Test that we can create the next sequence in context
+	 *
+	 * @since 0.0.7
+	 *
+	 * @covers ingot\testing\tests\click\click::make_next_sequence
+	 */
+
 
 
 

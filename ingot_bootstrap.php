@@ -42,7 +42,9 @@ class ingot_bootstrap {
 		}
 
 		if ( $load ) {
+
 			include_once( $autoloader );
+			self::maybe_add_sequence_table();
 			new ingot\testing\ingot();
 			new ingot\ui\make();
 			self::maybe_load_api();
@@ -59,10 +61,52 @@ class ingot_bootstrap {
 
 	}
 
+	/**
+	 * If not installed as a plugin include our bundled REST API
+	 *
+	 * @since 0.0.6
+	 */
 	protected static function maybe_load_api() {
 		if( ! defined( 'REST_API_VERSION' ) ) {
 			include_once( INGOT_DIR . '/wp-api/plugin.php' );
 		}
+
+	}
+
+	/**
+	 * If needed, add the custom table for sequences
+	 *
+	 * @since 0.0.7
+	 */
+	protected static function maybe_add_sequence_table() {
+		global $wpdb;
+
+
+		$table_name = \ingot\testing\crud\sequence::get_table_name();
+		if( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {
+		    return;
+		}
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE $table_name (
+		  ID mediumint(9) NOT NULL AUTO_INCREMENT,
+		  a_win mediumint(9) NOT NULL,
+		  b_win mediumint(9) NOT NULL,
+		  a_total mediumint(9) NOT NULL,
+		  b_total mediumint(9) NOT NULL,
+		  inital mediumint(9) NOT NULL,
+		  threshold mediumint(9) NOT NULL,
+		  created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		  modified  datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		  completed  tinyint(1) NOT NULL,
+		  group_id mediumint(9) NOT NULL,
+		  test_type VARCHAR( 255 ) NOT NULL
+		  UNIQUE KEY id (id)
+		) $charset_collate;";
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
 
 	}
 

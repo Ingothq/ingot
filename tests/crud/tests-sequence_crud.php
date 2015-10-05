@@ -38,7 +38,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$test_2 = \ingot\testing\crud\test::create( $params );
 
 		$params = array(
-			'type' => 'click',
+			'test_type' => 'click',
 			'a_id' => $test_1,
 			'b_id' => $test_2
 		);
@@ -71,7 +71,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$test_2 = \ingot\testing\crud\test::create( $params );
 
 		$params = array(
-			'type' => 'click',
+			'test_type' => 'click',
 			'a_id' => $test_1,
 			'b_id' => $test_2
 		);
@@ -131,7 +131,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$test_2 = \ingot\testing\crud\test::create( $params );
 
 		$params = array(
-			'type' => 'click',
+			'test_type' => 'click',
 			'a_id' => $test_1,
 			'b_id' => $test_2
 		);
@@ -194,7 +194,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$test_2 = \ingot\testing\crud\test::create( $params );
 
 		$params = array(
-			'type' => 'click',
+			'test_type' => 'click',
 			'a_id' => $test_1,
 			'b_id' => $test_2
 		);
@@ -225,7 +225,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$test_2 = \ingot\testing\crud\test::create( $params );
 
 		$params = array(
-			'type' => 'click',
+			'test_type' => 'click',
 			'a_id' => $test_1,
 			'b_id' => $test_2
 		);
@@ -271,7 +271,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 			$params = array(
 				'name' => $i,
-				'type' => 'click',
+				'test_type' => 'click',
 				'a_id' => $test_1,
 				'b_id' => $test_2
 			);
@@ -314,7 +314,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 			$params = array(
 				'name' => $i,
-				'type' => 'click',
+				'test_type' => 'click',
 				'a_id' => $test_1,
 				'b_id' => $test_2
 			);
@@ -360,7 +360,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 			$params = array(
 				'name' => $i,
-				'type' => 'click',
+				'test_type' => 'click',
 				'a_id' => $test_1,
 				'b_id' => $test_2
 			);
@@ -414,7 +414,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 			$params = array(
 				'name' => $i,
-				'type' => 'click',
+				'test_type' => 'click',
 				'a_id' => $test_1,
 				'b_id' => $test_2
 			);
@@ -462,7 +462,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 			$params = array(
 				'name' => $i,
-				'type' => 'click',
+				'test_type' => 'click',
 				'a_id' => $test_1,
 				'b_id' => $test_2
 			);
@@ -490,14 +490,16 @@ class test_sequence_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers \ingot\testing\crud|options_crud::key_name()
+	 * @covers \ingot\testing\crud|options_crud::prepare_data()
+	 * @covers \ingot\testing\crud|options_crud::fill_in()
 	 */
-	public function testKeyName() {
+	public function testInvalidArgs() {
 		$params = array(
 			'text' => rand(),
 			'name' => rand(),
 		);
 		$test_1 = \ingot\testing\crud\test::create( $params );
+
 		$params = array(
 			'text' => rand(),
 			'name' => rand(),
@@ -506,14 +508,39 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 		$params = array(
 			'name' => rand(),
-			'type' => 'click',
-			'a_id' => $test_1,
-			'b_id' => $test_2
+			'test_type' => 'click',
+			'a_id' => array( rand( ) ),
+			'b_id' => $test_1
 		);
 
 		$created = \ingot\testing\crud\sequence::create( $params );
-		$key = 'ingot_sequence_' . $created;
-		$this->assertEquals( get_option( $key ), \ingot\testing\crud\sequence::read( $created ) );
+		$this->assertInstanceOf( "\WP_Error", $created );
+
+		$params = array(
+			'name' => rand(),
+			'test_type' => 'click',
+			'a_id' => $test_1,
+			'b_id' => new stdClass()
+		);
+		$created = \ingot\testing\crud\sequence::create( $params );
+		$this->assertInstanceOf( "\WP_Error", $created );
+
+		$params = array(
+			'name' => rand(),
+			'test_type' => 'click',
+			'a_id' => $test_1,
+			'b_id' => $test_2,
+		);
+
+		$created = \ingot\testing\crud\sequence::create( $params );
+		$sequence = \ingot\testing\crud\sequence::read( $created );
+		$sequence[ 'a_win' ] = array( rand() );
+		$updated = $sequence = \ingot\testing\crud\sequence::read( $sequence );
+
+		$this->assertInstanceOf( "\WP_Error", $updated );
+
+
+
 	}
 
 
