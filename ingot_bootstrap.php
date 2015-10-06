@@ -78,32 +78,41 @@ class ingot_bootstrap {
 	 *
 	 * @since 0.0.7
 	 */
-	protected static function maybe_add_sequence_table() {
+	protected static function maybe_add_sequence_table( $drop_first = false ) {
 		global $wpdb;
 
 
 		$table_name = \ingot\testing\crud\sequence::get_table_name();
-		if( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {
-		    return;
+
+		if( apply_filters( 'ingot_force_update_table', $drop_first = true ) ) {
+			$wpdb->query( "DROP TABLE $table_name" );
+
+		}elseif( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {
+				return;
 		}
 
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (
 		  ID mediumint(9) NOT NULL AUTO_INCREMENT,
+		  a_id mediumint(9) NOT NULL,
+		  b_id mediumint(9) NOT NULL,
+	   	  test_type VARCHAR( 255 ) NOT NULL,
 		  a_win mediumint(9) NOT NULL,
 		  b_win mediumint(9) NOT NULL,
 		  a_total mediumint(9) NOT NULL,
 		  b_total mediumint(9) NOT NULL,
-		  inital mediumint(9) NOT NULL,
+		  initial mediumint(9) NOT NULL,
 		  threshold mediumint(9) NOT NULL,
 		  created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		  modified  datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		  completed  tinyint(1) NOT NULL,
-		  group_id mediumint(9) NOT NULL,
-		  test_type VARCHAR( 255 ) NOT NULL
+		  group_ID mediumint(9) NOT NULL,
+
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
+
+
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );

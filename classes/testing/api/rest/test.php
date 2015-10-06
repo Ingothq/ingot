@@ -264,7 +264,7 @@ class test extends route {
 		$sequence_id = $request->get_param( 'sequence' );
 		$sequence = sequence::read( $sequence_id );
 		if( is_array( $sequence ) ) {
-			$group = $sequence[ 'group' ];
+			$group = $sequence[ 'group_ID' ];
 		}else{
 			return false;
 		}

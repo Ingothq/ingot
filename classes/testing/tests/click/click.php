@@ -146,12 +146,12 @@ class click {
 		if ( ! empty( $group ) ){
 			$order = $group[ 'order' ];
 			$sequence_args = array(
-				'type' => $group[ 'type' ],
+				'test_type' => $group[ 'type' ],
 				'a_id' => $order[0],
 				'b_id' => $order[1],
 				'initial' => $group[ 'initial' ],
 				'threshold' => $group[ 'threshold' ],
-				'group' => (int) $group[ 'ID' ]
+				'group_ID' => (int) $group[ 'ID' ]
 			);
 			$sequence = sequence::create( $sequence_args );
 			if( $sequence ) {

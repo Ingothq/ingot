@@ -225,7 +225,7 @@ abstract class crud {
 	 *
 	 * @return int|bool||WP_Error Item ID if created,or false if not created, or error if not allowed to create.
 	 */
-	protected static function save( $data,$id = null, $bypass_cap = false  ) {
+	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 		_doing_it_wrong( __METHOD__ , __( 'Must ovveride in subclass', 'ingot' ), INGOT_VER );
 		return false;
 
@@ -276,13 +276,29 @@ abstract class crud {
 		$data = self::fill_in( $data );
 
 		if ( 'group' == static::what() ) {
+			if ( false == self::validate_type( $data ) || false == self::validate_click_type( $data ) ) {
+				return false;
+			}
 
-			if ( false == self::validate_type( $data ) ) {
+		}elseif( 'sequence' == static::what() ) {
+			if ( false == self::validate_type( $data, 'test_type' )  ) {
 				return false;
 			}
 
 		}
 
+		$fields = static::get_all_fields();
+		foreach ( static::get_all_fields() as  $key  ) {
+			if ( 'order' == $key || 'sequences' == $key ) {
+				if ( ! is_array( $data[ $key ] ) ) {
+					$data[ $key ] = array();
+				}
+			}elseif( is_int( $data[ $key ] ) || is_string( $data[ $key ] ) ){
+				continue;
+			} else  {
+				return new \WP_Error( $key . '-invalid', __( 'Invalid data type', 'ingot' ), array( $key => $data[ $key ] ) );
+			}
+		}
 
 		$data[ 'modified' ] = time();
 
@@ -297,21 +313,39 @@ abstract class crud {
 	 * @access protected
 	 *
 	 * @param array $data Item config
+	 * @param string $key Optional. Array key to test in. Default is "types"
 	 *
 	 * @return bool True if valid, false if not
 	 */
-	protected static function validate_type( $data ) {
-		if( ! in_array(  $data['type'], types::allowed_types() ) ) {
+	protected static function validate_type( $data, $key = 'type' ) {
+		if( ! in_array(  $data[ $key ], types::allowed_types() ) ) {
 			return false;
 		}
 
 
+		return true;
+
+	}
+
+	/**
+	 * Validate item click type
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @param array $data Item config
+	 *
+	 * @return bool True if valid, false if not
+	 */
+	protected static function validate_click_type( $data ) {
 		if( 'click' === $data[ 'type' ] && ! in_array( $data[ 'click_type' ], types::allowed_click_types() ) ) {
 			return false;
 
 		}
 
 		return true;
+
 	}
 
 	/**
@@ -325,6 +359,8 @@ abstract class crud {
 	 * @return array
 	 */
 	protected static function fill_in( $data ) {
+
+		//not in love with any of this hack
 		$needed = static::needed() ;
 		foreach ( $needed as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {
@@ -338,26 +374,30 @@ abstract class crud {
 					}
 				} elseif( 'order' == $key || 'sequences' == $key ) {
 					$data[ $key ] = array();
-				} else{
+				} elseif( 'click_type' == $key ){
+					$data[ $key ] = 'link';
+				}else{
 					$data[ $key ] = 0;
 				}
-			}else{
-				if( 'order' == $key || 'sequences' == $key ) {
-					if( ! is_array( $data[ $key ] ) ) {
-						$data[ $key ] = array();
-					}
-
-				}elseif( 'created' == $key || 'modified' == $key ) {
-					if( false === strtotime( $data[ 'key' ] ) ) {
-						$data[ $key ] = date();
-					}
-
-				}elseif( is_array( $data[ $key ] ) )  {
-					return new \WP_Error( $key.'-invalid', __( 'Invalid data type', 'ingot' ), array( $key => $data[ $key ] ) );
-				}
-
 			}
 
+		}
+
+		//this date validation shit is serious fucking mess
+		foreach( array( 'created', 'modified'  ) as $key )  {
+			if ( 0 == $data[ $key ] || ( is_string( $data[ $key ] ) && false === strtotime( $data[ $key ] ) ) ) {
+				$data[ $key ] = time();
+			}
+
+			if( ! is_numeric( $data[ $key ] ) ) {
+				$data[ $key ] = time();
+			}
+
+		}
+
+		if( 'sequence' == static::what() ) {
+			$data[ 'created' ] = date("Y-m-d H:i:s", $data[ 'created' ] );
+			$data[ 'modified' ] = date("Y-m-d H:i:s", $data[ 'modified' ] );
 		}
 
 		return $data;
@@ -383,7 +423,7 @@ abstract class crud {
 		} else {
 			$offset = ( (int) $limit * ( (int) $page - 1 ) ) - 1;
 
-			return $offset;
+			return absint( $offset );
 
 		}
 
@@ -482,7 +522,11 @@ abstract class crud {
 
 		}
 
-
+		/**
+		 * Filter if user can
+		 *
+		 * @since 0.0.7
+		 */
 		return apply_filters( 'ingot_user_can', $can, $id, static::what() );
 	}
 

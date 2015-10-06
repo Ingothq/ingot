@@ -77,6 +77,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		);
 
 		$created = \ingot\testing\crud\sequence::create( $params );
+		$this->assertFalse(  is_wp_error( $created ) );
 		$sequence = \ingot\testing\crud\sequence::read( $created );
 		$this->assertTrue( is_array( $sequence ) );
 		$params = array(
@@ -91,12 +92,13 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$test_4 = \ingot\testing\crud\test::create( $params );
 
 		$params = array(
-			'type' => 'click',
+			'test_type' => 'click',
 			'a_id' => $test_3,
 			'b_id' => $test_4
 		);
 
 		$created_2 = \ingot\testing\crud\sequence::create( $params );
+		$this->assertFalse(  is_wp_error( $created_2 ) );
 		$sequence = \ingot\testing\crud\sequence::read( $created_2 );
 		$this->assertTrue( is_array( $sequence ) );
 		$this->assertEquals( $sequence[ 'a_id' ], $test_3);
@@ -133,7 +135,8 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$params = array(
 			'test_type' => 'click',
 			'a_id' => $test_1,
-			'b_id' => $test_2
+			'b_id' => $test_2,
+			'group_ID' => 12
 		);
 
 		$created = \ingot\testing\crud\sequence::create( $params );
@@ -163,6 +166,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 	 */
 	public function testCreateRequired() {
 		$params = array(
+			rand() => rand(),
 			rand() => rand()
 		);
 
@@ -227,12 +231,14 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$params = array(
 			'test_type' => 'click',
 			'a_id' => $test_1,
-			'b_id' => $test_2
+			'b_id' => $test_2,
+			'group_ID' => 12
+
 		);
 
 		$created = \ingot\testing\crud\sequence::create( $params );
 		$sequence = \ingot\testing\crud\sequence::read( $created );
-		$sequence[ 'type' ] = 'price';
+		$sequence[ 'test_type' ] = 'price';
 		\ingot\testing\crud\sequence::update( $sequence, $created );
 		$sequence = \ingot\testing\crud\sequence::read( $created );
 
@@ -244,7 +250,7 @@ class test_sequence_crud extends \WP_UnitTestCase {
 			$this->assertArrayHasKey( $field, $sequence );
 		}
 
-		$this->assertEquals( $sequence[ 'type'], 'price' );
+		$this->assertEquals( $sequence[ 'test_type'], 'price' );
 	}
 
 	/**
@@ -485,8 +491,53 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 	}
 
+	public function testGetAllByGroup() {
+		\ingot\testing\crud\test::delete( 'all' );
+		\ingot\testing\crud\sequence::delete( 'all' );
+		for ( $g = 1; $g <= 3 ; $g++  ) {
+			for ( $i = 1; $i <= 7; $i ++ ) {
+				$params = array(
+					'text' => rand(),
+					'name' => rand(),
+				);
+				$test_1 = \ingot\testing\crud\test::create( $params );
+				$params = array(
+					'text' => rand(),
+					'name' => rand(),
+				);
+				$test_2 = \ingot\testing\crud\test::create( $params );
+
+				$params = array(
+					'name'      => $i,
+					'test_type' => 'click',
+					'a_id'      => $test_1,
+					'b_id'      => $test_2,
+					'group_ID'  => $g
+				);
+
+
+				$created[ $g ][ $i ] = \ingot\testing\crud\sequence::create( $params );
+				$this->assertTrue( is_numeric( $created[ $g ][ $i ] ) );
+			}
+
+		}
+
+		$params = array(
+			'group_ID' => 2,
+		);
+		$items = \ingot\testing\crud\sequence::get_items( $params );
+
+		$ids_should_be = array_keys( $created[ 2 ] );
+		$ids = wp_list_pluck( $items, 'ID' );
+		foreach( $created[ 2 ] as $id ) {
+			$this->assertArrayHasKey( $id, array_flip( $ids ) );
+		}
+
+
+	}
+
 	/**
-	 * Test that the option name is correct
+	 * Test that the invalid args make error
 	 *
 	 * @since 0.0.7
 	 *
@@ -525,23 +576,20 @@ class test_sequence_crud extends \WP_UnitTestCase {
 		$created = \ingot\testing\crud\sequence::create( $params );
 		$this->assertInstanceOf( "\WP_Error", $created );
 
+
 		$params = array(
 			'name' => rand(),
-			'test_type' => 'click',
+			'test_type' => 'Iron Maiden',
 			'a_id' => $test_1,
-			'b_id' => $test_2,
 		);
 
 		$created = \ingot\testing\crud\sequence::create( $params );
-		$sequence = \ingot\testing\crud\sequence::read( $created );
-		$sequence[ 'a_win' ] = array( rand() );
-		$updated = $sequence = \ingot\testing\crud\sequence::read( $sequence );
-
-		$this->assertInstanceOf( "\WP_Error", $updated );
-
+		$this->assertInstanceOf( "\WP_Error", $created );
 
 
 	}
+
+
 
 
 }

@@ -31,6 +31,7 @@ abstract class options_crud extends crud {
 		if( ! empty( $params[ 'ids' ] ) ) {
 			return self::select_by_ids( $params[ 'ids' ] );
 		}
+
 		$limit = $page = 1;
 		$args = wp_parse_args(
 			$params,
@@ -135,6 +136,10 @@ abstract class options_crud extends crud {
 	 */
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 		$data = self::prepare_data( $data );
+		if( is_wp_error( $data ) ) {
+			return $data;
+
+		}
 
 		$can = self::can( $id, $bypass_cap );
 
@@ -153,7 +158,7 @@ abstract class options_crud extends crud {
 			$saved = update_option( $key, $data  );
 			if ( $saved ) {
 				do_action( 'ingot_config_saved', $id, $data, static::what() );
-				return $id;
+				return (int) $id;
 
 			}else{
 				return new \WP_Error( 'ingot-can-not-save-config' );
@@ -201,8 +206,12 @@ abstract class options_crud extends crud {
 		$what = static::what();
 		$like_pattern = "'ingot_%s_%d'";
 
-		foreach( $ids as $id ) {
-			$in[] = sprintf( $like_pattern, $what, $id );
+		if ( is_array( $ids ) ) {
+			foreach ( $ids as $id ) {
+				$in[] = sprintf( $like_pattern, $what, $id );
+			}
+		}else{
+			return new \WP_Error( __METHOD__ );
 		}
 
 		$in = implode( ',', $in );
@@ -263,8 +272,12 @@ abstract class options_crud extends crud {
 	 * @return string
 	 */
 	private static function key_name( $id ) {
-		$what = static::what();
-		return "ingot_{$what}_{$id}";
+		if( is_numeric( $id ) ) {
+			$what = static::what();
+			return "ingot_{$what}_{$id}";
+
+		}
+
 
 	}
 

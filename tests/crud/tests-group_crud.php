@@ -30,6 +30,7 @@ class test_group_crud extends \WP_UnitTestCase {
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
+		$this->assertTrue( is_int( $created ) );
 		$this->assertFalse(  is_wp_error( $created ) );
 		$this->assertTrue( is_numeric( $created ) );
 
@@ -47,12 +48,15 @@ class test_group_crud extends \WP_UnitTestCase {
 	public function testRead() {
 		$params = array(
 			'type' => 'click',
+			'click_type' => 'link',
 			'name' => 'hats',
 			'selector' => '.hats',
 			'link' => 'https://hats.com'
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
+
+		$this->assertTrue( is_int( $created ) );
 		$group = \ingot\testing\crud\group::read( $created );
 		$this->assertTrue( is_array( $group ) );
 
@@ -92,8 +96,10 @@ class test_group_crud extends \WP_UnitTestCase {
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
+
 		$group = \ingot\testing\crud\group::read( $created );
 
+		$this->assertEquals( 'link', $group[ 'click_type' ] );
 		foreach( \ingot\testing\crud\group::get_required_fields() as $field ) {
 			$this->assertArrayHasKey( $field, $group );
 		}

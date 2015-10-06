@@ -36,8 +36,15 @@ class table_crud extends crud {
 		do_action( 'ingot_crud_pre_read', $id, static::what() );
 
 		global $wpdb;
-		$sql = $wpdb->prepare( 'SELECT * FROM `%s` WHERE `ID` = %d', self::get_table_name(), $id );
+
+		$table = static::get_table_name();
+		$sql = $wpdb->prepare( "SELECT * FROM $table WHERE `ID` = %d", $id );
 		$results = $wpdb->get_results( $sql, ARRAY_A );
+		if( is_array( $results ) && ! empty( $results ) && isset( $results[0])) {
+			$results = $results[0];
+		}else{
+			$results = false;
+		}
 
 		/**
 		 * Runs before an object is returned from DB
@@ -73,6 +80,10 @@ class table_crud extends crud {
 		 */
 		do_action( 'ingot_crud_pre_delete', $id, static::what() );
 
+		if( 'all' == $id ) {
+			return self::delete_all();
+		}
+
 		global $wpdb;
 		$deleted = $wpdb->delete( self::get_table_name(), array( 'ID' => $id ), array( '%d' ) );
 		if( is_numeric( $deleted ) ){
@@ -95,9 +106,7 @@ class table_crud extends crud {
 	protected static function delete_all() {
 		global $wpdb;
 		$table = static::get_table_name();
-		$deleted = $wpdb->query(
-			$wpdb->prepare("Truncate table $table" )
-		);
+		$deleted = $wpdb->query( "Truncate table $table" );
 
 		if( is_numeric( $deleted ) ){
 			return true;
@@ -139,20 +148,21 @@ class table_crud extends crud {
 			return $data;
 		}
 
+		$table_name = static::get_table_name();
 		if( self::can( $id, $bypass_cap ) ) {
+			unset( $data[ 'ID' ] );
 			global $wpdb;
 			if( $id ) {
-				$wpdb->replace(
-					static::get_table_name(),
-					$data
+				$wpdb->update(
+					$table_name,
+					$data,
+					array( 'ID' => $id )
 
 				);
 			}else{
-				unset( $data[ 'ID' ] );
 				$wpdb->insert(
-					static::get_table_name(),
+					$table_name,
 					$data
-
 				);
 
 			}

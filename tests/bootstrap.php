@@ -24,4 +24,7 @@ global $current_user;
 $current_user = new WP_User(1);
 $current_user->set_role('administrator');
 
+add_filter( 'ingot_user_can', '__return_true' );
+add_filter( 'ingot_force_update_table', '__return_true' );
+
 // Include helpers
