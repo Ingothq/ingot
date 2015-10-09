@@ -26,7 +26,7 @@ class test_group_crud extends \WP_UnitTestCase {
 	 */
 	public function testCreateMinimal() {
 		$params = array(
-			'type' => 'click'
+			'type' => 'click',
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
@@ -51,7 +51,8 @@ class test_group_crud extends \WP_UnitTestCase {
 			'click_type' => 'link',
 			'name' => 'hats',
 			'selector' => '.hats',
-			'link' => 'https://hats.com'
+			'link' => 'https://hats.com',
+			'current_sequence' => 42
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
@@ -64,7 +65,8 @@ class test_group_crud extends \WP_UnitTestCase {
 			'type' => 'click',
 			'name' => 'bats',
 			'selector' => '.bats',
-			'link' => 'https://bats.com'
+			'link' => 'https://bats.com',
+
 		);
 
 		$created_2 = \ingot\testing\crud\group::create( $params );

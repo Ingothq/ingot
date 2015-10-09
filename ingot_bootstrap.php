@@ -84,7 +84,7 @@ class ingot_bootstrap {
 
 		$table_name = \ingot\testing\crud\sequence::get_table_name();
 
-		if( apply_filters( 'ingot_force_update_table', $drop_first = true ) ) {
+		if( apply_filters( 'ingot_force_update_table', $drop_first ) ) {
 			$wpdb->query( "DROP TABLE $table_name" );
 
 		}elseif( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {

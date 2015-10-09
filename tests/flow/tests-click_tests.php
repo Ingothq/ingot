@@ -60,14 +60,19 @@ class test_click_tests extends \WP_UnitTestCase {
 		$group_id = \ingot\testing\crud\group::create( $params );
 		$group = \ingot\testing\crud\group::read( $group_id );
 
+		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
+		$this->assertFalse( empty( $sequence ) );
+		$this->assertTrue( is_array( $sequence ) );
 		$this->assertFalse( empty( $group[ 'sequences' ] )  );
 		$this->assertArrayHasKey( 0, $group[ 'sequences' ] );
 		$this->assertTrue( is_numeric( $group[ 'sequences' ][0] )   );
 		$this->assertFalse( empty( $group[ 'order' ] )  );
+
+		$this->assertEquals( $group[ 'current_sequence' ], $group[ 'sequences' ][0] );
 		$this->assertEquals( $group[ 'order' ][0], $test_1 );
 		$this->assertEquals( $group[ 'order' ][1], $test_2 );
 		$this->assertEquals( $group[ 'order' ][2], $test_3 );
-		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
+
 		$this->assertTrue( is_array( $sequence ) );
 		$this->assertEquals( $sequence[ 'a_id' ], $test_1);
 		$this->assertEquals( $sequence[ 'b_id' ], $test_2 );
@@ -331,10 +336,13 @@ class test_click_tests extends \WP_UnitTestCase {
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$this->assertArrayHasKey( 1, $group[ 'sequences'] );
 		$this->assertEquals( $new_sequence_id, $group[ 'sequences' ][1] );
-		$sequence = \ingot\testing\crud\sequence::read( $new_sequence_id );
-		$this->assertFalse( empty( $sequence ) );
-		$this->assertEquals( $sequence[ 'a_id' ], $test_1 );
-		$this->assertEquals( $sequence[ 'b_id' ], $test_3 );
+
+		$new_sequence = \ingot\testing\crud\sequence::read( $new_sequence_id );
+		$old_sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
+		$this->assertFalse( empty( $new_sequence ) );
+		$this->assertEquals( $new_sequence[ 'a_id' ], $test_1 );
+		$this->assertEquals( $new_sequence[ 'b_id' ], $test_3 );
+		$this->assertEquals( 1, $old_sequence[ 'completed' ] );
 
 
 	}
@@ -346,6 +354,57 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @covers ingot\testing\tests\click\click::make_next_sequence
 	 */
+	public function testMakeNextInContext() {
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_1 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_2 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_3 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'type' => 'click',
+			'selector' => '.hats',
+			'link' => 'https://hats.com',
+			'order' => array( $test_1, $test_2, $test_3 ),
+			'threshold' => rand( 15, 27 )
+		);
+		$group_id = \ingot\testing\crud\group::create( $params );
+		$group = \ingot\testing\crud\group::read( $group_id );
+		$sequence_id = $group[ 'sequences' ][0];
+		$sequence = \ingot\testing\crud\sequence::read( $sequence_id );
+
+		for( $i = 0; $i <= 37; $i++ ){
+
+			\ingot\testing\tests\click\click::increase_victory( $test_2, $sequence_id );
+			$sequence = \ingot\testing\crud\sequence::read( $sequence_id );
+			$this->assertEquals( $i + 1,  $sequence[ 'b_win' ] );
+			if ( $i + 1 < $group[ 'threshold' ] ) {
+				$this->assertEquals( 0, (int) $sequence['completed'] );
+			}else{
+				$this->assertEquals( 1, (int) $sequence[ 'completed' ] );
+			}
+		}
+
+
+		$group = \ingot\testing\crud\group::read( $group_id );
+		$new_sequence_id = $group[ 'current_sequence'];
+		$new_sequence = \ingot\testing\crud\sequence::read( $new_sequence_id );
+		$this->assertEquals( (int) $new_sequence[ 'a_id' ], (int) $test_2 );
+		$this->assertEquals( (int) $new_sequence[ 'a_id' ], (int) $test_2 );
+
+	}
 
 
 
