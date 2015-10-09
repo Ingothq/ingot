@@ -13,6 +13,7 @@ namespace ingot\testing\tests\click;
 
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
+use ingot\testing\utility\helpers;
 
 class click {
 
@@ -56,13 +57,23 @@ class click {
 	public static function increase_victory( $test_id, $sequence_id ) {
 		$sequence = sequence::read( $sequence_id );
 		$is_a = self::is_a( $test_id, $sequence );
+
 		if( true == $is_a ) {
-			$sequence['a_win'] = $sequence['a_win'] + 1;
+			$sequence[ 'a_win' ] = $sequence['a_win'] + 1;
+			$winner = $sequence[ 'a_id' ];
+			$total_win = $sequence[ 'a_win' ];
 		}elseif( ! is_wp_error( $is_a ) ) {
-				$sequence[ 'b_win' ] = $sequence[ 'b_win' ] + 1;
+			$sequence[ 'b_win' ] = $sequence[ 'b_win' ] + 1;
+			$total_win = $sequence[ 'b_win' ];
+			$winner = $sequence[ 'b_id' ];
 		}else{
 			return;
 
+		}
+		$group = group::read(  $sequence[ 'group_ID' ] );
+		$threshold = helpers::v( 'threshold', $group, 20 );
+		if( $total_win >= $threshold ) {
+			self::make_next_sequence( $sequence[ 'group_ID' ], $winner );
 		}
 
 		$updated = sequence::update( $sequence, $sequence_id, true );
@@ -155,7 +166,8 @@ class click {
 			);
 			$sequence = sequence::create( $sequence_args );
 			if( $sequence ) {
-				$group[ 'sequences' ][] = $sequence;
+				$group[ 'sequences' ] = array( $sequence );
+				$group[ 'current_sequence' ] = $sequence;
 			}
 
 			return group::update( $group, $group_id );
@@ -167,13 +179,14 @@ class click {
 	public static function make_next_sequence( $group_id, $last_winner_id ) {
 		$group = group::read( $group_id );
 		if ( ! empty( $group ) ) {
-			$current_sequence = sequence::get_items( array( 'current' => true, 'ids' => $group[ 'order' ] ) );
+			$current_sequence = sequence::read( $group[ 'current_sequence' ] );
 			$a = $current_sequence[ 'a_id' ];
 			$b = $current_sequence[ 'b_id' ];
 			if( is_wp_error( self::is_a( $a, $current_sequence ) ) || is_wp_error( self::is_a( $b, $current_sequence ) ) ){
 				return new \WP_Error( 'invalid-victor' );
 			}
-
+			$current_sequence[ 'completed' ] = 1;
+			sequence::update( $current_sequence, $current_sequence[ 'ID' ] );
 			$a_key = array_search( $a, $group[ 'order'] );
 			$b_key = array_search( $b, $group[ 'order' ] );
 			if( $a_key > $b_key ) {
@@ -182,25 +195,24 @@ class click {
 				$next_key = $b_key + 2;
 			}
 
+			$next_key--;
+
 			if( isset( $group[ 'order' ][ $next_key ] ) ) {
 				$data = array(
 					'a_id' => $last_winner_id,
 					'b_id' => $group[ 'order' ][ $next_key ],
-					'type' => $group[ 'type' ]
+					'test_type' => $group[ 'type' ]
 				);
 
 				$new_sequence = sequence::create( $data );
 				$group[ 'sequences' ][] = $new_sequence;
-				group::update( $group );
+				$group[ 'current_sequence' ] = $new_sequence;
+				group::update( $group, $group_id );
 
 				return $new_sequence;
 			}
 
 		}
-
-	}
-
-	public static function update_sequences( $group_id ){
 
 	}
 

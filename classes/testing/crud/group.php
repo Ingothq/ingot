@@ -41,7 +41,7 @@ class group extends options_crud {
 	 */
 	protected static function required() {
 		$required = array(
-			'type',
+			'type'
 		);
 
 		return $required;
@@ -68,6 +68,7 @@ class group extends options_crud {
 			'link',
 			'created',
 			'modified',
+			'current_sequence'
 		);
 
 		return $needed;

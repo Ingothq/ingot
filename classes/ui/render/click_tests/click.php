@@ -15,6 +15,7 @@ namespace ingot\ui\render\click_tests;
 use ingot\testing\api\rest\test;
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
+use ingot\testing\utility\helpers;
 
 abstract class click {
 
@@ -74,7 +75,7 @@ abstract class click {
 		if ( $group ) {
 			$this->set_group( $group );
 			if ( ! empty( $this->group ) ) {
-				$this->get_current_sequence();
+				$this->set_sequence();
 				if ( ! empty( $this->sequence ) ) {
 					$this->set_test();
 					if ( ! empty( $this->test ) ) {
@@ -99,8 +100,11 @@ abstract class click {
 	 * @return string
 	 */
 	public function get_html(){
-		\ingot\testing\tests\click\click::increase_total( $this->test[ 'ID' ], $this->sequence[ 'ID' ] );
-		return $this->html;
+		if ( is_array( $this->test ) ) {
+			\ingot\testing\tests\click\click::increase_total( $this->test['ID'], $this->sequence['ID'] );
+
+			return $this->html;
+		}
 
 	}
 
@@ -135,18 +139,34 @@ abstract class click {
 	/**
 	 * Set the sequence property of this class
 	 *
+	 * @since 0.0.7
+	 *
+	 * @access private
+	 */
+	private function set_sequence() {
+		$_sequence = $this->get_current_sequence();
+		if( $_sequence ) {
+			$this->sequence = $_sequence;
+		}
+	}
+
+	/**
+	 * Get current sequence for this group and make sure its current
+	 *
 	 * @since 0.0.5
 	 *
 	 * @access private
 	 */
 	private function get_current_sequence(){
-		$sequences = $this->group[ 'sequences' ];
-		$args = array(
-			'ids' => $sequences,
-			'current' => true
-		);
+		$_sequence = helpers::v( 'current_sequence', $this->group, null );
+		if( $_sequence ) {
+			$_sequence = sequence::read( $_sequence );
+			if( $_sequence && 0 == $_sequence[ 'completed' ] ) {
+				return $_sequence;
+			}
 
-		$this->sequence = sequence::get_items( $args );
+		}
+
 	}
 
 	protected function set_group( $group ) {
@@ -156,6 +176,7 @@ abstract class click {
 			$this->group = group::read( $group );
 		}
 	}
+
 	/**
 	 * Set the test property of this class
 	 *

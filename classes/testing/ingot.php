@@ -201,7 +201,9 @@ class ingot {
 	 * @param string $what Item type
 	 */
 	public  function update_hook( $id, $what){
+		if( 'sequence' == $what ) {
 
+		}
 	}
 
 	/**

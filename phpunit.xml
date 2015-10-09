@@ -10,7 +10,7 @@
 		<testsuite>
 			<directory prefix="tests-" suffix=".php">./tests/</directory>
 			<directory prefix="tests-" suffix=".php">./tests/crud</directory>
-			<directory prefix="tests-" suffix=".php">./tests/click</directory>
+			<directory prefix="tests-" suffix=".php">./tests/flow</directory>
 			<directory prefix="tests-" suffix=".php">./tests/price</directory>
 			<directory prefix="tests-" suffix=".php">./tests/api</directory>
 		</testsuite>

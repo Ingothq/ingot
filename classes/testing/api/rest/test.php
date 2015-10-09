@@ -242,7 +242,9 @@ class test extends route {
 	 * @return \WP_Error|\WP_REST_Request
 	 */
 	public function register_click( $request ){
-		$increased = ingot::increase_total( $request->get_param( 'id' ), $request->get_param( 'sequence' ) );
+		$id = $request->get_param( 'id' );
+		$sequence = $request->get_param( 'sequence' );
+		$increased = ingot::increase_victory( $id, $sequence  );
 		if( is_wp_error( $increased ) ) {
 			return rest_ensure_response( $increased, 500 );
 		}else{

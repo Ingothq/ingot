@@ -167,7 +167,9 @@ class table_crud extends crud {
 
 			}
 
-			return $wpdb->insert_id;
+			$id =  $wpdb->insert_id;
+
+			return $id;
 
 		}else{
 			return false;

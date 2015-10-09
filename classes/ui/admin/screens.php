@@ -195,6 +195,14 @@ class screens {
 		ob_start();
 		$back_link = $this->admin_page_link();
 
+		if( is_null( $group ) && isset( $_GET[ 'group' ] ) ) {
+			$group = (int)  $_GET[ 'group' ];
+		}
+
+		if( is_int( $group ) ) {
+			$group = group::read( $group );
+		}
+
 		$group = wp_parse_args(
 			$group,
 			array(
@@ -268,6 +276,7 @@ class screens {
 		?>
 		<div class="ingot-config-group" id="group-{{ID}}">
 			<p>{{name}}</p>
+			<pre>[ingot id="{{ID}}"]</pre>
 			<div class="button-pair">
 				<span>
 					<a href="{{link}}" class="group-edit button button-secondary" data-group-id="{{ID}}">

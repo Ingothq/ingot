@@ -293,6 +293,10 @@ abstract class crud {
 				if ( ! is_array( $data[ $key ] ) ) {
 					$data[ $key ] = array();
 				}
+			}elseif( 'completed' == $key ) {
+				if(  ! in_array( $data[ 'completed' ], array( false, true, 1, 0, 'false', 'true', 'FALSE', 'TRUE', '1', '0' ) ) ) {
+					$data[ 'completed' ] = 0;
+				}
 			}elseif( is_int( $data[ $key ] ) || is_string( $data[ $key ] ) ){
 				continue;
 			} else  {

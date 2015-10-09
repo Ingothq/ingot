@@ -67,6 +67,7 @@ class util {
 	 */
 	public static function click_nonce( $test_id, $sequence_id, $group_id  ){
 		$action = self::click_nonce_action( $test_id, $sequence_id, $group_id );
+		return $action;
 		return wp_create_nonce( $action );
 	}
 
@@ -83,9 +84,13 @@ class util {
 	 * @return bool
 	 */
 	public static function verify_click_nonce( $nonce, $test_id, $sequence_id, $group_id ){
-		$action = $action = self::click_nonce_action( $test_id, $sequence_id, $group_id );
-		$valid = wp_verify_nonce( $nonce, $action );
-		return (bool) $valid;
+		$user = wp_get_current_user();
+		$uid = (int) $user->ID;
+		$action = self::click_nonce_action( $test_id, $sequence_id, $group_id );
+		$shouldbe = self::click_nonce( $test_id, $sequence_id, $group_id );
+		if( hash_equals($action,  $shouldbe ) ) {
+			return true;
+		}
 	}
 
 	/**
