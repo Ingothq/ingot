@@ -151,6 +151,7 @@ class table_crud extends crud {
 		$table_name = static::get_table_name();
 		if( self::can( $id, $bypass_cap ) ) {
 			unset( $data[ 'ID' ] );
+			$format = self::get_fields_with_format();
 			global $wpdb;
 			if( $id ) {
 				$wpdb->update(
@@ -176,6 +177,31 @@ class table_crud extends crud {
 
 		}
 
+
+	}
+
+	/**
+	 * Get fields with sprintf pattern
+	 *
+	 * @todo make this less of a hack that's going to break shit when other objects become tables
+	 *
+	 * @since 0.0.7
+	 *
+	 * @return array
+	 */
+	protected static function get_fields_with_format() {
+		$_fields = self::get_all_fields();
+		$fields = array();
+		foreach( $_fields as $field ) {
+			if( in_array( $field, array( 'created', 'modified', 'test_type' ) ) ) {
+				$fields[ $field ] = '%s';
+			}else{
+				$fields[ $field ] = '%d';
+			}
+
+		}
+
+		return $fields;
 
 	}
 

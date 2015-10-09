@@ -251,7 +251,8 @@ class test_click_tests extends \WP_UnitTestCase {
 			'type' => 'click',
 			'selector' => '.hats',
 			'link' => 'https://hats.com',
-			'order' => array( $test_1, $test_2 )
+			'order' => array( $test_1, $test_2 ),
+			'threshold' => 500
 		);
 
 		$group_id = \ingot\testing\crud\group::create( $params );
@@ -259,20 +260,22 @@ class test_click_tests extends \WP_UnitTestCase {
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
 
-		\ingot\testing\tests\click\click::increase_victory( $test_1, $sequence[ 'ID' ] );
+		\ingot\testing\tests\click\click::increase_victory( $test_1, $group[ 'current_sequence' ] );
 
-		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
+		$sequence = \ingot\testing\crud\sequence::read( $group[ 'current_sequence' ] );
+		$this->assertEquals( $sequence[ 'a_id' ], $test_1);
+		$this->assertEquals( $sequence[ 'b_id' ], $test_2 );
 		$this->assertEquals( 1, $sequence[ 'a_win' ] );
 		$this->assertEquals( 0, $sequence[ 'b_win' ] );
 
-		\ingot\testing\tests\click\click::increase_victory( $test_2, $sequence[ 'ID' ] );
+		\ingot\testing\tests\click\click::increase_victory( $test_2, $group[ 'current_sequence' ] );
 
-		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
+		$sequence = \ingot\testing\crud\sequence::read( $group[ 'current_sequence' ] );
 		$this->assertEquals( 1, $sequence[ 'a_win' ] );
 		$this->assertEquals( 1, $sequence[ 'b_win' ] );
 
-		\ingot\testing\tests\click\click::increase_victory( $test_2, $sequence[ 'ID' ] );
-		\ingot\testing\tests\click\click::increase_victory( $test_2, $sequence[ 'ID' ] );
+		\ingot\testing\tests\click\click::increase_victory( $test_2, $group[ 'current_sequence' ] );
+		\ingot\testing\tests\click\click::increase_victory( $test_2, $group[ 'current_sequence' ] );
 
 		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
 		$this->assertEquals( 1, $sequence[ 'a_win' ] );
@@ -280,11 +283,11 @@ class test_click_tests extends \WP_UnitTestCase {
 
 		$times = rand(0, 11 );
 		for ( $i=1; $i <= $times; $i++ ) {
-			\ingot\testing\tests\click\click::increase_victory( $test_1, $sequence['ID'] );
+			\ingot\testing\tests\click\click::increase_victory( $test_1, $group[ 'current_sequence' ] );
 		}
 
 		$times++;
-		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
+		$sequence = \ingot\testing\crud\sequence::read( $group[ 'current_sequence' ] );
 		$this->assertEquals( $times, $sequence[ 'a_win' ] );
 		$this->assertEquals( 3, $sequence[ 'b_win' ] );
 
@@ -374,6 +377,12 @@ class test_click_tests extends \WP_UnitTestCase {
 		$test_3 = \ingot\testing\crud\test::create( $params );
 
 		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_4 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
 			'type' => 'click',
 			'selector' => '.hats',
 			'link' => 'https://hats.com',
@@ -389,20 +398,25 @@ class test_click_tests extends \WP_UnitTestCase {
 
 			\ingot\testing\tests\click\click::increase_victory( $test_2, $sequence_id );
 			$sequence = \ingot\testing\crud\sequence::read( $sequence_id );
-			$this->assertEquals( $i + 1,  $sequence[ 'b_win' ] );
+
 			if ( $i + 1 < $group[ 'threshold' ] ) {
+				$this->assertEquals( $i + 1,  $sequence[ 'b_win' ] );
 				$this->assertEquals( 0, (int) $sequence['completed'] );
 			}else{
 				$this->assertEquals( 1, (int) $sequence[ 'completed' ] );
+				break;
 			}
 		}
 
 
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$new_sequence_id = $group[ 'current_sequence'];
+		$this->assertNotEquals( (int) $sequence_id, $group[ 'current_sequence'] );
+
 		$new_sequence = \ingot\testing\crud\sequence::read( $new_sequence_id );
 		$this->assertEquals( (int) $new_sequence[ 'a_id' ], (int) $test_2 );
 		$this->assertEquals( (int) $new_sequence[ 'a_id' ], (int) $test_2 );
+		$this->assertEquals( (int) $new_sequence[ 'b_id' ], (int) $test_3 );
 
 	}
 

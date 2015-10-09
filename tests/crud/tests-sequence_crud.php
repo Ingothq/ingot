@@ -589,6 +589,42 @@ class test_sequence_crud extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test complete method
+	 *
+	 * @since 0.0.7
+	 *
+	 * @covers \ingot\testing\crud\sequence::complete()
+	 */
+	public function testComplete() {
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_1 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_2 = \ingot\testing\crud\test::create( $params );
+		$params = array(
+			'test_type' => 'click',
+			'a_id'      => $test_1,
+			'b_id'      => $test_2,
+			'group_ID'  => 404
+		);
+
+
+		$created = \ingot\testing\crud\sequence::create( $params );
+		$this->assertTrue( is_numeric( $created ) );
+		$completed = \ingot\testing\crud\sequence::complete( $created );
+		$sequence = \ingot\testing\crud\sequence::read( $created );
+		$this->assertFalse( is_wp_error( $sequence ) );
+		$this->assertEquals( 1, $sequence[ 'completed' ] );
+
+	}
+
 
 
 

@@ -87,6 +87,35 @@ class sequence extends table_crud {
 
 	}
 
+	/**
+	 * Mark a sequence as completed
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param int $id Sequence ID.
+	 *
+	 * @return bool True if updated. False if not
+	 */
+	public static function complete( $id ) {
+		global $wpdb;
+		$table_name = static::get_table_name();
+		$wpdb->update(
+			$table_name,
+			array( 'completed' => 1 ),
+			array( 'ID' => $id )
+
+		);
+
+		if( $id == $wpdb->insert_id ) {
+			return true;
+		}else{
+			return false;
+		}
+
+
+
+	}
+
 
 
 	/**
@@ -133,5 +162,7 @@ class sequence extends table_crud {
 
 		return $needed;
 	}
+
+
 
 }

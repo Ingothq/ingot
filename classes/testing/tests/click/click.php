@@ -70,13 +70,15 @@ class click {
 			return;
 
 		}
+
 		$group = group::read(  $sequence[ 'group_ID' ] );
 		$threshold = helpers::v( 'threshold', $group, 20 );
 		if( $total_win >= $threshold ) {
-			self::make_next_sequence( $sequence[ 'group_ID' ], $winner );
+			$updated = self::make_next_sequence( $sequence[ 'group_ID' ], $winner );
+		}else{
+			$updated = sequence::update( $sequence, $sequence_id, true );
 		}
 
-		$updated = sequence::update( $sequence, $sequence_id, true );
 		return $updated;
 
 	}
@@ -179,37 +181,42 @@ class click {
 	public static function make_next_sequence( $group_id, $last_winner_id ) {
 		$group = group::read( $group_id );
 		if ( ! empty( $group ) ) {
-			$current_sequence = sequence::read( $group[ 'current_sequence' ] );
+			$current_sequence_id = $group[ 'current_sequence' ];
+			$current_sequence = sequence::read( $current_sequence_id);
 			$a = $current_sequence[ 'a_id' ];
 			$b = $current_sequence[ 'b_id' ];
 			if( is_wp_error( self::is_a( $a, $current_sequence ) ) || is_wp_error( self::is_a( $b, $current_sequence ) ) ){
 				return new \WP_Error( 'invalid-victor' );
 			}
-			$current_sequence[ 'completed' ] = 1;
-			sequence::update( $current_sequence, $current_sequence[ 'ID' ] );
+
+			$completed = sequence::complete( $current_sequence_id );
 			$a_key = array_search( $a, $group[ 'order'] );
 			$b_key = array_search( $b, $group[ 'order' ] );
 			if( $a_key > $b_key ) {
-				$next_key = $a_key + 1;
+				$next_key = $a_key;
 			}else{
-				$next_key = $b_key + 2;
+				$next_key = $b_key + 1;
 			}
 
-			$next_key--;
 
 			if( isset( $group[ 'order' ][ $next_key ] ) ) {
 				$data = array(
 					'a_id' => $last_winner_id,
 					'b_id' => $group[ 'order' ][ $next_key ],
-					'test_type' => $group[ 'type' ]
+					'test_type' => $group[ 'type' ],
+					'initial' => $group[ 'initial' ],
+					'threshold' => $group[ 'threshold' ],
+					'completed' => 0,
+					'group_ID' => $group_id
 				);
+
 
 				$new_sequence = sequence::create( $data );
 				$group[ 'sequences' ][] = $new_sequence;
 				$group[ 'current_sequence' ] = $new_sequence;
-				group::update( $group, $group_id );
-
+				$updated = group::update( $group, $group_id );
 				return $new_sequence;
+
 			}
 
 		}
