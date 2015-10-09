@@ -15,6 +15,7 @@ namespace ingot\ui\render\click_tests;
 use ingot\testing\api\rest\test;
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
+use ingot\testing\tests\chance;
 use ingot\testing\utility\helpers;
 
 abstract class click {
@@ -205,7 +206,10 @@ abstract class click {
 	 * @access protected
 	 */
 	protected function calculate_chance(){
-		return 50;
+		$chance = new chance( $this->sequence );
+
+		return $chance->get_chance();
+
 	}
 
 	protected function get_group() {
