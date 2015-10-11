@@ -82,4 +82,75 @@ function ingot_click_html_link( $type, $group ) {
 
 }
 
+/**
+ * Get User IP
+ *
+ * Returns the IP address of the current visitor
+ *
+ * @since 0.0.7
+ * @return string $ip User's IP address
+ */
+function ingot_get_ip() {
+
+	$ip = '127.0.0.1';
+
+	if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+		//check ip from share internet
+		$ip = $_SERVER['HTTP_CLIENT_IP'];
+	} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+		//to check ip is pass from proxy
+		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} elseif ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+
+	return apply_filters( 'ingot_get_ip', $ip );
+
+}
+
+/**
+ * Get user agent safely
+ *
+ * @since 0.0.7
+ *
+ * @return string
+ */
+function ingot_get_user_agent() {
+	if( isset( $_SERVER ) && isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ){
+		return wp_kses( $_SERVER[ 'HTTP_USER_AGENT' ] );
+
+	}else{
+		return '';
+
+	}
+
+}
+
+/**
+ * Get browser details
+ *
+ * @since 0.0.7
+ *
+ * @param bool|false $array Optional. If true return all details. If false, the default, only broswer name is returned.
+ * @param null|string $user_agent User agent details. Optional. If null, the default ingot_get_user_agent() is used.
+ *
+ * @return mixed
+ */
+function ingot_get_browser( $array = false, $user_agent = null ) {
+	if( is_null( $user_agent ) ) {
+		$user_agent = ingot_get_user_agent();
+	}
+
+	$browser = get_browser( $user_agent );
+	if( is_array( $browser ) ) {
+		if( $array ) {
+			return $browser;
+
+		}else{
+			return $browser[ 'browser' ];
+
+		}
+	}
+}
+
 

@@ -380,7 +380,17 @@ abstract class crud {
 					$data[ $key ] = array();
 				} elseif( 'click_type' == $key ){
 					$data[ $key ] = 'link';
-				}else{
+				}elseif( 'IP' == $key ){
+					$data[ $key ] = ingot_get_ip();
+				}elseif( 'user_agent' == $key ) {
+					$data[ $key ] = ingot_get_user_agent();
+				}elseif( 'browser' == $key ){
+					$data[ $key ] = ingot_get_browser( false );
+				}elseif( 'time' == $key ) {
+					$data[ $key ] =  date("Y-m-d H:i:s", $data[ 'created' ] );
+				}elseif( 'meta' == $data ) {
+					$data[ $key ] = array();
+				} else{
 					$data[ $key ] = 0;
 				}
 			}
@@ -402,6 +412,13 @@ abstract class crud {
 		if( 'sequence' == static::what() ) {
 			$data[ 'created' ] = date("Y-m-d H:i:s", $data[ 'created' ] );
 			$data[ 'modified' ] = date("Y-m-d H:i:s", $data[ 'modified' ] );
+		}
+
+		if( 'meta' == static::what() && ! empty( $data[ 'meta' ] ) ) {
+			if( ! is_array( maybe_unserialize( $data[ 'meta' ] ) ) ) {
+				$data[ 'meta' ] = array();
+			}
+			
 		}
 
 		return $data;
@@ -533,6 +550,5 @@ abstract class crud {
 		 */
 		return apply_filters( 'ingot_user_can', $can, $id, static::what() );
 	}
-
 
 }

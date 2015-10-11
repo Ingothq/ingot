@@ -144,6 +144,7 @@ class table_crud extends crud {
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 
 		$data = self::prepare_data( $data );
+		$data = static::pre_write( $data );
 		if( is_wp_error( $data ) ) {
 			return $data;
 		}
@@ -151,7 +152,7 @@ class table_crud extends crud {
 		$table_name = static::get_table_name();
 		if( self::can( $id, $bypass_cap ) ) {
 			unset( $data[ 'ID' ] );
-			$format = self::get_fields_with_format();
+
 			global $wpdb;
 			if( $id ) {
 				$wpdb->update(
@@ -203,6 +204,21 @@ class table_crud extends crud {
 
 		return $fields;
 
+	}
+
+	/**
+	 * Prewrite extra validation/casting/etc
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @param array $data
+	 *
+	 * @return array|\WP_Error
+	 */
+	protected function pre_write( $data ){
+		return $data;
 	}
 
 
