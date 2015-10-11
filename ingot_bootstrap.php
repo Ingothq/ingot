@@ -45,6 +45,7 @@ class ingot_bootstrap {
 
 			include_once( $autoloader );
 			self::maybe_add_sequence_table();
+			self::maybe_add_tracking_table();
 			new ingot\testing\ingot();
 			new ingot\ui\make();
 			self::maybe_load_api();
@@ -77,14 +78,20 @@ class ingot_bootstrap {
 	 * If needed, add the custom table for sequences
 	 *
 	 * @since 0.0.7
+	 *
+	 * @access protected
 	 */
 	protected static function maybe_add_sequence_table( $drop_first = false ) {
 		global $wpdb;
 
-
 		$table_name = \ingot\testing\crud\sequence::get_table_name();
 
-		if( apply_filters( 'ingot_force_update_table', $drop_first ) ) {
+		/**
+		 * Force drop the table
+		 *
+		 * @since 0.0.7
+		 */
+		if( apply_filters( 'ingot_force_update_table', $drop_first, $table_name ) ) {
 			$wpdb->query( "DROP TABLE $table_name" );
 
 		}elseif( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {
@@ -113,6 +120,53 @@ class ingot_bootstrap {
 		) $charset_collate;";
 
 
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
+
+	}
+
+	/**
+	 * If needed, add the custom table for sequences
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @param bool $drop_first Optional. If true, DROP TABLE statemnt is made first. Default is false
+	 */
+	protected static function maybe_add_tracking_table( $drop_first = false ) {
+		global $wpdb;
+
+		//$table_name = \ingot\testing\crud\sequence::get_table_name();
+		$table_name = 'wp_ingot_tracking';
+		/**
+		 * Force drop the table
+		 *
+		 * @since 0.0.7
+		 */
+		if( apply_filters( 'ingot_force_update_table', $drop_first, $table_name ) ) {
+			$wpdb->query( "DROP TABLE $table_name" );
+
+		}elseif( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {
+			return;
+		}
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE $table_name (
+		  ID bigint(9) NOT NULL AUTO_INCREMENT,
+		  group_ID mediumint(9) NOT NULL,
+		  sequence_ID mediumint(9) NOT NULL,
+		  test_ID mediumint(9) NOT NULL,
+		  IP VARCHAR(255) NOT NULL,
+		  UTM VARCHAR(255) NOT NULL,
+		  browser VARCHAR(255) NOT NULL,
+		  meta LONGTEXT NOT NULL,
+		  user_agent LONGTEXT NOT NULL,
+		  time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		  UNIQUE KEY ID (ID)
+		) $charset_collate;";
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
