@@ -52,6 +52,7 @@ class make {
 	 * @since 0.0.6
 	 */
 	public function register_scripts() {
+
 		wp_register_style( 'ingot-click-test', trailingslashit( INGOT_URL ) . 'assets/front-end/css/ingot-click-tests.css' );
 		wp_register_script( 'ingot-click-test', trailingslashit( INGOT_URL ) . 'assets/front-ends/js/ingot-click-tests.js', array( 'jquery' ) );
 		wp_localize_script( 'ingot-click-test', 'INGOT', array(

@@ -25,6 +25,64 @@ abstract class route extends \WP_REST_Controller  {
 	 */
 	private $what;
 
+
+	/**
+	 * Register the routes for the objects of the controller.
+	 *
+	 * @since 0.0.6
+	 */
+	public function register_routes() {
+		$version = '1';
+		$namespace = 'ingot/v' . $version;
+		$base = $this->what;
+		register_rest_route( $namespace, '/' . $base, array(
+			array(
+				'methods'         => \WP_REST_Server::READABLE,
+				'callback'        => array( $this, 'get_items' ),
+				'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				'args'            => $this->args()
+			),
+			array(
+				'methods'         => \WP_REST_Server::CREATABLE,
+				'callback'        => array( $this, 'create_item' ),
+				'permission_callback' => array( $this, 'create_item_permissions_check' ),
+				'args'            => $this->args( false )
+			),
+		) );
+		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
+			array(
+				'methods'         => \WP_REST_Server::READABLE,
+				'callback'        => array( $this, 'get_item' ),
+				'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				'args'            => array(
+					'context'          => array(
+						'default'      => 'view',
+					),
+				),
+			),
+			array(
+				'methods'         => \WP_REST_Server::EDITABLE,
+				'callback'        => array( $this, 'update_item' ),
+				'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				'args'            => $this->args( false )
+			),
+			array(
+				'methods'  => \WP_REST_Server::DELETABLE,
+				'callback' => array( $this, 'delete_item' ),
+				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
+				'args'     => array(
+					'force'    => array(
+						'default'      => false,
+					),
+				),
+			),
+		) );
+		register_rest_route( $namespace, '/' . $base . '/schema', array(
+			'methods'         => \WP_REST_Server::READABLE,
+			'callback'        => array( $this, 'get_public_item_schema' ),
+		) );
+	}
+
 	/**
 	 * Get a collection of items
 	 *
@@ -227,5 +285,20 @@ abstract class route extends \WP_REST_Controller  {
 	public function url( $value, $request, $field ) {
 		$url =  wp_sanitize_redirect( $value );
 		return $url;
+	}
+
+	/**
+	 * Ensure a boolen is a boolean
+	 *
+	 * @since 0.0.7
+	 * @param $value
+	 *
+	 * @return bool
+	 */
+	public function validate_boolean( $value ) {
+		if( in_array( $value, array( true, false, 'TRUE', 'FALSE', 'true', 'false', 1, 0, '1', '0' ) ) ){
+			return true;
+		}
+
 	}
 }

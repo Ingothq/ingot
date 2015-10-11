@@ -12,11 +12,13 @@ jQuery( document ).ready( function ( $ ) {
         }
     });
 
-    $( '#add-group' ).on( 'click', function(e) {
+    $( document ).on( 'click', '#add-group', function(e) {
 
         e.preventDefault();
 
-        $.get( INGOT.test_field, {}, function(r) {
+        $.get( INGOT.test_field, {
+            _nonce: INGOT.admin_ajax_nonce
+        }, function(r) {
             $( '#group-parts' ).prepend( r );
             var id = $( r ).attr( 'id' );
             console.log( id );
@@ -45,12 +47,14 @@ jQuery( document ).ready( function ( $ ) {
     });
 
     $( document ).on( 'click', '.group-stats', function(e) {
+        /**
         swal({
             title: INGOT.beta_error_header,
             text: INGOT.cant_remove,
             type: "error",
             confirmButtonText: INGOT.close
         });
+         */
     });
 
     $( document ).on( 'click', '.group-delete', function(e) {

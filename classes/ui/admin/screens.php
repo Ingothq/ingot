@@ -14,11 +14,13 @@ namespace ingot\ui\admin;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\crud\sequence;
 use ingot\testing\crud\test;
 use ingot\testing\tests\click\click;
 use ingot\testing\utility\helpers;
+use ingot\ui\admin;
 
-class screens {
+class screens extends admin{
 
 	/**
 	 * @since 0.0.6
@@ -27,6 +29,7 @@ class screens {
 		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
 		add_action( 'wp_ajax_test_field_group', array( $this, 'get_test_field_group' ) );
 		add_action( 'wp_ajax_get_click_page', array( $this, 'get_click_page' ) );
+		new \ingot\ui\admin\sequence\viewer();
 	}
 
 	/**
@@ -49,15 +52,22 @@ class screens {
 	 * Render the ingot admin page, by context
 	 */
 	function ingot_page() {
-		if ( $this->check_nonce() ) {
-			if ( isset( $_GET['group' ] ) ) {
-				echo $this->click_group_page();
+
+		if ( isset( $_GET['group' ] ) ) {
+			echo $this->click_group_page();
+		}elseif( isset( $_GET[ 'stats' ], $_GET[ 'group_id' ]  ) ){
+			$viewer = new admin\sequence\viewer( absint( $_GET[ 'group_id' ] ) );
+			$html = $viewer->get_view();
+			if( ! empty( $html ) ) {
+				echo $html;
+
 			}else{
 				echo $this->main_page();
 			}
 		}else{
-			status_header( 500 );
+			echo $this->main_page();
 		}
+
 
 		die();
 
@@ -71,10 +81,9 @@ class screens {
 	 * @since 0.0.6
 	 */
 	public function get_main_page() {
-		if( $this->check_nonce() ) {
-			echo $this->main_page( absint( helpers::v( 'page_number', 'get', 1 ) ) );
 
-		}
+		echo $this->main_page( absint( helpers::v( 'page_number', 'get', 1 ) ) );
+
 
 		die();
 	}
@@ -108,7 +117,7 @@ class screens {
 		$next_button = $this->next_groups_button( $page_number, $limit );
 		$prev_button = $this->previous_groups_button( $page_number, $limit );
 		$new_link = $this->group_edit_link( false );
-		include_once( dirname( __FILE__ ) . '/views/click-test-list.php');
+		include_once( dirname( __FILE__ ) . '/partials/click-test-list.php');
 
 		$html = ob_get_clean();
 		return $html;
@@ -222,7 +231,9 @@ class screens {
 		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ] );
 
 		$click_options = array_combine( array_keys( $this->click_types() ), wp_list_pluck( $this->click_types(), 'label' )  );
-		include_once( dirname( __FILE__ ) . '/views/click-test.php' );
+
+		$stats_link = $this->stats_page_link( $group[ 'ID' ] );
+		include_once( $this->partials_dir_path() . 'click-test.php' );
 		$out = ob_get_clean();
 		echo $out;
 
@@ -258,7 +269,9 @@ class screens {
 	 * Get group inputs via AJAX
 	 */
 	public function get_test_field_group() {
-		echo $this->test_field_group();
+		if ( $this->check_nonce() ) {
+			echo $this->test_field_group();
+		}
 		die();
 	}
 
@@ -284,7 +297,7 @@ class screens {
 					</a>
 				</span>
 				<span>
-					<a href="#" class="group-stats button button-secondary" data-group-id="{{ID}}">
+					<a href="{{stats}}" class="group-stats button button-secondary" data-group-id="{{ID}}">
 						<?php _e( 'Group Stats', 'ingot' ); ?>
 					</a>
 				</span>
@@ -305,6 +318,7 @@ class screens {
 		$link = $this->group_edit_link( (int) $id );
 
 		$html = str_replace( '{{link}}', $link, $html  );
+		$html = str_replace( '{{stats}}', $this->stats_page_link( $id ), $html );
 
 		return $html;
 	}
@@ -388,24 +402,7 @@ class screens {
 		return $out;
 	}
 
-	protected function group_edit_link( $id = false ) {
-		if ( false === $id || 0 == absint( $id ) ){
-			$id = 'new';
-		}
 
-		$page = $this->admin_page_link();
-
-		$link = add_query_arg( 'group', $id, $page );
-		return $link;
-	}
-
-	protected function admin_page_link( $page_number = 1 ) {
-		$args = array(
-			'page' => 'ingot',
-			'page_number' => absint( $page_number )
-		);
-		return add_query_arg( $args, admin_url( 'admin.php' ) );
-	}
 
 	public function scripts() {
 		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery') );
@@ -425,6 +422,7 @@ class screens {
 				'beta_error_header' => __( 'Beta Limitation Encountered', 'ingot' ),
 				'no_stats' => __( 'We do not have a functional stats viewer yet.', 'ingot' ),
 				'deleted' => __( 'Test Group Deleted', 'ingot' ),
+				'admin_ajax_nonce' => wp_create_nonce()
 
 			)
 		);
@@ -432,7 +430,5 @@ class screens {
 
 	}
 
-	private function check_nonce() {
-		return true;
-	}
+
 }

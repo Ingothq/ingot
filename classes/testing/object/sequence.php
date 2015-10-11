@@ -145,6 +145,17 @@ class sequence {
 	private  $group_ID;
 
 	/**
+	 * Sequence ID
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access private
+	 *
+	 * @var int
+	 */
+	private $ID;
+
+	/**
 	 *
 	 * @since 0.0.7
 	 *
@@ -200,8 +211,10 @@ class sequence {
 		if( in_array( $field, $this->allowed_fields() ) ) {
 			if( isset( $this->$field ) ) {
 				return $this->$field;
-			}else{
+			}elseif( method_exists( $this, $field ) ){
 				return call_user_func( array( $this, $field ) );
+			}else{
+				return false;
 			}
 
 		}elseif( 'sequence' == $field ) {
@@ -251,7 +264,10 @@ class sequence {
 	 * @return array
 	 */
 	protected function allowed_fields() {
-		return array_merge( \ingot\testing\crud\sequence::get_all_fields(),$this->extra_fields );
+		$fields =  array_merge( \ingot\testing\crud\sequence::get_all_fields(),$this->extra_fields );
+		$fields[] = 'ID';
+
+		return $fields;
 	}
 
 	private function set_properties( $sequence ) {
@@ -279,7 +295,7 @@ class sequence {
 	 * @return int
 	 */
 	protected function a_win_percentage() {
-		return $this->percentage( $this->a_win / $this->total );
+		return $this->percentage( $this->a_win, $this->total );
 	}
 
 	/**
@@ -292,7 +308,7 @@ class sequence {
 	 * @return int
 	 */
 	protected function b_win_percentage() {
-		return $this->percentage( $this->b_win / $this->total );
+		return $this->percentage( $this->b_win, $this->total );
 	}
 
 	/**
@@ -305,7 +321,7 @@ class sequence {
 	 * @return int
 	 */
 	protected function a_total_percentage() {
-		return $this->percentage( $this->a_total / $this->total );
+		return $this->percentage( $this->a_total, $this->total );
 	}
 
 	/**
@@ -318,10 +334,15 @@ class sequence {
 	 * @return int
 	 */
 	protected function b_total_percentage() {
-		return $this->percentage( $this->b_total / $this->total );
+		return $this->percentage( $this->b_total, $this->total );
 	}
 
-	protected function percentage( $float ){
+	protected function percentage( $one, $two ){
+		if( 0 == $one || 0 == $two ) {
+			return 0;
+		}
+
+		$float = $one/$two;
 		return 100 * $float;
 	}
 

@@ -2,7 +2,7 @@
 /**
  * Admin page for listing click tests
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -22,6 +22,9 @@
 		<a href="<?php echo esc_url( $new_link ); ?>" id="new-group" class="button button-secondary">
 			<?php _e( 'New Group', 'ingot' ); ?>
 		</a>
+		<div id="options-area">
+
+		</div>
 	</section>
 	<div class="clear"></div>
 	<div class="navigation button-pair">

@@ -37,3 +37,15 @@ section#parts {
     margin-right: 4px;
     margin-left: 4px
 }
+
+table, th, td {
+    border: 1px solid #d3d3d3;
+    margin: 8px 8px 12px;
+    border-collapse: collapse;
+    text-align: center;
+    padding: 4px;
+}
+
+table .empty{
+    background-color: #d3d3d3;
+}

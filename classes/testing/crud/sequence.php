@@ -43,6 +43,7 @@ class sequence extends table_crud {
 	 *  $current bool Optional. Used with $ids or $group_id, if true, will return the first non-completed sequence for that group_id or set of ids. Default is false.
 	 *  $limit int Optional. Limit results, default is -1 which gets all.
 	 *  $page int Optional. Page of results, used with $limit. Default is 1
+	 *  $return string Optional. What to return all|IDs Return all fields or just IDs
 	 * }
 	 *
 	 * @return array
@@ -57,8 +58,15 @@ class sequence extends table_crud {
 				'current' => false,
 				'limit' => -1,
 				'page' => 1,
+				'return' => '*'
 			)
 		);
+
+		if( strtolower( 'ids' ) !== $args[ 'return' ] ) {
+			$fields = '*';
+		}else{
+			$fields = '`ID`';
+		}
 
 		if( -1 == $args[ 'limit' ] ) {
 			$args[ 'limit' ] = 999999999;
@@ -67,12 +75,13 @@ class sequence extends table_crud {
 		global $wpdb;
 		$table_name = self::get_table_name();
 		if( helpers::v( 'group_ID', $args, null ) ){
-			$sql = sprintf( 'SELECT * FROM `%s` WHERE `group_ID` = %d', $table_name, helpers::v( 'group_ID', $params )  );
+			$sql = sprintf( 'SELECT %s FROM `%s` WHERE `group_ID` = %d', $fields,
+$table_name, helpers::v( 'group_ID', $params )  );
 		}elseif( ! empty( helpers::v( 'ids', $args, array() ) ) ){
 			$in = implode( ',', helpers::v( 'ids', $params, array() ) );
-			$sql = sprintf( 'SELECT * FROM `%s` WHERE `ID` IN( %s)',$table_name, $in );
+			$sql = sprintf( 'SELECT %s FROM `%s` WHERE `ID` IN( %s)', $fields,$table_name, $in );
 		}else{
-			$sql = sprintf( 'SELECT * FROM `%s`', $table_name );
+			$sql = sprintf( 'SELECT %s FROM `%s`', $fields, $table_name );
 		}
 
 		if( helpers::v( 'current', $args, false ) ) {

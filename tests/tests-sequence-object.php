@@ -69,6 +69,34 @@ class tests_sequence_object extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure that trying to divide by zero returns 0 instead of making an error.
+	 *
+	 * @since 0.0.7
+	 *
+	 * @covers ingot\testing\object\sequence\percentage()
+	 */
+	public function testDivideByZero() {
+		$params = array(
+			'test_type' => 'click',
+			'a_id'      => 1,
+			'b_id'      => 2,
+			'group_ID'  => 404,
+			'a_total'     => 25,
+			'b_total' => 0,
+			'a_win' => 0
+		);
+
+
+		$created = \ingot\testing\crud\sequence::create( $params );
+		$this->assertTrue( is_numeric( $created ) );
+		$sequence = \ingot\testing\crud\sequence::read( $created );
+		$sequence = new ingot\testing\object\sequence( $sequence );
+
+		$this->assertEquals( 0, $sequence->a_win_percentage );
+		$this->assertEquals( 0, $sequence->b_total_percentage );
+	}
+
+	/**
 	 * Test total is calculated properly.
 	 *
 	 * @since 0.0.7
@@ -78,20 +106,9 @@ class tests_sequence_object extends \WP_UnitTestCase {
 	 */
 	public function testTotal() {
 		$params = array(
-			'text' => rand(),
-			'name' => rand(),
-		);
-		$test_1 = \ingot\testing\crud\test::create( $params );
-
-		$params = array(
-			'text' => rand(),
-			'name' => rand(),
-		);
-		$test_2 = \ingot\testing\crud\test::create( $params );
-		$params = array(
 			'test_type' => 'click',
-			'a_id'      => $test_1,
-			'b_id'      => $test_2,
+			'a_id'      => 1,
+			'b_id'      => 2,
 			'group_ID'  => 404,
 			'a_total'     => 25,
 			'b_total' => 25
