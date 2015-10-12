@@ -25,7 +25,8 @@
         }
     ],
     "require": {
-        "wp-api/wp-api" : "*"
+        "wp-api/wp-api" : "*",
+        "calderawp/dismissible-notice": "dev-master"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
