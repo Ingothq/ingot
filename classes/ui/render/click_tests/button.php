@@ -31,7 +31,7 @@ class button extends \ingot\ui\render\click_tests\click {
 		$sequence_id = $this->get_sequence()[ 'ID' ];
 		$click_nonce = util::click_nonce( $test_id, $sequence_id, $group_id );
 		$this->html = sprintf(
-			'<a href="%s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%d" data-ingot-sequence-id="%d" data-ingot-test-nonce="%s">%s</a>',
+			'<button><a href="%s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%d" data-ingot-sequence-id="%d" data-ingot-test-nonce="%s">%s</a></button>',
 			esc_url( $link ),
 			esc_attr( $test_id ),
 			esc_attr( $sequence_id ),
