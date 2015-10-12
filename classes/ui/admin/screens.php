@@ -405,27 +405,38 @@ class screens extends admin{
 
 
 	public function scripts() {
-		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery') );
-		wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css');
-		wp_enqueue_style( 'ingot-click-test-style', INGOT_URL . 'assets/admin/css/click-test-admin.css' );
-		wp_enqueue_script( 'ingot-click-test', INGOT_URL . 'assets/admin/js/click-test-admin.js', array( 'jquery', 'swal'), rand() );
-		wp_localize_script( 'ingot-click-test', 'INGOT', array(
-				'api_url' => rest_url( 'ingot/v1'),
-				'test_field' => esc_url_raw( add_query_arg( 'action', 'test_field_group', admin_url( 'admin-ajax.php' ) ) ),
-				'nonce' => wp_create_nonce( 'wp_rest' ),
-				'test_group_page_title' => __( 'Ingot Test Group: ', 'ingot' ),
-				'success' => __( 'Group Saved', 'ingot' ),
-				'fail' => __( 'Could Not Save', 'ingot' ),
-				'close' => __( 'Close', 'ingot' ),
-				'saved' => __( 'Saved Group: ', 'ingot'),
-				'cant_remove' => __( 'At this time, you can not remove a test from a group.', 'ingot' ),
-				'beta_error_header' => __( 'Beta Limitation Encountered', 'ingot' ),
-				'no_stats' => __( 'We do not have a functional stats viewer yet.', 'ingot' ),
-				'deleted' => __( 'Test Group Deleted', 'ingot' ),
-				'admin_ajax_nonce' => wp_create_nonce()
+		if( isset( $_GET[ 'page' ] ) && 'ingot' == $_GET[ 'page' ] ) {
+			wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery') );
+			wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css');
+			wp_enqueue_style( 'ingot-click-test-style', INGOT_URL . 'assets/admin/css/click-test-admin.css' );
+			wp_enqueue_script( 'ingot-click-test', INGOT_URL . 'assets/admin/js/click-test-admin.js', array( 'jquery', 'swal'), rand() );
+			wp_localize_script( 'ingot-click-test', 'INGOT', array(
+					'api_url' => rest_url( 'ingot/v1'),
+					'test_field' => esc_url_raw( add_query_arg( 'action', 'test_field_group', admin_url( 'admin-ajax.php' ) ) ),
+					'nonce' => wp_create_nonce( 'wp_rest' ),
+					'test_group_page_title' => __( 'Ingot Test Group: ', 'ingot' ),
+					'success' => __( 'Group Saved', 'ingot' ),
+					'fail' => __( 'Could Not Save', 'ingot' ),
+					'close' => __( 'Close', 'ingot' ),
+					'saved' => __( 'Saved Group: ', 'ingot'),
+					'cant_remove' => __( 'At this time, you can not remove a test from a group.', 'ingot' ),
+					'beta_error_header' => __( 'Beta Limitation Encountered', 'ingot' ),
+					'no_stats' => __( 'We do not have a functional stats viewer yet.', 'ingot' ),
+					'deleted' => __( 'Test Group Deleted', 'ingot' ),
+					'admin_ajax_nonce' => wp_create_nonce(),
+					'are_you_sure' => __( 'Are You Sure About That?', 'ingot' ),
+					'delete_confirm' => __( 'Deleting all groups is not reverseable or undoable.', 'ingot' ),
+					'delete' => __( 'Delete', 'ingot' ),
+					'cancel' => __( 'Cancel', 'ignot' ),
+					'deleted' => __( 'Deleted', 'ingot' ),
+					'canceled' => __( 'Canceled', 'ingot' )
 
-			)
-		);
+
+
+				)
+			);
+		}
+
 
 
 	}

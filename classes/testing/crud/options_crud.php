@@ -118,7 +118,7 @@ abstract class options_crud extends crud {
 		}
 
 		if ( 'all' == $id ){
-			self::delete_all();
+			return self::delete_all();
 		}
 
 	}

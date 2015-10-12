@@ -66,6 +66,13 @@ class test_group extends route {
 					'force'    => array(
 						'default'      => false,
 					),
+					'all' => array(
+						'default' => false,
+					),
+					'id' => array(
+						'default' => 0,
+						'sanatization_callback' => 'absint'
+					)
 				),
 			),
 		) );
@@ -141,9 +148,14 @@ class test_group extends route {
 	 * @return \WP_Error|\WP_REST_Request
 	 */
 	public function delete_item( $request ) {
-		$id = $request->get_param( 'id' );
+		if( $request->get_param( 'all' ) ) {
+			$id = 'all';
+		}else{
+			$id = $request->get_url_params( 'id' );
+		}
+
 		$deleted = group::delete( $id );
-		if( $deleted ) {
+		if( $deleted || is_array( $deleted ) ) {
 			return rest_ensure_response( $id );
 		}else{
 			return rest_ensure_response( new \WP_Error( 'unknown-item', __( 'Can not delete a non-existent item', 'ingot' ) ), 404 );

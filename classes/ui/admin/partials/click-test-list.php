@@ -23,7 +23,12 @@
 			<?php _e( 'New Group', 'ingot' ); ?>
 		</a>
 		<div id="options-area">
-
+			<h3>
+				<?php _e( 'Options', 'ingot' ); ?>
+			</h3>
+			<a href="#" id="delete-all-groups" class="button button-secondary">
+				<?php _e( 'Delete All', 'ignot' ); ?>
+			</a>
 		</div>
 	</section>
 	<div class="clear"></div>

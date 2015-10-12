@@ -35,6 +35,37 @@ jQuery( document ).ready( function ( $ ) {
 
     });
 
+    $( document ).on( 'click', '#delete-all-groups', function(e) {
+        e.preventDefault();
+        swal( {
+                title: INGOT.are_you_sure,
+                text: INGOT.delete_confirm,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText:INGOT.delete,
+                cancelButtonText: INGOT.cancel,
+                closeOnConfirm: false,
+                closeOnCancel: false
+            }, function ( isConfirm ) {
+                if ( isConfirm ) {
+                    var url = INGOT.api_url + '/test-group/1?all=true';
+                    $.ajax({
+                        url:url,
+                        method: "DELETE",
+                        success: function( r, textStatus ) {
+                            swal( INGOT.deleted, "", "success" ), function() {
+                                location.reload();
+                            };
+                        }
+
+                    });
+
+                } else {
+                    swal( INGOT.canceled, "", "success" );
+                }
+            } );
+    });
+
     $( '.part-remove' ).each( function( i, button ){
         $( button ).on( 'click', function(e) {
             swal({
