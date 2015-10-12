@@ -289,7 +289,7 @@ abstract class crud {
 
 		$fields = static::get_all_fields();
 		foreach ( static::get_all_fields() as  $key  ) {
-			if ( 'order' == $key || 'sequences' == $key ) {
+			if ( 'order' == $key || 'sequences' == $key || 'UTM' == $key || 'meta' == $key ) {
 				if ( ! is_array( $data[ $key ] ) ) {
 					$data[ $key ] = array();
 				}
@@ -387,9 +387,11 @@ abstract class crud {
 				}elseif( 'browser' == $key ){
 					$data[ $key ] = ingot_get_browser( false );
 				}elseif( 'time' == $key ) {
-					$data[ $key ] =  date("Y-m-d H:i:s", $data[ 'created' ] );
+					$data[ $key ] =  time();
 				}elseif( 'meta' == $data ) {
 					$data[ $key ] = array();
+				}elseif( 'referrer' == $data ) {
+					$data[ $key ] = ingot_get_refferer();
 				} else{
 					$data[ $key ] = 0;
 				}
@@ -398,15 +400,17 @@ abstract class crud {
 		}
 
 		//this date validation shit is serious fucking mess
-		foreach( array( 'created', 'modified'  ) as $key )  {
-			if ( 0 == $data[ $key ] || ( is_string( $data[ $key ] ) && false === strtotime( $data[ $key ] ) ) ) {
-				$data[ $key ] = time();
-			}
+		if ( 'tracking' != static::what() ) {
+			foreach ( array( 'created', 'modified' ) as $key ) {
+				if ( ! isset( $data[ $key ] ) || 0 == $data[ $key ] || ( is_string( $data[ $key ] ) && false === strtotime( $data[ $key ] ) ) ) {
+					$data[ $key ] = time();
+				}
 
-			if( ! is_numeric( $data[ $key ] ) ) {
-				$data[ $key ] = time();
-			}
+				if ( ! is_numeric( $data[ $key ] ) ) {
+					$data[ $key ] = time();
+				}
 
+			}
 		}
 
 		if( 'sequence' == static::what() ) {
@@ -414,11 +418,23 @@ abstract class crud {
 			$data[ 'modified' ] = date("Y-m-d H:i:s", $data[ 'modified' ] );
 		}
 
-		if( 'meta' == static::what() && ! empty( $data[ 'meta' ] ) ) {
-			if( ! is_array( maybe_unserialize( $data[ 'meta' ] ) ) ) {
-				$data[ 'meta' ] = array();
+		if( 'tracking' == static::what() ) {
+
+			if ( ! empty( $data[ 'meta' ] ) ) {
+				if ( ! is_array( maybe_unserialize( $data['meta'] ) ) ) {
+					$data['meta'] = array();
+				}
+
 			}
-			
+
+			if( is_numeric( $data[ 'time' ] ) ) {
+				$data[ 'time' ] = date("Y-m-d H:i:s", $data[ 'time' ] );
+			}
+
+			if( 0 == strtotime( $data[ 'time' ] ) ) {
+				$data[ 'time' ] = date("Y-m-d H:i:s" );
+			}
+
 		}
 
 		return $data;

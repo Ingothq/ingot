@@ -46,6 +46,6 @@ table, th, td {
     padding: 4px;
 }
 
-table .empty{
+.sequence-table table .empty{
     background-color: #d3d3d3;
 }

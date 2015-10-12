@@ -13,6 +13,8 @@ namespace ingot\testing\tests\click;
 
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
+use ingot\testing\crud\tracking;
+use ingot\testing\options;
 use ingot\testing\utility\helpers;
 
 class click {
@@ -73,6 +75,7 @@ class click {
 
 		$group = group::read(  $sequence[ 'group_ID' ] );
 		$threshold = helpers::v( 'threshold', $group, 20 );
+		self::track_click( $test_id, helpers::v( 'ID', $group, null ), helpers::v( 'ID', $sequence, null ) );
 		if( $total_win >= $threshold ) {
 			$updated = self::make_next_sequence( $sequence[ 'group_ID' ], $winner );
 		}else{
@@ -222,6 +225,32 @@ class click {
 		}
 
 	}
+
+	/**
+	 *  Record click details
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param int $test_id Test ID.
+	 * @param int $group_id Group ID.
+	 * @param int $sequence_id Sequence ID.
+	 *
+	 * @return bool|int||WP_Error Tracking ID if successful, WP_Error on failure or false if tracking disabled.
+	 */
+	public static function track_click( $test_id, $group_id, $sequence_id ) {
+		if ( options::track_click_details() ) {
+			$args = array(
+				'test_ID'     => $test_id,
+				'sequence_ID' => $sequence_id,
+				'group_ID'    => $group_id,
+			);
+
+			return tracking::create( $args );
+
+		}
+	}
+
+
 
 
 }

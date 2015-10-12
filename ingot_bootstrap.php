@@ -42,21 +42,34 @@ class ingot_bootstrap {
 		}
 
 		if ( $load ) {
+			add_filter( 'ingot_force_update_table', '__return_true' );
+			if (  ! did_action( 'ingot_loaded') ) {
+				include_once( $autoloader );
 
-			include_once( $autoloader );
-			self::maybe_add_sequence_table();
-			self::maybe_add_tracking_table();
-			new ingot\testing\ingot();
-			new ingot\ui\make();
-			self::maybe_load_api();
+				self::maybe_add_sequence_table();
+				self::maybe_add_tracking_table();
+				if( ! self::table_exists( \ingot\testing\crud\sequence::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() ) ) {
+					if( is_admin() ) {
+						printf( '<div class="error"><p>%s</p></div>', __( 'Ingot Not Loaded', 'ingot' ) );
+					}
 
-			/**
-			 * Runs when Ingot has loaded.
-			 *
-			 * @since 0.0.5
-			 *
-			 */
-			do_action( 'ingot_loaded' );
+					return;
+				}
+
+
+				new ingot\testing\ingot();
+				new ingot\ui\make();
+				self::maybe_load_api();
+
+				/**
+				 * Runs when Ingot has loaded.
+				 *
+				 * @since 0.0.5
+				 *
+				 */
+				do_action( 'ingot_loaded' );
+			}
+
 		}
 
 
@@ -78,24 +91,21 @@ class ingot_bootstrap {
 	 * If needed, add the custom table for sequences
 	 *
 	 * @since 0.0.7
-	 *
-	 * @access protected
 	 */
-	protected static function maybe_add_sequence_table( $drop_first = false ) {
+	public static function maybe_add_sequence_table( $drop_first = false ) {
 		global $wpdb;
 
 		$table_name = \ingot\testing\crud\sequence::get_table_name();
 
-		/**
-		 * Force drop the table
-		 *
-		 * @since 0.0.7
-		 */
-		if( apply_filters( 'ingot_force_update_table', $drop_first, $table_name ) ) {
-			$wpdb->query( "DROP TABLE $table_name" );
+		if( $drop_first  ) {
+			if( self::table_exists( $table_name )  ) {
+				$wpdb->query( "DROP TABLE $table_name" );
+			}
 
-		}elseif( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {
-				return;
+		}
+
+		if(  self::table_exists( $table_name ) ) {
+			return;
 		}
 
 		$charset_collate = $wpdb->get_charset_collate();
@@ -115,7 +125,6 @@ class ingot_bootstrap {
 		  modified  datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		  completed  tinyint(1) NOT NULL,
 		  group_ID mediumint(9) NOT NULL,
-
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 
@@ -131,24 +140,21 @@ class ingot_bootstrap {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @access protected
-	 *
 	 * @param bool $drop_first Optional. If true, DROP TABLE statemnt is made first. Default is false
 	 */
-	protected static function maybe_add_tracking_table( $drop_first = false ) {
+	public static function maybe_add_tracking_table( $drop_first = false ) {
 		global $wpdb;
 
-		//$table_name = \ingot\testing\crud\sequence::get_table_name();
-		$table_name = 'wp_ingot_tracking';
-		/**
-		 * Force drop the table
-		 *
-		 * @since 0.0.7
-		 */
-		if( apply_filters( 'ingot_force_update_table', $drop_first, $table_name ) ) {
-			$wpdb->query( "DROP TABLE $table_name" );
+		$table_name = \ingot\testing\crud\tracking::get_table_name();
 
-		}elseif( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name) {
+		if( $drop_first  ) {
+			if( self::table_exists( $table_name )  ) {
+				$wpdb->query( "DROP TABLE $table_name" );
+			}
+
+		}
+
+		if(  self::table_exists( $table_name ) ) {
 			return;
 		}
 
@@ -160,7 +166,8 @@ class ingot_bootstrap {
 		  sequence_ID mediumint(9) NOT NULL,
 		  test_ID mediumint(9) NOT NULL,
 		  IP VARCHAR(255) NOT NULL,
-		  UTM VARCHAR(255) NOT NULL,
+		  UTM LONGTEXT NOT NULL,
+		  referrer VARCHAR(255) NOT NULL,
 		  browser VARCHAR(255) NOT NULL,
 		  meta LONGTEXT NOT NULL,
 		  user_agent LONGTEXT NOT NULL,
@@ -170,6 +177,27 @@ class ingot_bootstrap {
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
+
+	}
+
+	/**
+	 * Check if table exists
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param string $table_name
+	 *
+	 * @return bool
+	 */
+	protected static function table_exists( $table_name ) {
+		global $wpdb;
+		if( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name  ) {
+			return true;
+
+		}else{
+			return false;
+
+		}
 
 	}
 

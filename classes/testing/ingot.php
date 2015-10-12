@@ -169,7 +169,17 @@ class ingot {
 
 
 			}
+		}elseif( 'tracking' == $what ) {
+			foreach( array(
+				'meta',
+				'UTM'
+			) as $key ) {
+				$item[ $key ] = maybe_unserialize( $item[ $key ] );
+			}
+
+			return $item;
 		}
+
 
 		return $item;
 	}

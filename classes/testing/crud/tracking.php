@@ -26,6 +26,20 @@ class tracking extends table_crud {
 	protected static $what = 'tracking';
 
 	/**
+	 * Get the type of object we are CRUDing
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected static function what() {
+		return self::$what;
+
+	}
+
+	/**
 	 * Required fields of this object
 	 *
 	 * @since 0.0.4
@@ -57,6 +71,7 @@ class tracking extends table_crud {
 			'sequence_ID',
 			'test_ID',
 			'IP',
+			'referrer',
 			'UTM',
 			'browser',
 			'meta',
@@ -66,5 +81,6 @@ class tracking extends table_crud {
 
 		return $needed;
 	}
+
 
 }

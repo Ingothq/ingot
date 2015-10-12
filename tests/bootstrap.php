@@ -9,6 +9,8 @@ if ( !$_tests_dir ) $_tests_dir = '/tmp/wordpress-tests-lib';
 
 require_once $_tests_dir . '/includes/functions.php';
 
+
+
 function _manually_load_plugin() {
 	require dirname( __FILE__ ) . '/../ingot.php';
 }
@@ -16,15 +18,18 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
 
-activate_plugin( 'ingot/ingot.php' );
+add_filter( 'ingot_user_can', '__return_true' );
 
+
+activate_plugin( 'ingot/ingot.php' );
+ingot_bootstrap::maybe_add_sequence_table( true );
+ingot_bootstrap::maybe_add_tracking_table( true );
 
 global $current_user;
 
 $current_user = new WP_User(1);
 $current_user->set_role('administrator');
 
-add_filter( 'ingot_user_can', '__return_true' );
-add_filter( 'ingot_force_update_table', '__return_true' );
+
 
 // Include helpers

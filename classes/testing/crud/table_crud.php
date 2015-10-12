@@ -56,6 +56,8 @@ class table_crud extends crud {
 		 */
 		$results = apply_filters( 'ingot_crud_read', $results, static::what() );
 
+
+
 		return $results;
 
 	}
@@ -144,12 +146,19 @@ class table_crud extends crud {
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 
 		$data = self::prepare_data( $data );
-		$data = static::pre_write( $data );
 		if( is_wp_error( $data ) ) {
 			return $data;
 		}
 
 		$table_name = static::get_table_name();
+
+		foreach( $data as $key => $datum ) {
+			if( is_array( $data[ $key ] ) ) {
+				$data[ $key ] = serialize( $datum );
+			}
+
+		}
+
 		if( self::can( $id, $bypass_cap ) ) {
 			unset( $data[ 'ID' ] );
 
@@ -206,20 +215,7 @@ class table_crud extends crud {
 
 	}
 
-	/**
-	 * Prewrite extra validation/casting/etc
-	 *
-	 * @since 0.0.7
-	 *
-	 * @access protected
-	 *
-	 * @param array $data
-	 *
-	 * @return array|\WP_Error
-	 */
-	protected function pre_write( $data ){
-		return $data;
-	}
+
 
 
 
