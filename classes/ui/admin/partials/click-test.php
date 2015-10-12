@@ -33,7 +33,7 @@
 					<?php _e( 'Group Type', 'ingot' ); ?>
 				</label>
 				<select id="group-type">
-					<?php echo ingot\ui\util::select_options( $click_options, $group[ 'type' ] ); ?>
+					<?php echo ingot\ui\util::select_options( $click_options, $group[ 'click_type' ] ); ?>
 				</select>
 			</div>
 		</section>
