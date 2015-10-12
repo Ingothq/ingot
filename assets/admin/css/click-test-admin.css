@@ -38,7 +38,7 @@ section#parts {
     margin-left: 4px
 }
 
-table, th, td {
+.sequence-table  table, th, td {
     border: 1px solid #d3d3d3;
     margin: 8px 8px 12px;
     border-collapse: collapse;
