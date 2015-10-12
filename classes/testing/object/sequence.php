@@ -365,13 +365,26 @@ class sequence {
 		return $this->percentage( $this->b_total, $this->total );
 	}
 
+	/**
+	 * Calculate percentage
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @param  int $one Number
+	 * @param int $two Total
+	 *
+	 * @return float|int
+	 */
 	protected function percentage( $one, $two ){
 		if( 0 == $one || 0 == $two ) {
 			return 0;
 		}
 
 		$float = $one/$two;
-		return 100 * $float;
+		$percentage = 100 * $float;
+		return round( $percentage, 2 );
 	}
 
 	/**
@@ -388,21 +401,45 @@ class sequence {
 
 	}
 
+	/**
+	 * Get name of test A
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 *
+	 * @return string
+	 */
 	protected function a_name() {
 		if( ! is_array( $this->a ) ) {
-			$this->a = group::read( $this->a_id );
+			$this->a = test::read( $this->a_id );
 		}
 
-		return $this->a[ 'name' ];
+		if ( is_array( $this->b ) ) {
+			return $this->a['name'];
+		}
 
 	}
 
+	/**
+	 * Get name of test B
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 *
+	 * @return string
+	 */
 	protected function b_name() {
 		if( ! is_array( $this->b ) ) {
-			$this->b = group::read( $this->b_id );
+			$this->b = test::read( $this->b_id );
 		}
 
-		return $this->b[ 'name' ];
+		if ( is_array( $this->b ) ) {
+			return $this->b['name'];
+		}
 
 	}
 

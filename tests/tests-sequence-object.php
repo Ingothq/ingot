@@ -213,6 +213,33 @@ class tests_sequence_object extends \WP_UnitTestCase {
 		$this->assertEquals( 95, $sequence->b_total_percentage );
 	}
 
+	public function testAName() {
+		$params = array(
+			'text' => 't1',
+			'name' => 'n1',
+		);
+
+		$test_1 = \ingot\testing\crud\test::create( $params );
+		$test = \ingot\testing\crud\test::read( $test_1 );
+		$this->assertTrue( is_array( $test ) );
+
+		$params = array(
+			'text' => 't2',
+			'name' => 'n2',
+		);
+
+
+		$test_2 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'test_type' => 'click',
+			'a_id' => $test_1,
+			'b_id' => $test_2
+		);
+
+		$created_2 = \ingot\testing\crud\sequence::create( $params );
+	}
+
 
 
 
