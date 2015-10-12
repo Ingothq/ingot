@@ -52,7 +52,7 @@ class table extends sequence {
 	 * @return string Table body HTML
 	 */
 	protected function table_body() {
-		return $this->header() . $this->id_row() . $this->total_row() . $this->win_row();
+		return $this->header() . $this->id_row() . $this->name_row() . $this->total_row() . $this->win_row();
 	}
 
 	/**
@@ -84,6 +84,23 @@ class table extends sequence {
 		$columns[] = sprintf( '<td>%s</td>', __( 'ID', 'ingot' ) );
 		$columns[] = sprintf( '<td>%s</td>', $this->a_id );
 		$columns[] = sprintf( '<td>%s</td>', $this->b_id );
+		return $this->row( $columns );
+
+	}
+
+	/**
+	 * Make table ID row
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access protected
+	 *
+	 * @return string Table ID row HTML
+	 */
+	protected function name_row() {
+		$columns[] = sprintf( '<td>%s</td>', __( 'Name', 'ingot' ) );
+		$columns[] = sprintf( '<td>%s</td>', $this->a_name );
+		$columns[] = sprintf( '<td>%s</td>', $this->b_name );
 		return $this->row( $columns );
 
 	}

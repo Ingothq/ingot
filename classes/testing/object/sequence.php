@@ -12,6 +12,8 @@
 namespace ingot\testing\object;
 
 
+use ingot\testing\crud\group;
+
 class sequence {
 
 	/**
@@ -171,6 +173,8 @@ class sequence {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @access private
+	 *
 	 * @var array
 	 */
 	private $extra_fields = array(
@@ -179,8 +183,32 @@ class sequence {
 		'a_total_percentage',
 		'b_total_percentage',
 		'total',
-		'win_total'
+		'win_total',
+		'a_name',
+		'b_name'
 	);
+
+	/**
+	 * Test A config
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access private
+	 *
+	 * @var array
+	 */
+	private $a;
+
+	/**
+	 * Test B config
+	 *
+	 * @since 0.0.7
+	 *
+	 * @access private
+	 *
+	 * @var array
+	 */
+	private $b;
 
 	/**
 	 * Constructor for class
@@ -357,6 +385,24 @@ class sequence {
 	 */
 	protected function set_total() {
 		$this->total = $this->a_total + $this->b_total;
+
+	}
+
+	protected function a_name() {
+		if( ! is_array( $this->a ) ) {
+			$this->a = group::read( $this->a_id );
+		}
+
+		return $this->a[ 'name' ];
+
+	}
+
+	protected function b_name() {
+		if( ! is_array( $this->b ) ) {
+			$this->b = group::read( $this->b_id );
+		}
+
+		return $this->b[ 'name' ];
 
 	}
 
