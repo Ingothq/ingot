@@ -16,10 +16,6 @@
     ],
     "repositories": [
         {
-            "type": "composer",
-            "url": "http://wpackagist.org"
-        },
-        {
             "type": "vcs",
             "url": "https://github.com/WP-API/WP-API"
         }
