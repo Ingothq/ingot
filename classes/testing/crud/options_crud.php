@@ -155,7 +155,7 @@ abstract class options_crud extends crud {
 
 			}
 
-			$saved = update_option( $key, $data  );
+			$saved = update_option( $key, $data, false  );
 			if ( $saved ) {
 				do_action( 'ingot_config_saved', $id, $data, static::what() );
 				return (int) $id;
