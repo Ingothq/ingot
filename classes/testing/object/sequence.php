@@ -13,6 +13,7 @@ namespace ingot\testing\object;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\crud\test;
 
 class sequence {
 
