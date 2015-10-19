@@ -17,6 +17,7 @@ use ingot\testing\api\rest\test_group;
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
 use ingot\testing\crud\settings;
+use ingot\testing\crud\tracking;
 use ingot\testing\tests\click\click;
 
 class ingot {
@@ -110,6 +111,8 @@ class ingot {
 
 		$updated =  sequence::update( $sequence, $sequence_id, true );
 
+
+
 		return $updated;
 
 	}
@@ -124,6 +127,7 @@ class ingot {
 	 */
 	public static function increase_victory( $test_id, $sequence_id ) {
 		$sequence = sequence::read( $sequence_id );
+
 		$is_a = self::is_a( $test_id, $sequence );
 		switch( $is_a  ) {
 			case true === $is_a  :
@@ -135,6 +139,19 @@ class ingot {
 		}
 
 		$updated = sequence::update( $sequence, $sequence_id, true );
+
+		if( settings::is_click_track_mode() ) {
+			$sequence_object = new \ingot\testing\object\sequence( $sequence );
+			$tracked = tracking::create( array(
+				'test_ID' => $test_id,
+				'sequence_ID' => $sequence_id,
+				'group_ID' => $sequence_object->group_ID
+			));
+
+			$tracked = tracking::read( $tracked );
+			$x = 1;
+		}
+
 		return $updated;
 
 	}
@@ -231,6 +248,7 @@ class ingot {
 		if( 'sequence' == $what ) {
 
 		}
+
 	}
 
 	/**

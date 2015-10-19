@@ -55,6 +55,8 @@ class settings {
 			return get_option( self::option_key_name( $setting ), false );
 		}
 
+		return false;
+
 	}
 
 	/**
@@ -138,6 +140,18 @@ class settings {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Check if we are doing detailed click tracking or not
+	 *
+	 * @since 0.0.8
+	 *
+	 * @return bool
+	 */
+	public static function is_click_track_mode() {
+		return self::read( 'click_tracking' );
+
 	}
 
 
