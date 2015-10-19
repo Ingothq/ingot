@@ -29,6 +29,7 @@
 			<a href="#" id="delete-all-groups" class="button button-secondary">
 				<?php _e( 'Delete All', 'ignot' ); ?>
 			</a>
+			<?php echo $settings_form; ?>
 		</div>
 	</section>
 	<div class="clear"></div>

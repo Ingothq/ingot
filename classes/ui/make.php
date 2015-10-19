@@ -58,9 +58,9 @@ class make {
 		wp_localize_script( 'ingot-click-test', 'INGOT', array(
 				'api_url' => rest_url( 'ingot/v1'),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
+
 			)
 		);
-
 	}
 
 }

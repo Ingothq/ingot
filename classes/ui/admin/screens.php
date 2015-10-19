@@ -15,6 +15,7 @@ namespace ingot\ui\admin;
 
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
+use ingot\testing\crud\settings;
 use ingot\testing\crud\test;
 use ingot\testing\tests\click\click;
 use ingot\testing\utility\helpers;
@@ -26,10 +27,16 @@ class screens extends admin{
 	 * @since 0.0.6
 	 */
 	function __construct() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
-		add_action( 'wp_ajax_test_field_group', array( $this, 'get_test_field_group' ) );
-		add_action( 'wp_ajax_get_click_page', array( $this, 'get_click_page' ) );
-		new \ingot\ui\admin\sequence\viewer();
+
+		if( ingot_is_admin_ajax() ) {
+
+			add_action( 'wp_ajax_test_field_group', array( $this, 'get_test_field_group' ) );
+			add_action( 'wp_ajax_get_click_page', array( $this, 'get_click_page' ) );
+			new \ingot\ui\admin\settings( settings::get_settings_keys() );
+		}else{
+			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
+			new \ingot\ui\admin\sequence\viewer();
+		}
 	}
 
 	/**
@@ -117,7 +124,11 @@ class screens extends admin{
 		$next_button = $this->next_groups_button( $page_number, $limit );
 		$prev_button = $this->previous_groups_button( $page_number, $limit );
 		$new_link = $this->group_edit_link( false );
+		$settings_class = new \ingot\ui\admin\settings( settings::get_settings_keys() );
+		$settings_form = $settings_class->get_form();
 		include_once( dirname( __FILE__ ) . '/partials/click-test-list.php');
+
+
 
 		$html = ob_get_clean();
 		return $html;
@@ -413,6 +424,7 @@ class screens extends admin{
 			wp_localize_script( 'ingot-click-test', 'INGOT', array(
 					'api_url' => rest_url( 'ingot/v1'),
 					'test_field' => esc_url_raw( add_query_arg( 'action', 'test_field_group', admin_url( 'admin-ajax.php' ) ) ),
+					'admin_ajax' => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
 					'nonce' => wp_create_nonce( 'wp_rest' ),
 					'test_group_page_title' => __( 'Ingot Test Group: ', 'ingot' ),
 					'success' => __( 'Group Saved', 'ingot' ),

@@ -116,7 +116,7 @@ jQuery( document ).ready( function ( $ ) {
 
     $( document ).on( 'submit', '#ingot-click-test', function( e) {
         e.preventDefault();
-        $( '#spinner' ).show();
+        $( '#spinner' ).show().css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' );
 
 
         var parts;
@@ -149,9 +149,6 @@ jQuery( document ).ready( function ( $ ) {
             };
 
             current = $( '#' + _id ).data( 'current' );
-            console.log( current.name );
-            console.log( part_data.name );
-            console.log( create );
             if( false == create && part_data.name == current.name && part_data.text == current.text ) {
                 test_ids[ i ] = id;
                 return;
@@ -174,9 +171,8 @@ jQuery( document ).ready( function ( $ ) {
                 },
                 data: part_data
             } ).always(function( r, status) {
-                console.log( status );
+
                 if( 'object' == typeof r){
-                    console.log( r );
                     $( '#name-'  + _id ).attr( 'id', 'name-' + r.ID );
                     $( '#text-'  + _id ).attr( 'id', 'value-' + r.ID );
                     $( part ).attr( 'id', r.ID );
@@ -233,7 +229,7 @@ jQuery( document ).ready( function ( $ ) {
                 });
                 history.pushState( {}, title, new_url );
             }else{
-                $( '#spinner' ).hide();
+                $( '#spinner' ).hide().css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' );
                 swal({
                     title: INGOT.fail,
                     text: INGOT.fail,
@@ -245,6 +241,28 @@ jQuery( document ).ready( function ( $ ) {
 
 
 
+
+    });
+
+    $( document ).on( 'submit', '#ingot-settings', function(e) {
+        e.preventDefault();
+        $( '#ingot-settings-spinner' ).show().css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' );
+        var data = {
+            click_tracking: $( '#click_tracking' ).val(),
+            anon_tracking: $( '#anon_tracking' ).val(),
+            license_code: $( '#license_code' ).val(),
+            _nonce: INGOT.admin_ajax_nonce,
+            action: 'ingot_settings'
+        };
+        $.ajax({
+            url: INGOT.admin_ajax,
+            method: "POST",
+            data: data,
+            complete: function() {
+                $( '#ingot-settings-spinner' ).hide().css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' );
+            }
+
+        });
 
     });
 } );

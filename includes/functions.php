@@ -269,4 +269,28 @@ function ingot_get_referrers_to_track() {
 
 }
 
+/**
+ * Check that admin ajax is happening
+ *
+ * @since 0.0.8
+ *
+ * @return bool
+ */
+function ingot_is_admin_ajax() {
+	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		return true;
+
+	}
+
+}
+
+function ingot_validate_boolean( $val ) {
+	if( 'on' == $val ) {
+		return true;
+	}
+
+	if( filter_var( $val, FILTER_VALIDATE_BOOLEAN ) ) {
+		return true;
+	}
+}
 

@@ -92,7 +92,7 @@
 
 	</form>
 	<div class="clear"></div>
-		<div id="spinner" style="display: none">
+		<div id="spinner" style="display: none; visibility: hidden" aria-hidden="true">
 			<img src="<?php echo esc_url( INGOT_URL . '/assets/img/loading.gif' ); ?>" />
 		</div>
 		<div id="status"></div>

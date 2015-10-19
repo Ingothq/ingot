@@ -1,0 +1,145 @@
+<?php
+/**
+ * @TODO What this does.
+ *
+ * @package   @TODO
+ * @author    Josh Pollock <Josh@JoshPress.net>
+ * @license   GPL-2.0+
+ * @link
+ * @copyright 2015 Josh Pollock
+ */
+
+namespace ingot\testing\crud;
+
+
+class settings {
+
+	/**
+	 * Settings keys
+	 *
+	 * @since 0.0.8
+	 *
+	 * @access protected
+	 *
+	 * @var array
+	 */
+	protected static $settings_keys = array(
+		'click_tracking',
+		'anon_tracking',
+		'license_code'
+	);
+
+
+	/**
+	 * Get settings key names <em>without</em> prefix
+	 *
+	 * @since 0.0.8
+	 *
+	 * @return array
+	 */
+	public static function get_settings_keys() {
+		return self::$settings_keys;
+	}
+
+	/**
+	 * Read a value
+	 *
+	 * @since 0.0.8
+	 *
+	 * @param string $setting Setting name
+	 *
+	 * @return mixed|void
+	 */
+	public static function read( $setting ) {
+		if( self::option_key_name( $setting ) ) {
+			return get_option( self::option_key_name( $setting ), false );
+		}
+
+	}
+
+	/**
+	 * Save a value
+	 *
+	 * @since 0.0.8
+	 *
+	 * @param string $setting Setting name
+	 * @param mixed $value Value to be saved
+	 *
+	 * @return bool
+	 */
+	public static function write( $setting, $value ) {
+		if( self::option_key_name( $setting ) ) {
+			return update_option( self::option_key_name( $setting ), $value, false );
+		}
+
+	}
+
+	/**
+	 * Get prefixed key names
+	 *
+	 * @since 0.0.8
+	 *
+	 * @return array
+	 */
+	public static function get_key_names() {
+		$keys = array();
+		foreach( self::$settings_keys as $key ) {
+			$keys[] = self::option_key_name( $key );
+		}
+
+		return $keys;
+
+	}
+
+	/**
+	 * Create a prefixed option key name
+	 *
+	 * @since 0.0.8
+	 *
+	 * @access protected
+	 *
+	 * @param $setting
+	 *
+	 * @return string
+	 */
+	protected static function option_key_name( $setting ) {
+		if( in_array( $setting, self::$settings_keys ) ) {
+			return "ingot_settings_{$setting}";
+		}
+
+	}
+
+	/**
+	 * Sanatize and validate our settings for this class
+	 *
+	 * Effectively hooked to "pre_update_option" via ingot\testing\ingot::presave_settings()
+	 *
+	 * @since 0.0.8
+	 *
+	 * @param string $setting Setting name
+	 * @param mixed $value Value to be saved
+	 *
+	 * @return int|string
+	 */
+	public static function sanatize_setting( $setting, $value ) {
+		if ( self::option_key_name( 'license_code' ) != $setting ) {
+			if ( 'on' == $value || ingot_validate_boolean( $value ) && true == $value ) {
+				$value = 1;
+			} else {
+				$value = 0;
+			}
+
+		}else{
+			if ( is_string( $value )  ) {
+				$value = trim( strip_tags( $value ) );
+			}else{
+				$value = '';
+			}
+		}
+
+		return $value;
+	}
+
+
+
+}

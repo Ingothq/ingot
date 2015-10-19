@@ -16,8 +16,8 @@ use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
+use ingot\testing\crud\settings;
 use ingot\testing\tests\click\click;
-
 
 class ingot {
 
@@ -51,6 +51,7 @@ class ingot {
 		add_action( 'ingot_crud_updated', array( $this, 'update_hook'), 10, 2 );
 		add_filter( 'ingot_crud_read', array( $this, 'read_hook' ), 10, 2 );
 
+		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
 	}
 
 	/**
@@ -63,6 +64,22 @@ class ingot {
 		$test_group->register_routes();
 		$test = new test();
 		$test->register_routes();
+	}
+
+	/**
+	 * Sanatize Ingot settings
+	 *
+	 * @since 0.0.8
+	 *
+	 * @uses "pre_update_option"
+	 */
+	public function presave_settings( $value, $option ){
+		if( in_array( $option, settings::get_key_names()) ) {
+			$value = settings::sanatize_setting( $option, $value );
+		}
+
+		return $value;
+
 	}
 
 	/**
