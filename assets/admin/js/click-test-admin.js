@@ -4,13 +4,18 @@
 jQuery( document ).ready( function ( $ ) {
 
     $( '#group-type' ).change( function() {
+        maybe_hide_select_option();
+    });
+
+    var maybe_hide_select_option;
+    (maybe_hide_select_option = function(){
         var val = $( '#group-type' ).val();
         if ( 'text' != val ) {
             $( '#selector-wrap' ).hide();
         }else{
             $( '#selector-wrap' ).show();
         }
-    });
+    })();
 
     $( document ).on( 'click', '#add-group', function(e) {
 

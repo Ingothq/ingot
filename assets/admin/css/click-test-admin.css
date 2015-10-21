@@ -2,6 +2,7 @@
     margin: 24px;
     padding: 24px;
     background: #ffffff;
+    color: #32373c;
 }
 
 .clear {
@@ -49,3 +50,55 @@ section#parts {
 .sequence-table table .empty{
     background-color: #d3d3d3;
 }
+
+.ingot-config-group label {
+    float: left;
+    padding: 6px 0;
+    width: 110px;
+    vertical-align: middle;
+}
+
+.ingot-config-group input {
+    line-height: 20px;
+    border: 1px solid #ddd;
+    -webkit-box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+    box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+    background-color: #fff;
+    outline: none;
+}
+
+.ingot-config-group input:not([type='checkbox']) {
+    width: 95%;
+}
+
+#options-area input{
+    width: inherit;
+}
+
+#options-area label {
+    width: 100%;
+}
+
+.test-part .ingot-config-group input {
+    width: 100%;
+}
+
+.test-part {
+    border: 1px solid #ddd;
+    margin: 4px;
+    padding: 12px;
+}
+
+.test-left {
+    display: inline;
+    width: 80%;
+    float: left;
+}
+
+.test-right {
+    display: inline;
+    float: right;
+    -webkit-box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+    box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+}
+

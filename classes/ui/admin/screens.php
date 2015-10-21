@@ -353,25 +353,33 @@ class screens extends admin{
 
 		?>
 		<div class="test-part" id="{{ID}}" data-current="<?php echo esc_attr( wp_json_encode( $current ) ); ?>">
-			<input type="hidden"  class="test-part-id" value="{{ID}}" aria-hidden="true" id="part-hidden-id-{{ID}}">
-			<div class="ingot-config-group">
-				<label>
-					<?php _e( 'Name', 'ingot' ); ?>
-				</label>
-				<input type="text" class="test-part-name" value="{{name}}" required aria-required="true" id="name-{{ID}}">
+			<div class="test-left">
+				<input type="hidden" class="test-part-id" value="{{ID}}" aria-hidden="true" id="part-hidden-id-{{ID}}">
+
+				<div class="ingot-config-group">
+					<label>
+						<?php _e( 'Name', 'ingot' ); ?>
+					</label>
+					<input type="text" class="test-part-name" value="{{name}}" required aria-required="true"
+					       id="name-{{ID}}">
+				</div>
+				<div class="ingot-config-group">
+					<label>
+						<?php _e( 'Text', 'ingot' ); ?>
+					</label>
+					<input type="text" class="test-part-text" value="{{text}}" required aria-required="true"
+					       id="text-{{ID}}">
+				</div>
+
 			</div>
-			<div class="ingot-config-group">
-				<label>
-					<?php _e( 'Text', 'ingot' ); ?>
-				</label>
-				<input type="text" class="test-part-text" value="{{text}}" required aria-required="true" id="text-{{ID}}">
+			<div class="test-right">
 				<a href="#" class="button part-remove" alt="<?php esc_attr_e( 'Click To Remove Test', 'ingot' ); ?>" data-part-id="{{ID}}" id="remove-{{ID}}">
 					<?php _e( 'Remove' ); ?>
 				</a>
 			</div>
-
-
+			<div class="clear"></div>
 		</div>
+		<div class="clear"></div>
 		<?php
 			$template = ob_get_clean();
 			$id = $part_config[ 'ID' ];
