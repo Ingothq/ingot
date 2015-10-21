@@ -1,11 +1,11 @@
 <?php
 /**
  Plugin Name: Ingot
-Version: 0.0.6
+Version: 0.0.8
  */
 
 
-define( 'INGOT_VER', '0.0.6' );
+define( 'INGOT_VER', '0.0.8' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 
