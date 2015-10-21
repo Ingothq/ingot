@@ -17,6 +17,7 @@ use ingot\testing\crud\crud;
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
 use ingot\testing\ingot;
+use ingot\testing\tests\flow;
 use ingot\ui\util;
 
 class test extends route {
@@ -244,7 +245,7 @@ class test extends route {
 	public function register_click( $request ){
 		$id = $request->get_param( 'id' );
 		$sequence = $request->get_param( 'sequence' );
-		$increased = ingot::increase_victory( $id, $sequence  );
+		$increased = flow::increase_victory( $id, $sequence  );
 		if( is_wp_error( $increased ) ) {
 			return rest_ensure_response( $increased, 500 );
 		}else{

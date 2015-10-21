@@ -187,7 +187,7 @@ abstract class click {
 	 */
 	private function set_test() {
 		$chance = $this->calculate_chance();
-		$use_a = \ingot\testing\tests\click\click::choose_a( $chance );
+		$use_a = \ingot\testing\tests\flow::choose_a( $chance );
 		if ( $use_a ){
 			$test_id = $this->sequence[ 'a_id' ];
 		}else{

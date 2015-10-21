@@ -84,7 +84,7 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers ingot\testing\tests\click\click::is_a
+	 * @covers ingot\testing\tests\flow::is_a
 	 */
 	public function testIsA() {
 		$params = array(
@@ -110,8 +110,8 @@ class test_click_tests extends \WP_UnitTestCase {
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
 
-		$this->assertTrue( \ingot\testing\tests\click\click::is_a( $test_1, $sequence ) );
-		$this->assertFalse( \ingot\testing\tests\click\click::is_a( $test_2, $sequence ) );
+		$this->assertTrue( \ingot\testing\tests\flow::is_a( $test_1, $sequence ) );
+		$this->assertFalse( \ingot\testing\tests\flow::is_a( $test_2, $sequence ) );
 
 	}
 
@@ -120,7 +120,7 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers ingot\testing\tests\click\click::is_a
+	 * @covers ingot\testing\tests\flow::is_a
 	 */
 	public function testInvalidIsA() {
 		$params = array(
@@ -158,8 +158,8 @@ class test_click_tests extends \WP_UnitTestCase {
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
 
-		$this->assertInstanceOf( "\WP_Error", \ingot\testing\tests\click\click::is_a( $test_3, $sequence ) );
-		$this->assertInstanceOf( "\WP_Error", \ingot\testing\tests\click\click::is_a( $test_4, $sequence ) );
+		$this->assertInstanceOf( "\WP_Error", \ingot\testing\tests\flow::is_a( $test_3, $sequence ) );
+		$this->assertInstanceOf( "\WP_Error", \ingot\testing\tests\flow::is_a( $test_4, $sequence ) );
 
 
 	}
@@ -169,7 +169,7 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers ingot\testing\tests\click\click::increase_total
+	 * @covers ingot\testing\tests\flow::increase_total
 	 */
 	public function testIncreaseTotal() {
 		$params = array(
@@ -196,20 +196,20 @@ class test_click_tests extends \WP_UnitTestCase {
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
 
-		\ingot\testing\tests\click\click::increase_total( $test_1, $sequence[ 'ID' ] );
+		\ingot\testing\tests\flow::increase_total( $test_1, $sequence[ 'ID' ] );
 
 		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
 		$this->assertEquals( 1, $sequence[ 'a_total' ] );
 		$this->assertEquals( 0, $sequence[ 'b_total' ] );
 
-		\ingot\testing\tests\click\click::increase_total( $test_2, $sequence[ 'ID' ] );
+		\ingot\testing\tests\flow::increase_total( $test_2, $sequence[ 'ID' ] );
 
 		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
 		$this->assertEquals( 1, $sequence[ 'a_total' ] );
 		$this->assertEquals( 1, $sequence[ 'b_total' ] );
 
-		\ingot\testing\tests\click\click::increase_total( $test_2, $sequence[ 'ID' ] );
-		\ingot\testing\tests\click\click::increase_total( $test_2, $sequence[ 'ID' ] );
+		\ingot\testing\tests\flow::increase_total( $test_2, $sequence[ 'ID' ] );
+		\ingot\testing\tests\flow::increase_total( $test_2, $sequence[ 'ID' ] );
 
 		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
 		$this->assertEquals( 1, $sequence[ 'a_total' ] );
@@ -217,7 +217,7 @@ class test_click_tests extends \WP_UnitTestCase {
 
 		$times = rand(0, 11 );
 		for ( $i=1; $i <= $times; $i++ ) {
-			\ingot\testing\tests\click\click::increase_total( $test_1, $sequence['ID'] );
+			\ingot\testing\tests\flow::increase_total( $test_1, $sequence['ID'] );
 		}
 
 		$times++;
@@ -232,7 +232,7 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers ingot\testing\tests\click\click::increase_victory
+	 * @covers ingot\testing\tests\flow::increase_victory
 	 */
 	public function testIncreaseVictory() {
 		$params = array(
@@ -260,7 +260,7 @@ class test_click_tests extends \WP_UnitTestCase {
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
 
-		\ingot\testing\tests\click\click::increase_victory( $test_1, $group[ 'current_sequence' ] );
+		\ingot\testing\tests\flow::increase_victory( $test_1, $group[ 'current_sequence' ] );
 
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'current_sequence' ] );
 		$this->assertEquals( $sequence[ 'a_id' ], $test_1);
@@ -268,14 +268,14 @@ class test_click_tests extends \WP_UnitTestCase {
 		$this->assertEquals( 1, $sequence[ 'a_win' ] );
 		$this->assertEquals( 0, $sequence[ 'b_win' ] );
 
-		\ingot\testing\tests\click\click::increase_victory( $test_2, $group[ 'current_sequence' ] );
+		\ingot\testing\tests\flow::increase_victory( $test_2, $group[ 'current_sequence' ] );
 
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'current_sequence' ] );
 		$this->assertEquals( 1, $sequence[ 'a_win' ] );
 		$this->assertEquals( 1, $sequence[ 'b_win' ] );
 
-		\ingot\testing\tests\click\click::increase_victory( $test_2, $group[ 'current_sequence' ] );
-		\ingot\testing\tests\click\click::increase_victory( $test_2, $group[ 'current_sequence' ] );
+		\ingot\testing\tests\flow::increase_victory( $test_2, $group[ 'current_sequence' ] );
+		\ingot\testing\tests\flow::increase_victory( $test_2, $group[ 'current_sequence' ] );
 
 		$sequence = \ingot\testing\crud\sequence::read( $sequence[ 'ID' ] );
 		$this->assertEquals( 1, $sequence[ 'a_win' ] );
@@ -283,7 +283,7 @@ class test_click_tests extends \WP_UnitTestCase {
 
 		$times = rand(0, 11 );
 		for ( $i=1; $i <= $times; $i++ ) {
-			\ingot\testing\tests\click\click::increase_victory( $test_1, $group[ 'current_sequence' ] );
+			\ingot\testing\tests\flow::increase_victory( $test_1, $group[ 'current_sequence' ] );
 		}
 
 		$times++;
@@ -396,7 +396,7 @@ class test_click_tests extends \WP_UnitTestCase {
 
 		for( $i = 0; $i <= 37; $i++ ){
 
-			\ingot\testing\tests\click\click::increase_victory( $test_2, $sequence_id );
+			\ingot\testing\tests\flow::increase_victory( $test_2, $sequence_id );
 			$sequence = \ingot\testing\crud\sequence::read( $sequence_id );
 
 			if ( $i + 1 < $group[ 'threshold' ] ) {

@@ -83,101 +83,11 @@ class ingot {
 
 	}
 
-	/**
-	 * Increase total of times test ran in a sequence
-	 *
-	 * @since 0.0.5
-	 *
-	 * @param int $test_id      Test ID to increase total times run.
-	 * @param int $sequence_id  Sequence ID this is a part of
-	 *
-	 * @return bool|int
-	 */
-	public static function increase_total( $test_id, $sequence_id ) {
-		$sequence = sequence::read( $sequence_id );
-		$is_a = self::is_a( $test_id, $sequence );
-
-		switch( $is_a ) {
-			case true === $is_a  :
-				$sequence[ 'a_total' ] = $sequence[ 'a_total' ] + 1;
-				break;
-			case false === $is_a :
-				$sequence[ 'b_total' ] = $sequence[ 'b_total' ] + 1;
-				break;
-			case is_wp_error( $is_a ) :
-				return $is_a;
-			break;
-		}
-
-		$updated =  sequence::update( $sequence, $sequence_id, true );
 
 
 
-		return $updated;
-
-	}
-
-	/**
-	 * Increase times a victory
-	 *
-	 * @param $test_id
-	 * @param $sequence_id
-	 *
-	 * @return bool|int
-	 */
-	public static function increase_victory( $test_id, $sequence_id ) {
-		$sequence = sequence::read( $sequence_id );
-
-		$is_a = self::is_a( $test_id, $sequence );
-		switch( $is_a  ) {
-			case true === $is_a  :
-				$sequence[ 'a_win' ] = $sequence[ 'a_win' ] + 1;
-				break;
-			case false === $is_a :
-				$sequence[ 'b_win' ] = $sequence[ 'b_win' ] + 1;
-				break;
-		}
-
-		$updated = sequence::update( $sequence, $sequence_id, true );
-
-		if( settings::is_click_track_mode() ) {
-			$sequence_object = new \ingot\testing\object\sequence( $sequence );
-			$tracked = tracking::create( array(
-				'test_ID' => $test_id,
-				'sequence_ID' => $sequence_id,
-				'group_ID' => $sequence_object->group_ID
-			));
-
-			$tracked = tracking::read( $tracked );
-			$x = 1;
-		}
-
-		return $updated;
-
-	}
-
-	public static function is_a( $test_id, $sequence ) {
-		if ( $test_id == $sequence[ 'a_id' ] ){
-			return true;
-
-		}elseif ( $test_id == $sequence[ 'b_id' ] ) {
-			return false;
-
-		}else{
-			return new \WP_Error( 'ingot-test-squence-mismatch' );
-		}
-
-	}
 
 
-
-	public static function choose_a( $a_chance ) {
-		$val = rand( 1, 100 );
-		if ( $val <= $a_chance ) {
-			return true;
-
-		}
-	}
 
 	/**
 	 * Data to be localize as INGOT_VARS

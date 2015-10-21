@@ -15,134 +15,10 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
 use ingot\testing\crud\tracking;
 use ingot\testing\options;
-use ingot\testing\utility\helpers;
+use ingot\testing\tests\flow;
 
 class click {
 
-	/**
-	 * Increase total times a test ran inside a sequence
-	 *
-	 * @since 0.0.3
-	 *
-	 * @param int $test_id Test ID
-	 * @param int $sequence_id Sequence ID
-	 *
-	 * @return array|bool
-	 */
-	public static function increase_total( $test_id, $sequence_id ) {
-		$sequence = sequence::read( $sequence_id );
-		$is_a = self::is_a( $test_id, $sequence );
-		if( true === $is_a  ) {
-			$sequence[ 'a_total' ] = $sequence[ 'a_total' ] + 1;
-		}elseif( ! is_wp_error( $is_a ) ) {
-			$sequence[ 'b_total' ] = $sequence[ 'b_total' ] + 1;
-		}else{
-			return;
-
-		}
-
-		$updated =  sequence::update( $sequence, $sequence_id, true );
-		return $updated;
-
-	}
-
-	/**
-	 * Increase the times a test "won"
-	 *
-	 * @since 0.0.3
-	 *
-	 * @param int $test_id Test ID
-	 * @param int $sequence_id Sequence ID
-	 *
-	 * @return array|bool
-	 */
-	public static function increase_victory( $test_id, $sequence_id ) {
-		$sequence = sequence::read( $sequence_id );
-		$is_a = self::is_a( $test_id, $sequence );
-
-		if( true == $is_a ) {
-			$sequence[ 'a_win' ] = $sequence['a_win'] + 1;
-			$winner = $sequence[ 'a_id' ];
-			$total_win = $sequence[ 'a_win' ];
-		}elseif( ! is_wp_error( $is_a ) ) {
-			$sequence[ 'b_win' ] = $sequence[ 'b_win' ] + 1;
-			$total_win = $sequence[ 'b_win' ];
-			$winner = $sequence[ 'b_id' ];
-		}else{
-			return;
-
-		}
-
-		$group = group::read(  $sequence[ 'group_ID' ] );
-		$threshold = helpers::v( 'threshold', $group, 20 );
-		self::track_click( $test_id, helpers::v( 'ID', $group, null ), helpers::v( 'ID', $sequence, null ) );
-		if( $total_win >= $threshold ) {
-			$updated = self::make_next_sequence( $sequence[ 'group_ID' ], $winner );
-		}else{
-			$updated = sequence::update( $sequence, $sequence_id, true );
-		}
-
-		return $updated;
-
-	}
-
-	/**
-	 * Check if test is "A" or "B"
-	 *
-	 * @since 0.0.3
-	 *
-	 * @param int $test_id Test ID
-	 * @param array $sequence Sequence config
-	 *
-	 * @return bool|\WP_Error True if is A, False is B, WP_Error if neither.
-	 */
-	public static function is_a( $test_id, $sequence ) {
-		if ( $test_id == $sequence[ 'a_id' ] ){
-			return true;
-
-		}elseif ( $test_id == $sequence[ 'b_id' ] ) {
-			return false;
-
-		}else{
-			return new \WP_Error( 'ingot-test-sequence-mismatch' );
-		}
-
-	}
-
-
-	/**
-	 * Choose A or B based on a given probability
-	 *
-	 * @since 0.0.3
-	 *
-	 * @param int $a_chance Chance (1-100) to
-	 *
-	 * @return bool True if A is selected, false if not.
-	 */
-	public static function choose_a( $a_chance ) {
-		$val = rand( 1, 100 );
-		if ( $val <= $a_chance ) {
-			return true;
-
-		}
-		
-	}
-
-	/**
-	 * Set up JS vars to localize in click-test js
-	 *
-	 * @since 0.0.6
-	 *
-	 * @return array
-	 */
-	public static function js_vars() {
-		$vars = array(
-			'api_url' => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
-			'nonce' => wp_create_nonce( 'ingot_nonce' )
-		);
-
-		return $vars;
-	}
 
 	/**
 	 * Create initial sequence for group
@@ -188,7 +64,7 @@ class click {
 			$current_sequence = sequence::read( $current_sequence_id);
 			$a = $current_sequence[ 'a_id' ];
 			$b = $current_sequence[ 'b_id' ];
-			if( is_wp_error( self::is_a( $a, $current_sequence ) ) || is_wp_error( self::is_a( $b, $current_sequence ) ) ){
+			if( is_wp_error( flow::is_a( $a, $current_sequence ) ) || is_wp_error( flow::is_a( $b, $current_sequence ) ) ){
 				return new \WP_Error( 'invalid-victor' );
 			}
 
@@ -225,31 +101,6 @@ class click {
 		}
 
 	}
-
-	/**
-	 *  Record click details
-	 *
-	 * @since 0.0.7
-	 *
-	 * @param int $test_id Test ID.
-	 * @param int $group_id Group ID.
-	 * @param int $sequence_id Sequence ID.
-	 *
-	 * @return bool|int||WP_Error Tracking ID if successful, WP_Error on failure or false if tracking disabled.
-	 */
-	public static function track_click( $test_id, $group_id, $sequence_id ) {
-		if ( options::track_click_details() ) {
-			$args = array(
-				'test_ID'     => $test_id,
-				'sequence_ID' => $sequence_id,
-				'group_ID'    => $group_id,
-			);
-
-			return tracking::create( $args );
-
-		}
-	}
-
 
 
 
