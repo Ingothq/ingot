@@ -318,7 +318,7 @@ abstract class route extends \WP_REST_Controller  {
 
 	/**
 	 * Make namespace for routes
-	 * 
+	 *
 	 * @since 0.0.8
 	 *
 	 * @access protected

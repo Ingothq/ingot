@@ -283,6 +283,7 @@ class test extends route {
 	 * @access protected
 	 */
 	protected function register_more_routes() {
+		$namespace = $this->make_namespace();
 		$base = $this->what;
 		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/click', array(
 			array(
