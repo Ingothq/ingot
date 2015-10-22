@@ -32,8 +32,7 @@ abstract class route extends \WP_REST_Controller  {
 	 * @since 0.0.6
 	 */
 	public function register_routes() {
-		$version = '1';
-		$namespace = 'ingot/v' . $version;
+		$namespace = $this->make_namespace();
 		$base = $this->what;
 		register_rest_route( $namespace, '/' . $base, array(
 			array(
@@ -81,6 +80,10 @@ abstract class route extends \WP_REST_Controller  {
 			'methods'         => \WP_REST_Server::READABLE,
 			'callback'        => array( $this, 'get_public_item_schema' ),
 		) );
+
+		$this->register_more_routes();
+
+
 	}
 
 	/**
@@ -300,5 +303,32 @@ abstract class route extends \WP_REST_Controller  {
 			return true;
 		}
 
+	}
+
+	/**
+	 * Generic method, to be used in subclass to add extra routes.
+	 *
+	 * @since 0.0.8
+	 *
+	 * @access protected
+	 */
+	protected function register_more_routes() {
+
+	}
+
+	/**
+	 * Make namespace for routes
+	 *
+	 * @since 0.0.8
+	 *
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected function make_namespace() {
+		$version   = '1';
+		$namespace = 'ingot/v' . $version;
+
+		return $namespace;
 	}
 }
