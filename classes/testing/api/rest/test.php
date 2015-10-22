@@ -86,14 +86,6 @@ class test extends route {
 				),
 			),
 		) );
-		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/click', array(
-			array(
-				'methods'         => 'POST',
-				'callback'        => array( $this, 'register_click' ),
-				'permission_callback' => array( $this, 'verify_test_nonce' ),
-				'args'            => $this->win_args()
-			)
-		) );
 
 		register_rest_route( $namespace, '/' . $base . '/schema', array(
 			'methods'         => \WP_REST_Server::READABLE,
@@ -281,6 +273,25 @@ class test extends route {
 
 		return $verify;
 
+	}
+
+	/**
+	 * Register extra routes
+	 *
+	 * @since 0.0.8
+	 *
+	 * @access protected
+	 */
+	protected function register_more_routes() {
+		$base = $this->what;
+		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/click', array(
+			array(
+				'methods'         => 'POST',
+				'callback'        => array( $this, 'register_click' ),
+				'permission_callback' => array( $this, 'verify_test_nonce' ),
+				'args'            => $this->win_args()
+			)
+		) );
 	}
 
 
