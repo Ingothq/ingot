@@ -51,6 +51,19 @@ section#parts {
     background-color: #d3d3d3;
 }
 
+td {
+    width: 50px;
+}
+
+.sequence-table {
+    border: 1px solid #f2f2f2;
+    margin-bottom: 25px;
+}
+
+#test-group-results-admin .group-meta a.button.button-secondary {
+    margin-top: 8px;
+}
+
 .ingot-config-group label {
     float: left;
     padding: 6px 0;

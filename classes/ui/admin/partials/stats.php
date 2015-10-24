@@ -10,7 +10,7 @@
  * @copyright 2015 Josh Pollock
  */
 ?>
-<div id="test-group-admin" class="ingot-admin-wrap">
+<div id="test-group-results-admin" class="ingot-admin-wrap">
 	<h1>
 		<?php _e( 'Test Group Results', 'ingot' ); ?>
 	</h1>

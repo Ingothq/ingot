@@ -239,6 +239,7 @@ abstract class options_crud extends crud {
 		$sql = sprintf( 'DELETE FROM `%s` WHERE `option_name` LIKE "%s"', $wpdb->options, $like  );
 
 		$results = $wpdb->get_results( $sql );
+		self::increment_id( true );
 		return $results;
 	}
 
@@ -249,14 +250,24 @@ abstract class options_crud extends crud {
 	 *
 	 * @access protected
 	 *
+	 * @param bool $reset Optional. If true, will reset counter to 1. Default is false.
+	 *
 	 * @return int
 	 */
-	protected static function increment_id() {
+	protected static function increment_id( $reset = false ) {
 
 		$key = 'ingot_id_increment_' . static::what();
-		$id = get_option( $key, 1 );
-		update_option( $key, $id + 1 );
-		return $id;
+		if ( false == $reset ) {
+			$id = get_option( $key, 1 );
+			update_option( $key, $id + 1 );
+			return $id;
+
+		}else{
+			update_option( $key, 1 );
+			return 1;
+			
+		}
+
 	}
 
 

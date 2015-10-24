@@ -223,8 +223,20 @@ class sequence {
 		if( $sequence ){
 			$this->set_properties( $sequence );
 			$this->set_total();
+			$this->ID = $sequence[ 'ID' ];
 		}
 
+	}
+
+	/**
+	 * Get sequence ID
+	 *
+	 * @since 0.0.8
+	 *
+	 * @return int
+	 */
+	public function get_id() {
+		return (int) $this->ID;
 	}
 
 	/**
@@ -417,7 +429,7 @@ class sequence {
 			$this->a = test::read( $this->a_id );
 		}
 
-		if ( is_array( $this->b ) ) {
+		if ( is_array( $this->a ) ) {
 			return $this->a['name'];
 		}
 
