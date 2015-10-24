@@ -16,6 +16,7 @@ use ingot\testing\object\sequence;
 
 class table extends sequence {
 
+
 	/**
 	 * Get the table for a sequence results
 	 *
