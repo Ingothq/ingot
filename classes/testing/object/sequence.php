@@ -429,7 +429,7 @@ class sequence {
 			$this->a = test::read( $this->a_id );
 		}
 
-		if ( is_array( $this->b ) ) {
+		if ( is_array( $this->a ) ) {
 			return $this->a['name'];
 		}
 

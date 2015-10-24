@@ -66,7 +66,7 @@ class table extends sequence {
 	 * @return string Table header row HTML
 	 */
 	protected function header(){
-		$columns[] = '<td class="empty"> </td>';
+		$columns[] = sprintf( '<td class="empty">%s</td>', $this->get_id() );
 		$columns[] = sprintf( '<td>%s</td>', __( 'Test A', 'ingot' ) );
 		$columns[] = sprintf( '<td>%s</td>', __( 'Test B', 'ingot' ) );
 		return $this->row( $columns );
