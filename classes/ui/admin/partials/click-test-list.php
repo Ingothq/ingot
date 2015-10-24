@@ -22,6 +22,9 @@
 		<a href="<?php echo esc_url( $new_link ); ?>" id="new-group" class="button button-secondary">
 			<?php _e( 'New Group', 'ingot' ); ?>
 		</a>
+		<a href="<?php echo esc_url( $main_page_link ); ?>" id="main-page-link" class="button button-secondary">
+			<?php _e( 'Back To Main Ingot Page', 'ingot' ); ?>
+		</a>
 		<div id="options-area">
 			<h3>
 				<?php _e( 'Options', 'ingot' ); ?>

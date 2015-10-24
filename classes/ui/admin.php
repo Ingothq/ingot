@@ -11,6 +11,8 @@
 
 namespace ingot\ui;
 
+use ingot\testing\crud\settings;
+
 
 abstract class admin {
 
@@ -53,7 +55,7 @@ abstract class admin {
 	}
 
 	/**
-	 * Edit link for groups
+	 * Edit link for CLICK groups
 	 *
 	 * @since 0.0.7
 	 *
@@ -63,19 +65,19 @@ abstract class admin {
 	 *
 	 * @return string
 	 */
-	protected function group_edit_link( $id = false ) {
+	protected function click_group_edit_link( $id = false ) {
 		if ( false === $id || 0 == absint( $id ) ){
 			$id = 'new';
 		}
 
-		$page = $this->admin_page_link();
+		$page = $this->click_group_admin_page_link();
 
 		$link = add_query_arg( 'group', $id, $page );
 		return $link;
 	}
 
 	/**
-	 * Main admin page link
+	 * Main CLICK admin page link
 	 *
 	 * @since 0.0.7
 	 *
@@ -85,14 +87,13 @@ abstract class admin {
 	 *
 	 * @return string
 	 */
-	protected function admin_page_link( $page_number = 1 ) {
+	protected function click_group_admin_page_link( $page_number = 1 ) {
 		$args = array(
-			'page' => 'ingot',
 			'page_number' => absint( $page_number ),
-			'_nonce' => wp_create_nonce()
+			'group' => 'list'
 		);
 
-		return add_query_arg( $args, admin_url( 'admin.php' ) );
+		return add_query_arg( $args, $this->main_page_link() );
 
 	}
 
@@ -113,7 +114,37 @@ abstract class admin {
 			'stats' => true
 		);
 
-		return add_query_arg( $args, $this->admin_page_link( ) );
+		return add_query_arg( $args, $this->click_group_admin_page_link( ) );
+
+	}
+
+	/**
+	 * Link for main Ingot page
+	 *
+	 * @since 0.0.9
+	 *
+	 * @return string
+	 */
+	protected function main_page_link(){
+		$args = array(
+			'page' => 'ingot',
+			'_nonce' => wp_create_nonce(),
+		);
+
+		return add_query_arg( $args, admin_url( 'admin.php' ) );
+	}
+
+	/**
+	 * Get HTML for settings form
+	 *
+	 * @since 0.0.9
+	 *
+	 * @return string
+	 */
+	protected function get_settings_form() {
+		$settings_class = new \ingot\ui\admin\settings( settings::get_settings_keys() );
+		$settings_form  = $settings_class->get_form();
+		return $settings_form;
 
 	}
 

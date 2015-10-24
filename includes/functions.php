@@ -294,3 +294,22 @@ function ingot_validate_boolean( $val ) {
 	}
 }
 
+/**
+ * Get the full URL of the current page
+ *
+ * @since 0.0.9
+ *
+ * @return string Full URL of the current page
+
+ */
+function ingot_current_url () {
+	$url = 'http';
+
+	if ( isset( $_SERVER[ 'HTTPS' ] ) && 'off' != $_SERVER[ 'HTTPS' ] && 0 != $_SERVER[ 'HTTPS' ] )
+		$url = 'https';
+
+	$url .= '://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
+
+	return $url;
+
+}

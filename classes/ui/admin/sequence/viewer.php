@@ -81,7 +81,7 @@ class viewer extends admin {
 
 		$group_id = $group_id;
 
-		$main_link = $this->admin_page_link();
+		$main_link = $this->click_group_admin_page_link();
 
 		$group_meta = $this->group_meta( $sequence );
 
@@ -123,7 +123,7 @@ class viewer extends admin {
 		$group = group::read( $sequence[ 'group_ID' ] );
 		$id = $group[ 'ID' ];
 		$name = $group[ 'name' ];
-		$link = $this->group_edit_link( $group[ 'ID' ] );
+		$link = $this->click_group_edit_link( $group[ 'ID' ] );
 		$type = $this->type( $group );
 		ob_start();
 
