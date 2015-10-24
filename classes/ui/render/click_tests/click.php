@@ -102,7 +102,7 @@ abstract class click {
 	 */
 	public function get_html(){
 		if ( is_array( $this->test ) ) {
-			\ingot\testing\tests\click\click::increase_total( $this->test['ID'], $this->sequence['ID'] );
+			\ingot\testing\tests\flow::increase_total( $this->test['ID'], $this->sequence['ID'] );
 
 			return $this->html;
 		}
