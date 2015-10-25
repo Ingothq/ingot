@@ -29,7 +29,7 @@
 			<h3>
 				<?php _e( 'Options', 'ingot' ); ?>
 			</h3>
-			<a href="#" id="delete-all-groups" data-group-type="click" class="button button-secondary">
+			<a href="#" id="delete-all-groups" data-group-type="price" class="button button-secondary">
 				<?php _e( 'Delete All', 'ignot' ); ?>
 			</a>
 			<?php echo $settings_form; ?>

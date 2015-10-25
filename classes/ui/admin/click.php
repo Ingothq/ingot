@@ -138,7 +138,7 @@ class click extends admin{
 	 */
 	public function get_click_page() {
 		if ( $this->check_nonce() ){
-			if ( isset( $_GET['group'] ) && is_numeric( $_GET['group'] ) ) {
+			if ( isset( $_GET['group_id'] ) && is_numeric( $_GET['group_id'] ) ) {
 				$group = group::read( absint( $_GET['group'] ) );
 			}
 			echo $this->click_group_page( $group );
@@ -158,8 +158,8 @@ class click extends admin{
 		ob_start();
 		$back_link = $this->click_group_admin_page_link();
 
-		if( is_null( $group ) && isset( $_GET[ 'group' ] ) ) {
-			$group = (int)  $_GET[ 'group' ];
+		if( is_null( $group ) && isset( $_GET[ 'group_id' ] ) ) {
+			$group = (int)  $_GET[ 'group_id' ];
 		}
 
 		if( is_int( $group ) ) {

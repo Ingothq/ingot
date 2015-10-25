@@ -24,9 +24,26 @@ use ingot\ui\admin;
 class screens extends admin{
 
 	/**
+	 * Click admin class
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access private
+	 *
 	 * @var \ingot\ui\admin\click
 	 */
 	private $click_screen_class;
+
+	/**
+	 * Price admin class
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access private
+	 *
+	 * @var \ingot\ui\admin\price
+	 */
+	private $price_screen_class;
 
 	/**
 	 * @since 0.0.6
@@ -37,6 +54,10 @@ class screens extends admin{
 
 			add_action( 'wp_ajax_test_field_group', array( $this->get_click_screen_class(), 'get_test_field_group' ) );
 			add_action( 'wp_ajax_get_click_page', array( $this->get_click_screen_class(), 'get_click_page' ) );
+
+			add_action( 'wp_ajax_get_price_list_page', array( $this->get_price_screen_class(), 'list_page' ) );
+			add_action( 'wp_ajax_get_price_page', array( $this->get_price_screen_class(), 'group_page' ) );
+
 			new \ingot\ui\admin\settings( settings::get_settings_keys() );
 		}else{
 			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
@@ -45,14 +66,38 @@ class screens extends admin{
 	}
 
 	/**
+	 * Get instance of the the click screen class
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
 	 * @return \ingot\ui\admin\click
 	 */
-	private function get_click_screen_class() {
+	protected function get_click_screen_class() {
 		if( is_null( $this->click_screen_class ) ){
 			$this->click_screen_class = new admin\click();
 		}
 
 		return $this->click_screen_class;
+	}
+
+	/**
+	 * Get instance of the the click screen class
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @return \ingot\ui\admin\price
+	 */
+	protected function get_price_screen_class() {
+		if( is_null( $this->price_screen_class ) ){
+			$this->price_screen_class = new admin\price();
+		}
+
+		return $this->price_screen_class;
+
 	}
 
 	/**
@@ -77,31 +122,45 @@ class screens extends admin{
 	 * @since 0.0.5
 	 */
 	function ingot_page() {
+		if( isset( $_GET[ 'type' ] ) ) {
+			if( 'click' == $_GET[ 'type' ] ){
+				if( isset( $_GET[ 'group_id' ] ) && 'list' != $_GET[ 'group_id' ] ){
+					if( isset( $_GET[ 'stats' ] ) ) {
+						$viewer = new admin\sequence\viewer( helpers::v( 'group_id', $_GET, 'absint' ) );
+						$html = $viewer->get_view();
+						if( ! empty( $html ) ) {
+							echo $html;
+						}else{
+							echo $this->get_click_screen_class()->main_page();
+						}
 
-		if ( isset( $_GET['group' ], $_GET[ 'group' ] ) && ! isset( $_GET[ 'stats' ] )  ) {
-			if ( 'list' != $_GET[ 'group' ] ) {
-				echo $this->get_click_screen_class()->click_group_page();
+					}else{
+						echo $this->get_click_screen_class()->click_group_page( helpers::v( 'group_id', $_GET, 'absint' ) );
+					}
+				}else{
+					echo $this->get_click_screen_class()->main_page();
+				}
+
+			}elseif( 'price' == $_GET[ 'type' ] ) {
+				if( isset( $_GET[ 'group_id' ] ) && 'list' != $_GET[ 'group_id' ] ) {
+					if ( isset( $_GET['stats'] ) ) {
+						wp_die( 'Josh did not make price tests stats yet' );
+					}else {
+						echo $this->get_price_screen_class()->group_page( helpers::v( 'group_id', $_GET, 'absint' ) );
+					}
+				}else{
+					echo $this->get_price_screen_class()->list_page();
+				}
 			}else{
-				echo $this->get_click_screen_class()->main_page();
+				echo $this->get_price_screen_class()->list_page();
 			}
-		}elseif( isset( $_GET[ 'stats' ], $_GET[ 'group_id' ]  ) ){
-			$viewer = new admin\sequence\viewer( absint( $_GET[ 'group_id' ] ) );
-			$html = $viewer->get_view();
-			if( ! empty( $html ) ) {
-				echo $html;
-
-			}else{
-				echo $this->get_click_screen_class()->main_page();
-			}
-		}elseif( isset( $_GET[ 'price' ] ) && ! isset( $_GET[ 'price_id' ] ) ){
-
-		}elseif( isset( $_GET[ 'price' ], $_GET[ 'price_id' ] ) ){
-
 		}else{
 			echo $this->main_page();
 		}
 
 		die();
+
+
 
 	}
 
@@ -114,10 +173,10 @@ class screens extends admin{
 	 */
 	protected function main_page(){
 		$settings_form = $this->get_settings_form();
-		$new_click_link = $this->click_group_edit_link();
+		$new_click_link = $this->click_group_edit_link( false );
 		$all_click_link = $this->click_group_admin_page_link();
-		$new_price_link = false;
-		$all_price_link = false;
+		$new_price_link = $this->price_group_edit_link( false );
+		$all_price_link = $this->price_group_admin_page_link(1);
 		ob_start();
 		include_once( $this->partials_dir_path() . 'main-page.php' );
 		return ob_get_clean();

@@ -61,19 +61,53 @@ abstract class admin {
 	 *
 	 * @access protected
 	 *
-	 * @param bool|false $id
+	 * @param bool|false|int $id Optional. Group ID. If false, the default, link is for creating new group.
 	 *
 	 * @return string
 	 */
 	protected function click_group_edit_link( $id = false ) {
+		return $this->group_edit_link( 'click', $id );
+	}
+
+	/**
+	 * Edit link for PRICE group
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param bool|false|int $id Optional. Group ID. If false, the default, link is for creating new group.
+	 *
+	 * @return string
+	 */
+	protected function price_group_edit_link( $id = false ){
+		return $this->group_edit_link( 'price', $id );
+
+	}
+
+	/**
+	 * Link to edit  page for a group
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param string $type
+	 * @param bool|false|int $id Optional. Group ID. If false, the default, link is for creating new group.
+	 *
+	 * @return string
+	 */
+	protected function group_edit_link( $type, $id = false ) {
 		if ( false === $id || 0 == absint( $id ) ){
-			$id = 'new';
+			$id = 0;
 		}
 
-		$page = $this->click_group_admin_page_link();
+		$page = $this->main_page_link();
 
-		$link = add_query_arg( 'group', $id, $page );
+		$args = array(
+			'type' => $type,
+			'group_id' => $id,
+		);
+
+		$link = add_query_arg( $args, $page );
 		return $link;
+
 	}
 
 	/**
@@ -90,12 +124,37 @@ abstract class admin {
 	protected function click_group_admin_page_link( $page_number = 1 ) {
 		$args = array(
 			'page_number' => absint( $page_number ),
-			'group' => 'list'
+			'group_id' => 'list',
+			'type' => 'click'
 		);
 
 		return add_query_arg( $args, $this->main_page_link() );
 
 	}
+
+	/**
+	 * Main PRICE admin page link
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @param int $page_number
+	 *
+	 * @return string
+	 */
+	protected function price_group_admin_page_link( $page_number = 1 ) {
+		$args = array(
+			'page_number' => absint( $page_number ),
+			'group_id' => 'list',
+			'type' => 'price'
+		);
+
+		return add_query_arg( $args, $this->main_page_link() );
+
+	}
+
+
 
 	/**
 	 * Stats page link

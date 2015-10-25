@@ -42,6 +42,14 @@ jQuery( document ).ready( function ( $ ) {
 
     $( document ).on( 'click', '#delete-all-groups', function(e) {
         e.preventDefault();
+        var url;
+        if( 'click' == $( this ).attr( 'data-group-type' ) ) {
+            var url = INGOT.api_url + '/test-group/1?all=true';
+        }else{
+            alert( 'fail' );
+            return;
+        }
+
         swal( {
                 title: INGOT.are_you_sure,
                 text: INGOT.delete_confirm,
@@ -53,7 +61,7 @@ jQuery( document ).ready( function ( $ ) {
                 closeOnCancel: false
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
-                    var url = INGOT.api_url + '/test-group/1?all=true';
+
                     $.ajax({
                         url:url,
                         method: "DELETE",
