@@ -48,7 +48,8 @@ abstract class table_crud extends crud {
 		if( is_array( $results ) && ! empty( $results ) && isset( $results[0])) {
 			$results = $results[0];
 		}else{
-			$results = false;
+			return false;
+
 		}
 
 		/**
@@ -60,8 +61,6 @@ abstract class table_crud extends crud {
 		 * @param string $what Object name
 		 */
 		$results = apply_filters( 'ingot_crud_read', $results, static::what() );
-
-
 
 		return $results;
 

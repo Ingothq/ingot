@@ -24,6 +24,8 @@ class test_price_group_crud extends \WP_UnitTestCase {
 	/**
 	 * Test create with minimal params set
 	 *
+	 * @since 0.0.9
+	 *
 	 * @covers \ingot\testing\crud\price_group::read();
 	 * @covers \ingot\testing\crud\price_group::fill_in()
 	 */
@@ -36,7 +38,6 @@ class test_price_group_crud extends \WP_UnitTestCase {
 		$created = \ingot\testing\crud\price_group::create( $params );
 		$this->assertFalse(  is_wp_error( $created ) );
 		$this->assertTrue( is_numeric( $created ) );
-
 
 	}
 
@@ -98,7 +99,61 @@ class test_price_group_crud extends \WP_UnitTestCase {
 			$this->assertArrayHasKey( $param,  $group );
 			$this->assertEquals( $value, $group[ $param ] );
 		}
+
 	}
+
+	/**
+	 * Test we can update a test group
+	 *
+	 * @since 0.0.9
+	 *
+	 * @covers \ingot\testing\crud\price_group::update()
+	 */
+	public function testUpdate() {
+		$params = array(
+			'type' => 'price',
+			'plugin' => 'edd'
+		);
+
+		$created = \ingot\testing\crud\price_group::create( $params );
+		$params[ 'plugin' ] = 'woo';
+		$updated = \ingot\testing\crud\price_group::update( $params, $created );
+		$this->assertEquals( $created, $updated );
+		$group = \ingot\testing\crud\price_group::read( $updated );
+		foreach( $params as $key => $value ){
+			$this->assertArrayHasKey( $key, $group );
+			$this->assertEquals( $value, $group[ $key ] );
+		}
+
+	}
+
+	/**
+	 * Test we can delete a test group
+	 *
+	 * @since 0.0.9
+	 *
+	 * @covers \ingot\testing\crud\price_group::delete()
+	 */
+	public function testDelete() {
+		$params = array(
+			'type' => 'price',
+			'plugin' => 'edd'
+		);
+
+		$group_1 = \ingot\testing\crud\price_group::create( $params );
+		$this->assertFalse(  is_wp_error( $group_1 ) );
+		$this->assertTrue( is_numeric( $group_1 ) );
+		$params[ 'plugin' ] = 'woo';
+		$group_2 = \ingot\testing\crud\price_group::create( $params );
+		$this->assertFalse(  is_wp_error( $group_2 ) );
+		$this->assertTrue( is_numeric( $group_2 ) );
+
+		\ingot\testing\crud\price_group::delete( $group_2 );
+		$this->assertTrue( is_array( \ingot\testing\crud\price_group::read( $group_1 ) ) );
+		$this->assertFalse( is_array( \ingot\testing\crud\price_group::read( $group_2 ) ) );
+
+	}
+	
 
 
 }
