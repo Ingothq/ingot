@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin page for listing click tests
+ * Admin page for listing price tests
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -9,17 +9,15 @@
  * @copyright 2015 Josh Pollock
  */
 ?>
-<div id="test-group-admin" class="ingot-admin-wrap">
-
-
+<div id="price-test-group-admin" class="ingot-admin-wrap">
 	<h1>
-		<?php _e( 'All Click Tests', 'ingot' ); ?>
+		<?php _e( 'All Price Tests', 'ingot' ); ?>
 	</h1>
 	<section id="groups-list">
 		<?php echo $groups_inner_html; ?>
 	</section>
 	<section id="options">
-		<a href="<?php echo esc_url( $new_link ); ?>" id="new-group" class="button button-secondary">
+		<a href="<?php echo esc_url( $new_link ); ?>" id="new-group" data-group-type="click" class="button button-secondary">
 			<?php _e( 'New Group', 'ingot' ); ?>
 		</a>
 		<a href="<?php echo esc_url( $main_page_link ); ?>" id="main-page-link" class="button button-secondary">

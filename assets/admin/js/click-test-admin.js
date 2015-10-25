@@ -3,6 +3,66 @@
  */
 jQuery( document ).ready( function ( $ ) {
 
+    //the all click handler
+    $( document ).on( 'click', function(e) {
+        var el = document.activeElement;
+        var href = el.href;
+        var group_id;
+        group_id =  getParameterByName( 'group_id', href );
+        if( 'null' !== group_id ) {
+            if ( 'price' == getParameterByName( 'type', href ) ) {
+
+                e.preventDefault();
+                    var action;
+
+                    if ( 'list' == group_id ) {
+                        action = 'get_price_list_page';
+                    } else {
+                        action = 'get_price_group_page';
+                    }
+
+                    var data = {
+                        _nonce: INGOT.admin_ajax_nonce,
+                        action: action,
+                        group_id: group_id
+                    };
+
+                    var outer_wrap = document.getElementById( 'ingot-outer-wrap' );
+                    $( outer_wrap ).empty();
+                    $( '<img/>', {
+                        id: 'outer-loading-spinner',
+                        src: INGOT.spinner_url,
+                        alt: INGOT.spinner_alt,
+                    }).appendTo( outer_wrap );
+                    $.ajax( {
+                        url: INGOT.admin_ajax,
+                        method: "GET",
+                        data: data,
+                        complete: function ( r, status ) {
+                            $( '#outer-loading-spinner' ).remove();
+                            if( 'success' == status ) {
+                                $( outer_wrap ).html( r.responseText );
+                                history.replaceState( {}, 'Ingot', href );
+                            }
+                        }
+
+                    } );
+
+            }else if( 'click' ==  getParameterByName( 'type', href ) ) {
+                //use for click naviagations
+            }
+
+        }
+
+
+        function getParameterByName(name, href ) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec( href);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+    });
+
     $( '#group-type' ).change( function() {
         maybe_hide_select_option();
     });

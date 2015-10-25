@@ -55,6 +55,8 @@ class price extends admin {
 	 */
 	protected function make_group_page( $id ) {
 		ob_get_clean();
+		
+
 		include_once ( $this->partials_dir_path() . 'price-test.php' );
 		return ob_get_clean();
 
@@ -73,6 +75,12 @@ class price extends admin {
 	 */
 	protected function make_list_page( $page_number ) {
 		ob_get_clean();
+		$settings_form = $this->get_settings_form();
+		$next_button = false;
+		$prev_button = false;
+		$main_page_link = $this->main_page_link();
+		$new_link = $this->price_group_edit_link( 0 );
+		$groups_inner_html = false;
 		include_once ( $this->partials_dir_path() . 'price-test-list.php' );
 		return ob_get_clean();
 	}

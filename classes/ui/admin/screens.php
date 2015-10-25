@@ -56,7 +56,7 @@ class screens extends admin{
 			add_action( 'wp_ajax_get_click_page', array( $this->get_click_screen_class(), 'get_click_page' ) );
 
 			add_action( 'wp_ajax_get_price_list_page', array( $this->get_price_screen_class(), 'list_page' ) );
-			add_action( 'wp_ajax_get_price_page', array( $this->get_price_screen_class(), 'group_page' ) );
+			add_action( 'wp_ajax_get_price_group_page', array( $this->get_price_screen_class(), 'group_page' ) );
 
 			new \ingot\ui\admin\settings( settings::get_settings_keys() );
 		}else{
@@ -122,6 +122,7 @@ class screens extends admin{
 	 * @since 0.0.5
 	 */
 	function ingot_page() {
+		echo '<div id="ingot-outer-wrap">';
 		if( isset( $_GET[ 'type' ] ) ) {
 			if( 'click' == $_GET[ 'type' ] ){
 				if( isset( $_GET[ 'group_id' ] ) && 'list' != $_GET[ 'group_id' ] ){
@@ -158,6 +159,7 @@ class screens extends admin{
 			echo $this->main_page();
 		}
 
+		echo '</div><!--/#ingot-outer-wrap-->';
 		die();
 
 
@@ -215,7 +217,9 @@ class screens extends admin{
 					'delete' => __( 'Delete', 'ingot' ),
 					'cancel' => __( 'Cancel', 'ignot' ),
 					'deleted' => __( 'Deleted', 'ingot' ),
-					'canceled' => __( 'Canceled', 'ingot' )
+					'canceled' => __( 'Canceled', 'ingot' ),
+					'spinner_url' => trailingslashit( INGOT_URL ) . 'assets/img/loading.gif',
+					'spinner_alt' => __( 'Loading Spinner', 'ingot' )
 
 
 
