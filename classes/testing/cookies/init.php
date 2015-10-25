@@ -32,34 +32,4 @@ class init {
 
 	}
 
-	protected function is_cookie_set() {
-		if( isset( $this->cookies[ $this->cookie_name ] ) ){
-			return true;
-		}
-	}
-
-	protected function get_our_cookie() {
-		$this->cookie = $this->cookies[ $this->cookie_name ];
-
-	}
-
-	protected function make_cookie_contents() {
-		return 'bats';
-	}
-
-	protected function create_new_cookie() {
-		$length = apply_filters( 'ingot_cookie_length', WEEK_IN_SECONDS );
-		setcookie( $this->cookie_name, $this->make_cookie_contents(), $length, COOKIEPATH, COOKIE_DOMAIN, false );
-		$this->cookies = $_COOKIE;
-	}
-
-
-	protected function get_url() {
-
-		$url = '.' .  home_url();
-
-		return apply_filters( 'ingot_cookie_domain', $url );
-
-	}
-
 }

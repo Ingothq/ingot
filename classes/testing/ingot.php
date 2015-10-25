@@ -83,12 +83,6 @@ class ingot {
 
 	}
 
-
-
-
-
-
-
 	/**
 	 * Data to be localize as INGOT_VARS
 	 *
@@ -146,8 +140,13 @@ class ingot {
 	 * @param string $what Item type
 	 */
 	public  function create_hook( $id, $what){
-		if( 'group' == $what ){
-			click::make_initial_sequence( $id );
+		if( 'group' == $what || 'price_group' == $what ){
+			$price = false;
+			if( 'price_group' == $what ){
+				$price = true;
+			}
+
+			click::make_initial_sequence( $id, $price );
 
 		}
 	}

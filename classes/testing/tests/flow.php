@@ -12,6 +12,7 @@
 namespace ingot\testing\tests;
 
 use ingot\testing\crud\group;
+use ingot\testing\crud\price_group;
 use ingot\testing\crud\sequence;
 use ingot\testing\crud\settings;
 use ingot\testing\crud\tracking;
@@ -87,11 +88,16 @@ class flow {
 				break;
 		}
 
-		$group = group::read(  $sequence[ 'group_ID' ] );
+		if ( 'price' == $sequence[ 'test_type' ] ) {
+			$group = price_group::read( $sequence[ 'group_ID' ] );
+		}else{
+			$group = group::read( $sequence[ 'group_ID' ] );
+		}
+
 		$threshold = helpers::v( 'threshold', $group, 20 );
 
 		if( $total_win >= $threshold ) {
-			$updated = click::make_next_sequence( $sequence[ 'group_ID' ], $winner );
+			$updated = click::make_next_sequence( $sequence[ 'group_ID' ], $winner, $group );
 		}else{
 			$updated = sequence::update( $sequence, $sequence_id, true );
 		}

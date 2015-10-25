@@ -44,12 +44,12 @@ class sequence extends table_crud {
 	 *  $limit int Optional. Limit results, default is -1 which gets all.
 	 *  $page int Optional. Page of results, used with $limit. Default is 1
 	 *  $return string Optional. What to return all|IDs Return all fields or just IDs
+	 *  $price_test Optional bool if true and $current current sequences for all prices tests are returned
 	 * }
 	 *
 	 * @return array
 	 */
 	public static function get_items( $params ) {
-		$limit = $page = 1;
 		$args = wp_parse_args(
 			$params,
 			array(
@@ -58,9 +58,21 @@ class sequence extends table_crud {
 				'current' => false,
 				'limit' => -1,
 				'page' => 1,
-				'return' => '*'
+				'return' => '*',
+				'price_test' => false,
 			)
 		);
+
+		if( -1 == $args[ 'limit' ] ) {
+			$args[ 'limit' ] = 999999999;
+		}
+
+
+		if( true == $args[ 'price_test' ] ) {
+			return self::get_for_price_tests( $args[ 'ids'], $args[ 'limit' ], $args[ 'pages' ] );
+		}
+
+
 
 		if( strtolower( 'ids' ) !== $args[ 'return' ] ) {
 			$fields = '*';
@@ -68,9 +80,6 @@ class sequence extends table_crud {
 			$fields = '`ID`';
 		}
 
-		if( -1 == $args[ 'limit' ] ) {
-			$args[ 'limit' ] = 999999999;
-		}
 
 		global $wpdb;
 		$table_name = self::get_table_name();
@@ -168,6 +177,36 @@ $table_name, helpers::v( 'group_ID', $params )  );
 		);
 
 		return $needed;
+	}
+
+	/**
+	 * Get all sequences that are the current sequence for a price test
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param bool $ids
+	 * @param int $limit
+	 * @param int $page
+	 *
+	 * @return array|void
+	 */
+	protected static function get_for_price_tests($ids, $limit, $page ){
+		global $wpdb;
+		$table_name = self::get_table_name();
+
+		$sequence_ids = price_group::get_items( array( 'get_current' => true, 'ids' => (bool) $ids ) );
+
+		if( ! empty( $sequence_ids ) ) {
+			$sql = sprintf( "SELECT * FROM %s WHERE ID IN(%s)", $table_name, implode( ',', $sequence_ids ) );
+
+			$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $limit, self::calculate_offset( $limit, $page )  );
+
+			$results = $wpdb->get_results( $sql, ARRAY_A );
+
+			return $results;
+
+		}
+
 	}
 
 

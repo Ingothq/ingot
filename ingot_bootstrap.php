@@ -214,6 +214,7 @@ class ingot_bootstrap {
 		  test_order LONGTEXT NOT NULL,
 		  initial mediumint(9) NOT NULL,
 		  threshold mediumint(9) NOT NULL,
+		  product_ID BIGINT NOT NULL,
 		  type VARCHAR(255) NOT NULL,
 		  current_sequence mediumint(9) NOT NULL,
 		  created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,

@@ -22,7 +22,7 @@ class price_test extends options_crud {
 	 *
 	 * @var string
 	 */
-	protected static $what = 'price_test';
+	protected static $what = 'price_test_group';
 
 	protected static function what() {
 		return self::$what;

@@ -335,7 +335,7 @@ class test_click_tests extends \WP_UnitTestCase {
 
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
-		$new_sequence_id = \ingot\testing\tests\click\click::make_next_sequence( $group_id, $test_1 );
+		$new_sequence_id = \ingot\testing\tests\click\click::make_next_sequence( $group_id, $test_1, $group );
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$this->assertArrayHasKey( 1, $group[ 'sequences'] );
 		$this->assertEquals( $new_sequence_id, $group[ 'sequences' ][1] );

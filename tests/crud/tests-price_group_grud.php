@@ -32,7 +32,8 @@ class test_price_group_crud extends \WP_UnitTestCase {
 	public function testCreateMinimal() {
 		$params = array(
 			'type' => 'price',
-			'plugin' => 'edd'
+			'plugin' => 'edd',
+			'product_ID' => 1009
 		);
 
 		$created = \ingot\testing\crud\price_group::create( $params );
@@ -52,7 +53,8 @@ class test_price_group_crud extends \WP_UnitTestCase {
 	public function testCreateInvalid() {
 		$params = array(
 			'type' => 'hats',
-			'plugin' => 'edd'
+			'plugin' => 'edd',
+			'product_ID' => 1009
 		);
 
 		$created = \ingot\testing\crud\price_group::create( $params );
@@ -60,7 +62,16 @@ class test_price_group_crud extends \WP_UnitTestCase {
 
 		$params = array(
 			'type' => 'price',
-			'plugin' => 'salad'
+			'plugin' => 'salad',
+			'product_ID' => 1009
+		);
+
+		$created = \ingot\testing\crud\price_group::create( $params );
+		$this->assertTrue( is_wp_error( $created ) );
+
+		$params = array(
+			'type' => 'price',
+			'plugin' => 'edd',
 		);
 
 		$created = \ingot\testing\crud\price_group::create( $params );
@@ -83,9 +94,11 @@ class test_price_group_crud extends \WP_UnitTestCase {
 			'plugin' => 'edd',
 			'group_name' => rand(),
 			'sequences' => array( rand(), rand(), rand() ),
-			'test_order' => array( rand(), rand(), rand(), rand() ),
+			'test_order' => array(),
 			'initial' => '42',
 			'threshold' => '84',
+			'product_ID' => 1009
+
 		);
 
 		$created = \ingot\testing\crud\price_group::create( $params );
@@ -103,6 +116,104 @@ class test_price_group_crud extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Test creating a group with real price tests
+	 *
+	 * @since 0.0.9
+	 *
+	 * @covers \ingot\testing\crud\price_group::read();
+	 */
+	public function testCreateWithRealPriceTest() {
+
+
+		$product_id = 4242;
+
+		$params = array(
+			'product_ID' => $product_id,
+			'default' => array(
+				'a' => 0.1,
+				'b' => 0.9
+			)
+
+		);
+
+		$test_1 = \ingot\testing\crud\price_test::create( $params );
+		$this->assertFalse( is_wp_error( $test_1 ) );
+		$this->assertTrue( is_numeric( $test_1 ) );
+		$test_2 = \ingot\testing\crud\price_test::create( $params );
+		$this->assertFalse( is_wp_error( $test_2 ) );
+		$this->assertTrue( is_numeric( $test_2 ) );
+
+
+		$params = array(
+			'type' => 'price',
+			'plugin' => 'edd',
+			'group_name' => rand(),
+			'sequences' => array(),
+			'test_order' => array( $test_1, $test_2 ),
+			'initial' => '42',
+			'threshold' => '84',
+			'product_ID' => $product_id
+
+		);
+
+		$created = \ingot\testing\crud\price_group::create( $params );
+		$this->assertFalse(  is_wp_error( $created ) );
+		$this->assertTrue( is_numeric( $created ) );
+
+		$group = \ingot\testing\crud\price_group::read( $created );
+		$this->assertEquals( array( $test_1, $test_2 ), $group[ 'test_order' ] );
+	}
+
+	/**
+	 * Test creating a group with real price tests with a different product ID
+	 *
+	 * @since 0.0.9
+	 *
+	 * @covers \ingot\testing\crud\price_group::read()
+	 * @covers \ingot\testing\crud\price_group::validate_config()
+	 */
+	public function testCreateWithInvalidTests() {
+
+
+		$product_id = 4242;
+
+		$params = array(
+			'product_ID' => $product_id,
+			'default' => array(
+				'a' => 0.1,
+				'b' => 0.9
+			)
+
+		);
+
+		$test_1 = \ingot\testing\crud\price_test::create( $params );
+		$this->assertFalse( is_wp_error( $test_1 ) );
+		$this->assertTrue( is_numeric( $test_1 ) );
+		$test_2 = \ingot\testing\crud\price_test::create( $params );
+		$this->assertFalse( is_wp_error( $test_2 ) );
+		$this->assertTrue( is_numeric( $test_2 ) );
+
+		$product_id = 43;
+
+		$params = array(
+			'type' => 'price',
+			'plugin' => 'edd',
+			'group_name' => rand(),
+			'sequences' => array(),
+			'test_order' => array( $test_1, $test_2 ),
+			'initial' => '42',
+			'threshold' => '84',
+			'product_ID' => $product_id
+
+		);
+
+		$created = \ingot\testing\crud\price_group::create( $params );
+		$this->assertTrue(  is_wp_error( $created ) );
+
+
+	}
+
+	/**
 	 * Test we can update a test group
 	 *
 	 * @since 0.0.9
@@ -112,7 +223,9 @@ class test_price_group_crud extends \WP_UnitTestCase {
 	public function testUpdate() {
 		$params = array(
 			'type' => 'price',
-			'plugin' => 'edd'
+			'plugin' => 'edd',
+			'product_ID' => 1009
+
 		);
 
 		$created = \ingot\testing\crud\price_group::create( $params );
@@ -137,7 +250,9 @@ class test_price_group_crud extends \WP_UnitTestCase {
 	public function testDelete() {
 		$params = array(
 			'type' => 'price',
-			'plugin' => 'edd'
+			'plugin' => 'edd',
+			'product_ID' => 1009
+
 		);
 
 		$group_1 = \ingot\testing\crud\price_group::create( $params );
@@ -153,7 +268,7 @@ class test_price_group_crud extends \WP_UnitTestCase {
 		$this->assertFalse( is_array( \ingot\testing\crud\price_group::read( $group_2 ) ) );
 
 	}
-	
+
 
 
 }
