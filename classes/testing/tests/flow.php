@@ -97,7 +97,7 @@ class flow {
 		$threshold = helpers::v( 'threshold', $group, 20 );
 
 		if( $total_win >= $threshold ) {
-			$updated = click::make_next_sequence( $sequence[ 'group_ID' ], $winner, $group );
+			$updated = sequence_progression::make_next_sequence( $sequence[ 'group_ID' ], $winner, $group );
 		}else{
 			$updated = sequence::update( $sequence, $sequence_id, true );
 		}

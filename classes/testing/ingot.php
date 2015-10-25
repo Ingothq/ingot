@@ -101,7 +101,7 @@ class ingot {
 		if ( 'group' == $what ){
 			if( empty( $item[ 'sequences'] ) ){
 				remove_filter( 'ingot_crud_read', array( $this, 'read_hook' ) );
-				click::make_initial_sequence( $item[ 'ID' ] );
+				\ingot\testing\tests\sequence_progression::make_initial_sequence( $item[ 'ID' ] );
 				$group = group::read( $item[ 'ID' ] );
 				return $group;
 
@@ -146,7 +146,7 @@ class ingot {
 				$price = true;
 			}
 
-			click::make_initial_sequence( $id, $price );
+			\ingot\testing\tests\sequence_progression::make_initial_sequence( $id, $price );
 
 		}
 	}
