@@ -48,6 +48,7 @@ class ingot_bootstrap {
 
 				self::maybe_add_sequence_table();
 				self::maybe_add_tracking_table();
+				self::maybe_add_price_group_table();
 				if( ! self::table_exists( \ingot\testing\crud\sequence::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() ) ) {
 					if( is_admin() ) {
 						printf( '<div class="error"><p>%s</p></div>', __( 'Ingot Not Loaded', 'ingot' ) );
@@ -172,6 +173,51 @@ class ingot_bootstrap {
 		  meta LONGTEXT NOT NULL,
 		  user_agent LONGTEXT NOT NULL,
 		  time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		  UNIQUE KEY ID (ID)
+		) $charset_collate;";
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
+
+	}
+
+	/**
+	 * If needed, add the custom table for price groups
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param bool $drop_first Optional. If true, DROP TABLE statemnt is made first. Default is false
+	 */
+	public static function maybe_add_price_group_table( $drop_first = false ) {
+		global $wpdb;
+
+		$table_name = \ingot\testing\crud\price_group::get_table_name();
+
+		if( $drop_first  ) {
+			if( self::table_exists( $table_name )  ) {
+				$wpdb->query( "DROP TABLE $table_name" );
+			}
+
+		}
+
+		if(  self::table_exists( $table_name ) ) {
+			return;
+		}
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE $table_name (
+		  ID bigint(9) NOT NULL AUTO_INCREMENT,
+		  plugin VARCHAR(255) NOT NULL,
+		  group_name VARCHAR(255) NOT NULL,
+		  sequences LONGTEXT NOT NULL,
+		  test_order LONGTEXT NOT NULL,
+		  initial mediumint(9) NOT NULL,
+		  threshold mediumint(9) NOT NULL,
+		  type VARCHAR(255) NOT NULL,
+		  current_sequence mediumint(9) NOT NULL,
+		  created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		  modified  datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		  UNIQUE KEY ID (ID)
 		) $charset_collate;";
 

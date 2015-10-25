@@ -122,6 +122,14 @@ class ingot {
 			}
 
 			return $item;
+		}elseif( 'price_group' == $what ) {
+			foreach( array(
+				'sequences',
+				'test_order'
+			) as $key ) {
+				$item[ $key ] = maybe_unserialize( $item[ $key ] );
+			}
+			return $item;
 		}
 
 

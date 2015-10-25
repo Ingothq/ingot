@@ -55,7 +55,7 @@ class price extends admin {
 	 */
 	protected function make_group_page( $id ) {
 		ob_get_clean();
-		
+
 
 		include_once ( $this->partials_dir_path() . 'price-test.php' );
 		return ob_get_clean();

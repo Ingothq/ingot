@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * Base class for custom table crud
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -12,8 +12,13 @@
 namespace ingot\testing\crud;
 
 
-class table_crud extends crud {
+use ingot\testing\utility\helpers;
 
+abstract class table_crud extends crud {
+
+	protected static function what() {
+		return static::$what;
+	}
 
 	/**
 	 * Get one item from table
@@ -154,6 +159,7 @@ class table_crud extends crud {
 
 		foreach( $data as $key => $datum ) {
 			if( is_array( $data[ $key ] ) ) {
+				$data[ $key ] = helpers::sanitize( $data[ $key ] );
 				$data[ $key ] = serialize( $datum );
 			}
 
@@ -203,7 +209,7 @@ class table_crud extends crud {
 		$_fields = self::get_all_fields();
 		$fields = array();
 		foreach( $_fields as $field ) {
-			if( in_array( $field, array( 'created', 'modified', 'test_type' ) ) ) {
+			if( in_array( $field, array( 'created', 'modified', 'test_type', 'plugin', 'group_name', 'sequences', 'test_order' ) ) ) {
 				$fields[ $field ] = '%s';
 			}else{
 				$fields[ $field ] = '%d';

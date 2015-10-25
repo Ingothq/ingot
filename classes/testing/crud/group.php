@@ -48,7 +48,7 @@ class group extends options_crud {
 	}
 
 	/**
-	 * Neccasary, but not required fields of this object
+	 * Necessary, but not required fields of this object
 	 *
 	 * @since 0.0.4
 	 *
