@@ -58,6 +58,8 @@ class screens extends admin{
 			add_action( 'wp_ajax_get_price_list_page', array( $this->get_price_screen_class(), 'list_page' ) );
 			add_action( 'wp_ajax_get_price_group_page', array( $this->get_price_screen_class(), 'group_page' ) );
 
+			add_action( 'wp_ajax_get_all_products', array( 'ingot\ui\admin\price_ui_ajax_callbacks', 'get_all_products' ) );
+
 			new \ingot\ui\admin\settings( settings::get_settings_keys() );
 		}else{
 			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
@@ -74,7 +76,7 @@ class screens extends admin{
 	 *
 	 * @return \ingot\ui\admin\click
 	 */
-	protected function get_click_screen_class() {
+	public function get_click_screen_class() {
 		if( is_null( $this->click_screen_class ) ){
 			$this->click_screen_class = new admin\click();
 		}
@@ -91,7 +93,7 @@ class screens extends admin{
 	 *
 	 * @return \ingot\ui\admin\price
 	 */
-	protected function get_price_screen_class() {
+	public function get_price_screen_class() {
 		if( is_null( $this->price_screen_class ) ){
 			$this->price_screen_class = new admin\price();
 		}
@@ -219,7 +221,8 @@ class screens extends admin{
 					'deleted' => __( 'Deleted', 'ingot' ),
 					'canceled' => __( 'Canceled', 'ingot' ),
 					'spinner_url' => trailingslashit( INGOT_URL ) . 'assets/img/loading.gif',
-					'spinner_alt' => __( 'Loading Spinner', 'ingot' )
+					'spinner_alt' => __( 'Loading Spinner', 'ingot' ),
+					'price_test_group_link' => remove_query_arg( 'group_id', $this->price_group_edit_link() )
 
 
 

@@ -33,7 +33,7 @@ abstract class route extends \WP_REST_Controller  {
 	 */
 	public function register_routes() {
 		$namespace = $this->make_namespace();
-		$base = $this->what;
+		$base = str_replace( '_', '-', $this->what );
 		register_rest_route( $namespace, '/' . $base, array(
 			array(
 				'methods'         => \WP_REST_Server::READABLE,

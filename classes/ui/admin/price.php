@@ -12,6 +12,7 @@
 namespace ingot\ui\admin;
 
 
+use ingot\testing\crud\price_group;
 use ingot\testing\utility\helpers;
 use ingot\ui\admin;
 
@@ -27,7 +28,11 @@ class price extends admin {
 	public function group_page() {
 		if( $this->check_nonce() ) {
 			$id = helpers::v_sanitized( 'price_id', $_GET, 0 );
-			return $this->make_group_page( $id );
+			if ( 0 < $id ) {
+				return $this->make_group_page( $id );
+			}else{
+				return $this->new_group_page();
+			}
 		}
 	}
 
@@ -55,11 +60,18 @@ class price extends admin {
 	 */
 	protected function make_group_page( $id ) {
 		ob_get_clean();
-
-
+		$group = price_group::read( $id );
 		include_once ( $this->partials_dir_path() . 'price-test.php' );
 		return ob_get_clean();
 
+	}
+
+	protected function new_group_page(){
+		ob_start();
+		$back_link = $this->price_group_admin_page_link();
+		$stats_link = false;
+		include_once ( $this->partials_dir_path() . 'price-test-new.php' );
+		return ob_get_clean();
 	}
 
 	/**

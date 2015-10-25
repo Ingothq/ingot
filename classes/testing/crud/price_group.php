@@ -25,24 +25,7 @@ class price_group extends table_crud {
 	 */
 	protected static $what = 'price_group';
 
-	/**
-	 * Required fields of this object
-	 *
-	 * @since 0.0.4
-	 *
-	 * @access protected
-	 *
-	 * @return array
-	 */
-	protected static function required() {
-		$required = array(
-			'type',
-			'plugin',
-			'product_ID'
-		);
 
-		return $required;
-	}
 
 	/**
 	 * Get price groups
@@ -96,31 +79,6 @@ class price_group extends table_crud {
 
 
 	}
-
-	/**
-	 * Necesarry, but not required fields of this object
-	 *
-	 * @since 0.0.4
-	 *
-	 * @access protected
-	 *
-	 * @return array
-	 */
-	protected static function needed() {
-		$needed = array(
-			'group_name',
-			'sequences',
-			'test_order',
-			'initial',
-			'threshold',
-			'created',
-			'modified',
-			'current_sequence',
-		);
-
-		return $needed;
-	}
-
 
 	/**
 	 * Validate item config
@@ -187,6 +145,49 @@ class price_group extends table_crud {
 		return $data;
 
 
+	}
+
+	/**
+	 * Necesarry, but not required fields of this object
+	 *
+	 * @since 0.0.4
+	 *
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected static function needed() {
+		$needed = array(
+			'group_name',
+			'sequences',
+			'test_order',
+			'initial',
+			'threshold',
+			'created',
+			'modified',
+			'current_sequence',
+		);
+
+		return $needed;
+	}
+
+	/**
+	 * Required fields of this object
+	 *
+	 * @since 0.0.4
+	 *
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected static function required() {
+		$required = array(
+			'type',
+			'plugin',
+			'product_ID'
+		);
+
+		return $required;
 	}
 
 

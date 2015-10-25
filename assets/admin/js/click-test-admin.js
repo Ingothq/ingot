@@ -338,4 +338,102 @@ jQuery( document ).ready( function ( $ ) {
         });
 
     });
+
+    /**
+     * New Price Test
+     */
+    $( "#group-plugin" ).change(function() {
+        var plugin = $( this ).val();
+        var data = {
+            plugin: plugin,
+            _nonce: INGOT.admin_ajax_nonce,
+            action: 'get_all_products'
+        };
+
+        var el = document.getElementById( 'group-product_ID-group' );
+        $( el ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
+        $( '<img/>', {
+            id: 'products-loading-spinner',
+            src: INGOT.spinner_url,
+            alt: INGOT.spinner_alt,
+        }).appendTo( el );
+
+        $.ajax( {
+               method: 'GET',
+                data: data,
+                url: INGOT.admin_ajax,
+                complete: function( response, status ){
+                    if( 'success' == status ) {
+                        var $el = $("#group-product_ID");
+                        $el.empty();
+                        var newOptions = JSON.parse( response.responseText );
+                        console.log(  newOptions );
+
+                        $.each(newOptions, function(value,key) {
+                            $el.append($("<option></option>")
+                                .attr("value", value).text(key));
+                        });
+
+                    }
+                    $( '#products-loading-spinner' ).remove();
+                }
+
+            }
+        )
+    });
+
+    $( '#ingot-price-test-new' ).submit( function(e) {
+        e.preventDefault();
+        $( '#spinner' ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
+        var data = {
+            name: $( '#group-name' ).val(),
+            plugin: $( '#group-plugin' ).val(),
+            type: 'price'
+        };
+
+        var url = INGOT.api_url + '/price-group/';
+
+        $.when(
+            $.ajax( {
+                    url: url,
+                    data: data,
+                    method: "POST",
+                    beforeSend: function ( xhr ) {
+                        xhr.setRequestHeader( 'X-WP-Nonce', INGOT.nonce );
+                    },
+                }
+            )
+        ).then( function( response, textStatus, xhr )  {
+                $( '#spinner' ).css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' ).hide();
+                if ( 'success' == textStatus ) {
+                    swal( {
+                        title: INGOT.success,
+                        text: INGOT.saved + r.name,
+                        type: "success",
+                        confirmButtonText: INGOT.close
+                    } );
+                    var data = {
+                        _nonce: INGOT.admin_ajax_nonce,
+                        action: 'get_price_group_page',
+                        group_id: group_id
+                    };
+
+                    $.ajax( {
+                        method: "get",
+                        url: INGOT.admin_ajax,
+                        data: data,
+                        complete: function ( r, status ) {
+                            $( '#outer-loading-spinner' ).remove();
+                            if ( 'success' == status ) {
+                                $( outer_wrap ).html( r.responseText );
+                                var href = INGOT.price_test_group_link + '&group_id=' + response.ID
+                                    history.replaceState( {}, 'Ingot', href );
+                            }
+                        }
+
+                    } )
+                }
+        });
+    });
+
 } );
