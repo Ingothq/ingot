@@ -21,11 +21,11 @@ class price_test_group extends route {
 	 *
 	 * @since 0.0.9
 	 *
-	 * @access private
+	 * @access protected
 	 *
 	 * @var string
 	 */
-	private $what = 'price_group';
+	protected $what = 'price_group';
 
 
 	/**

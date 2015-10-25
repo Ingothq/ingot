@@ -21,11 +21,11 @@ class test_group extends route {
 	 *
 	 * @since unknown
 	 *
-	 * @access private
+	 * @access protected
 	 *
 	 * @var string
 	 */
-	private $what = 'group';
+	protected $what = 'group';
 
 	/**
 	 * Register the routes for the objects of the controller.

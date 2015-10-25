@@ -23,7 +23,7 @@ abstract class route extends \WP_REST_Controller  {
 	 *
 	 * @var string
 	 */
-	private $what;
+	protected $what;
 
 
 	/**

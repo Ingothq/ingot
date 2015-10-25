@@ -223,9 +223,6 @@ class screens extends admin{
 					'spinner_url' => trailingslashit( INGOT_URL ) . 'assets/img/loading.gif',
 					'spinner_alt' => __( 'Loading Spinner', 'ingot' ),
 					'price_test_group_link' => remove_query_arg( 'group_id', $this->price_group_edit_link() )
-
-
-
 				)
 			);
 		}

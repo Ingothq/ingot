@@ -19,9 +19,11 @@ class sequence extends route {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @acces protected
+	 *
 	 * @var string
 	 */
-	private $what = 'sequence';
+	protected $what = 'sequence';
 
 
 	/**
