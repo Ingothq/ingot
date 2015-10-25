@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @TODO What this does.
+ * Tests for price group CRUD
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link

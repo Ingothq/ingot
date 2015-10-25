@@ -273,7 +273,7 @@ abstract class crud {
 
 		}
 
-		$data = self::fill_in( $data );
+		$data = static::fill_in( $data );
 
 		if ( 'group' == static::what() ) {
 			if ( false == self::validate_type( $data ) || false == self::validate_click_type( $data ) ) {
@@ -309,6 +309,7 @@ abstract class crud {
 		}
 
 		return $data;
+
 	}
 
 	/**
@@ -519,7 +520,12 @@ abstract class crud {
 	protected static function prepare_data( $data ) {
 		$data = static::validate_config( $data );
 		if ( ! is_array( $data ) ) {
+			if( is_wp_error( $data ) ) {
+				return $data;
+			}
+
 			return new \WP_Error( 'ingot-invalid-config' );
+
 		}
 
 		$allowed = array_merge( static::required(), static::needed() );

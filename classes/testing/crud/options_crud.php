@@ -76,7 +76,7 @@ abstract class options_crud extends crud {
 			return false;
 		}
 
-		$item = self::fill_in( $item );
+		$item = static::fill_in( $item );
 		if( ! empty( $item ) && ! isset( $item[ 'ID' ] ) ) {
 			$item[ 'ID' ] = $id;
 		}
