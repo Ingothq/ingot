@@ -165,8 +165,16 @@ class screens extends admin{
 			}
 		}else{
 			status_header( 500 );
+			if ( ! isset( $_GET[ 'ingot_reload' ] ) && ! headers_sent() ){
+				$redirect = add_query_arg( 'ingot_reload', 1, ingot_current_url() );
+				wp_safe_redirect( $redirect);
+				exit;
+			}
 			if ( is_admin() ) {
-				_e( 'Security error. Please retry request.', 'ingot' );
+				$redirect = add_query_arg( 'ingot_reload', 1, remove_query_arg( '_nonce', ingot_current_url() ) );
+				wp_die( sprintf( '<a href="%s">%s', $redirect, __( 'Security error. Click here to try again.', 'ingot' ) ) );
+			}else{
+				wp_die( _e( 'Security error. Please retry request.', 'ingot' ) );
 			}
 		}
 
