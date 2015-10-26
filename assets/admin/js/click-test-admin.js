@@ -42,8 +42,12 @@ jQuery( document ).ready( function ( $ ) {
                         method: "GET",
                         data: data,
                         complete: function ( r, status ) {
+
                             $( '#outer-loading-spinner' ).remove();
                             if( 'success' == status ) {
+                                if( "0" == r.responseText ) {
+                                    window.location = href;
+                                }
                                 $( outer_wrap ).html( r.responseText );
                                 history.replaceState( {}, 'Ingot', href );
                             }
