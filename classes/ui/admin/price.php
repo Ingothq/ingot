@@ -61,18 +61,26 @@ class price extends admin {
 	 * @return string
 	 */
 	protected function make_group_page( $id ) {
-		ob_get_clean();
+		ob_start();
 		$group = price_group::read( $id );
-		include_once ( $this->partials_dir_path() . 'price-test.php' );
-		return ob_get_clean();
+		$back_link = $this->price_group_admin_page_link();
+		$stats_link = $this->stats_page_link( $id );
+		$group = price_group::read( $id );
+		if( ! is_array( $group ) ) {
+			ob_flush();
+			status_header( 500 );
+			wp_die(  __( 'Invalid Group', 'ingot' ) );
+		}
 
+		include_once ( $this->partials_dir_path() . 'price-test-group.php' );
+		$out = ob_get_clean();
+		return $out;
 	}
 
 	protected function new_group_page(){
 		ob_start();
 		$back_link = $this->price_group_admin_page_link();
-		$stats_link = false;
-		include_once ( $this->partials_dir_path() . 'price-test-new.php' );
+		include_once ( $this->partials_dir_path() . 'price-test-group-new.php' );
 		return ob_get_clean();
 	}
 
@@ -95,7 +103,7 @@ class price extends admin {
 		$main_page_link = $this->main_page_link();
 		$new_link = $this->price_group_edit_link( 0 );
 		$groups_inner_html = false;
-		include_once ( $this->partials_dir_path() . 'price-test-list.php' );
+		include_once ( $this->partials_dir_path() . 'price-test-group-list.php' );
 		return ob_get_clean();
 	}
 

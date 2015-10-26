@@ -385,11 +385,12 @@ jQuery( document ).ready( function ( $ ) {
         )
     });
 
+    //create new group
     $( '#ingot-price-test-new' ).submit( function(e) {
         e.preventDefault();
         $( '#spinner' ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
         var data = {
-            name: $( '#group-name' ).val(),
+            group_name: $( '#group-name' ).val(),
             plugin: $( '#group-plugin' ).val(),
             type: 'price',
             product_ID: $( '#group-product_ID' ).val()

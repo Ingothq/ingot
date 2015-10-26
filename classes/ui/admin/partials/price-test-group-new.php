@@ -70,9 +70,6 @@
 		<a href="<?php echo esc_url( $back_link); ?>" class="button button-secondary">
 			<?php _e( 'Back', 'ingot' ); ?>
 		</a>
-		<a href="<?php echo esc_url( $stats_link); ?>" class="button button-secondary">
-			<?php _e( 'View Stats', 'ingot' ); ?>
-		</a>
 	</section>
 
 	<div class="clear"></div>
