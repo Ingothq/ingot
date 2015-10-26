@@ -59,6 +59,8 @@ class screens extends admin{
 			add_action( 'wp_ajax_get_price_group_page', array( $this->get_price_screen_class(), 'group_page' ) );
 
 			add_action( 'wp_ajax_get_all_products', array( 'ingot\ui\admin\price_ui_ajax_callbacks', 'get_all_products' ) );
+			add_action( 'wp_ajax_get_price_ab_field', array( 'ingot\ui\admin\price_ui_ajax_callbacks', 'get_price_ab_field' ) );
+			add_action( 'wp_ajax_get_price_tests_by_group', array( 'ingot\ui\admin\price_ui_ajax_callbacks', 'get_price_tests_by_group' ) );
 
 			new \ingot\ui\admin\settings( settings::get_settings_keys() );
 		}else{
@@ -229,7 +231,8 @@ class screens extends admin{
 					'canceled' => __( 'Canceled', 'ingot' ),
 					'spinner_url' => trailingslashit( INGOT_URL ) . 'assets/img/loading.gif',
 					'spinner_alt' => __( 'Loading Spinner', 'ingot' ),
-					'price_test_group_link' => remove_query_arg( 'group_id', $this->price_group_edit_link() )
+					'price_test_group_link' => remove_query_arg( 'group_id', $this->price_group_edit_link() ),
+					'no_tests' => __( 'This group has no tests', 'ingot' )
 				)
 			);
 		}

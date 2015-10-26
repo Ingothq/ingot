@@ -13,6 +13,8 @@ namespace ingot\testing\api\rest;
 
 
 use ingot\testing\crud\price_group;
+use ingot\testing\crud\price_test;
+use ingot\testing\utility\helpers;
 
 class price_test_group extends route {
 
@@ -55,6 +57,69 @@ class price_test_group extends route {
 	}
 
 	/**
+	 * Update one item
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Request
+	 */
+	public function update_item( $request ) {
+		$params = $request->get_params();
+		$url = $request->get_url_params( );
+		$id = helpers::v( 'id', $url, 0 );
+		$existing = price_group::read( $id );
+		if( ! is_array( $existing ) ){
+			if ( is_wp_error( $existing ) ) {
+				return $existing;
+			}
+
+			return rest_ensure_response( array(), 404 );
+		}
+
+		//test order
+		//@todo deal with removals
+		if( ! empty( $params[ 'tests_update' ] ) ){
+			foreach( $params[ 'tests_update' ] as $test ){
+				price_test::update( $test, helpers::v( 'ID', $test, 0, 'absint' ) );
+			}
+		}
+
+		if( ! empty( $params[ 'tests_new' ] ) ){
+			foreach( $params[ 'tests_new' ] as $test ){
+				$data[ 'test_order' ][] = price_test::create( $test );
+			}
+		}
+
+		//@todo allow for more fields ot be updated
+		foreach( array(
+			'group_name',
+			'initial',
+			'threshold'
+		) as $field ){
+			if( ! empty( $params[ $field ] ) ){
+				$data[ $field ] = $params[ $field ];
+			}
+		}
+
+		$data = array_merge(  $existing, $data );
+
+
+		$updated = \ingot\testing\crud\price_group::update( $data, $id );
+		if ( ! is_wp_error( $updated ) && is_numeric( $updated ) ) {
+			$item = \ingot\testing\crud\price_group::read( $updated );
+			return rest_ensure_response( $item, 200 );
+		}else{
+			if ( ! is_wp_error( $updated ) ) {
+				$created = __( 'FAIL', 'ingot' );
+			}
+
+			return rest_ensure_response( $created, 500 );
+		}
+
+	}
+
+	/**
 	 * Set arguments for create/update/ queries
 	 *
 	 * @since 0.0.9
@@ -87,7 +152,7 @@ class price_test_group extends route {
 				'validate_callback'  => array( $this, 'validate_plugin' ),
 				'required'           => 'true',
 			),
-			'name'              => array(
+			'group_name'              => array(
 				'description'        => __( 'Name of Test Group', 'ingot' ),
 				'type'               => 'string',
 				'default'            => '',
@@ -124,6 +189,17 @@ class price_test_group extends route {
 				'default'            => 0,
 				'sanitize_callback'  => 'absint',
 			),
+			'tests_new' => array(
+				'description'        => __( 'New tests to add.', 'ingot' ),
+				'type'               => 'array',
+				'default'            => array(),
+			),
+			'tests_update' => array(
+				'description'        => __( 'Tests to update.', 'ingot' ),
+				'type'               => 'array',
+				'default'            => array(),
+			),
+
 
 		);
 

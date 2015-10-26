@@ -240,9 +240,9 @@ abstract class route extends \WP_REST_Controller  {
 	}
 
 	/**
-	 * Utility function to make all keys of an array integers
+	 * Utility function to make all keys of an array integers (recursively)
 	 *
-	 * Note: will remove 0
+	 * @since 0.0.6
 	 *
 	 * @param $array
 	 *
@@ -251,10 +251,14 @@ abstract class route extends \WP_REST_Controller  {
 	public function make_array_values_numeric( $array ) {
 		if ( ! empty( $array ) ) {
 			foreach( $array as $k => $v ) {
-				if ( 0 == absint( $v ) ) {
-					unset( $array[ $v ] );
+				if ( ! is_array( $v ) ) {
+					if ( ! is_numeric( $v ) ) {
+						$array[ $k ] = 0;
+					} else {
+						$array[ $k ] = (int) $v;
+					}
 				}else{
-					$array[ $k ] = (int) $v;
+					$array[ $k ] = $this->make_array_values_numeric( $v );
 				}
 
 			}
@@ -291,7 +295,7 @@ abstract class route extends \WP_REST_Controller  {
 	}
 
 	/**
-	 * Ensure a boolen is a boolean
+	 * Ensure a boolean is a boolean
 	 *
 	 * @since 0.0.7
 	 * @param $value
@@ -303,6 +307,39 @@ abstract class route extends \WP_REST_Controller  {
 			return true;
 		}
 
+	}
+
+	/**
+	 * Utility function to make all keys of an array floats (recursively)
+	 *
+	 * @since 0.0.6
+	 *
+	 * @param array $array
+	 *
+	 * @return array
+	 */
+	public function make_array_values_floats( $array ){
+		if ( ! empty( $array ) ) {
+			foreach( $array as $k => $v ) {
+				if ( ! is_array( $v ) ) {
+					if ( ! is_numeric( $v ) ) {
+						$array[ $k ] = 0;
+					} else {
+						$array[ $k ] = (float) $v;
+					}
+				}else{
+					$array[ $k ] = $this->make_array_values_floats( $v );
+				}
+
+			}
+
+		}
+
+		if ( empty( $array ) ) {
+			$array = array();
+		}
+
+		return $array;
 	}
 
 	/**

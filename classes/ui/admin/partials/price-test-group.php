@@ -9,15 +9,18 @@
  * @copyright 2015 Josh Pollock
  */
 ?>
-<div id="price-group-admin" class="ingot-admin-wrap" >
+<div id="price-group-admin" class="ingot-admin-wrap" xmlns="http://www.w3.org/1999/html">
 
 
 	<h1>
 		<?php _e( 'Price Test Group', 'ingot' ); ?>
 	</h1>
-	<form id="ingot-click-test" class="ingot-admin-form" name="ingot-group-editor">
-		<input id="test-group-id" value="<?php echo esc_attr( $group[ 'ID'] ); ?>" type="hidden">
-		<section id="general">
+	<section id="general">
+		<form id="ingot-price-test-group" class="ingot-admin-form" name="ingot-price-group-editor">
+			<input id="test-group-id" value="<?php echo esc_attr( $group[ 'ID'] ); ?>" type="hidden">
+			<input id="test-product-id" value="<?php echo esc_attr( $group[ 'product_ID'] ); ?>" type="hidden">
+			<input id="test-group-plugin" value="<?php echo esc_attr( $group[ 'plugin' ] ); ?>" type="hidden">
+
 			<h3>
 				<?php _e( 'General', 'ingot' ); ?>
 			</h3>
@@ -40,20 +43,30 @@
 				</label>
 				<input id="threshold" type="number" value="<?php echo esc_attr( $group[ 'threshold' ] ); ?>" min="0" max="100" required>
 			</div>
-		</section>
 
-		<section id="parts">
-			<h3>
-				<?php _e( 'Prices', 'ingot' ); ?>
-			</h3>
 
-		</section>
+			<input type="submit" class="button button-primary" id="save-group" value="<?php _e( 'Save', 'ingot' ); ?>" name="save">
 
-		<div class="clear"></div>
-		<input type="submit" class="button button-primary" id="save-group" value="<?php _e( 'Save', 'ingot' ); ?>" name="save">
+		</form>
+	</section>
+	<section id="parts" aria-live="assertive">
+		<h3>
+			<?php _e( 'Price Tests', 'ingot' ); ?>
+		</h3>
+		<div>
+			<a hre="#price-tests" id="add-price-test" class="button button-secondary">
+				<?php _e( 'Add Price Test To Group', 'ingot' ); ?>
+			</a>
+		</div>
+		<div id="price-tests">
+			<?php echo $price_tests; ?>
+		</div>
 
-	</form>
+
+	</section>
 	<div class="clear"></div>
+
+
 
 	<div id="spinner" style="display: none; visibility: hidden" aria-hidden="true">
 		<img src="<?php echo esc_url( INGOT_URL . '/assets/img/loading.gif' ); ?>" />

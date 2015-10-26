@@ -28,6 +28,61 @@ class price_test extends options_crud {
 		return self::$what;
 	}
 
+	/**
+	 * Get price tests
+	 *
+	 * @since 0.0.9
+	 *
+	 * @acess protected
+	 *
+	 * @param array $params {
+	 *  $ids bool Optional. If false, the default, all fields are returned. If true, only IDs
+	 *  $limit int Optional. Total number to return. Default is -1 to get all.
+	 *  $page int Optional. Page of results. Default is 1
+	 * }
+	 *
+	 * @return array|null|object
+	 */
+	public static function get_items( $params ) {
+		$args = wp_parse_args(
+			$params,
+			array(
+				'ids' => false,
+				'limit' => -1,
+				'page' => 1
+			)
+		);
+
+		if( ! empty(  $args[ 'ids' ] ) && is_array( $args[ 'ids' ] ) ) {
+			global $wpdb;
+
+			$what = self::$what;
+			$pattern = '`option_name` = "ingot_%s_%s"';
+
+			foreach( $args[ 'ids' ] as $id ){
+				$or[]= sprintf( $pattern, $what, $id );
+			}
+
+			$or = implode( ' OR', $or );
+
+			$sql = sprintf( "SELECT * FROM %s WHERE %s", $wpdb->options, $or );
+
+			$results = $wpdb->get_results( $sql, ARRAY_A );
+
+			if ( ! empty( $results ) ) {
+				$tests = array();
+				foreach( $results as $result ){
+					$tests[] = self::fill_in( unserialize( $result[ 'option_value' ] ) );
+				}
+
+				return $tests;
+
+			}
+
+		}
+
+	}
+
 
 	/**
 	 *  Prepared data to be saved

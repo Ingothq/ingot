@@ -51,7 +51,8 @@ abstract class admin {
 	 * @return string
 	 */
 	protected function partials_dir_path() {
-		return dirname( __FILE__ ) . '/admin/partials/';
+		return INGOT_UI_PARTIALS_DIR;
+	//	return dirname( __FILE__ ) . '/admin/partials/';
 	}
 
 	/**

@@ -12,6 +12,7 @@
 namespace ingot\testing;
 
 
+use ingot\testing\api\rest\price_test;
 use ingot\testing\api\rest\price_test_group;
 use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
@@ -70,6 +71,8 @@ class ingot {
 		//$sequence->register_routes();
 		$price_test_group = new price_test_group();
 		$price_test_group->register_routes();
+		$price_test = new price_test();
+		$price_test->register_routes();
 	}
 
 	/**

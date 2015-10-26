@@ -108,8 +108,40 @@ class tests_price_sequence_queries extends \WP_UnitTestCase{
 
 	}
 
+	public function testGetTestsByGroup(){
+		for ( $i = 0; $i <= 4; $i ++ ) {
+			$id = $this->make_group( $i );
+			$groups[ $i ] = $id;
+		}
+
+		$x = rand( 0, 4 );
+		$group_id = $groups[ $x ][ 'group' ];
+		$group = \ingot\testing\crud\price_group::read( $group_id );
+		$expected_test_ids = $group[ 'test_order' ];
+		$this->assertTrue( is_array( $expected_test_ids  ) );
+		$this->assertFalse( empty( $expected_test_ids  ) );
+
+		$tests_from_db = \ingot\testing\crud\price_test::get_items( array( 'ids' => $group[ 'test_order' ] ) );
+		$this->assertTrue( is_array( $tests_from_db  ) );
+		$this->assertFalse( empty( $tests_from_db  ) );
+
+		$this->assertSame( count( $expected_test_ids ), count( $tests_from_db ) );
+		var_dump( $expected_test_ids );
+		var_dump( $tests_from_db );
+		foreach( $tests_from_db as $test ) {
+			$this->assertArrayHasKey( 'ID', $test );
+			$this->assertTrue( in_array( $test[ 'ID' ],  $expected_test_ids ) );
+
+		}
+
+
+
+	}
+
 	/**
 	 * Make test group
+	 *
+	 * @since 0.0.9
 	 *
 	 * @param int $product_id
 	 *

@@ -13,6 +13,7 @@ namespace ingot\ui\admin;
 
 
 use ingot\testing\crud\price_group;
+use ingot\testing\crud\price_test;
 use ingot\testing\utility\helpers;
 use ingot\ui\admin;
 
@@ -72,9 +73,34 @@ class price extends admin {
 			wp_die(  __( 'Invalid Group', 'ingot' ) );
 		}
 
+		$price_tests = $this->get_tests( $group );
+
 		include_once ( $this->partials_dir_path() . 'price-test-group.php' );
 		$out = ob_get_clean();
 		return $out;
+	}
+
+	protected  function get_tests( $group ){
+		$tests = price_test::get_items( array( 'ids' => $group[ 'test_order' ] ) );
+
+		$out = '';
+		if( ! empty( $tests ) ){
+
+			foreach( $tests as $test ){
+				ob_start();
+				$id = $test[ 'ID' ];
+				echo '<div id="' . esc_attr( $id ). '" class="price-test">';
+				include_once( INGOT_UI_PARTIALS_DIR . 'price-test-a-b.php' );
+				echo '</div>';
+				echo '<!--/' . $id . '-->';
+				$out .= ob_get_clean();
+			}
+		}
+
+		return $out;
+
+
+
 	}
 
 	protected function new_group_page(){
