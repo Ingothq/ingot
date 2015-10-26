@@ -69,7 +69,7 @@ class sequence extends table_crud {
 
 
 		if( true == $args[ 'price_test' ] ) {
-			return self::get_for_price_tests( $args[ 'ids'], $args[ 'limit' ], $args[ 'pages' ] );
+			return self::get_for_price_tests( $args[ 'limit' ], $args[ 'page' ] );
 		}
 
 
@@ -183,20 +183,25 @@ $table_name, helpers::v( 'group_ID', $params )  );
 	 * Get all sequences that are the current sequence for a price test
 	 *
 	 * @since 0.0.9
-	 *
-	 * @param bool $ids
+
 	 * @param int $limit
 	 * @param int $page
 	 *
 	 * @return array|void
 	 */
-	protected static function get_for_price_tests($ids, $limit, $page ){
+	protected static function get_for_price_tests( $limit, $page ){
 		global $wpdb;
 		$table_name = self::get_table_name();
 
-		$sequence_ids = price_group::get_items( array( 'get_current' => true, 'ids' => (bool) $ids ) );
+		$sequence_ids = price_group::get_items(
+			array(
+				'get_current' => true,
+				'ids' => true
+			)
+		);
 
 		if( ! empty( $sequence_ids ) ) {
+			$sequence_ids = wp_list_pluck( $sequence_ids, 'ID' );
 			$sql = sprintf( "SELECT * FROM %s WHERE ID IN(%s)", $table_name, implode( ',', $sequence_ids ) );
 
 			$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $limit, self::calculate_offset( $limit, $page )  );

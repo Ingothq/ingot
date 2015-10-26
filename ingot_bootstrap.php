@@ -62,6 +62,8 @@ class ingot_bootstrap {
 				new ingot\ui\make();
 				self::maybe_load_api();
 
+				add_action( 'init', array( __CLASS__, 'init_cookies' ) );
+
 				/**
 				 * Runs when Ingot has loaded.
 				 *
@@ -244,6 +246,29 @@ class ingot_bootstrap {
 		}else{
 			return false;
 
+		}
+
+	}
+
+	/**
+	 * Setup our cookies
+	 *
+	 * @uses "init"
+	 *
+	 * @since 0.0.9
+	 */
+	public static function init_cookies() {
+		return;
+		$cookies = array();
+		if( isset( $_COOKIE ) && is_array( $_COOKIE ) ) {
+			$cookies = $_COOKIE;
+		}
+
+		$cookies = new ingot\testing\cookies\init( $cookies );
+		$ingot_cookies = $cookies->get_ingot_cookie();
+		if( ! empty( $ingot_cookies ) ){
+			$cookie_time = 15 * DAY_IN_SECONDS;
+			setcookie($cookies->get_cookie_name(), $ingot_cookies, $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false);
 		}
 
 	}

@@ -48,5 +48,3 @@ function ingot_maybe_load() {
 
 }
 
-
-

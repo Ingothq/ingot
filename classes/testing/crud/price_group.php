@@ -68,7 +68,7 @@ class price_group extends table_crud {
 
 		$table_name = static::get_table_name();
 		if( 'true' == $args[ 'get_current' ] ){
-			$sql = sprintf( "%s FROM %s WHERE 'current_sequence' > 0", $select, $table_name );
+			$sql = sprintf( "%s FROM %s WHERE `current_sequence` > 0", $select, $table_name );
 		}
 
 		$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $args[ 'limit' ], self::calculate_offset( $args[ 'limit' ], $args[ 'page' ] )  );
@@ -77,6 +77,26 @@ class price_group extends table_crud {
 
 		return $results;
 
+
+	}
+
+	/**
+	 * Deactivate a price group
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param int|array $id Group ID or config array
+	 */
+	public static function deactivate( $id ) {
+		if ( ! is_array( $id ) ) {
+			$group = self::read( $id );
+			$id = $group[ 'ID' ];
+		}
+
+		$current_sequence = $group[ 'current_sequence' ];
+		sequence::complete( $current_sequence );
+		$group[ 'current_sequence' ] = 0;
+		self::update( $group, $id );
 
 	}
 

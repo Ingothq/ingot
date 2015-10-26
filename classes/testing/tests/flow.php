@@ -139,15 +139,26 @@ class flow {
 	 *
 	 * @since 0.0.3
 	 *
-	 * @param int $a_chance Chance (1-100) to
+	 * @param int $a_chance Chance (1-100) of selecting A
+	 * @param bool $return_bool Optional. If true, the default, return is a boolean, true for A, false for B. If false, return is "a" or "b".
 	 *
-	 * @return bool True if A is selected, false if not.
+	 * @return bool|string Boolean or a|b representing a or b selection.
 	 */
-	public static function choose_a( $a_chance ) {
+	public static function choose_a( $a_chance, $return_bool = true ) {
 		$val = rand( 1, 100 );
 		if ( $val <= $a_chance ) {
-			return true;
+			if ( $return_bool ) {
+				return true;
+			}else{
+				return 'a';
+			}
 
+		}else{
+			if ( $return_bool ) {
+				return false;
+			}else{
+				return 'b';
+			}
 		}
 
 	}

@@ -413,3 +413,16 @@ function ingot_accepted_plugins_for_price_tests() {
 	 */
 	return apply_filters( 'ingot_accepted_plugins_for_price_tests', $plugins );
 }
+
+/**
+ * Check if a plugin is acceptable for use in a price test
+ *
+ * @since 0.0.9
+ *
+ * @param $plugin
+ *
+ * @return bool
+ */
+function ingot_acceptable_plugin_for_price_test( $plugin ){
+	return in_array( $plugin, ingot_accepted_plugins_for_price_tests() );
+}
