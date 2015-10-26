@@ -125,40 +125,47 @@ class screens extends admin{
 	 */
 	function ingot_page() {
 		echo '<div id="ingot-outer-wrap">';
-		if( isset( $_GET[ 'type' ] ) ) {
-			if( 'click' == $_GET[ 'type' ] ){
-				if( isset( $_GET[ 'group_id' ] ) && 'list' != $_GET[ 'group_id' ] ){
-					if( isset( $_GET[ 'stats' ] ) ) {
-						$viewer = new admin\sequence\viewer( helpers::v( 'group_id', $_GET, 'absint' ) );
-						$html = $viewer->get_view();
-						if( ! empty( $html ) ) {
-							echo $html;
-						}else{
-							echo $this->get_click_screen_class()->main_page();
+		if ( $this->check_nonce() ) {
+			if ( isset( $_GET['type'] ) ) {
+				if ( 'click' == $_GET['type'] ) {
+					if ( isset( $_GET['group_id'] ) && 'list' != $_GET['group_id'] ) {
+						if ( isset( $_GET['stats'] ) ) {
+							$viewer = new admin\sequence\viewer( helpers::v( 'group_id', $_GET, 'absint' ) );
+							$html   = $viewer->get_view();
+							if ( ! empty( $html ) ) {
+								echo $html;
+							} else {
+								echo $this->get_click_screen_class()->main_page();
+							}
+
+						} else {
+							echo $this->get_click_screen_class()->click_group_page( helpers::v( 'group_id', $_GET, 'absint' ) );
 						}
-
-					}else{
-						echo $this->get_click_screen_class()->click_group_page( helpers::v( 'group_id', $_GET, 'absint' ) );
+					} else {
+						echo $this->get_click_screen_class()->main_page();
 					}
-				}else{
-					echo $this->get_click_screen_class()->main_page();
-				}
 
-			}elseif( 'price' == $_GET[ 'type' ] ) {
-				if( isset( $_GET[ 'group_id' ] ) && 'list' != $_GET[ 'group_id' ] ) {
-					if ( isset( $_GET['stats'] ) ) {
-						wp_die( 'Josh did not make price tests stats yet' );
-					}else {
-						echo $this->get_price_screen_class()->group_page( helpers::v( 'group_id', $_GET, 'absint' ) );
+				} elseif ( 'price' == $_GET['type'] ) {
+					if ( isset( $_GET['group_id'] ) && 'list' != $_GET['group_id'] ) {
+						if ( isset( $_GET['stats'] ) ) {
+							wp_die( 'Josh did not make price tests stats yet' );
+						} else {
+							echo $this->get_price_screen_class()->group_page( helpers::v( 'group_id', $_GET, 'absint' ) );
+						}
+					} else {
+						echo $this->get_price_screen_class()->list_page();
 					}
-				}else{
+				} else {
 					echo $this->get_price_screen_class()->list_page();
 				}
-			}else{
-				echo $this->get_price_screen_class()->list_page();
+			} else {
+				echo $this->main_page();
 			}
 		}else{
-			echo $this->main_page();
+			status_header( 500 );
+			if ( is_admin() ) {
+				_e( 'Security error. Please retry request.', 'ingot' );
+			}
 		}
 
 		echo '</div><!--/#ingot-outer-wrap-->';
