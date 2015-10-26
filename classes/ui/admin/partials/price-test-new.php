@@ -27,7 +27,7 @@
 				<label for="plugin">
 					<?php _e( 'Plugin', 'ingot' ); ?>
 				</label>
-				<select id="group-plugin">
+				<select id="group-plugin" required="true">
 					<option value="0">
 						-- <?php _e( 'Choose', 'ignot' ); ?> --
 					</option>

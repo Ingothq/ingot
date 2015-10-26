@@ -202,7 +202,7 @@ $table_name, helpers::v( 'group_ID', $params )  );
 
 		if( ! empty( $sequence_ids ) ) {
 			$sequence_ids = wp_list_pluck( $sequence_ids, 'ID' );
-			$sql = sprintf( "SELECT * FROM %s WHERE ID IN(%s)", $table_name, implode( ',', $sequence_ids ) );
+			$sql = sprintf( "SELECT * FROM %s WHERE ID IN(%s) AND `test_type` = 'price' ", $table_name, implode( ',', $sequence_ids ) );
 
 			$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $limit, self::calculate_offset( $limit, $page )  );
 

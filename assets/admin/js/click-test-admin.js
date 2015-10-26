@@ -3,6 +3,9 @@
  */
 jQuery( document ).ready( function ( $ ) {
 
+    //outer wrap for ingot UI
+    var outer_wrap = document.getElementById( 'ingot-outer-wrap' );
+
     //the all click handler
     $( document ).on( 'click', function(e) {
         var el = document.activeElement;
@@ -27,7 +30,7 @@ jQuery( document ).ready( function ( $ ) {
                         group_id: group_id
                     };
 
-                    var outer_wrap = document.getElementById( 'ingot-outer-wrap' );
+
                     $( outer_wrap ).empty();
                     $( '<img/>', {
                         id: 'outer-loading-spinner',
@@ -388,7 +391,8 @@ jQuery( document ).ready( function ( $ ) {
         var data = {
             name: $( '#group-name' ).val(),
             plugin: $( '#group-plugin' ).val(),
-            type: 'price'
+            type: 'price',
+            product_ID: $( '#group-product_ID' ).val()
         };
 
         var url = INGOT.api_url + '/price-group/';
@@ -404,11 +408,14 @@ jQuery( document ).ready( function ( $ ) {
                 }
             )
         ).then( function( response, textStatus, xhr )  {
+                console.log( response );
                 $( '#spinner' ).css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' ).hide();
                 if ( 'success' == textStatus ) {
+
+                    var group_id = response.ID;
                     swal( {
                         title: INGOT.success,
-                        text: INGOT.saved + r.name,
+                        text: INGOT.saved + response.group_name,
                         type: "success",
                         confirmButtonText: INGOT.close
                     } );

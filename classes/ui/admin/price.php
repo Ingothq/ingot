@@ -27,12 +27,14 @@ class price extends admin {
 	 */
 	public function group_page() {
 		if( $this->check_nonce() ) {
-			$id = helpers::v_sanitized( 'price_id', $_GET, 0 );
+			$id = helpers::v_sanitized( 'group_id', $_GET, 0 );
 			if ( 0 < $id ) {
 				return $this->make_group_page( $id );
 			}else{
 				return $this->new_group_page();
 			}
+		}else{
+			status_header( 500 );
 		}
 	}
 
