@@ -426,3 +426,32 @@ function ingot_accepted_plugins_for_price_tests() {
 function ingot_acceptable_plugin_for_price_test( $plugin ){
 	return in_array( $plugin, ingot_accepted_plugins_for_price_tests() );
 }
+
+/**
+ * Check if this is a front-end request
+ *
+ * @since 0.0.9
+ *
+ * @return bool
+ */
+function ingot_is_front_end() {
+	if( is_admin() || ingot_is_admin_ajax() || ingot_is_rest_api() || ( defined( 'DOING_CRON' ) && DOING_CRON ) || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Check if this is a REST API request
+ *
+ * @since 0.0.9
+ *
+ * @return bool
+ */
+function ingot_is_rest_api() {
+	if( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		return true;
+	}
+
+}

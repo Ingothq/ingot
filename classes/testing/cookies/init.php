@@ -40,7 +40,7 @@ class init {
 	}
 
 	public function get_ingot_cookie() {
-		return $this->cookie;
+		return wp_json_encode( $this->cookie );
 	}
 
 	public function get_cookie_name(){
@@ -54,9 +54,9 @@ class init {
 
 	}
 
-	protected function set_cookie(){
+	protected function set_cookie( $cookies ){
 		if( isset( $cookies[ $this->cookie_name ] ) ) {
-			$this->cookie = $cookies[ $this->cookie_name ];
+			$this->cookie = json_decode( $cookies[ $this->cookie_name ] );
 		}else{
 			$this->cookie = array();
 		}
