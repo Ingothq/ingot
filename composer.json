@@ -34,7 +34,8 @@
             "ingot\\": "classes"
         },
         "files": [
-            "includes/functions.php"
+            "includes/functions.php",
+            "includes/active_check.php"
         ]
     },
     "extra"       : {
