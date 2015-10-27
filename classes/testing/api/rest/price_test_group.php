@@ -81,13 +81,17 @@ class price_test_group extends route {
 		//@todo deal with removals
 		if( ! empty( $params[ 'tests_update' ] ) ){
 			foreach( $params[ 'tests_update' ] as $test ){
-				price_test::update( $test, helpers::v( 'ID', $test, 0, 'absint' ) );
+				$_id = price_test::update( $test, helpers::v( 'ID', $test, 0, 'absint' ) );
 			}
 		}
 
 		if( ! empty( $params[ 'tests_new' ] ) ){
 			foreach( $params[ 'tests_new' ] as $test ){
-				$data[ 'test_order' ][] = price_test::create( $test );
+				$data[ 'test_order' ] = $existing[ 'test_order' ];
+				$new_test = price_test::create( $test );;
+				if ( ! is_wp_error( $new_test ) ) {
+					$data['test_order'][] = $new_test;
+				}
 			}
 		}
 
@@ -105,7 +109,7 @@ class price_test_group extends route {
 		$data = array_merge(  $existing, $data );
 
 
-		$updated = \ingot\testing\crud\price_group::update( $data, $id );
+		$updated = \ingot\testing\crud\price_group::update( $data, $id, true );
 		if ( ! is_wp_error( $updated ) && is_numeric( $updated ) ) {
 			$item = \ingot\testing\crud\price_group::read( $updated );
 			return rest_ensure_response( $item, 200 );

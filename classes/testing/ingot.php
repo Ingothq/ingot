@@ -17,10 +17,12 @@ use ingot\testing\api\rest\price_test_group;
 use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
 use ingot\testing\crud\group;
+use ingot\testing\crud\price_group;
 use ingot\testing\crud\sequence;
 use ingot\testing\crud\settings;
 use ingot\testing\crud\tracking;
 use ingot\testing\tests\click\click;
+use ingot\testing\utility\helpers;
 
 class ingot {
 

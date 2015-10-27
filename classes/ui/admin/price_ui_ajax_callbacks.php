@@ -57,7 +57,7 @@ class price_ui_ajax_callbacks {
 		if( isset( $_GET[ '_nonce' ], $_GET[ 'plugin' ] ) && wp_verify_nonce( $_GET[ '_nonce' ] ) ){
 			echo include_once( INGOT_UI_PARTIALS_DIR . 'price-test-a-b.php' );
 			status_header( 200 );
-			die();
+			exit;
 		}
 		wp_send_json_error();
 	}

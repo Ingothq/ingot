@@ -64,25 +64,39 @@ class price extends admin {
 	 * @return string
 	 */
 	protected function make_group_page( $id ) {
+		$group = price_group::read( $id );
+		$price_tests = $this->get_tests_by_group( $group );
 		ob_start();
 		$group = price_group::read( $id );
 		$back_link = $this->price_group_admin_page_link();
 		$stats_link = $this->stats_page_link( $id );
-		$group = price_group::read( $id );
+
 		if( ! is_array( $group ) ) {
 			ob_flush();
 			status_header( 500 );
 			wp_die(  __( 'Invalid Group', 'ingot' ) );
 		}
 
-		$price_tests = $this->get_tests( $group );
+
 
 		include_once ( $this->partials_dir_path() . 'price-test-group.php' );
 		$out = ob_get_clean();
 		return $out;
 	}
 
-	protected  function get_tests( $group ){
+
+	/**
+	 * Get all tests in a group
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @param $group
+	 *
+	 * @return string
+	 */
+	protected  function get_tests_by_group( $group ){
 		$tests = price_test::get_items( array( 'ids' => $group[ 'test_order' ] ) );
 
 		$out = '';
@@ -91,8 +105,9 @@ class price extends admin {
 			foreach( $tests as $test ){
 				ob_start();
 				$id = $test[ 'ID' ];
-				echo '<div id="' . esc_attr( $id ). '" class="price-test">';
-				include_once( INGOT_UI_PARTIALS_DIR . 'price-test-a-b.php' );
+				echo '<div id="' . esc_attr( $id ) . '" class="price-test">';
+				echo '<p><pre>' . esc_attr( $id ) . '</pre></p>';
+				include INGOT_UI_PARTIALS_DIR . 'price-test-a-b.php' ;
 				echo '</div>';
 				echo '<!--/' . $id . '-->';
 				$out .= ob_get_clean();
@@ -101,9 +116,9 @@ class price extends admin {
 
 		return $out;
 
-
-
 	}
+
+
 
 	protected function new_group_page(){
 		ob_start();
@@ -124,15 +139,57 @@ class price extends admin {
 	 * @return string
 	 */
 	protected function make_list_page( $page_number ) {
-		ob_get_clean();
+		$groups_inner_html = $this->group_list_html( $page_number );
+		ob_start();
+		$groups_inner_html = $groups_inner_html;
 		$settings_form = $this->get_settings_form();
 		$next_button = false;
 		$prev_button = false;
 		$main_page_link = $this->main_page_link();
 		$new_link = $this->price_group_edit_link( 0 );
-		$groups_inner_html = false;
 		include_once ( $this->partials_dir_path() . 'price-test-group-list.php' );
-		return ob_get_clean();
+		$html = ob_get_clean();
+		return $html;
+	}
+
+	protected function group_list_html( $page ) {
+		$groups = $this->get_groups( $page );
+		if ( ! empty( $groups ) ) {
+			$out = '';
+			foreach ( $groups as $group ) {
+				$out .= $this->group_input( $group );
+			}
+
+			return $out;
+		}
+
+	}
+
+	/**
+	 * Get HTML for group input group
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected function group_input( $group ) {
+		ob_start();
+		$id = $group[ 'ID' ];
+		$edit_link = $this->price_group_edit_link( (int) $id );
+		$stats_link = $this->stats_page_link( $id );
+		include_once( INGOT_UI_PARTIALS_DIR . 'price-test-group-preview.php' );
+		$html = ob_get_clean();
+		return $html;
+	}
+
+	protected function get_groups( $page ) {
+		return price_group::get_items( array(
+			'limit' => 10,
+			'page' => $page,
+			'get_current' => false
+		));
 	}
 
 }

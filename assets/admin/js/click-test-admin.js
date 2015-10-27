@@ -523,6 +523,8 @@ jQuery( document ).ready( function ( $ ) {
     //save price test group
     $( '#ingot-price-test-group' ).submit( function(e) {
         e.preventDefault();
+        clear_errors();
+
         var group_id = $( '#test-group-id' ).val();
         var product_id = $( '#test-product-id' ).val();
         var tests_new = [];
@@ -530,11 +532,24 @@ jQuery( document ).ready( function ( $ ) {
         var test_id_update_map = [];
         var test_divs = $( "#price-tests" ).find( '.price-test' );
 
-        var test_id, a_val, b_val, test;
+        var test_id, a_val, b_val, test, a_div_id, b_div_id;
+        var invalid = [];
         $.each( test_divs, function ( i, div ) {
             test_id = $( div ).find( '.test-id' ).attr( 'data-test-id' );
-            a_val = $( '#' + test_id + '-a' ).val();
-            b_val = $( '#' + test_id + '-b' ).val();
+            a_div_id = test_id + '-a';
+            b_div_id = test_id + '-b';
+            a_val = $( '#' + a_div_id ).val();
+            b_val = $( '#' +  b_div_id ).val();
+            if( a_val < -1 || a_val > 1 ){
+                invalid.push( a_div_id );
+                add_error( '#' + a_div_id, INGOT.invalid_price_test_range );
+            }
+
+            if( b_val < -1 || b_val > 1 ){
+                add_error( '#' + b_div_id, INGOT.invalid_price_test_range );
+            }
+
+
             test = {
                 product_ID: product_id,
                 default: {
@@ -554,12 +569,16 @@ jQuery( document ).ready( function ( $ ) {
 
         } );
 
+        if( 0 != invalid.length ){
+            return;
+        }
+
         var tests = [];
 
         var data = {
             group_name: $( '#group-name' ).val(),
             initial: $( '#initial' ).val(),
-            threshold: $( '#intial' ).val(),
+            threshold: $( '#threshold' ).val(),
             product_ID: product_id,
             plugin: $( '#test-group-plugin' ).val(),
             tests_new: tests_new,
@@ -584,9 +603,10 @@ jQuery( document ).ready( function ( $ ) {
                 xhr.setRequestHeader( 'X-WP-Nonce', INGOT.nonce );
             },
         } ).then( function ( r ) {
-            swal( INGOT.deleted, "", "success" ), function() {
-                location.reload();
+            swal( INGOT.success, "", "success" ), function() {
+
             };
+            window.location = window.location.href;
 
         } ) );
 
@@ -598,9 +618,34 @@ jQuery( document ).ready( function ( $ ) {
 
     });
 
+    function add_error( div, message ){
+        var parent = $( div ).parent();
+        $( div ).addClass( 'ingot-has-error' );
+        $( '<div/>', {
+            class: 'ingot-error'
+        }).html( message ).append( parent  );
+    }
+
+    function clear_errors() {
+        $( $( outer_wrap ).find( '.ingot-has-error' ), function ( i, div ) {
+            $( div ).removeClass( 'ingot-has-error' );
+        } );
+
+        $( outer_wrap ).find( '.ingot-error' ).remove();
+    }
+
+    /**
+     * Test if a div id represents a new item
+     * @param str
+     * @returns {number}
+     */
     function is_new( str ){
-        if( 'new_' == str.substring(0, 4) ){
-            return 1;
+        if ( 'string' == typeof str ) {
+            if ( 'new_' == str.substring( 0, 4 ) ) {
+                return 1;
+            }
+        } else {
+            console.log( str );
         }
     }
 

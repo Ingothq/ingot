@@ -240,7 +240,8 @@ class screens extends admin{
 					'spinner_url' => trailingslashit( INGOT_URL ) . 'assets/img/loading.gif',
 					'spinner_alt' => __( 'Loading Spinner', 'ingot' ),
 					'price_test_group_link' => remove_query_arg( 'group_id', $this->price_group_edit_link() ),
-					'no_tests' => __( 'This group has no tests', 'ingot' )
+					'no_tests' => __( 'This group has no tests', 'ingot' ),
+					'invalid_price_test_range' =>  __( 'Please enter a number between -.99 and .99', 'ingot' ),
 				)
 			);
 		}

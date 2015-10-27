@@ -12,6 +12,8 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\utility\helpers;
+
 class price_group extends table_crud {
 
 	/**
@@ -50,7 +52,8 @@ class price_group extends table_crud {
 				'get_current' => true,
 				'ids' => false,
 				'limit' => -1,
-				'page' => 1
+				'page' => 1,
+				'preview' => false
 			)
 		);
 
@@ -60,22 +63,50 @@ class price_group extends table_crud {
 			$args[ 'limit' ] = 999999999;
 		}
 
-		if( true == $args[ 'ids' ] ){
-			$select = "SELECT `ID`";
-		}else{
-			$select = "SELECT *";
-		}
+
 
 		$table_name = static::get_table_name();
 		if( 'true' == $args[ 'get_current' ] ){
+			if( true == $args[ 'ids' ] ){
+				$select = "SELECT `ID`";
+			}else{
+				$select = "SELECT *";
+			}
 			$sql = sprintf( "%s FROM %s WHERE `current_sequence` > 0", $select, $table_name );
+
+		}else{
+			if( true == $args[ 'ids' ] ){
+				$select = "`ID`";
+			}else{
+				$select = "*";
+			}
+			$sql = sprintf( "SELECT %s FROM `%s` ", $select, $table_name );
 		}
 
-		$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $args[ 'limit' ], self::calculate_offset( $args[ 'limit' ], $args[ 'page' ] )  );
 
+
+		$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $args[ 'limit' ], self::calculate_offset( $args[ 'limit' ], $args[ 'page' ] )  );
+		$wpdb->last_error = '';
 		$results = $wpdb->get_results( $sql, ARRAY_A );
 
-		return $results;
+		if ( empty( $wpdb->last_error ) && ! empty( $results ) ) {
+			if ( false == $args['ids'] ) {
+				foreach( $results as $result ){
+					$_item = self::fill_in( $result );
+					$_item[ 'sequences' ] = maybe_unserialize( helpers::v( 'sequences', $_item, array() ) );
+					$_item[ 'test_order' ] = maybe_unserialize( helpers::v( 'test_order', $_item, array() ) );
+					if( ! is_wp_error( $_item ) ){
+						$items[] = $_item;
+					}
+
+				}
+
+				return $items;
+
+			}
+
+			return $results;
+		}
 
 
 	}
