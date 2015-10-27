@@ -150,18 +150,19 @@ class price {
 	protected function add_test( $sequence ){
 		$a_or_b = $this->a_or_b( $sequence, false );
 		$group = price_group::read( $sequence[ 'group_ID' ] );
-		$test_id = $this->get_test_id( $sequence, $a_or_b );
+		if ( is_array( $group ) ) {
+			$test_id = $this->get_test_id( $sequence, $a_or_b );
+			$test = array(
+				'a_or_b'      => $a_or_b,
+				'test_ID'     => $test_id,
+				'expires'     => $this->expires(),
+				'plugin'      => helpers::v( 'plugin', $group, 0 ),
+				'sequence_ID' => helpers::v( 'ID', $sequence, 0 ),
+				'product_ID'  => helpers::v( 'product_ID', $group, 0 )
+			);
 
-
-		$test = array(
-			'a_or_b' => $a_or_b,
-			'test_ID' => $test_id,
-			'expires' => $this->expires(),
-			'plugin' => helpers::v( 'plugin', $group, 0 ),
-			'sequence_ID' => helpers::v(  'ID', $sequence, 0 )
-		);
-		
-		$this->price_cookie[ $sequence[ 'ID' ] ] = $test;
+			$this->price_cookie[ $sequence['ID'] ] = $test;
+		}
 
 	}
 

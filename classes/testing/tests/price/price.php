@@ -243,7 +243,7 @@ abstract class price {
 	}
 
 	/**
-	 * Use in subcalss to set the variable and prices properties
+	 * Use in subclass to set the variable and prices properties
 	 *
 	 * @since 0.0.9
 	 *

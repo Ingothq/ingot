@@ -300,7 +300,26 @@ class ingot_bootstrap {
 		$tests = \ingot\testing\cookies\cache::instance()->get( 'price' );
 		if( ! empty( $tests ) ){
 			new \ingot\testing\tests\price\init( $tests );
+			if ( ingot_is_edd_active() ) {
+				self::track_edd();
+			}
 		}
+	}
+
+	/**
+	 * Hook into edd sales for tracking
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 */
+	protected static function track_edd() {
+
+		add_action( 'edd_complete_purchase', array(
+			"\\ingot\\testing\\tests\\price\\track",
+			'track_edd_sale'
+		) );
+
 	}
 
 }

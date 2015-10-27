@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * A non-peristant cache to hold data from cookies in memory within a session.
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -17,7 +17,8 @@ class cache {
 	protected $parts = array(
 		'price',
 		'click',
-		'meta'
+		'meta',
+		'products'
 	);
 
 	protected  $cache;

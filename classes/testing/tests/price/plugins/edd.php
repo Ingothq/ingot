@@ -61,7 +61,7 @@ class edd  extends price{
 	 * @since 0.0.9
 	 *
 	 * @access protected
-	 * 
+	 *
 	 * @param float|string $price
 	 *
 	 * @return string
