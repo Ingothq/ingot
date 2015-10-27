@@ -611,12 +611,19 @@ jQuery( document ).ready( function ( $ ) {
         } ) );
 
 
-
-
-
-
-
     });
+
+    //disable Price testing in main admin if not enabled
+    if( false == INGOT.price_tests_enabled ){
+        show( $( '#price-tests-disabled' ) );
+        $( '#new-price-group, #all-price-group' ).attr( 'href', '' ).removeClass( 'button-secondary' ).addClass( 'button-disabled' );
+    }else{
+        $( '#price-tests-disabled' ).remove();
+    }
+
+
+
+    /**FUNCTIONS**/
 
     function add_error( div, message ){
         var parent = $( div ).parent();

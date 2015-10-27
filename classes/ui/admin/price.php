@@ -16,6 +16,7 @@ use ingot\testing\crud\price_group;
 use ingot\testing\crud\price_test;
 use ingot\testing\utility\helpers;
 use ingot\ui\admin;
+use ingot\ui\util;
 
 class price extends admin {
 
@@ -122,6 +123,7 @@ class price extends admin {
 
 	protected function new_group_page(){
 		ob_start();
+		$plugin_options = util::price_test_plugin_selector();
 		$back_link = $this->price_group_admin_page_link();
 		include_once ( $this->partials_dir_path() . 'price-test-group-new.php' );
 		return ob_get_clean();

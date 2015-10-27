@@ -242,6 +242,9 @@ class screens extends admin{
 					'price_test_group_link' => remove_query_arg( 'group_id', $this->price_group_edit_link() ),
 					'no_tests' => __( 'This group has no tests', 'ingot' ),
 					'invalid_price_test_range' =>  __( 'Please enter a number between -.99 and .99', 'ingot' ),
+					'edd_active' => esc_attr( ingot_is_edd_active() ),
+					'woo_active' => esc_attr( ingot_is_woo_active() ),
+					'price_tests_enabled' => esc_attr( ingot_enable_price_testing() )
 				)
 			);
 		}

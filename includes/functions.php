@@ -455,3 +455,34 @@ function ingot_is_rest_api() {
 	}
 
 }
+
+/**
+ * Check if price tests are allowed
+ *
+ * @since 0.0.9
+ *
+ * @return bool
+ */
+function ingot_enable_price_testing() {
+	$enable = false;
+	foreach( ingot_accepted_plugins_for_price_tests() as $plugin ){
+		$func = "ingot_is_{$plugin}_active";
+		if ( function_exists( $func ) ) {
+			$active = call_user_func( $func );
+			if( $active ) {
+				$enable = true;
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Ovveride the enable/disable of price tests, based on active checks
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param bool $enable True to allow, false to not allow.
+	 */
+	return (bool) apply_filters( 'ingot_enable_price_testing', true );
+
+}

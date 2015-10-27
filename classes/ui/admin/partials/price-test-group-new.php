@@ -28,15 +28,7 @@
 					<?php _e( 'Plugin', 'ingot' ); ?>
 				</label>
 				<select id="group-plugin" required="true">
-					<option value="0">
-						-- <?php _e( 'Choose', 'ignot' ); ?> --
-					</option>
-					<option value="edd">
-						<?php _e( 'Easy Digital Downloads', 'ignot' ); ?>
-					</option>
-					<option value="woo">
-						<?php _e( 'WooCommerce', 'ignot' ); ?>
-					</option>
+					<?php echo $plugin_options; ?>
 				</select>
 			</div>
 			<div class="ingot-config-group" id="group-product_ID-group" style="visibility: hidden" aria-hidden="false">
