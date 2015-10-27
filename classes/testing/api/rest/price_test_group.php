@@ -108,8 +108,12 @@ class price_test_group extends route {
 
 		$data = array_merge(  $existing, $data );
 
-
 		$updated = \ingot\testing\crud\price_group::update( $data, $id, true );
+
+		//this is a massive violation of separation of concerns.
+		if( empty( $data[ 'sequences' ] ) ){
+			\ingot\testing\tests\sequence_progression::make_initial_sequence( $id, true );
+		}
 		if ( ! is_wp_error( $updated ) && is_numeric( $updated ) ) {
 			$item = \ingot\testing\crud\price_group::read( $updated );
 			return rest_ensure_response( $item, 200 );

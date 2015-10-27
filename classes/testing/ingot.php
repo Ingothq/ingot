@@ -22,6 +22,7 @@ use ingot\testing\crud\sequence;
 use ingot\testing\crud\settings;
 use ingot\testing\crud\tracking;
 use ingot\testing\tests\click\click;
+use ingot\testing\tests\flow;
 use ingot\testing\utility\helpers;
 
 class ingot {
@@ -172,9 +173,7 @@ class ingot {
 	 * @param string $what Item type
 	 */
 	public  function update_hook( $id, $what){
-		if( 'sequence' == $what ) {
 
-		}
 
 	}
 
