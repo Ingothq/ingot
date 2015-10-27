@@ -166,7 +166,7 @@ class price {
 	 */
 	protected function a_or_b( $sequence ) {
 		$chance = new chance( $sequence );
-		$a_or_b = flow::choose_a( $chance->get_chance() );
+		$a_or_b = flow::choose_a( $chance->get_chance(), false );
 
 		return $a_or_b;
 	}
