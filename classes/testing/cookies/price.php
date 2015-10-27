@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * Setsups price cookies
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -12,6 +12,8 @@
 namespace ingot\testing\cookies;
 
 
+use ingot\testing\crud\price_group;
+use ingot\testing\crud\price_test;
 use ingot\testing\crud\sequence;
 use ingot\testing\tests\chance;
 use ingot\testing\tests\flow;
@@ -29,9 +31,15 @@ class price {
 	 * @since 0.0.9
 	 *
 	 * @param array $price_cookie Price cookie portion of our cookie
+	 * @param bool $reset Optional. Whether to rest or not, default is false
 	 */
-	public function __construct( $price_cookie ){
-		$this->price_cookie = $price_cookie;
+	public function __construct( $price_cookie, $reset = true ){
+		if ( false == $reset  ) {
+			$this->price_cookie = $price_cookie;
+		}else{
+			$this->price_cookie = array();
+		}
+
 		$this->set_current_sequences();
 		if( ! empty( $this->current_sequences )) {
 			$this->check_sequences();
@@ -141,12 +149,16 @@ class price {
 	 */
 	protected function add_test( $sequence ){
 		$a_or_b = $this->a_or_b( $sequence, false );
+		$group = price_group::read( $sequence[ 'group_ID' ] );
 		$test_id = $this->get_test_id( $sequence, $a_or_b );
+
 
 		$test = array(
 			'a_or_b' => $a_or_b,
 			'test_ID' => $test_id,
-			'expires' => $this->expires()
+			'expires' => $this->expires(),
+			'plugin' => helpers::v( 'plugin', $group, 0 ),
+			'sequence_ID' => helpers::v(  'ID', $sequence, 0 )
 		);
 		
 		$this->price_cookie[ $sequence[ 'ID' ] ] = $test;

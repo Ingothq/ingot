@@ -58,36 +58,25 @@ class tests_price_sequence_queries extends \WP_UnitTestCase{
 			\ingot\testing\crud\price_group::deactivate( $group[ 'group' ] );
 		}
 
-		for ( $i = 0; $i <= 4; $i ++ ) {
-			$id = $this->make_group( $i );
-			$groups[ $i ] = $id;
+
+		for ( $a = 0; $a <= rand( 3, 5); $a ++ ) {
+			$group = $this->make_group( $a + 100 );
+			$group_id = $group[ 'group'];
+			$group = \ingot\testing\crud\price_group::read( $group_id );
+			$this->assertTrue( is_numeric( $group[ 'current_sequence' ] ) );
+			$this->assertNotEquals( 0, $group[ 'current_sequence' ] );
+			$sequence = \ingot\testing\crud\sequence::read( $group[ 'current_sequence' ] );
+			$this->assertTrue( is_array( $sequence ) );
+			$this->assertEquals( $sequence[ 'group_ID' ], $group_id );
 		}
 
-		$inactive_group_data = $this->make_group( 99 );
-		$inactive_group_id = $inactive_group_data[ 'group' ];
-		$inactive_group = \ingot\testing\crud\price_group::read( $inactive_group_id );
-		$inactive_sequence_id = $inactive_group[ 'current_sequence' ];
-
-		\ingot\testing\crud\price_group::deactivate( $inactive_group_id );
-		$inactive_sequence = \ingot\testing\crud\sequence::read( $inactive_sequence_id );
-		$this->assertEquals( 1, (int) $inactive_sequence[ 'completed'] );
 
 		//make and deactivate a few more
 		for ( $i = 0; $i <= rand( 2, 5 ); $i ++ ) {
-			$group = $this->make_group( $i );
+			$group = $this->make_group( $i + 200 );
 			\ingot\testing\crud\price_group::deactivate( $group[ 'group' ] );
 		}
 
-		$the_sequences = $the_groups = array();
-		foreach( $groups as $i => $group ){
-			$group_id = $group[ 'group' ];
-			$_group = \ingot\testing\crud\price_group::read( $group_id );
-			$this->assertTrue( is_array( $_group ) );
-			$the_groups[ $_group[ 'ID' ] ] = $_group;
-			$_sequence = \ingot\testing\crud\sequence::read( $_group[ 'current_sequence' ] );
-			$this->assertTrue( is_array( $_sequence  ) );
-			$the_sequences[ $_sequence[ 'ID'] ] = $_sequence;
-		}
 
 		$args = array(
 			'price_test' => true,
@@ -97,14 +86,10 @@ class tests_price_sequence_queries extends \WP_UnitTestCase{
 
 		$active_sequences = \ingot\testing\crud\sequence::get_items( $args );
 		$this->assertTrue( is_array( $active_sequences ) );
-		$this->assertSame( count( $active_sequences ), count( $the_sequences ) );
-		$active_sequences_ids = wp_list_pluck( $active_sequences, 'ID' );
 
-		foreach( $active_sequences_ids as $id ) {
-			$this->assertArrayHasKey( $id, $the_sequences );
-		}
+		$this->assertEquals( count( $active_sequences ), (int) $a );
 
-		$this->assertArrayNotHasKey( $inactive_sequence_id, $active_sequences_ids );
+
 
 	}
 
@@ -126,8 +111,6 @@ class tests_price_sequence_queries extends \WP_UnitTestCase{
 		$this->assertFalse( empty( $tests_from_db  ) );
 
 		$this->assertSame( count( $expected_test_ids ), count( $tests_from_db ) );
-		var_dump( $expected_test_ids );
-		var_dump( $tests_from_db );
 		foreach( $tests_from_db as $test ) {
 			$this->assertArrayHasKey( 'ID', $test );
 			$this->assertTrue( in_array( $test[ 'ID' ],  $expected_test_ids ) );

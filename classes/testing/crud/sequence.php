@@ -193,24 +193,23 @@ $table_name, helpers::v( 'group_ID', $params )  );
 		global $wpdb;
 		$table_name = self::get_table_name();
 
-		$sequence_ids = price_group::get_items(
-			array(
-				'get_current' => true,
-				'ids' => true
-			)
-		);
+		$sql = sprintf( "SELECT * FROM `%s` WHERE `completed` = 0 AND `test_type` = 'price'", $table_name );
+		$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $limit, self::calculate_offset( $limit, $page )  );
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+		if( ! empty( $results ) ){
+			$items = array();
+			foreach( $results as $result ){
+				$_item = self::fill_in( $result );
 
-		if( ! empty( $sequence_ids ) ) {
-			$sequence_ids = wp_list_pluck( $sequence_ids, 'ID' );
-			$sql = sprintf( "SELECT * FROM %s WHERE ID IN(%s) AND `test_type` = 'price' ", $table_name, implode( ',', $sequence_ids ) );
+				if ( ! is_wp_error( $_item ) ) {
+					$items[] = $_item;
+				}
 
-			$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $limit, self::calculate_offset( $limit, $page )  );
 
-			$results = $wpdb->get_results( $sql, ARRAY_A );
-
-			return $results;
-
+			}
+			return $items;
 		}
+
 
 	}
 

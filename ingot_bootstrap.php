@@ -62,7 +62,8 @@ class ingot_bootstrap {
 				new ingot\ui\make();
 				self::maybe_load_api();
 
-				add_action( 'init', array( __CLASS__, 'init_cookies' ) );
+				add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
+				add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
 
 				/**
 				 * Runs when Ingot has loaded.
@@ -271,9 +272,35 @@ class ingot_bootstrap {
 		$ingot_cookies = $cookies->get_ingot_cookie();
 		if( ! empty( $ingot_cookies ) ){
 			$cookie_time = 15 * DAY_IN_SECONDS;
-			setcookie($cookies->get_cookie_name(), $ingot_cookies, $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false);
+			setcookie($cookies->get_cookie_name(), $ingot_cookies, $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
+
+
 		}
 
+		/**
+		 * Fires after Ingot Cookies Are Set
+		 *
+		 * Note: will fire if they were set empty
+		 * Should happen at init:25
+		 *
+		 * @since 0.0.9
+		 */
+		do_action( 'ingot_cookies_set' );
+
+	}
+
+	/**
+	 * Initialize price testing
+	 *
+	 * @uses "ingot_cookies_set"
+	 *
+	 * @since 0.0.9
+	 */
+	public static function init_price_tests() {
+		$tests = \ingot\testing\cookies\cache::instance()->get( 'price' );
+		if( ! empty( $tests ) ){
+			new \ingot\testing\tests\price\init( $tests );
+		}
 	}
 
 }

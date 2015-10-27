@@ -34,7 +34,7 @@ class cache {
 	private static $instance;
 
 
-	protected function __construct() {
+	private function __construct() {
 		//prevent creation
 	}
 
@@ -52,7 +52,7 @@ class cache {
 
 	public function update( $key, $value ){
 		if( in_array( $key, $this->parts ) && is_array( $value ) ){
-			$this->cache = $value;
+			$this->cache[ $key ] = $value;
 		}
 	}
 
