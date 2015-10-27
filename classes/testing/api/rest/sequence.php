@@ -12,16 +12,18 @@
 namespace ingot\testing\api\rest;
 
 
-class sequence {
+class sequence extends route {
 
 	/**
 	 * Marks what object this is for.
 	 *
 	 * @since 0.0.7
 	 *
+	 * @acces protected
+	 *
 	 * @var string
 	 */
-	private $what = 'sequence';
+	protected $what = 'sequence';
 
 
 	/**

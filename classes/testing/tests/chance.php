@@ -91,9 +91,17 @@ class chance {
 	 */
 	protected function calcualate_chance() {
 		if ( $this->sequence['a_win'] > $this->sequence['b_win'] ) {
+			if( 0 == $this->sequence['b_win'] ) {
+				return 50;
+			}
+
 			$invert = true;
 			$percentage = $this->sequence['b_win'] / $this->sequence['a_win'];
 		} else {
+			if( 0 == $this->sequence['b_win'] ) {
+				return 50;
+			}
+
 			$invert = false;
 			$percentage = $this->sequence['a_win'] / $this->sequence['b_win'];
 		}

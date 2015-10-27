@@ -273,7 +273,7 @@ abstract class crud {
 
 		}
 
-		$data = self::fill_in( $data );
+		$data = static::fill_in( $data );
 
 		if ( 'group' == static::what() ) {
 			if ( false == self::validate_type( $data ) || false == self::validate_click_type( $data ) ) {
@@ -304,9 +304,12 @@ abstract class crud {
 			}
 		}
 
-		$data[ 'modified' ] = time();
+		if ( 'tracking' != static::what() ) {
+			$data['modified'] = time();
+		}
 
 		return $data;
+
 	}
 
 	/**
@@ -399,6 +402,7 @@ abstract class crud {
 
 		}
 
+
 		//this date validation shit is serious fucking mess
 		if ( 'tracking' != static::what() ) {
 			foreach ( array( 'created', 'modified' ) as $key ) {
@@ -436,6 +440,7 @@ abstract class crud {
 			}
 
 		}
+
 
 		return $data;
 
@@ -513,9 +518,14 @@ abstract class crud {
 	 * @return array|\WP_Error Data as array or WP_Error if invalid
 	 */
 	protected static function prepare_data( $data ) {
-		$data = self::validate_config( $data );
+		$data = static::validate_config( $data );
 		if ( ! is_array( $data ) ) {
+			if( is_wp_error( $data ) ) {
+				return $data;
+			}
+
 			return new \WP_Error( 'ingot-invalid-config' );
+
 		}
 
 		$allowed = array_merge( static::required(), static::needed() );
@@ -524,6 +534,7 @@ abstract class crud {
 				unset( $data[ $k ] );
 			}
 		}
+
 
 		return $data;
 

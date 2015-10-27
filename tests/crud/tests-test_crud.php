@@ -211,6 +211,7 @@ class test_test_crud extends \WP_UnitTestCase {
 		);
 
 		$created = \ingot\testing\crud\test::create( $params );
+		$this->assertTrue( is_numeric( $created ) );
 		$key = 'ingot_test_' . $created;
 		$this->assertEquals( get_option( $key ), \ingot\testing\crud\test::read( $created ) );
 	}

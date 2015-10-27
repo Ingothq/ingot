@@ -30,8 +30,11 @@ class make {
 	 * @since 0.0.6
 	 */
 	public function __construct() {
-		$this->screens = new screens();
-		$this->make_screens();
+		if ( is_admin() ) {
+			$this->screens = new screens();
+			$this->make_screens();
+			add_action( 'init', array( $this, 'add_admin_nonce' ) );
+		}
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
 	}
 
@@ -44,6 +47,21 @@ class make {
 	 */
 	protected function make_screens() {
 		add_action( 'admin_menu', array( $this->screens, 'add_menu'  ) );
+	}
+
+	/**
+	 * Ensure we have a nonce set in the admin page URL
+	 *
+	 * @uses "init"
+	 *
+	 * @since 0.0.9
+	 */
+	public function add_admin_nonce() {
+		if( isset( $_GET[ 'page' ] ) && 'ingot' == $_GET[ 'page' ] && ! isset( $_GET[ '_nonce' ] ) ) {
+			wp_safe_redirect( add_query_arg( '_nonce', wp_create_nonce(), ingot_current_url() ) );
+			exit;
+		}
+
 	}
 
 	/**

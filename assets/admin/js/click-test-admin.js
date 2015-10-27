@@ -3,6 +3,72 @@
  */
 jQuery( document ).ready( function ( $ ) {
 
+    //outer wrap for ingot UI
+    var outer_wrap = document.getElementById( 'ingot-outer-wrap' );
+
+    //the all click handler
+    $( document ).on( 'click', function(e) {
+        var el = document.activeElement;
+        var href = el.href;
+        var group_id;
+        group_id =  getParameterByName( 'group_id', href );
+        if( 'null' !== group_id ) {
+            if ( 'price' == getParameterByName( 'type', href ) ) {
+
+                e.preventDefault();
+                    var action;
+
+                    if ( 'list' == group_id ) {
+                        action = 'get_price_list_page';
+                    } else {
+                        action = 'get_price_group_page';
+                    }
+
+                    var data = {
+                        _nonce: INGOT.admin_ajax_nonce,
+                        action: action,
+                        group_id: group_id
+                    };
+
+
+                    $( outer_wrap ).empty();
+                    $( '<img/>', {
+                        id: 'outer-loading-spinner',
+                        src: INGOT.spinner_url,
+                        alt: INGOT.spinner_alt,
+                    }).appendTo( outer_wrap );
+                    $.ajax( {
+                        url: INGOT.admin_ajax,
+                        method: "GET",
+                        data: data,
+                        complete: function ( r, status ) {
+                            $( '#outer-loading-spinner' ).remove();
+                            if( 'success' == status ) {
+                                if( "0" == r.responseText ) {
+                                    window.location = href;
+                                }
+                                $( outer_wrap ).html( r.responseText );
+                                history.replaceState( {}, 'Ingot', href );
+                            }
+                        }
+
+                    } );
+
+            }else if( 'click' ==  getParameterByName( 'type', href ) ) {
+                //use for click naviagations
+            }
+
+        }
+
+
+        function getParameterByName(name, href ) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec( href);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+    });
+
     $( '#group-type' ).change( function() {
         maybe_hide_select_option();
     });
@@ -42,6 +108,14 @@ jQuery( document ).ready( function ( $ ) {
 
     $( document ).on( 'click', '#delete-all-groups', function(e) {
         e.preventDefault();
+        var url;
+        if( 'click' == $( this ).attr( 'data-group-type' ) ) {
+            var url = INGOT.api_url + '/test-group/1?all=true';
+        }else{
+            alert( 'fail' );
+            return;
+        }
+
         swal( {
                 title: INGOT.are_you_sure,
                 text: INGOT.delete_confirm,
@@ -53,7 +127,7 @@ jQuery( document ).ready( function ( $ ) {
                 closeOnCancel: false
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
-                    var url = INGOT.api_url + '/test-group/1?all=true';
+
                     $.ajax({
                         url:url,
                         method: "DELETE",
@@ -270,4 +344,334 @@ jQuery( document ).ready( function ( $ ) {
         });
 
     });
+
+    /**
+     * New Price Test
+     */
+    $( "#group-plugin" ).change(function() {
+        var plugin = $( this ).val();
+        var data = {
+            plugin: plugin,
+            _nonce: INGOT.admin_ajax_nonce,
+            action: 'get_all_products'
+        };
+
+        var el = document.getElementById( 'group-product_ID-group' );
+        $( el ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
+        $( '<img/>', {
+            id: 'products-loading-spinner',
+            src: INGOT.spinner_url,
+            alt: INGOT.spinner_alt,
+        }).appendTo( el );
+
+        $.ajax( {
+               method: 'GET',
+                data: data,
+                url: INGOT.admin_ajax,
+                complete: function( response, status ){
+                    if( 'success' == status ) {
+                        var $el = $("#group-product_ID");
+                        $el.empty();
+                        var newOptions = JSON.parse( response.responseText );
+                        console.log(  newOptions );
+
+                        $.each(newOptions, function(value,key) {
+                            $el.append($("<option></option>")
+                                .attr("value", value).text(key));
+                        });
+
+                    }
+                    $( '#products-loading-spinner' ).remove();
+                }
+
+            }
+        )
+    });
+
+    //create new group
+    $( '#ingot-price-test-new' ).submit( function(e) {
+        e.preventDefault();
+        $( '#spinner' ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
+        var data = {
+            group_name: $( '#group-name' ).val(),
+            plugin: $( '#group-plugin' ).val(),
+            type: 'price',
+            product_ID: $( '#group-product_ID' ).val()
+        };
+
+        var url = INGOT.api_url + '/price-group/';
+
+        $.when(
+            $.ajax( {
+                    url: url,
+                    data: data,
+                    method: "POST",
+                    beforeSend: function ( xhr ) {
+                        xhr.setRequestHeader( 'X-WP-Nonce', INGOT.nonce );
+                    },
+                }
+            )
+        ).then( function( response, textStatus, xhr )  {
+                $( '#spinner' ).css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' ).hide();
+                if ( 'success' == textStatus ) {
+
+                    var group_id = response.ID;
+                    swal( {
+                        title: INGOT.success,
+                        text: INGOT.saved + response.group_name,
+                        type: "success",
+                        confirmButtonText: INGOT.close
+                    } );
+                    var data = {
+                        _nonce: INGOT.admin_ajax_nonce,
+                        action: 'get_price_group_page',
+                        group_id: group_id
+                    };
+
+                    $.ajax( {
+                        method: "get",
+                        url: INGOT.admin_ajax,
+                        data: data,
+                        complete: function ( r, status ) {
+                            $( '#outer-loading-spinner' ).remove();
+                            if ( 'success' == status ) {
+                                $( outer_wrap ).html( r.responseText );
+                                var href = INGOT.price_test_group_link + '&group_id=' + response.ID
+                                    history.replaceState( {}, 'Ingot', href );
+                            }
+                        }
+
+                    } )
+                }
+        });
+    });
+
+    //price test options
+    var price_test_chooser = document.getElementById( 'price-tests-chooser' );
+    if( null != price_test_chooser ){
+        var data = {
+            group_id: $( '#test-group-id' ).val(),
+            _nonce: INGOT.admin_ajax_nonce,
+            action: 'get_price_tests_by_group'
+        };
+
+        $.ajax( {
+                method: 'GET',
+                data: data,
+                url: INGOT.admin_ajax,
+                complete: function( response, status ){
+                    if( 'success' == status && false != response.responseText.success ) {
+                        var $el = $( price_test_chooser);
+                        $el.empty();
+                        var newOptions = JSON.parse( response.responseText.data );
+                        console.log(  newOptions );
+
+                        $.each(newOptions, function(value,key) {
+                            $el.append($("<option></option>")
+                                .attr("value", value).text(key));
+                        });
+
+                    }else{
+                        show( '#no-tests' );
+                        $( '#price-tests-chooser' ).prop('disabled', true);
+                    }
+                }
+
+            }
+        );
+    }
+
+    //add a price test field price group editor
+    $( document ).on( 'click', '#add-price-test', function(e){
+        var data = {
+            plugin: $( '#test-group-plugin' ).val(),
+            _nonce: INGOT.admin_ajax_nonce,
+            action: 'get_price_ab_field'
+        };
+
+        $.ajax( {
+                method: 'GET',
+                data: data,
+                url: INGOT.admin_ajax,
+                complete: function( response, status ){
+                    console.log( response );
+                    if( 'success' == status && false != response.responseText.success ) {
+                        var id =  Math.random().toString(36).substring(7);
+                        id = 'new_' + id;
+                        $( '<div/>', {
+                            id: id,
+                            class: 'price-test'
+                        }).appendTo('#price-tests' );
+                        var new_el = document.getElementById( id );
+                        new_el.innerHTML = response.responseText;
+
+
+
+                    }else{
+
+                    }
+                }
+
+            }
+
+
+        );
+
+
+    });
+
+    //save price test group
+    $( '#ingot-price-test-group' ).submit( function(e) {
+        e.preventDefault();
+        clear_errors();
+
+        var group_id = $( '#test-group-id' ).val();
+        var product_id = $( '#test-product-id' ).val();
+        var tests_new = [];
+        var tests_update = [];
+        var test_id_update_map = [];
+        var test_divs = $( "#price-tests" ).find( '.price-test' );
+
+        var test_id, a_val, b_val, test, a_div_id, b_div_id;
+        var invalid = [];
+        $.each( test_divs, function ( i, div ) {
+            test_id = $( div ).find( '.test-id' ).attr( 'data-test-id' );
+            a_div_id = test_id + '-a';
+            b_div_id = test_id + '-b';
+            a_val = $( '#' + a_div_id ).val();
+            b_val = $( '#' +  b_div_id ).val();
+            if( a_val < -1 || a_val > 1 ){
+                invalid.push( a_div_id );
+                add_error( '#' + a_div_id, INGOT.invalid_price_test_range );
+            }
+
+            if( b_val < -1 || b_val > 1 ){
+                add_error( '#' + b_div_id, INGOT.invalid_price_test_range );
+            }
+
+
+            test = {
+                product_ID: product_id,
+                default: {
+                    a: a_val,
+                    b: b_val
+                },
+                ID: test_id
+            };
+
+
+            if ( 1 == is_new( test_id ) ) {
+                delete test.ID;
+                tests_new.push( test );
+            } else {
+                tests_update.push( test );
+            }
+
+        } );
+
+        if( 0 != invalid.length ){
+            return;
+        }
+
+        var tests = [];
+
+        var data = {
+            group_name: $( '#group-name' ).val(),
+            initial: $( '#initial' ).val(),
+            threshold: $( '#threshold' ).val(),
+            product_ID: product_id,
+            plugin: $( '#test-group-plugin' ).val(),
+            tests_new: tests_new,
+            tests_update: tests_update,
+            type: 'price'
+        };
+
+        if( 0 == data.tests_update.length ) {
+            delete data.tests_update;
+        }
+
+        if( 0 == data.tests_new.length ) {
+            delete data.tests_new;
+        }
+
+        var url = INGOT.api_url + '/price-group/' + group_id;
+        $.when( $.ajax( {
+            url: url,
+            data: data,
+            method: 'POST',
+            beforeSend: function ( xhr ) {
+                xhr.setRequestHeader( 'X-WP-Nonce', INGOT.nonce );
+            },
+        } ).then( function ( r ) {
+            swal( INGOT.success, "", "success" ), function() {
+
+            };
+            window.location = window.location.href;
+
+        } ) );
+
+
+    });
+
+    //disable Price testing in main admin if not enabled
+    if( false == INGOT.price_tests_enabled ){
+        show( $( '#price-tests-disabled' ) );
+        $( '#new-price-group, #all-price-group' ).attr( 'href', '' ).removeClass( 'button-secondary' ).addClass( 'button-disabled' );
+    }else{
+        $( '#price-tests-disabled' ).remove();
+    }
+
+
+
+    /**FUNCTIONS**/
+
+    function add_error( div, message ){
+        var parent = $( div ).parent();
+        $( div ).addClass( 'ingot-has-error' );
+        $( '<div/>', {
+            class: 'ingot-error'
+        }).html( message ).append( parent  );
+    }
+
+    function clear_errors() {
+        $( $( outer_wrap ).find( '.ingot-has-error' ), function ( i, div ) {
+            $( div ).removeClass( 'ingot-has-error' );
+        } );
+
+        $( outer_wrap ).find( '.ingot-error' ).remove();
+    }
+
+    /**
+     * Test if a div id represents a new item
+     * @param str
+     * @returns {number}
+     */
+    function is_new( str ){
+        if ( 'string' == typeof str ) {
+            if ( 'new_' == str.substring( 0, 4 ) ) {
+                return 1;
+            }
+        } else {
+            console.log( str );
+        }
+    }
+
+    /**
+     * Hide an element
+     *
+     * @param el
+     */
+    function hide( el ){
+        $( el ).css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' ).hide();
+    }
+
+    /**
+     * Show an element
+     *
+     * @param el
+     */
+    function show( el ){
+        $( el ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
+    }
+
 } );

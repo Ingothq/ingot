@@ -27,7 +27,7 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers ingot\testing\tests\click\click::make_initial_sequence
+	 * @covers ingot\testing\tests\sequence_progression::make_initial_sequence
 	 */
 	public function testInitialSequence() {
 		$params = array(
@@ -298,7 +298,7 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers ingot\testing\tests\click\click::make_next_sequence
+	 * @covers \ingot\testing\tests\sequence_progression::make_next_sequence
 	 */
 	public function testMakeNextSequence() {
 		$params = array(
@@ -335,7 +335,7 @@ class test_click_tests extends \WP_UnitTestCase {
 
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence = \ingot\testing\crud\sequence::read( $group[ 'sequences' ][0] );
-		$new_sequence_id = \ingot\testing\tests\click\click::make_next_sequence( $group_id, $test_1 );
+		$new_sequence_id = \ingot\testing\tests\sequence_progression::make_next_sequence( $group_id, $test_1, $group );
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$this->assertArrayHasKey( 1, $group[ 'sequences'] );
 		$this->assertEquals( $new_sequence_id, $group[ 'sequences' ][1] );
@@ -355,7 +355,7 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
-	 * @covers ingot\testing\tests\click\click::make_next_sequence
+	 * @covers \ingot\testing\tests\sequence_progression::make_next_sequence
 	 */
 	public function testMakeNextInContext() {
 		$params = array(

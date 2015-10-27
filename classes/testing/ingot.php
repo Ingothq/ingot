@@ -12,13 +12,18 @@
 namespace ingot\testing;
 
 
+use ingot\testing\api\rest\price_test;
+use ingot\testing\api\rest\price_test_group;
 use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
 use ingot\testing\crud\group;
+use ingot\testing\crud\price_group;
 use ingot\testing\crud\sequence;
 use ingot\testing\crud\settings;
 use ingot\testing\crud\tracking;
 use ingot\testing\tests\click\click;
+use ingot\testing\tests\flow;
+use ingot\testing\utility\helpers;
 
 class ingot {
 
@@ -65,6 +70,12 @@ class ingot {
 		$test_group->register_routes();
 		$test = new test();
 		$test->register_routes();
+		//$sequence = new \ingot\testing\api\rest\sequence();
+		//$sequence->register_routes();
+		$price_test_group = new price_test_group();
+		$price_test_group->register_routes();
+		$price_test = new price_test();
+		$price_test->register_routes();
 	}
 
 	/**
@@ -82,12 +93,6 @@ class ingot {
 		return $value;
 
 	}
-
-
-
-
-
-
 
 	/**
 	 * Data to be localize as INGOT_VARS
@@ -107,7 +112,7 @@ class ingot {
 		if ( 'group' == $what ){
 			if( empty( $item[ 'sequences'] ) ){
 				remove_filter( 'ingot_crud_read', array( $this, 'read_hook' ) );
-				click::make_initial_sequence( $item[ 'ID' ] );
+				\ingot\testing\tests\sequence_progression::make_initial_sequence( $item[ 'ID' ] );
 				$group = group::read( $item[ 'ID' ] );
 				return $group;
 
@@ -121,6 +126,14 @@ class ingot {
 				$item[ $key ] = maybe_unserialize( $item[ $key ] );
 			}
 
+			return $item;
+		}elseif( 'price_group' == $what ) {
+			foreach( array(
+				'sequences',
+				'test_order'
+			) as $key ) {
+				$item[ $key ] = maybe_unserialize( $item[ $key ] );
+			}
 			return $item;
 		}
 
@@ -138,8 +151,13 @@ class ingot {
 	 * @param string $what Item type
 	 */
 	public  function create_hook( $id, $what){
-		if( 'group' == $what ){
-			click::make_initial_sequence( $id );
+		if( 'group' == $what || 'price_group' == $what ){
+			$price = false;
+			if( 'price_group' == $what ){
+				$price = true;
+			}
+
+			\ingot\testing\tests\sequence_progression::make_initial_sequence( $id, $price );
 
 		}
 	}
@@ -155,9 +173,7 @@ class ingot {
 	 * @param string $what Item type
 	 */
 	public  function update_hook( $id, $what){
-		if( 'sequence' == $what ) {
 
-		}
 
 	}
 

@@ -27,7 +27,7 @@ class util {
 	public static function select_options( $options, $selected ) {
 		$out = '';
 		foreach( $options as $value => $label ) {
-			if ( $selected == $value ) {
+			if ( $selected === $value ) {
 				$is_selected = 'selected';
 			}else{
 				$is_selected = '';
@@ -38,6 +38,51 @@ class util {
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Make HTML for eCommerce plugin select options
+	 *
+	 * @since 0.0.9
+	 *
+	 * @return string
+	 */
+	public static function price_test_plugin_selector() {
+
+		return self::select_options( self::price_test_plugin_options(), 0 );
+
+	}
+
+	/**
+	 * Make otpions array for eCommerce plugin select options
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected static function price_test_plugin_options() {
+		$options = array(
+			0 => ' -- ' . __( 'Choose', 'ingot' ) . ' -- ',
+			'edd' => __( 'Easy Digital Downloads', 'ignot' ),
+			'woo' => __( 'WooCommerce', 'ignot' )
+		);
+
+
+		foreach( $options as $value => $label ) {
+			if( 0 === $value ){
+				continue;
+			}
+
+			$active = ingot_check_ecommerce_active( $value );
+			if( true != $active ){
+				unset( $options[ $value ] );
+			}
+
+		}
+
+		return $options;
 	}
 
 	/**

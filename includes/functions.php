@@ -294,3 +294,195 @@ function ingot_validate_boolean( $val ) {
 	}
 }
 
+/**
+ * Get the full URL of the current page
+ *
+ * @since 0.0.9
+ *
+ * @return string Full URL of the current page
+
+ */
+function ingot_current_url () {
+	$url = 'http';
+
+	if ( isset( $_SERVER[ 'HTTPS' ] ) && 'off' != $_SERVER[ 'HTTPS' ] && 0 != $_SERVER[ 'HTTPS' ] )
+		$url = 'https';
+
+	$url .= '://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
+
+	return $url;
+
+}
+
+/**
+ * Sanitize Amount
+ *
+ * Returns a sanitized amount by stripping out thousands separators.
+ *
+ * Copied form ingot_sanitize_amount()
+ *
+ * @since 0.0.9
+ *
+ * @param string $amount Price amount to format
+ * @return string $amount Newly sanitized amount
+ */
+function ingot_sanitize_amount( $amount ) {
+	$is_negative   = false;
+
+	/**
+	 * Change thousands separator to use for price display
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param string $thousands_separator
+	 */
+	$thousands_sep = apply_filters( 'thousands_separator', ',' );
+
+	/**
+	 * Chane decimal separator to use for price display
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param string $decimal_separator
+	 */
+	$decimal_sep   = apply_filters( 'decimal_separator', '.' );
+
+	// Sanitize the amount
+	if ( $decimal_sep == ',' && false !== ( $found = strpos( $amount, $decimal_sep ) ) ) {
+		if ( ( $thousands_sep == '.' || $thousands_sep == ' ' ) && false !== ( $found = strpos( $amount, $thousands_sep ) ) ) {
+			$amount = str_replace( $thousands_sep, '', $amount );
+		} elseif( empty( $thousands_sep ) && false !== ( $found = strpos( $amount, '.' ) ) ) {
+			$amount = str_replace( '.', '', $amount );
+		}
+
+		$amount = str_replace( $decimal_sep, '.', $amount );
+	} elseif( $thousands_sep == ',' && false !== ( $found = strpos( $amount, $thousands_sep ) ) ) {
+		$amount = str_replace( $thousands_sep, '', $amount );
+	}
+
+	if( $amount < 0 ) {
+		$is_negative = true;
+	}
+
+	$amount   = preg_replace( '/[^0-9\.]/', '', $amount );
+
+	/**
+	 * Filter number of decimals to use for prices
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param int $number Number of decimals
+	 * @param int|string $amount Price
+	 */
+	$decimals = apply_filters( 'ingot_sanitize_amount_decimals', 2, $amount );
+	$amount   = number_format( (double) $amount, $decimals, '.', '' );
+
+	if( $is_negative ) {
+		$amount *= -1;
+	}
+
+	/**
+	 * Filter the sanitized price before returning
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param string $amount Price
+	 */
+	return apply_filters( 'ingot_sanitize_amount', $amount );
+}
+
+/**
+ * Get the allowed plugins to make price tests with
+ *
+ * @since 0.0.9
+ *
+ * @return array
+ */
+function ingot_accepted_plugins_for_price_tests() {
+	$plugins = array(
+		'edd',
+		'woo',
+	);
+
+	/**
+	 * Add or remove allowed plugins for price tests
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param array $plugins Array of plugins
+	 */
+	return apply_filters( 'ingot_accepted_plugins_for_price_tests', $plugins );
+}
+
+/**
+ * Check if a plugin is acceptable for use in a price test
+ *
+ * @since 0.0.9
+ *
+ * @param $plugin
+ *
+ * @return bool
+ */
+function ingot_acceptable_plugin_for_price_test( $plugin ){
+	return in_array( $plugin, ingot_accepted_plugins_for_price_tests() );
+}
+
+/**
+ * Check if this is a front-end request
+ *
+ * @since 0.0.9
+ *
+ * @return bool
+ */
+function ingot_is_front_end() {
+	if( is_admin() || ingot_is_admin_ajax() || ingot_is_rest_api() || ( defined( 'DOING_CRON' ) && DOING_CRON ) || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Check if this is a REST API request
+ *
+ * @since 0.0.9
+ *
+ * @return bool
+ */
+function ingot_is_rest_api() {
+	if( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		return true;
+	}
+
+}
+
+/**
+ * Check if price tests are allowed
+ *
+ * @since 0.0.9
+ *
+ * @return bool
+ */
+function ingot_enable_price_testing() {
+	$enable = false;
+	foreach( ingot_accepted_plugins_for_price_tests() as $plugin ){
+		$func = "ingot_is_{$plugin}_active";
+		if ( function_exists( $func ) ) {
+			$active = call_user_func( $func );
+			if( $active ) {
+				$enable = true;
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Ovveride the enable/disable of price tests, based on active checks
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param bool $enable True to allow, false to not allow.
+	 */
+	return (bool) apply_filters( 'ingot_enable_price_testing', true );
+
+}

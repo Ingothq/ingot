@@ -16,7 +16,16 @@ use ingot\testing\crud\group;
 
 class test_group extends route {
 
-	private $what = 'group';
+	/**
+	 * Identify object type for this route collection
+	 *
+	 * @since unknown
+	 *
+	 * @access protected
+	 *
+	 * @var string
+	 */
+	protected $what = 'group';
 
 	/**
 	 * Register the routes for the objects of the controller.

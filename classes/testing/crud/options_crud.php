@@ -76,7 +76,7 @@ abstract class options_crud extends crud {
 			return false;
 		}
 
-		$item = self::fill_in( $item );
+		$item = static::fill_in( $item );
 		if( ! empty( $item ) && ! isset( $item[ 'ID' ] ) ) {
 			$item[ 'ID' ] = $id;
 		}
@@ -185,8 +185,7 @@ abstract class options_crud extends crud {
 		$offset = self::calculate_offset( $limit, $page );
 
 		global $wpdb;
-		$what = static::what();
-		$like = "%ingot_{$what}_%";
+		$like = self::like();
 		$sql = sprintf( 'SELECT * FROM `%1s` WHERE `option_name` LIKE "%2s" ORDER BY `option_id` DESC LIMIT %d OFFSET %d', $wpdb->options, $like, $limit, $offset );
 
 		$results = $wpdb->get_results( $sql, ARRAY_A );
@@ -314,6 +313,22 @@ abstract class options_crud extends crud {
 
 
 		return $all;
+	}
+
+	/**
+	 * Prepare WHERE for a like
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected static function like() {
+		$what = static::what();
+		$like = "%ingot_{$what}_%";
+
+		return $like;
 	}
 
 

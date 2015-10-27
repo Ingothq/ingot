@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin page for listing click tests
+ * Admin page for listing price tests
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -9,11 +9,9 @@
  * @copyright 2015 Josh Pollock
  */
 ?>
-<div id="test-group-admin" class="ingot-admin-wrap">
-
-
+<div id="price-test-group-admin" class="ingot-admin-wrap">
 	<h1>
-		<?php _e( 'All Click Tests', 'ingot' ); ?>
+		<?php _e( 'All Price Tests', 'ingot' ); ?>
 	</h1>
 	<section id="groups-list">
 		<?php echo $groups_inner_html; ?>
@@ -29,7 +27,7 @@
 			<h3>
 				<?php _e( 'Options', 'ingot' ); ?>
 			</h3>
-			<a href="#" id="delete-all-groups" data-group-type="click" class="button button-secondary">
+			<a href="#" id="delete-all-groups" data-group-type="price" class="button button-secondary">
 				<?php _e( 'Delete All', 'ignot' ); ?>
 			</a>
 			<?php echo $settings_form; ?>
