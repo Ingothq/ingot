@@ -1,3 +1,4 @@
 vendor
 vendor/*
 vendor/composer
+node_modules
