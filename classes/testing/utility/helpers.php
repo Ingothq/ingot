@@ -164,12 +164,36 @@ class helpers {
 	 * @return string
 	 */
 	public static function get_color_from_meta( $config, $with_hash = true ){
-		$color = '';
+		$color = 'ffffff';
 		if( isset( $config[ 'meta' ] ) && ( isset( $config[ 'meta' ][ 'color'] ) || isset(  $config[ 'meta' ][ 'button_color' ] ) ) ){
 			if ( isset( $config[ 'meta' ][ 'color'] ) ) {
 				$color = $config['meta']['color'];
 			} elseif( isset(  $config[ 'meta' ][ 'button_color' ] ) ) {
 				$color =  $config[ 'meta' ][ 'button_color' ];
+			}else{
+				$color = 'ffffff';
+			}
+		}
+
+		return self::prepare_color( $color, $with_hash );
+
+	}
+
+	/**
+	 * Get default button color from meta
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $config
+	 * @param bool|true $with_hash
+	 *
+	 * @return string
+	 */
+	public static function get_background_color_from_meta( $config, $with_hash = true ){
+		$color = '';
+		if( isset( $config[ 'meta' ] ) && ( isset( $config[ 'meta' ][ 'color'] ) || isset(  $config[ 'meta' ][ 'button_color' ] ) ) ){
+			if ( isset( $config[ 'meta' ][ 'background_color'] ) ) {
+				$color = $config['meta'][ 'background_color'];
 			}else{
 				$color = '';
 			}

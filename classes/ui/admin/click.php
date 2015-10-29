@@ -187,9 +187,10 @@ class click extends admin{
 			)
 		);
 
-		$default_botton_color = helpers::get_color_from_meta( $group );
+		$background_color = helpers::get_background_color_from_meta( $group );
+		$color = helpers::get_color_from_meta( $group );
 
-		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ], $default_botton_color );
+		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ] );
 
 		$click_options = array_combine( array_keys( $this->click_types() ), wp_list_pluck( $this->click_types(), 'label' )  );
 
@@ -216,9 +217,13 @@ class click extends admin{
 				'desc' => __( 'A link, with testable text.', 'ingot' )
 			),
 			'button' => array(
-				'label' => __( 'Button', 'ingot' ),
+				'label' => __( 'Button Text', 'ingot' ),
 				'desc' => __( 'A clickable button, with testable text.', 'ingot' )
-			),/*
+			),
+			'button_color' => array(
+				'label' => __( 'Button Color', 'ingot' ),
+				'desc' => __( 'A clickable button, with testable color options.', 'ingot' )
+			)/*
 			'text' => array(
 				'label' => __( 'Text', 'ingot' ),
 				'desc' => __( 'Testable text, with another element as the click test.', 'ingot' )
@@ -290,7 +295,7 @@ class click extends admin{
 	 *
 	 * @return mixed|string
 	 */
-	protected function test_field_group( $part_config = array(), $default_botton_color = null ) {
+	protected function test_field_group( $part_config = array() ) {
 		$new = false;
 		if( empty( $part_config ) || ! isset( $part_config[ 'ID' ] ) ){
 			$new = true;
@@ -307,7 +312,8 @@ class click extends admin{
 		);
 
 
-		$color = helpers::prepare_color( helpers::v( 'color', $part_config[ 'meta' ], defaults::color(), true ), true );
+		$background_color = helpers::get_background_color_from_meta( $part_config );
+		$color = helpers::get_color_from_meta( $part_config );
 
 		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'color', 'text' ) ) );
 		ob_start();
@@ -319,13 +325,13 @@ class click extends admin{
 
 	}
 
-	protected function get_markup_for_saved_tests( $tests, $default_botton_color ) {
+	protected function get_markup_for_saved_tests( $tests ) {
 		$out = '';
 		if ( ! empty( $tests ) && is_array( $tests ) ) {
 			foreach ( $tests as $test_id ) {
 				$test = test::read( $test_id );
 				if ( is_array( $test ) ) {
-					$out .= $this->test_field_group( $test, $default_botton_color );
+					$out .= $this->test_field_group( $test );
 				}
 
 			}
@@ -333,7 +339,7 @@ class click extends admin{
 		}
 
 		if ( empty( $out ) ) {
-			$out = $this->test_field_group( array(), $default_botton_color);
+			$out = $this->test_field_group( array() );
 		}
 
 		return $out;

@@ -34,13 +34,18 @@ if( ! isset( $id ) ){
 			<input type="text" class="test-part-text" value="<?php echo esc_attr( $part_config['text'] ); ?>" required aria-required="true"
 			       id="<?php echo esc_attr( 'text-'. $id ); ?>">
 		</div>
-		<div class="ingot-config-group button-color">
-			<label for="<?php echo esc_attr( 'color-'. $id ); ?>" >
-				<?php _e( 'Button Color ', 'ingot' ); ?>
+		<div class="ingot-config-group button-color button-color-test-wrap">
+			<label for="<?php echo esc_attr( 'color-'. $id ); ?>" class="button-color-test">
+				<?php _e( 'Button Text Color ', 'ingot' ); ?>
 			</label>
-			<input type="text" class="test-part-color ingot-color-field" value="<?php echo esc_attr( $part_config['text'] ); ?>"
-			       id="<?php echo esc_attr( 'color-'. $id ); ?>">
-		</div
+			<input type="text" class="test-part-color ingot-color-field button-color-test" value="<?php echo $color; ?>" id="<?php echo esc_attr( 'color-'. $id ); ?>">
+		</div>
+		<div class="ingot-config-group button-color button-color-test-wrap">
+			<label for="<?php echo esc_attr( 'background-color-'. $id ); ?>" class="button-color-test">
+				<?php _e( 'Button Background  Color ', 'ingot' ); ?>
+			</label>
+			<input type="text" class="test-part-color ingot-color-field button-color-test" value="<?php echo $background_color; ?>" id="<?php echo esc_attr( 'background-color-'. $id ); ?>">
+		</div>
 	</div>
 	<div class="test-right">
 		<a href="#" class="button part-remove" alt="<?php esc_attr_e( 'Click To Remove Test', 'ingot' ); ?>" data-part-id="<?php echo esc_attr( $part_config['ID'] ); ?>" id="<?php echo esc_attr( 'remove-'. $part_config['ID'] ); ?>">

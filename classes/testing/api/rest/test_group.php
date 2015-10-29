@@ -114,7 +114,6 @@ class test_group extends route {
 
 		$params = $request->get_params();
 
-
 		if( ! empty( $params[ 'tests' ] ) ) {
 			foreach( $params[ 'tests' ] as $test ) {
 				$test_id = helpers::v( 'id', $test, 0 );
@@ -144,6 +143,7 @@ class test_group extends route {
 			}
 		}
 
+		$data = $this->prepare_click_test_meta( $params );
 		$data = array_merge(  $existing, $data );
 		$updated = group::update( $data, $id );
 		if ( ! is_wp_error( $updated ) && $updated ) {
@@ -170,8 +170,10 @@ class test_group extends route {
 	 */
 	public function create_item( $request ) {
 		$params = $request->get_params();
+
 		unset( $params[0] );
 		unset( $params[1] );
+		$params = $this->prepare_click_test_meta( $params );
 
 		if( ! empty( $params[ 'tests' ] ) ) {
 			foreach( $params[ 'tests' ] as $test ) {

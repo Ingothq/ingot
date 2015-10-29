@@ -49,11 +49,19 @@
 				</label>
 				<input id="link" type="text" value="<?php echo esc_attr( $group[ 'link' ] ); ?>" >
 			</div>
-			<div class="ingot-config-group" id="default-color-wrap button-color" aria-live="assertive">
-				<label for="default-color" class="button-color">
-					<?php _e( 'Default Color For Buttons', 'ingot' ); ?>
+			<div class="ingot-config-group" id="button-color-wrap" aria-live="assertive" class="button-text-test">
+				<label for="button-color" class="button-text-test">
+					<?php _e( 'Text Color For Buttons', 'ingot' ); ?>
 				</label>
-				<input id="default-color" type="text" class="ingot-color-field button-color" value="<?php echo esc_attr( $default_botton_color ); ?>"
+				<input id="button-color" type="text" class="ingot-color-field button-color button-text-test" value="<?php echo esc_attr( $background_color ); ?>" />
+			</div>
+			<br />
+
+			<div class="ingot-config-group" id="background-color-wrap" aria-live="assertive" class="button-text-test">
+				<label for="background-color" class="button-text-test">
+					<?php _e( 'Background Color For Buttons', 'ingot' ); ?>
+				</label>
+				<input id="background-color" type="text" class="ingot-color-field button-color button-text-test" value="<?php echo esc_attr( $color ); ?>" />
 			</div>
 		</section>
 
