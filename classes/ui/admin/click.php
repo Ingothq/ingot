@@ -13,6 +13,7 @@ namespace ingot\ui\admin;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\utility\defaults;
 use ingot\ui\admin;
 use ingot\testing\crud\test;
 
@@ -162,8 +163,13 @@ class click extends admin{
 			$group = (int)  $_GET[ 'group_id' ];
 		}
 
-		if( is_int( $group ) ) {
+		if( 0 != $group && is_numeric( $group ) ) {
 			$group = group::read( $group );
+		}
+
+		if( 0 != $group &&  ! is_array( $group ) ){
+			$error =  new \WP_Error( 'ingot-admin-click-no-group', sprintf( '%s %s', __( 'Can not find group', 'ingot' ),  $group ) );
+			return $error->get_error_message();
 		}
 
 		$group = wp_parse_args(
@@ -174,20 +180,24 @@ class click extends admin{
 				'parts' => array(),
 				'results' => array(),
 				'type' => 'link',
-				'initial' => 50,
-				'threshold' => 20,
-				'selector' => '',
 				'link' => '',
 				'order'=> array(),
+				'meta' => array(),
+				'click_type' => 'button'
 			)
 		);
+
+		$background_color = helpers::get_background_color_from_meta( $group );
+		$color = helpers::get_color_from_meta( $group );
+
+		$color_test_text = helpers::v( 'color_test_text', $group[ 'meta' ], '' );
 
 		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ] );
 
 		$click_options = array_combine( array_keys( $this->click_types() ), wp_list_pluck( $this->click_types(), 'label' )  );
 
 		$stats_link = $this->stats_page_link( $group[ 'ID' ] );
-		include_once( $this->partials_dir_path() . 'click-test.php' );
+		include_once( INGOT_UI_PARTIALS_DIR . 'click-test-group.php' );
 		$out = ob_get_clean();
 		echo $out;
 
@@ -209,13 +219,17 @@ class click extends admin{
 				'desc' => __( 'A link, with testable text.', 'ingot' )
 			),
 			'button' => array(
-				'label' => __( 'Button', 'ingot' ),
+				'label' => __( 'Button Text', 'ingot' ),
 				'desc' => __( 'A clickable button, with testable text.', 'ingot' )
 			),
+			'button_color' => array(
+				'label' => __( 'Button Color', 'ingot' ),
+				'desc' => __( 'A clickable button, with testable color options.', 'ingot' )
+			)/*
 			'text' => array(
 				'label' => __( 'Text', 'ingot' ),
 				'desc' => __( 'Testable text, with another element as the click test.', 'ingot' )
-			)
+			)*/
 		);
 	}
 
@@ -279,66 +293,35 @@ class click extends admin{
 
 	/**
 	 * @param array $part_config
+	 * @param string $default_botton_color
 	 *
 	 * @return mixed|string
 	 */
 	protected function test_field_group( $part_config = array() ) {
+		$new = false;
+		if( empty( $part_config ) || ! isset( $part_config[ 'ID' ] ) ){
+			$new = true;
+		}
+
 		$part_config = wp_parse_args(
 			$part_config,
 			array(
 				'ID' => '-ID_' . rand(),
 				'name' => null,
 				'text' => null,
+				'meta' => array()
 			)
 		);
-		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'name', 'text', ) ) );
+
+
+		$background_color = helpers::get_background_color_from_meta( $part_config );
+		$color = helpers::get_color_from_meta( $part_config );
+
+		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'color', 'text' ) ) );
 		ob_start();
 
-		?>
-		<div class="test-part" id="{{ID}}" data-current="<?php echo esc_attr( wp_json_encode( $current ) ); ?>">
-			<div class="test-left">
-				<input type="hidden" class="test-part-id" value="{{ID}}" aria-hidden="true" id="part-hidden-id-{{ID}}">
-
-				<div class="ingot-config-group">
-					<label>
-						<?php _e( 'Name', 'ingot' ); ?>
-					</label>
-					<input type="text" class="test-part-name" value="{{name}}" required aria-required="true"
-					       id="name-{{ID}}">
-				</div>
-				<div class="ingot-config-group">
-					<label>
-						<?php _e( 'Text', 'ingot' ); ?>
-					</label>
-					<input type="text" class="test-part-text" value="{{text}}" required aria-required="true"
-					       id="text-{{ID}}">
-				</div>
-
-			</div>
-			<div class="test-right">
-				<a href="#" class="button part-remove" alt="<?php esc_attr_e( 'Click To Remove Test', 'ingot' ); ?>" data-part-id="{{ID}}" id="remove-{{ID}}">
-					<?php _e( 'Remove' ); ?>
-				</a>
-			</div>
-			<div class="clear"></div>
-		</div>
-		<div class="clear"></div>
-		<?php
+		include( INGOT_UI_PARTIALS_DIR . 'click-test-part.php' );
 		$template = ob_get_clean();
-		$id = $part_config[ 'ID' ];
-		foreach( array( 'name', 'text', 'ID' ) as $field ) {
-			if ( isset( $part_config[ $field ] ) ) {
-				$value = esc_attr( $part_config[ $field ] );
-			}else{
-				if( 'ID' == $field ) {
-					$value = $id;
-				}else{
-					$value = '';
-				}
-			}
-
-			$template = str_replace( '{{' . $field . '}}', $value, $template );
-		}
 
 		return $template;
 
@@ -358,7 +341,7 @@ class click extends admin{
 		}
 
 		if ( empty( $out ) ) {
-			$out = $this->test_field_group( );
+			$out = $this->test_field_group( array() );
 		}
 
 		return $out;

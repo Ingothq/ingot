@@ -60,7 +60,8 @@ class test extends options_crud {
 		$needed = array(
 			'name',
 			'created',
-			'modified'
+			'modified',
+			'meta'
 		);
 
 		return $needed;

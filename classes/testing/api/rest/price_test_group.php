@@ -95,7 +95,7 @@ class price_test_group extends route {
 			}
 		}
 
-		//@todo allow for more fields ot be updated
+		//@todo allow for more fields to be updated
 		foreach( array(
 			'group_name',
 			'initial',

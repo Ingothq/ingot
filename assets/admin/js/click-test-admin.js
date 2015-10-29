@@ -3,6 +3,8 @@
  */
 jQuery( document ).ready( function ( $ ) {
 
+    var saving = false;
+
     //outer wrap for ingot UI
     var outer_wrap = document.getElementById( 'ingot-outer-wrap' );
 
@@ -42,6 +44,7 @@ jQuery( document ).ready( function ( $ ) {
                         method: "GET",
                         data: data,
                         complete: function ( r, status ) {
+
                             $( '#outer-loading-spinner' ).remove();
                             if( 'success' == status ) {
                                 if( "0" == r.responseText ) {
@@ -50,6 +53,7 @@ jQuery( document ).ready( function ( $ ) {
                                 $( outer_wrap ).html( r.responseText );
                                 history.replaceState( {}, 'Ingot', href );
                             }
+
                         }
 
                     } );
@@ -69,19 +73,54 @@ jQuery( document ).ready( function ( $ ) {
         }
     });
 
+
+    //hide show options based on group type
     $( '#group-type' ).change( function() {
-        maybe_hide_select_option();
+        click_ui_hide_shows();
     });
 
-    var maybe_hide_select_option;
-    (maybe_hide_select_option = function(){
+    var click_ui_hide_shows;
+    (click_ui_hide_shows = function(){
         var val = $( '#group-type' ).val();
-        if ( 'text' != val ) {
-            $( '#selector-wrap' ).hide();
+        var all_color_divs = $.find( '.button-color, .wp-picker-container, #background-color-wrap, #button-color-wrap, .button-color-test,.button-text-test' );
+
+        var show_divs = [];
+        if ( 'link' == val ) {
+            hide( $( all_color_divs ) );
         }else{
-            $( '#selector-wrap' ).show();
+            hide( $( all_color_divs ) );
+
+            if ( 'button' == val ){
+                show( $( '.test-part-text' ) );
+                hide( $( '#color-test-text-wrap' ) );
+                show( $( '#background-color-wrap' ));
+                show( $( '#button-color-wrap' ) );
+                show_divs = $( '#background-color-wrap, #button-color-wrap' ).children();
+                $( '.background-color' ).wpColorPicker();
+                $( '.button-color' ).wpColorPicker();
+                hide( $( '.test-part .wp-picker-container' ) );
+
+            }else if ( 'button_color' == val ) {
+                hide( $( '.test-part-text' ) );
+                show( $( '#color-test-text-wrap' ) );
+                show( $( '.test-part .wp-picker-container' ) );
+                show_divs =  $( '.button-color-test-wrap, .button-color-test-wrap' ).children();
+
+                var pickers = $( '.button-color-test .ingot-color-field' ).find();
+                $.each( pickers, function( i, picker ){
+                    $( picker ).wpColorPicker();
+                });
+
+            }
+
+            $.each( show_divs, function ( i, div) {
+                show( div );
+            });
+
+            $( '.wp-picker-input-wrap' ).hide();
         }
     })();
+
 
     $( document ).on( 'click', '#add-group', function(e) {
 
@@ -92,7 +131,6 @@ jQuery( document ).ready( function ( $ ) {
         }, function(r) {
             $( '#group-parts' ).prepend( r );
             var id = $( r ).attr( 'id' );
-            console.log( id );
 
             $( '#remove-' + id ).on( 'click', function(e) {
                 var remove = $( this ).data( 'part-id' );
@@ -109,6 +147,7 @@ jQuery( document ).ready( function ( $ ) {
     $( document ).on( 'click', '#delete-all-groups', function(e) {
         e.preventDefault();
         var url;
+
         if( 'click' == $( this ).attr( 'data-group-type' ) ) {
             var url = INGOT.api_url + '/test-group/1?all=true';
         }else{
@@ -127,7 +166,7 @@ jQuery( document ).ready( function ( $ ) {
                 closeOnCancel: false
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
-
+                    saving = true;
                     $.ajax({
                         url:url,
                         method: "DELETE",
@@ -135,7 +174,11 @@ jQuery( document ).ready( function ( $ ) {
                             swal( INGOT.deleted, "", "success" ), function() {
                                 location.reload();
                             };
+                        },
+                        always: function(){
+                            saving = false;
                         }
+
 
                     });
 
@@ -170,6 +213,7 @@ jQuery( document ).ready( function ( $ ) {
     $( document ).on( 'click', '.group-delete', function(e) {
         id = $( this ).data( 'group-id' );
         var url = INGOT.api_url + '/test-group/' + id;
+        saving = true;
         $.ajax({
             url:url,
             method: "DELETE",
@@ -187,27 +231,31 @@ jQuery( document ).ready( function ( $ ) {
                     });
 
                 }
+            }, always : function() {
+                saving = false;
             }
         })
     });
 
 
-
+    /**
+     * Save click test group
+     */
     $( document ).on( 'submit', '#ingot-click-test', function( e) {
+        saving = true;
         e.preventDefault();
-        $( '#spinner' ).show().css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' );
-
-
+        show( $( '#spinner' ) );
+        clear_errors();
         var parts;
-        parts = $( '.test-part' );
+        parts = $.find( '.test-part' );
 
-        var test_endpoint = INGOT.api_url + '/test/';
-
-
-        var  id, _id, create, name, text, part_data, url, current;
+        var  id, _id, create, name, text, part_data, url, current, test, color, background_color;
         var test_ids = {};
+        var tests = [];
 
         $.each( parts, function( i, part ){
+
+            test = {};
             id = 0;
             _id = $( part ).attr( 'id' );
             create = false;
@@ -218,52 +266,23 @@ jQuery( document ).ready( function ( $ ) {
                 id = _id;
             }
 
-            name = $( '#name-'  + _id ).val();
             text = $( '#text-'  + _id ).val();
+            color = $( '#color-'  + _id ).val();
+            background_color = $( '#background-color-' + _id ).val();
 
-            part_data = {
-                name: name,
+            test = {
                 text: text,
-                id: id
+                button_color: color,
+                id: id,
+                background_color: background_color
             };
 
-            current = $( '#' + _id ).data( 'current' );
-            if( false == create && part_data.name == current.name && part_data.text == current.text ) {
-                test_ids[ i ] = id;
-                return;
-            }
-
-
-            if ( true == create ) {
-                url = test_endpoint;
-            }else{
-                url = test_endpoint + id;
-            }
-
-            //@todo use a promise to avouid syncronous transfer
-            $.ajax( {
-                url: url,
-                async: false,
-                method: 'POST',
-                beforeSend: function ( xhr ) {
-                    xhr.setRequestHeader( 'X-WP-Nonce', INGOT.nonce );
-                },
-                data: part_data
-            } ).always(function( r, status) {
-
-                if( 'object' == typeof r){
-                    $( '#name-'  + _id ).attr( 'id', 'name-' + r.ID );
-                    $( '#text-'  + _id ).attr( 'id', 'value-' + r.ID );
-                    $( part ).attr( 'id', r.ID );
-                    $( '#part-hidden-id-' + _id ).val( r.ID );
-                    $( '#part-hidden-id-' + _id ).attr( 'id', 'part-hidden-id-' + r.ID );
-
-                    test_ids[ i ] = r.ID;
-                }
-            });
+            tests.push( test );
+            test_ids[ i ] = id;
 
 
         });
+
 
         var group_id = $( '#test-group-id' ).val();
         url = INGOT.api_url + '/test-group/';
@@ -277,12 +296,12 @@ jQuery( document ).ready( function ( $ ) {
             name : $( '#group-name' ).val(),
             click_type: $( '#group-type' ).val(),
             order: test_ids,
-            selector: $( '#selector' ).val(),
-            initial: $( '#intial' ).val(),
-            threshold: $( '#threshold' ).val(),
-            link: $( '#link' ).val()
+            tests: tests,
+            link: $( '#link' ).val(),
+            background_color: $( '#background-color' ).val(),
+            color: $( '#button-color' ).val(),
+            color_test_text: $( '#color-test-text' ).val(),
         };
-
 
         $.ajax({
             url: url,
@@ -293,7 +312,8 @@ jQuery( document ).ready( function ( $ ) {
             }
 
         } ).always(function( r, status ) {
-            if( 'success' == status ){
+            hide( $( '#spinner' ) );
+            if( 'success' == status && 'object' == typeof r ){
 
                 $( '#test-group-id' ).val( r.ID );
                 var href = window.location.href.split('?')[0];
@@ -306,9 +326,11 @@ jQuery( document ).ready( function ( $ ) {
                     type: "success",
                     confirmButtonText: INGOT.close
                 });
-                history.pushState( {}, title, new_url );
+                //history.pushState( {}, title, new_url );
+                saving = false;
+                window.location = new_url;
             }else{
-                $( '#spinner' ).hide().css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' );
+                saving = false;
                 swal({
                     title: INGOT.fail,
                     text: INGOT.fail,
@@ -316,15 +338,16 @@ jQuery( document ).ready( function ( $ ) {
                     confirmButtonText: INGOT.close
                 });
             }
+
+            saving = false;
         });
-
-
 
 
     });
 
     $( document ).on( 'submit', '#ingot-settings', function(e) {
         e.preventDefault();
+        saving = true;
         $( '#ingot-settings-spinner' ).show().css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' );
         var data = {
             click_tracking: $( '#click_tracking' ).val(),
@@ -339,6 +362,7 @@ jQuery( document ).ready( function ( $ ) {
             data: data,
             complete: function() {
                 $( '#ingot-settings-spinner' ).hide().css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' );
+                saving = false;
             }
 
         });
@@ -373,7 +397,6 @@ jQuery( document ).ready( function ( $ ) {
                         var $el = $("#group-product_ID");
                         $el.empty();
                         var newOptions = JSON.parse( response.responseText );
-                        console.log(  newOptions );
 
                         $.each(newOptions, function(value,key) {
                             $el.append($("<option></option>")
@@ -489,12 +512,13 @@ jQuery( document ).ready( function ( $ ) {
             action: 'get_price_ab_field'
         };
 
+        saving = true;
+
         $.ajax( {
                 method: 'GET',
                 data: data,
                 url: INGOT.admin_ajax,
                 complete: function( response, status ){
-                    console.log( response );
                     if( 'success' == status && false != response.responseText.success ) {
                         var id =  Math.random().toString(36).substring(7);
                         id = 'new_' + id;
@@ -510,6 +534,9 @@ jQuery( document ).ready( function ( $ ) {
                     }else{
 
                     }
+                },
+                always: function(){
+                    saving = false;
                 }
 
             }
@@ -621,6 +648,13 @@ jQuery( document ).ready( function ( $ ) {
         $( '#price-tests-disabled' ).remove();
     }
 
+
+
+    $( document ).ajaxComplete(function() {
+        if ( true != saving) {
+            click_ui_hide_shows();
+        }
+    });
 
 
     /**FUNCTIONS**/

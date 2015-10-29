@@ -39,6 +39,8 @@ class price_test extends route {
 		$params = $request->get_params();
 		unset( $params[0] );
 		unset( $params[1] );
+
+		$params = $this->prepare_click_test_meta( $params );
 		$created = \ingot\testing\crud\price_test::create( $params );
 		if ( ! is_wp_error( $created ) && is_numeric( $created ) ) {
 			$item = \ingot\testing\crud\price_test::read( $created );
@@ -68,6 +70,7 @@ class price_test extends route {
 		unset( $params[0] );
 		unset( $params[1] );
 		unset( $params['id'] );
+		$params = $this->prepare_click_test_meta( $params );
 		$updated = \ingot\testing\crud\price_test::update( $params, $id );
 		if ( ! is_wp_error( $updated ) && is_numeric( $updated ) ) {
 			$item = \ingot\testing\crud\price_test::read( $updated );
@@ -111,6 +114,12 @@ class price_test extends route {
 				'type'               => 'array',
 				'default'            => array(),
 				'sanitize_callback'  => array( $this, 'make_array_values_floats' ),
+			),
+			'button_color' => array(
+				'description'        => __( 'Button color for button tests', 'ingot' ),
+				'type'               => 'string',
+				'default'            => array(),
+				'sanitize_callback'  => array( 'ingot\testing\utility\helpers', 'prepare_color' ),
 			)
 
 		);
@@ -121,4 +130,6 @@ class price_test extends route {
 
 		return $args;
 	}
+
+
 }

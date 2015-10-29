@@ -1,7 +1,6 @@
 <?php
 /**
- * UI elements and a ton of other shit for admin that needs broken up into other classes.
- *
+ * Make admin UI and AJAX callbacks
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -66,6 +65,7 @@ class screens extends admin{
 		}else{
 			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
 			new \ingot\ui\admin\sequence\viewer();
+
 		}
 	}
 
@@ -212,10 +212,11 @@ class screens extends admin{
 	 */
 	public function scripts() {
 		if( isset( $_GET[ 'page' ] ) && 'ingot' == $_GET[ 'page' ] ) {
+			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery') );
 			wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css');
 			wp_enqueue_style( 'ingot-click-test-style', INGOT_URL . 'assets/admin/css/click-test-admin.css' );
-			wp_enqueue_script( 'ingot-click-test', INGOT_URL . 'assets/admin/js/click-test-admin.js', array( 'jquery', 'swal'), rand() );
+			wp_enqueue_script( 'ingot-click-test', INGOT_URL . 'assets/admin/js/click-test-admin.js', array( 'jquery', 'swal', 'wp-color-picker' ), rand() );
 			wp_localize_script( 'ingot-click-test', 'INGOT', array(
 					'api_url' => rest_url( 'ingot/v1'),
 					'test_field' => esc_url_raw( add_query_arg( 'action', 'test_field_group', admin_url( 'admin-ajax.php' ) ) ),

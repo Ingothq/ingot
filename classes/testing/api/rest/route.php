@@ -368,4 +368,32 @@ abstract class route extends \WP_REST_Controller  {
 
 		return $namespace;
 	}
+
+	/**
+	 * Handle fields that go in meta for a click test
+	 *
+	 * @since 0.1.1
+	 *
+	 * @access protected
+	 *
+	 * @param array $params Request params
+	 *
+	 * @return array Request params
+	 */
+	protected function prepare_click_test_meta( $params ) {
+		$params['meta'] = array();
+		foreach ( array( 'color', 'background_color', 'color_test_text' ) as $meta ) {
+			if ( ! empty( $params[ $meta ] ) ) {
+				$params['meta'][ $meta ] = $params[ $meta ];
+			}
+
+			unset( $params[ $meta ] );
+		}
+
+		unset( $params[ 'button_color' ] );
+
+
+		return $params;
+
+	}
 }

@@ -13,6 +13,8 @@ namespace ingot\testing\crud;
 
 
 use ingot\testing\types;
+use ingot\testing\utility\defaults;
+use ingot\testing\utility\helpers;
 
 abstract class crud {
 
@@ -111,6 +113,7 @@ abstract class crud {
 		}
 
 		return $id;
+
 	}
 
 
@@ -395,7 +398,11 @@ abstract class crud {
 					$data[ $key ] = array();
 				}elseif( 'referrer' == $data ) {
 					$data[ $key ] = ingot_get_refferer();
-				} else{
+				}elseif( 'threshold' == $key ) {
+					$data[ $key ] =  defaults::threshold();
+				}elseif( 'initial' == $key ) {
+					$data[ $key ] =  defaults::initial();
+				}else{
 					$data[ $key ] = 0;
 				}
 			}

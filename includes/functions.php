@@ -68,6 +68,9 @@ function ingot_click_html_link( $type, $group ) {
 		case 'button' == $type :
 			$class = new \ingot\ui\render\click_tests\button( $group );
 			break;
+		case 'button_color' == $type :
+			$class = new \ingot\ui\render\click_tests\button_color( $group );
+			break;
 		case 'text' == $type :
 			$class = new \ingot\ui\render\click_tests\text( $group );
 			break;

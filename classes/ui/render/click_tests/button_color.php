@@ -1,6 +1,6 @@
 <?php
 /**
- * Render a button test
+ * Render a button color test
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -15,7 +15,7 @@ use ingot\testing\tests\click\click;
 use ingot\testing\utility\helpers;
 use ingot\ui\util;
 
-class button extends \ingot\ui\render\click_tests\click {
+class button_color extends \ingot\ui\render\click_tests\button {
 
 
 
@@ -29,12 +29,12 @@ class button extends \ingot\ui\render\click_tests\click {
 	 */
 	protected function make_html() {
 		$test_id = $this->get_test()[ 'ID' ];
-		$text = $this->get_test()[ 'text' ];
+		$text = $color_test_text = helpers::v( 'color_test_text', $this->get_group()[ 'meta' ], '' );
 		$link = $this->get_group()[ 'link' ];
 		$group_id = $this->get_sequence()[ 'ID' ];
 		$sequence_id = $this->get_sequence()[ 'ID' ];
 		$click_nonce = util::click_nonce( $test_id, $sequence_id, $group_id );
-		$style = $this->make_style( $this->get_group() );
+		$style = $this->make_style( $this->get_test() );
 
 		$this->html = sprintf(
 			'<button class="ingot-button" %s><a href="%s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%d" data-ingot-sequence-id="%d" data-ingot-test-nonce="%s" %s>%s</a></button>',
@@ -51,21 +51,4 @@ class button extends \ingot\ui\render\click_tests\click {
 
 	}
 
-	/**
-	 * Create style tags for buttons
-	 *
-	 * @since 0.1.1
-	 *
-	 * @acess protected
-	 *
-	 * @param $config
-	 *
-	 * @return string
-	 */
-	protected function make_style( $config ) {
-		$color = helpers::get_color_from_meta( $config );
-		$background_color = helpers::get_background_color_from_meta( $config );
-		return sprintf( 'style="background-color=%s;color:%s"', $background_color, $color );
-
-	}
 }

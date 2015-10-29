@@ -36,6 +36,42 @@
 					<?php echo ingot\ui\util::select_options( $click_options, $group[ 'click_type' ] ); ?>
 				</select>
 			</div>
+			<div class="ingot-config-group" id="color-test-text-wrap">
+				<label for="group-type">
+					<?php _e( 'Default Text', 'ingot' ); ?>
+				</label>
+				<input id="color-test-text" type="text" required value="<?php esc_attr_e( $color_test_text ); ?>">
+				<p class="description">
+					<?php _e( 'Text to be used for buttons in button color tests', 'ingot' ); ?>
+				</p>
+			</div>
+		</section>
+
+		<section id="details">
+			<h3>
+				<?php _e( 'Details', 'ingot' ); ?>
+			</h3>
+
+			<div class="ingot-config-group" id="link-wrap">
+				<label for="link">
+					<?php _e( 'Link', 'ingot' ); ?>
+				</label>
+				<input id="link" type="text" value="<?php echo esc_attr( $group[ 'link' ] ); ?>" >
+			</div>
+			<div class="ingot-config-group" id="button-color-wrap" aria-live="assertive" class="button-text-test">
+				<label for="button-color" class="button-text-test">
+					<?php _e( 'Text Color For Buttons', 'ingot' ); ?>
+				</label>
+				<input id="button-color" type="text" class="ingot-color-field button-color button-text-test" value="<?php echo esc_attr( $background_color ); ?>" />
+			</div>
+			<br />
+
+			<div class="ingot-config-group" id="background-color-wrap" aria-live="assertive" class="button-text-test">
+				<label for="background-color" class="button-text-test">
+					<?php _e( 'Background Color For Buttons', 'ingot' ); ?>
+				</label>
+				<input id="background-color" type="text" class="ingot-color-field button-color button-text-test" value="<?php echo esc_attr( $color ); ?>" />
+			</div>
 		</section>
 
 		<section id="parts">
@@ -52,38 +88,7 @@
 			</div>
 		</section>
 
-		<section id="details">
-			<h3>
-				<?php _e( 'Details', 'ingot' ); ?>
-			</h3>
-			<div class="ingot-config-group">
-				<label for="initial">
-					<?php _e( 'Initial', 'ingot' ); ?>
-				</label>
-				<input id="initial" type="number" value="<?php echo esc_attr( $group[ 'initial' ] ); ?>" min="0" required>
-			</div>
 
-			<div class="ingot-config-group">
-				<label for="threshold">
-					<?php _e( 'Threshold', 'ingot' ); ?>
-				</label>
-				<input id="threshold" type="number" value="<?php echo esc_attr( $group[ 'threshold' ] ); ?>" min="0" max="100" required>
-			</div>
-
-			<div class="ingot-config-group" id="selector-wrap">
-				<label for="selector">
-					<?php _e( 'Selector', 'ingot' ); ?>
-				</label>
-				<input id="selector" type="text" value="<?php echo esc_attr( $group[ 'selector' ] ); ?>" >
-			</div>
-
-			<div class="ingot-config-group" id="link-wrap">
-				<label for="link">
-					<?php _e( 'Link', 'ingot' ); ?>
-				</label>
-				<input id="link" type="text" value="<?php echo esc_attr( $group[ 'link' ] ); ?>" >
-			</div>
-		</section>
 		<div class="clear"></div>
 
 
@@ -91,22 +96,5 @@
 		<input type="submit" class="button button-primary" id="save-group" value="<?php _e( 'Save', 'ingot' ); ?>" name="save">
 
 	</form>
-	<div class="clear"></div>
-		<div id="spinner" style="display: none; visibility: hidden" aria-hidden="true">
-			<img src="<?php echo esc_url( INGOT_URL . '/assets/img/loading.gif' ); ?>" />
-		</div>
-		<div id="status"></div>
-
-
-
-	<section id="options" style="margin-top:8px;">
-		<a href="<?php echo esc_url( $back_link); ?>" class="button button-secondary">
-			<?php _e( 'Back', 'ingot' ); ?>
-		</a>
-		<a href="<?php echo esc_url( $stats_link); ?>" class="button button-secondary">
-			<?php _e( 'View Stats', 'ingot' ); ?>
-		</a>
-	</section>
-
 	<div class="clear"></div>
 </div>

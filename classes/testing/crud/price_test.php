@@ -11,6 +11,8 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\utility\defaults;
+
 class price_test extends options_crud {
 
 	/**
@@ -146,16 +148,26 @@ class price_test extends options_crud {
 	 * @return array
 	 */
 	protected static function fill_in( $data ){
+		if( empty( $data[ 'threshold' ] ) ) {
+			$data[ 'threshold' ] = defaults::threshold();
+		}
+
+		if( empty( $data[ 'initial'] ) ){
+			$data[ 'initial' ] = defaults::initial();
+		}
+
 		foreach( self::needed() as $needed ) {
 			if( ! isset( $data[ $needed ] ) ) {
 				if( 'variable_prices' == $needed ) {
 					$data[ 'variable_prices' ] = array();
-				}else{
+				}else {
 					$data[ $needed ] = 0;
 				}
 			}
 
 		}
+
+
 
 		return $data;
 

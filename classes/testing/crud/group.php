@@ -66,6 +66,7 @@ class group extends options_crud {
 			'threshold',
 			'click_type',
 			'link',
+			'meta',
 			'created',
 			'modified',
 			'current_sequence'
