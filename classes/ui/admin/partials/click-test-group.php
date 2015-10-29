@@ -80,21 +80,4 @@
 
 	</form>
 	<div class="clear"></div>
-		<div id="spinner" style="display: none; visibility: hidden" aria-hidden="true">
-			<img src="<?php echo esc_url( INGOT_URL . '/assets/img/loading.gif' ); ?>" />
-		</div>
-		<div id="status"></div>
-
-
-
-	<section id="options" style="margin-top:8px;">
-		<a href="<?php echo esc_url( $back_link); ?>" class="button button-secondary">
-			<?php _e( 'Back', 'ingot' ); ?>
-		</a>
-		<a href="<?php echo esc_url( $stats_link); ?>" class="button button-secondary">
-			<?php _e( 'View Stats', 'ingot' ); ?>
-		</a>
-	</section>
-
-	<div class="clear"></div>
 </div>

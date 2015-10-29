@@ -154,6 +154,26 @@ class helpers {
 	}
 
 	/**
+	 * Get default button color from meta
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $config
+	 * @param bool|true $with_hash
+	 *
+	 * @return string
+	 */
+	public static function get_color_from_meta( $config, $with_hash = true ){
+		$color = '';
+		if( isset( $config[ 'meta' ], $config[ 'meta' ][ 'color'] ) ){
+			$color = $config[ 'meta' ][ 'color' ];
+		}
+
+		return self::prepare_color( $color, $with_hash );
+
+	}
+
+	/**
 	 * Prepare a color hex
 	 *
 	 * @since 0.1.1
@@ -165,6 +185,10 @@ class helpers {
 	 */
 	public static function prepare_color( $color, $with_hash = true ) {
 		if( $with_hash ){
+			$color = self::maybe_hash_hex_color( $color );
+		}
+
+		if( $with_hash ){
 			$color =  self::sanitize_hex_color( $color );
 		}else{
 			$color =  self::sanitize_hex_color_no_hash( $color );
@@ -172,10 +196,10 @@ class helpers {
 
 		if( empty( $color ) ) {
 			$color = defaults::color();
-		}
+			if( $with_hash ){
+				$color = self::maybe_hash_hex_color( $color );
+			}
 
-		if( $with_hash ){
-			$color = self::maybe_hash_hex_color( $color );
 		}
 
 		return $color;

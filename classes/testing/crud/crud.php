@@ -14,6 +14,7 @@ namespace ingot\testing\crud;
 
 use ingot\testing\types;
 use ingot\testing\utility\defaults;
+use ingot\testing\utility\helpers;
 
 abstract class crud {
 
@@ -112,6 +113,7 @@ abstract class crud {
 		}
 
 		return $id;
+
 	}
 
 

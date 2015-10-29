@@ -182,7 +182,7 @@ class click extends admin{
 			)
 		);
 
-		$default_botton_color = helpers::prepare_color( helpers::v( 'default_color', $group[ 'meta' ], defaults::color(), true ), true );
+		$default_botton_color = helpers::get_color_from_meta( $group );
 
 		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ], $default_botton_color );
 
@@ -304,7 +304,7 @@ class click extends admin{
 
 		$color = helpers::prepare_color( helpers::v( 'color', $part_config[ 'meta' ], defaults::color(), true ), true );
 
-		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'text', ) ) );
+		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'color', 'text' ) ) );
 		ob_start();
 
 		include( INGOT_UI_PARTIALS_DIR . 'click-test-part.php' );

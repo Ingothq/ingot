@@ -88,6 +88,7 @@ jQuery( document ).ready( function ( $ ) {
         }
     })();
 
+
     $( document ).on( 'click', '#add-group', function(e) {
 
         e.preventDefault();
@@ -200,17 +201,15 @@ jQuery( document ).ready( function ( $ ) {
 
     $( document ).on( 'submit', '#ingot-click-test', function( e) {
         e.preventDefault();
-        $( '#spinner' ).show().css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' );
-
-
+        show( $( '#spinner' ));
+        clear_errors();
         var parts;
-        parts = $( '.test-part' );
-
-        var test_endpoint = INGOT.api_url + '/test/';
+        parts = $.find( '.test-part' );
 
 
         var  id, _id, create, name, text, part_data, url, current;
         var test_ids = {};
+        var tests = [];
 
         $.each( parts, function( i, part ){
             id = 0;
@@ -223,49 +222,17 @@ jQuery( document ).ready( function ( $ ) {
                 id = _id;
             }
 
-            name = $( '#name-'  + _id ).val();
             text = $( '#text-'  + _id ).val();
+            color = $( '#color-'  + _id ).val();
 
-            part_data = {
-                name: name,
+            test = {
                 text: text,
+                button_color: color,
                 id: id
             };
 
-            current = $( '#' + _id ).data( 'current' );
-            if( false == create && part_data.name == current.name && part_data.text == current.text ) {
-                test_ids[ i ] = id;
-                return;
-            }
-
-
-            if ( true == create ) {
-                url = test_endpoint;
-            }else{
-                url = test_endpoint + id;
-            }
-
-            //@todo use a promise to avouid syncronous transfer
-            $.ajax( {
-                url: url,
-                async: false,
-                method: 'POST',
-                beforeSend: function ( xhr ) {
-                    xhr.setRequestHeader( 'X-WP-Nonce', INGOT.nonce );
-                },
-                data: part_data
-            } ).always(function( r, status) {
-
-                if( 'object' == typeof r){
-                    $( '#name-'  + _id ).attr( 'id', 'name-' + r.ID );
-                    $( '#text-'  + _id ).attr( 'id', 'value-' + r.ID );
-                    $( part ).attr( 'id', r.ID );
-                    $( '#part-hidden-id-' + _id ).val( r.ID );
-                    $( '#part-hidden-id-' + _id ).attr( 'id', 'part-hidden-id-' + r.ID );
-
-                    test_ids[ i ] = r.ID;
-                }
-            });
+            tests.push( test );
+            test_ids[ i ] = id;
 
 
         });
@@ -282,8 +249,7 @@ jQuery( document ).ready( function ( $ ) {
             name : $( '#group-name' ).val(),
             click_type: $( '#group-type' ).val(),
             order: test_ids,
-            selector: $( '#selector' ).val(),
-            initial: $( '#intial' ).val(),
+            tests: tests,
             threshold: $( '#threshold' ).val(),
             link: $( '#link' ).val()
         };
@@ -298,7 +264,9 @@ jQuery( document ).ready( function ( $ ) {
             }
 
         } ).always(function( r, status ) {
-            if( 'success' == status ){
+            hide( $( '#spinner' ) );
+            console.log( r );
+            if( 'success' == status && 'object' == typeof r ){
 
                 $( '#test-group-id' ).val( r.ID );
                 var href = window.location.href.split('?')[0];
@@ -311,9 +279,10 @@ jQuery( document ).ready( function ( $ ) {
                     type: "success",
                     confirmButtonText: INGOT.close
                 });
-                history.pushState( {}, title, new_url );
+                //history.pushState( {}, title, new_url );
+                window.location = new_url;
             }else{
-                $( '#spinner' ).hide().css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' );
+
                 swal({
                     title: INGOT.fail,
                     text: INGOT.fail,

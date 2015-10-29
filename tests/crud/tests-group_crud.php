@@ -469,6 +469,54 @@ class test_group_crud extends \WP_UnitTestCase {
 		$this->assertEquals( get_option( $key ), \ingot\testing\crud\group::read( $created ) );
 	}
 
+	/**
+	 * Test that meta works
+	 *
+	 * @since 0.1.1
+	 */
+	public function testMeta() {
+		$params = array(
+			'type' => 'click',
+			'click_type' => 'button',
+			'meta' => array( 'hats' => 'cats')
+		);
+
+		$created = \ingot\testing\crud\group::create( $params );
+
+		$this->assertTrue( is_int( $created ) );
+		$group = \ingot\testing\crud\group::read( $created );
+		$this->assertTrue( is_array( $group ) );
+		$this->assertArrayHasKey( 'meta', $group );
+		$this->assertArrayHasKey( 'hats', $group[ 'meta'] );
+
+	}
+
+	/**
+	 * Test that meta can take default color
+	 *
+	 * @since 0.1.1
+	 */
+	public function testButtonDefaultColor() {
+		$params = array(
+			'type' => 'click',
+			'click_type' => 'button',
+			'meta' => array(
+				'color' => '222'
+			)
+		);
+
+		$created = \ingot\testing\crud\group::create( $params );
+
+		$this->assertTrue( is_int( $created ) );
+		$group = \ingot\testing\crud\group::read( $created );
+		$this->assertTrue( is_array( $group ) );
+		$this->assertArrayHasKey( 'meta', $group );
+		$this->assertArrayHasKey( 'color', $group[ 'meta'] );
+		$this->assertSame( '222',$group[ 'meta' ][ 'color']  );
+		$this->assertSame( '#222', \ingot\testing\utility\helpers::get_color_from_meta( $group ) );
+
+	}
+
 
 
 }

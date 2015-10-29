@@ -13,6 +13,8 @@ namespace ingot\testing\api\rest;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\crud\test;
+use ingot\testing\utility\helpers;
 
 class test_group extends route {
 
@@ -98,18 +100,52 @@ class test_group extends route {
 	 * @return \WP_Error|\WP_REST_Request
 	 */
 	public function update_item( $request ) {
+
+		$url = $request->get_url_params( );
+		$id = helpers::v( 'id', $url, 0 );
+		$existing = group::read( $id );
+		if( ! is_array( $existing ) ){
+			if ( is_wp_error( $existing ) ) {
+				return $existing;
+			}
+
+			return rest_ensure_response( array(), 404 );
+		}
+
 		$params = $request->get_params();
-		unset( $params[0]);
-		unset( $params[1] );
-		$id = $params[ 'id' ];
-		foreach( $params as $param => $value ) {
-			if( empty( $value ) ) {
-				unset( $params[ $param ] );
+
+
+		if( ! empty( $params[ 'tests' ] ) ) {
+			foreach( $params[ 'tests' ] as $test ) {
+				$test_id = helpers::v( 'id', $test, 0 );
+				$test = $this->prepare_click_test_meta( $test );
+				if( absint( $test_id ) > 0 ) {
+					$_id = test::update( $test );
+				}else{
+					$_id = test::create( $test );
+				}
+
+				if(  is_numeric( $_id ) && ! in_array( $_id, $existing[ 'order' ] ) ){
+					$data[ 'order' ][] = $_id;
+				}
+
 			}
 
 		}
 
-		$updated = group::update( $params, $id );
+		//@todo allow for more fields to be updated
+		foreach( array(
+			'name',
+			'click_type',
+			'link'
+		) as $field ){
+			if( ! empty( $params[ $field ] ) ){
+				$data[ $field ] = $params[ $field ];
+			}
+		}
+
+		$data = array_merge(  $existing, $data );
+		$updated = group::update( $data, $id );
 		if ( ! is_wp_error( $updated ) && $updated ) {
 			$item = group::read( $updated );
 			return rest_ensure_response( $item, 200 );
@@ -117,6 +153,8 @@ class test_group extends route {
 			if ( ! is_wp_error( $updated ) ) {
 				$updated = __( 'FAIL', 'ingot' );
 			}
+
+			return rest_ensure_response( $updated, 500 );
 
 
 		}
@@ -134,6 +172,30 @@ class test_group extends route {
 		$params = $request->get_params();
 		unset( $params[0] );
 		unset( $params[1] );
+
+		if( ! empty( $params[ 'tests' ] ) ) {
+			foreach( $params[ 'tests' ] as $test ) {
+				$test_id = helpers::v( 'id', $test, 0 );
+				$test = $this->prepare_click_test_meta( $test );
+				unset( $test[ 'id' ] );
+				if( absint( $test_id ) > 0 ) {
+					$_id = test::update( $test, $test_id );
+				}else{
+
+					$_id = test::create( $test );
+				}
+
+
+				if ( is_numeric( $_id ) ) {
+					$params['order'][] = $_id;
+				}
+
+
+			}
+
+		}
+
+		unset( $params['tests'] );
 		$created = group::create( $params );
 		if ( ! is_wp_error( $created ) && is_numeric( $created ) ) {
 			$item = group::read( $created );
@@ -246,6 +308,18 @@ class test_group extends route {
 				'default'            => 1,
 				'sanitize_callback'  => 'absint',
 			),
+			'button_color' => array(
+				'description'        => __( 'Default button color for button tests', 'ingot' ),
+				'type'               => 'string',
+				'default'            => array(),
+				'sanitize_callback'  => array( 'ingot\testing\utility\helpers', 'prepare_color' ),
+			),
+			'tests' => array(
+				'description'       => __( 'Tests to add to group', 'ingot' ),
+				'type'              => 'array',
+				'default'           => array()
+			)
+
 		);
 
 		if ( $require_id ){

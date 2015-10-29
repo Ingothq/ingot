@@ -107,4 +107,59 @@ class tests_color_helpers extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure our get color meta works with good data
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\helpers::get_color_from_meta()
+	 */
+	public function testColorMeta() {
+		$color = '#FF0000';
+		$a[ 'meta'][ 'color' ] = $color;
+		$this->assertSame( $color, \ingot\testing\utility\helpers::get_color_from_meta( $a ) );
+	}
+
+	/**
+	 * Ensure our get color meta falls back to default with bad color.
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\helpers::get_color_from_meta()
+	 */
+	public function testColorMetaFallback() {
+		$color = 'dogscats';
+		$a[ 'meta'][ 'color' ] = $color;
+		$this->assertSame( \ingot\testing\utility\defaults::color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
+	}
+
+
+
+	/**
+	 * Ensure our get color meta falls back to default with bad input.
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\helpers::get_color_from_meta()
+	 */
+	public function testColorUnset() {
+		$color = '#fff';
+		$a[ 'meta'][ rand() ] = $color;
+		$this->assertSame( \ingot\testing\utility\defaults::color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
+	}
+
+	/**
+	 * Ensure our get color meta falls back to default with really bad input.
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\helpers::get_color_from_meta()
+	 */
+	public function testColorMetaUnset() {
+		$color = '#fff';
+		$a[ rand() ][ rand() ] = $color;
+		$this->assertSame( \ingot\testing\utility\defaults::color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
+	}
+
+
 }

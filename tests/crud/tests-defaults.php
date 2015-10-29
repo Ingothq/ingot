@@ -57,7 +57,7 @@ class tests_defaults extends \WP_UnitTestCase{
 		add_filter( 'ingot_default_button_color', function() {
 			return 'fff';
 		});
-		$this->assertEquals( 'fff', \ingot\testing\utility\defaults::button_color() );
+		$this->assertEquals( '#fff', \ingot\testing\utility\defaults::button_color() );
 	}
 
 	/**

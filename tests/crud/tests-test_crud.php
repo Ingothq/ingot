@@ -348,5 +348,51 @@ class test_test_crud extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test that meta works
+	 *
+	 * @since 0.1.1
+	 */
+	public function testMeta() {
+		$params = array(
+			'text' => rand(),
+			'meta' => array( 'hats' => 'cats')
+		);
+
+		$created = \ingot\testing\crud\test::create( $params );
+
+		$this->assertTrue( is_int( $created ) );
+		$test = \ingot\testing\crud\test::read( $created );
+		$this->assertTrue( is_array( $test ) );
+		$this->assertArrayHasKey( 'meta', $test );
+		$this->assertArrayHasKey( 'hats', $test[ 'meta'] );
+
+	}
+
+	/**
+	 * Test that meta can take default color
+	 *
+	 * @since 0.1.1
+	 */
+	public function testButtonDefaultColor() {
+		$params = array(
+			'text' => rand(),
+			'meta' => array(
+				'color' => '222'
+			)
+		);
+
+		$created = \ingot\testing\crud\test::create( $params );
+
+		$this->assertTrue( is_int( $created ) );
+		$test = \ingot\testing\crud\test::read( $created );
+		$this->assertTrue( is_array( $test ) );
+		$this->assertArrayHasKey( 'meta', $test );
+		$this->assertArrayHasKey( 'color', $test[ 'meta'] );
+		$this->assertSame( '222', $test[ 'meta' ][ 'color']  );
+		$this->assertSame( '#222', \ingot\testing\utility\helpers::get_color_from_meta( $test ) );
+
+	}
+
 
 }
