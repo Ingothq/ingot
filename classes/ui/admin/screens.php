@@ -1,7 +1,6 @@
 <?php
 /**
- * UI elements and a ton of other shit for admin that needs broken up into other classes.
- *
+ * Make admin UI and AJAX callbacks
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>

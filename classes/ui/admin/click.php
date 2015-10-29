@@ -283,6 +283,11 @@ class click extends admin{
 	 * @return mixed|string
 	 */
 	protected function test_field_group( $part_config = array() ) {
+		$true = false;
+		if( empty( $part_config ) || ! isset( $part_config[ 'ID' ] ) ){
+			$new = true;
+		}
+
 		$part_config = wp_parse_args(
 			$part_config,
 			array(
@@ -291,54 +296,12 @@ class click extends admin{
 				'text' => null,
 			)
 		);
-		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'name', 'text', ) ) );
+
+		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'text', ) ) );
 		ob_start();
 
-		?>
-		<div class="test-part" id="{{ID}}" data-current="<?php echo esc_attr( wp_json_encode( $current ) ); ?>">
-			<div class="test-left">
-				<input type="hidden" class="test-part-id" value="{{ID}}" aria-hidden="true" id="part-hidden-id-{{ID}}">
-
-				<div class="ingot-config-group">
-					<label>
-						<?php _e( 'Name', 'ingot' ); ?>
-					</label>
-					<input type="text" class="test-part-name" value="{{name}}" required aria-required="true"
-					       id="name-{{ID}}">
-				</div>
-				<div class="ingot-config-group">
-					<label>
-						<?php _e( 'Text', 'ingot' ); ?>
-					</label>
-					<input type="text" class="test-part-text" value="{{text}}" required aria-required="true"
-					       id="text-{{ID}}">
-				</div>
-
-			</div>
-			<div class="test-right">
-				<a href="#" class="button part-remove" alt="<?php esc_attr_e( 'Click To Remove Test', 'ingot' ); ?>" data-part-id="{{ID}}" id="remove-{{ID}}">
-					<?php _e( 'Remove' ); ?>
-				</a>
-			</div>
-			<div class="clear"></div>
-		</div>
-		<div class="clear"></div>
-		<?php
+		include( INGOT_UI_PARTIALS_DIR . 'price-test-part.php' );
 		$template = ob_get_clean();
-		$id = $part_config[ 'ID' ];
-		foreach( array( 'name', 'text', 'ID' ) as $field ) {
-			if ( isset( $part_config[ $field ] ) ) {
-				$value = esc_attr( $part_config[ $field ] );
-			}else{
-				if( 'ID' == $field ) {
-					$value = $id;
-				}else{
-					$value = '';
-				}
-			}
-
-			$template = str_replace( '{{' . $field . '}}', $value, $template );
-		}
 
 		return $template;
 
