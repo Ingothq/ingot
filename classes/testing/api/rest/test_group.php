@@ -186,7 +186,7 @@ class test_group extends route {
 				}
 
 
-				if ( is_numeric( $_id ) ) {
+				if ( 0 != $_id && is_numeric( $_id ) ) {
 					$params['order'][] = $_id;
 				}
 
@@ -194,6 +194,14 @@ class test_group extends route {
 			}
 
 		}
+
+		foreach( $params[ 'order' ] as $i => $_id ) {
+			if( 0 == absint( $_id ) ) {
+				unset( $params[ 'order' ][ $i ] );
+			}
+		}
+
+		$params[ 'order' ] = array_values( $params[ 'order' ] );
 
 		unset( $params['tests'] );
 		$created = group::create( $params );

@@ -163,8 +163,13 @@ class click extends admin{
 			$group = (int)  $_GET[ 'group_id' ];
 		}
 
-		if( is_int( $group ) ) {
+		if( 0 != $group && is_numeric( $group ) ) {
 			$group = group::read( $group );
+		}
+
+		if( 0 != $group &&  ! is_array( $group ) ){
+			$error =  new \WP_Error( 'ingot-admin-click-no-group', sprintf( '%s %s', __( 'Can not find group', 'ingot' ),  $group ) );
+			return $error->get_error_message();
 		}
 
 		$group = wp_parse_args(
@@ -286,7 +291,7 @@ class click extends admin{
 	 * @return mixed|string
 	 */
 	protected function test_field_group( $part_config = array(), $default_botton_color = null ) {
-		$true = false;
+		$new = false;
 		if( empty( $part_config ) || ! isset( $part_config[ 'ID' ] ) ){
 			$new = true;
 		}
