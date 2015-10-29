@@ -382,7 +382,7 @@ abstract class route extends \WP_REST_Controller  {
 	 */
 	protected function prepare_click_test_meta( $params ) {
 		$params['meta'] = array();
-		foreach ( array( 'color', 'background_color' ) as $meta ) {
+		foreach ( array( 'color', 'background_color', 'color_test_text' ) as $meta ) {
 			if ( ! empty( $params[ $meta ] ) ) {
 				$params['meta'][ $meta ] = $params[ $meta ];
 			}

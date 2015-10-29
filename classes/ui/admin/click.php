@@ -190,6 +190,8 @@ class click extends admin{
 		$background_color = helpers::get_background_color_from_meta( $group );
 		$color = helpers::get_color_from_meta( $group );
 
+		$color_test_text = helpers::v( 'color_test_text', $group[ 'meta' ], '' );
+
 		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ] );
 
 		$click_options = array_combine( array_keys( $this->click_types() ), wp_list_pluck( $this->click_types(), 'label' )  );

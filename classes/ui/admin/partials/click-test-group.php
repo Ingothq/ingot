@@ -36,6 +36,15 @@
 					<?php echo ingot\ui\util::select_options( $click_options, $group[ 'click_type' ] ); ?>
 				</select>
 			</div>
+			<div class="ingot-config-group" id="color-test-text-wrap">
+				<label for="group-type">
+					<?php _e( 'Default Text', 'ingot' ); ?>
+				</label>
+				<input id="color-test-text" type="text" required value="<?php esc_attr_e( $color_test_text ); ?>">
+				<p class="description">
+					<?php _e( 'Text to be used for buttons in button color tests', 'ingot' ); ?>
+				</p>
+			</div>
 		</section>
 
 		<section id="details">

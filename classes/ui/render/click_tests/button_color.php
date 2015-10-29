@@ -29,7 +29,7 @@ class button_color extends \ingot\ui\render\click_tests\button {
 	 */
 	protected function make_html() {
 		$test_id = $this->get_test()[ 'ID' ];
-		$text = $this->get_test()[ 'text' ];
+		$text = $color_test_text = helpers::v( 'color_test_text', $this->get_group()[ 'meta' ], '' );
 		$link = $this->get_group()[ 'link' ];
 		$group_id = $this->get_sequence()[ 'ID' ];
 		$sequence_id = $this->get_sequence()[ 'ID' ];

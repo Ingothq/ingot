@@ -91,6 +91,8 @@ jQuery( document ).ready( function ( $ ) {
             hide( $( all_color_divs ) );
 
             if ( 'button' == val ){
+                show( $( '.test-part-text' ) );
+                hide( $( '#color-test-text-wrap' ) );
                 show( $( '#background-color-wrap' ));
                 show( $( '#button-color-wrap' ) );
                 show_divs = $( '#background-color-wrap, #button-color-wrap' ).children();
@@ -99,6 +101,8 @@ jQuery( document ).ready( function ( $ ) {
                 hide( $( '.test-part .wp-picker-container' ) );
 
             }else if ( 'button_color' == val ) {
+                hide( $( '.test-part-text' ) );
+                show( $( '#color-test-text-wrap' ) );
                 show( $( '.test-part .wp-picker-container' ) );
                 show_divs =  $( '.button-color-test-wrap, .button-color-test-wrap' ).children();
 
@@ -295,7 +299,8 @@ jQuery( document ).ready( function ( $ ) {
             tests: tests,
             link: $( '#link' ).val(),
             background_color: $( '#background-color' ).val(),
-            color: $( '#button-color' ).val()
+            color: $( '#button-color' ).val(),
+            color_test_text: $( '#color-test-text' ).val(),
         };
 
         $.ajax({
