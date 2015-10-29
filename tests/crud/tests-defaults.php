@@ -34,6 +34,50 @@ class tests_defaults extends \WP_UnitTestCase{
 	}
 
 	/**
+	 * Test default button color
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\defaults::button_color()
+	 */
+	public function testButtonColor() {
+		$this->assertEquals( '#2e3842', \ingot\testing\utility\defaults::button_color() );
+	}
+
+
+	/**
+	 * Test default button filter
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\defaults::button_color()
+	 * @covers ingot_default_button_color
+	 */
+	public function testButtonColorFilter() {
+		add_filter( 'ingot_default_button_color', function() {
+			return 'fff';
+		});
+		$this->assertEquals( 'fff', \ingot\testing\utility\defaults::button_color() );
+	}
+
+	/**
+	 * Test default button filter returns trimmed
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\defaults::button_color()
+	 * @covers ingot_default_button_color
+	 */
+	public function testButtonColorFilterTrim() {
+		add_filter( 'ingot_default_button_color', function() {
+			return '#fff';
+		});
+		//$this->assertEquals( 'fff', \ingot\testing\utility\defaults::button_color() );
+	}
+
+
+
+	/**
 	 * Test default threshold filter
 	 *
 	 * @since 0.1.1

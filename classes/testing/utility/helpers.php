@@ -142,7 +142,6 @@ class helpers {
 
 			$output = $wpdb->prepare( $params[ 'type' ], $output );
 		}
-		// @todo Switch this full over to esc_sql once we get sanitization sane again in PodsAPI so we *don't* have to unsanitize in various places
 		elseif ( function_exists( 'wp_slash' ) ) {
 			$output = wp_slash( $input );
 		}
@@ -151,6 +150,107 @@ class helpers {
 		}
 
 		return $output;
+
+	}
+
+	/**
+	 * Prepare a color hex
+	 *
+	 * @since 0.1.1
+	 *
+	 * @param string $color Color hex
+	 * @param bool|true $with_hash return with or without hex
+	 *
+	 * @return string color, or if invalid, default color.
+	 */
+	public static function prepare_color( $color, $with_hash = true ) {
+		if( $with_hash ){
+			$color =  self::sanitize_hex_color( $color );
+		}else{
+			$color =  self::sanitize_hex_color_no_hash( $color );
+		}
+
+		if( empty( $color ) ) {
+			$color = defaults::color();
+		}
+
+		if( $with_hash ){
+			$color = self::maybe_hash_hex_color( $color );
+		}
+
+		return $color;
+
+	}
+
+	/**
+	 * Sanitizes a hex color.
+	 *
+	 * Returns either '', a 3 or 6 digit hex color (with #), or nothing.
+	 * For sanitizing values without a #, see sanitize_hex_color_no_hash().
+	 *
+	 * @since 0.1.1
+	 *
+	 * @param string $color
+	 * @return string|void
+	 */
+	protected static  function sanitize_hex_color( $color ) {
+		if ( '' === $color ) {
+			return '';
+
+		}
+
+		// 3 or 6 hex digits, or the empty string.
+		if ( preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) ) {
+			return $color;
+
+		}
+
+	}
+
+	/**
+	 * Sanitizes a hex color without a hash. Use sanitize_hex_color() when possible.
+	 *
+	 * Saving hex colors without a hash puts the burden of adding the hash on the
+	 * UI, which makes it difficult to use or upgrade to other color types such as
+	 * rgba, hsl, rgb, and html color names.
+	 *
+	 * Returns either '', a 3 or 6 digit hex color (without a #), or null.
+	 *
+	 * @since 0.1.1
+	 *
+	 * @param string $color
+	 * @return string|null
+	 */
+	protected static  function sanitize_hex_color_no_hash( $color ) {
+		$color = ltrim( $color, '#' );
+
+		if ( '' === $color ) {
+			return '';
+
+		}
+
+		return self::sanitize_hex_color( '#' . $color ) ? $color : null;
+
+	}
+
+	/**
+	 * Ensures that any hex color is properly hashed.
+	 * Otherwise, returns value untouched.
+	 *
+	 * This method should only be necessary if using sanitize_hex_color_no_hash().
+	 *
+	 * @since 0.1.1
+	 *
+	 * @param string $color
+	 * @return string
+	 */
+	protected static  function maybe_hash_hex_color( $color ) {
+		if ( $unhashed = self::sanitize_hex_color_no_hash( $color ) ) {
+			return '#' . $unhashed;
+		}
+
+		return $color;
+
 	}
 
 

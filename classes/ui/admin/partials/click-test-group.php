@@ -38,6 +38,25 @@
 			</div>
 		</section>
 
+		<section id="details">
+			<h3>
+				<?php _e( 'Details', 'ingot' ); ?>
+			</h3>
+
+			<div class="ingot-config-group" id="link-wrap">
+				<label for="link">
+					<?php _e( 'Link', 'ingot' ); ?>
+				</label>
+				<input id="link" type="text" value="<?php echo esc_attr( $group[ 'link' ] ); ?>" >
+			</div>
+			<div class="ingot-config-group" id="default-color-wrap button-color" aria-live="assertive">
+				<label for="default-color" class="button-color">
+					<?php _e( 'Default Color For Buttons', 'ingot' ); ?>
+				</label>
+				<input id="default-color" type="text" class="ingot-color-field button-color" value="<?php echo esc_attr( $default_botton_color ); ?>"
+			</div>
+		</section>
+
 		<section id="parts">
 			<h3>
 				<?php _e( 'Tests', 'ingot' ); ?>
@@ -52,38 +71,7 @@
 			</div>
 		</section>
 
-		<section id="details">
-			<h3>
-				<?php _e( 'Details', 'ingot' ); ?>
-			</h3>
-			<div class="ingot-config-group">
-				<label for="initial">
-					<?php _e( 'Initial', 'ingot' ); ?>
-				</label>
-				<input id="initial" type="number" value="<?php echo esc_attr( $group[ 'initial' ] ); ?>" min="0" required>
-			</div>
 
-			<div class="ingot-config-group">
-				<label for="threshold">
-					<?php _e( 'Threshold', 'ingot' ); ?>
-				</label>
-				<input id="threshold" type="number" value="<?php echo esc_attr( $group[ 'threshold' ] ); ?>" min="0" max="100" required>
-			</div>
-
-			<div class="ingot-config-group" id="selector-wrap">
-				<label for="selector">
-					<?php _e( 'Selector', 'ingot' ); ?>
-				</label>
-				<input id="selector" type="text" value="<?php echo esc_attr( $group[ 'selector' ] ); ?>" >
-			</div>
-
-			<div class="ingot-config-group" id="link-wrap">
-				<label for="link">
-					<?php _e( 'Link', 'ingot' ); ?>
-				</label>
-				<input id="link" type="text" value="<?php echo esc_attr( $group[ 'link' ] ); ?>" >
-			</div>
-		</section>
 		<div class="clear"></div>
 
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Field for editing creating test in a click group
+ * Field for editing/ creating test in a click group
  *
  * @package   @ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -16,7 +16,7 @@ if( ! isset( $id ) ){
 	$id = $part_config[ 'ID' ];
 }
 ?>
-<div class="test-part" id="<?php echo esc_attr( $id ); ?>" data-current="<?php echo esc_attr( wp_json_encode( $current ) ); ?>">
+<div class="test-part" id="<?php echo esc_attr( $id ); ?>" data-current="<?php echo esc_attr( wp_json_encode( $current ) ); ?>" aria-live="assertive">
 	<div class="test-left">
 		<input type="hidden" class="test-part-id" value="<?php echo esc_attr( $id ); ?>" aria-hidden="true" id="<?php echo esc_attr( 'paart-hidden-id' . $id ); ?>">
 		<?php if ( false == $new ) : ?>
@@ -28,11 +28,18 @@ if( ! isset( $id ) ){
 			</div>
 		<?php endif; ?>
 		<div class="ingot-config-group">
-			<label>
+			<label for="<?php echo esc_attr( 'text-'. $id ); ?>" >
 				<?php _e( 'Text', 'ingot' ); ?>
 			</label>
 			<input type="text" class="test-part-text" value="<?php echo esc_attr( $part_config['text'] ); ?>" required aria-required="true"
 			       id="<?php echo esc_attr( 'text-'. $id ); ?>">
+		</div>
+		<div class="ingot-config-group button-color">
+			<label for="<?php echo esc_attr( 'color-'. $id ); ?>" >
+				<?php _e( 'Button Color ', 'ingot' ); ?>
+			</label>
+			<input type="text" class="test-part-color ingot-color-field" value="<?php echo esc_attr( $part_config['text'] ); ?>" required aria-required="true"
+			       id="<?php echo esc_attr( 'color-'. $id ); ?>">
 		</div
 	</div>
 	<div class="test-right">

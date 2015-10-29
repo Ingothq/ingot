@@ -52,4 +52,45 @@ class defaults {
 
 	}
 
+	/**
+	 * Get default for button color
+	 *
+	 * @since 0.1.1
+	 *
+	 * @return string
+	 */
+	public static function button_color( $with_hash = true ) {
+		$default = self::color( $with_hash);
+
+		/**
+		 * Set default for button color
+		 *
+		 * @since 0.1.1
+		 *
+		 * @param int $initial
+		 */
+		return helpers::prepare_color( apply_filters( 'ingot_default_button_color', $default ), true );
+
+	}
+
+	/**
+	 * Get default for color color
+	 *
+	 * @since 0.1.1
+	 *
+	 * @return string
+	 */
+	public static function color() {
+
+		/**
+		 * Set default for button color
+		 *
+		 * @since 0.1.1
+		 *
+		 * @param int $initial
+		 */
+		return helpers::prepare_color( apply_filters( 'ingot_default_button_color', '2e3842' ), false );
+
+	}
+
 }

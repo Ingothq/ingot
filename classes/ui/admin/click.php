@@ -13,6 +13,7 @@ namespace ingot\ui\admin;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\utility\defaults;
 use ingot\ui\admin;
 use ingot\testing\crud\test;
 
@@ -174,20 +175,21 @@ class click extends admin{
 				'parts' => array(),
 				'results' => array(),
 				'type' => 'link',
-				'initial' => 50,
-				'threshold' => 20,
-				'selector' => '',
 				'link' => '',
 				'order'=> array(),
+				'meta' => array(),
+				'click_type' => 'button'
 			)
 		);
 
-		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ] );
+		$default_botton_color = helpers::prepare_color( helpers::v( 'default_color', $group[ 'meta' ], defaults::color(), true ), true );
+
+		$tests = $this->get_markup_for_saved_tests( $group[ 'order' ], $default_botton_color );
 
 		$click_options = array_combine( array_keys( $this->click_types() ), wp_list_pluck( $this->click_types(), 'label' )  );
 
 		$stats_link = $this->stats_page_link( $group[ 'ID' ] );
-		include_once( $this->partials_dir_path() . 'click-test.php' );
+		include_once( INGOT_UI_PARTIALS_DIR . 'click-test-group.php' );
 		$out = ob_get_clean();
 		echo $out;
 
@@ -211,11 +213,11 @@ class click extends admin{
 			'button' => array(
 				'label' => __( 'Button', 'ingot' ),
 				'desc' => __( 'A clickable button, with testable text.', 'ingot' )
-			),
+			),/*
 			'text' => array(
 				'label' => __( 'Text', 'ingot' ),
 				'desc' => __( 'Testable text, with another element as the click test.', 'ingot' )
-			)
+			)*/
 		);
 	}
 
@@ -279,10 +281,11 @@ class click extends admin{
 
 	/**
 	 * @param array $part_config
+	 * @param string $default_botton_color
 	 *
 	 * @return mixed|string
 	 */
-	protected function test_field_group( $part_config = array() ) {
+	protected function test_field_group( $part_config = array(), $default_botton_color = null ) {
 		$true = false;
 		if( empty( $part_config ) || ! isset( $part_config[ 'ID' ] ) ){
 			$new = true;
@@ -294,26 +297,30 @@ class click extends admin{
 				'ID' => '-ID_' . rand(),
 				'name' => null,
 				'text' => null,
+				'meta' => array()
 			)
 		);
+
+
+		$color = helpers::prepare_color( helpers::v( 'color', $part_config[ 'meta' ], defaults::color(), true ), true );
 
 		$current = array_intersect_key( $part_config, array_flip( array( 'ID', 'text', ) ) );
 		ob_start();
 
-		include( INGOT_UI_PARTIALS_DIR . 'price-test-part.php' );
+		include( INGOT_UI_PARTIALS_DIR . 'click-test-part.php' );
 		$template = ob_get_clean();
 
 		return $template;
 
 	}
 
-	protected function get_markup_for_saved_tests( $tests ) {
+	protected function get_markup_for_saved_tests( $tests, $default_botton_color ) {
 		$out = '';
 		if ( ! empty( $tests ) && is_array( $tests ) ) {
 			foreach ( $tests as $test_id ) {
 				$test = test::read( $test_id );
 				if ( is_array( $test ) ) {
-					$out .= $this->test_field_group( $test );
+					$out .= $this->test_field_group( $test, $default_botton_color );
 				}
 
 			}
@@ -321,7 +328,7 @@ class click extends admin{
 		}
 
 		if ( empty( $out ) ) {
-			$out = $this->test_field_group( );
+			$out = $this->test_field_group( array(), $default_botton_color);
 		}
 
 		return $out;

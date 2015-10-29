@@ -69,17 +69,22 @@ jQuery( document ).ready( function ( $ ) {
         }
     });
 
+
+    //hide show options based on group type
     $( '#group-type' ).change( function() {
-        maybe_hide_select_option();
+        click_ui_hide_shows();
     });
 
-    var maybe_hide_select_option;
-    (maybe_hide_select_option = function(){
+    var click_ui_hide_shows;
+    (click_ui_hide_shows = function(){
         var val = $( '#group-type' ).val();
-        if ( 'text' != val ) {
-            $( '#selector-wrap' ).hide();
+        var color_divs = $.find( '.button-color, .wp-picker-container, #default-color-wrap' );
+        console.log( color_divs );
+        if ( 'button' != val ) {
+            hide( $( color_divs ) );
         }else{
-            $( '#selector-wrap' ).show();
+            show( $( color_divs ) );
+            init_color();
         }
     })();
 
@@ -621,6 +626,15 @@ jQuery( document ).ready( function ( $ ) {
         $( '#price-tests-disabled' ).remove();
     }
 
+    //init color picker
+    function init_color() {
+        $( '.ingot-color-field' ).wpColorPicker();
+    }
+
+
+    $( document ).ajaxComplete(function() {
+        init_color();
+    });
 
 
     /**FUNCTIONS**/
