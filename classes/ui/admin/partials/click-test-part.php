@@ -38,7 +38,7 @@ if( ! isset( $id ) ){
 			<label for="<?php echo esc_attr( 'color-'. $id ); ?>" >
 				<?php _e( 'Button Color ', 'ingot' ); ?>
 			</label>
-			<input type="text" class="test-part-color ingot-color-field" value="<?php echo esc_attr( $part_config['text'] ); ?>" required aria-required="true"
+			<input type="text" class="test-part-color ingot-color-field" value="<?php echo esc_attr( $part_config['text'] ); ?>"
 			       id="<?php echo esc_attr( 'color-'. $id ); ?>">
 		</div
 	</div>

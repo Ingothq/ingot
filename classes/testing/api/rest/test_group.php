@@ -120,7 +120,7 @@ class test_group extends route {
 				$test_id = helpers::v( 'id', $test, 0 );
 				$test = $this->prepare_click_test_meta( $test );
 				if( absint( $test_id ) > 0 ) {
-					$_id = test::update( $test );
+					$_id = test::update( $test, $test_id );
 				}else{
 					$_id = test::create( $test );
 				}

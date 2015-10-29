@@ -161,5 +161,32 @@ class tests_color_helpers extends \WP_UnitTestCase {
 		$this->assertSame( \ingot\testing\utility\defaults::color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
 	}
 
+	/**
+	 * Test converting Word to Hex
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\helpers::color_word_to_hex()
+	 */
+	public function testWordToHex() {
+		$color = 'yellow';
+		$this->assertSame( 'FFFF00', \ingot\testing\utility\helpers::prepare_color( $color, false ) );
+		$color = 'olivedrab';
+		$this->assertSame( '#6B8E23', \ingot\testing\utility\helpers::prepare_color( $color, true ) );
+	}
+
+	/**
+	 * Test that invalid word gives us default color
+	 *
+	 * @since 0.1.1
+	 *
+	 * @covers \ingot\testing\utility\helpers::is_color_word()
+	 */
+	public function testInvalidWordToHex() {
+		$color = 'lemongrab';
+		$this->assertSame( \ingot\testing\utility\defaults::color(), \ingot\testing\utility\helpers::prepare_color( $color, false ) );
+
+	}
+
 
 }
