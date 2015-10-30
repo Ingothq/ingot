@@ -10,6 +10,7 @@ jQuery( document ).ready( function ( $ ) {
 
     //the all click handler
     $( document ).on( 'click', function(e) {
+        return;
         var el = document.activeElement;
         var href = el.href;
         var group_id;
