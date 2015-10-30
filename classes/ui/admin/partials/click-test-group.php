@@ -40,7 +40,7 @@
 				<label for="group-type">
 					<?php _e( 'Default Text', 'ingot' ); ?>
 				</label>
-				<input id="color-test-text" type="text" required value="<?php esc_attr_e( $color_test_text ); ?>">
+				<input id="color-test-text" type="text" value="<?php esc_attr_e( $color_test_text ); ?>">
 				<p class="description">
 					<?php _e( 'Text to be used for buttons in button color tests', 'ingot' ); ?>
 				</p>
