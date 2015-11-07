@@ -67,14 +67,14 @@ class defaults {
 		 *
 		 * @since 0.1.1
 		 *
-		 * @param int $initial
+		 * @param string $default The default color
 		 */
 		return helpers::prepare_color( apply_filters( 'ingot_default_button_color', $default ), true );
 
 	}
 
 	/**
-	 * Get default for color color
+	 * Get default color
 	 *
 	 * @since 0.1.1
 	 *
@@ -87,9 +87,27 @@ class defaults {
 		 *
 		 * @since 0.1.1
 		 *
-		 * @param int $initial
+		 * @param string $default The default color
 		 */
 		return helpers::prepare_color( apply_filters( 'ingot_default_button_color', '2e3842' ), false );
+
+	}
+
+	/**
+	 * Get default text color
+	 *
+	 * @since 0.2.0
+	 *
+	 */
+	public static function text_color() {
+		/**
+		 * Set default for button color
+		 *
+		 * @since 0.2.0
+		 *
+		 * @param string $default The default color
+		 */
+		return helpers::prepare_color( apply_filters( 'ingot_default_text_color', 'ffffff' ), false );
 
 	}
 
