@@ -98,8 +98,8 @@ class ingot {
 			$test_group->register_routes();
 			$test = new test();
 			$test->register_routes();
-			//$sequence = new \ingot\testing\api\rest\sequence();
-			//$sequence->register_routes();
+			$sequence = new \ingot\testing\api\rest\sequence();
+			$sequence->register_routes();
 			$price_test_group = new price_test_group();
 			$price_test_group->register_routes();
 			$price_test = new price_test();

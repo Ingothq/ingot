@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @TODO What this does.
+ * Test flow for price sequences
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link

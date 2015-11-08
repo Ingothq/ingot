@@ -65,8 +65,8 @@ abstract class ingot_rest_test_case extends \WP_UnitTestCase {
 	 * Tests designed to detect improperly setup subclass
 	 */
 	public function testSetUp() {
-		$this->assertNotSame( $this->route_name, '' );
-		$this->assertNotSame( $this->namespaced_route, __return_null() );
+		$this->assertNotSame( $this->route_name, '', get_class( $this ) );
+		$this->assertNotSame( $this->namespaced_route, __return_null(), get_class( $this ) );
 	}
 
 
@@ -80,8 +80,8 @@ abstract class ingot_rest_test_case extends \WP_UnitTestCase {
 	public function test_register_route() {
 		$routes = $this->server->get_routes();
 
-		$this->assertArrayHasKey( '/' . \ingot\testing\api\rest\util::get_namespace() . '/' . $this->route_name, $routes );
-		$this->assertArrayHasKey( $this->namespaced_route, $routes );
+		$this->assertArrayHasKey( '/' . \ingot\testing\api\rest\util::get_namespace() . '/' . $this->route_name, $routes, get_class( $this ) );
+		$this->assertArrayHasKey( $this->namespaced_route, $routes, get_class( $this ) );
 
 	}
 
@@ -92,10 +92,10 @@ abstract class ingot_rest_test_case extends \WP_UnitTestCase {
 			if( 0 === strpos( $the_route, $route ) ) {
 				$this->assertTrue( is_array( $route_config ) );
 				foreach( $route_config as $i => $endpoint ) {
-					$this->assertArrayHasKey( 'callback', $endpoint );
-					$this->assertArrayHasKey( 0, $endpoint[ 'callback' ] );
-					$this->assertArrayHasKey( 1, $endpoint[ 'callback' ] );
-					$this->assertTrue( is_callable( array( $endpoint[ 'callback' ][0], $endpoint[ 'callback' ][1] ) ) );
+					$this->assertArrayHasKey( 'callback', $endpoint, get_class( $this ) );
+					$this->assertArrayHasKey( 0, $endpoint[ 'callback' ], get_class( $this ) );
+					$this->assertArrayHasKey( 1, $endpoint[ 'callback' ], get_class( $this ) );
+					$this->assertTrue( is_callable( array( $endpoint[ 'callback' ][0], $endpoint[ 'callback' ][1] ) ), get_class( $this ) );
 
 				}
 
