@@ -104,7 +104,7 @@ class test_group extends route {
 	}
 
 	/**
-	 * Get a list of tests
+	 * Get a collection of groups
 	 *
 	 * @since 0.2.0
 	 *
@@ -129,6 +129,33 @@ class test_group extends route {
 
 		}
 
+	}
+
+	/**
+	 * Get a single groupo
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_item( $request ) {
+		$url = $request->get_url_params();
+		$id = helpers::v( 'id', $url, 0 );
+		if( $id ) {
+
+			$group = group::read( $id );
+
+
+			if( $group ) {
+				if( 'admin' == $request->get_param( 'context' ) ) {
+					$group[ 'tests' ] = $this->group_tests( $group );
+				}
+				return rest_ensure_response( $group );
+			}
+
+		}
 	}
 
 	/**
@@ -308,6 +335,22 @@ class test_group extends route {
 			return rest_ensure_response( new \WP_Error( 'no-group-found', __( 'No group found.', 'ingot' ) ), 500 );
 		}
 
+		$tests = $this->group_tests( $group );
+
+		if( empty( $tests ) ) {
+			return rest_ensure_response( new \WP_Error( 'no-tests-found', __( 'No matching tests found.', 'ingot' ) ), 404 );
+
+		}
+
+
+
+		return rest_ensure_response( $the_tests, 200 );
+
+
+
+	}
+
+	protected function group_tests( $group ) {
 		$tests = $group[ 'order' ];
 
 		if( empty( $tests ) ) {
@@ -325,11 +368,7 @@ class test_group extends route {
 
 		}
 
-
-		return rest_ensure_response( $the_tests, 200 );
-
-
-
+		return $the_tests;
 	}
 
 
