@@ -12,13 +12,15 @@ var ingotApp = angular.module( 'ingotApp', [
         });
 
 
+}).run(function( $location, $scope ) {
+    console.log( $location.path() );
 });
 
 
 ingotApp.controller( 'clickGroups', ['$scope', '$http', function( $scope, $http ) {
     $http({
         method: 'GET',
-        url: $scope.api + 'test-group'
+        url: INGOT_ADMIN.api_url + 'test-group'
 
     }).success( function( data, status, headers, config ) {
             console.log( $scope.api );
@@ -29,23 +31,10 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', function( $scope, $http 
     });
 }]);
 
-ingotApp.controller( 'clickGroups', ['$scope', '$http', '$routeParams', function( $scope, $http, $routeParams ) {
+ingotApp.controller( 'clickGroup', ['$scope', '$http', '$location', '$routeParams', function( $scope, $http, $routeParams ) {
     $http({
         method: 'GET',
-        url: INGOT_ADMIN.api_url + 'test-group' + '/' + $routeParams.groupID
-
-    }).success( function( data, status, headers, config ) {
-        console.log( data );
-        $scope.groups = data;
-    } ).error(function(data, status, headers, config) {
-        console.log( data );
-    });
-}]);
-
-ingotApp.controller( 'clickGroup', ['$scope', '$http', '$location', function( $scope, $http ) {
-    $http({
-        method: 'GET',
-        url: INGOT_ADMIN.api_url + 'test-group/' + 2 + '?context=admin'
+        url: INGOT_ADMIN.api_url + 'test-group/' + '/' + $routeParams.groupID + '?context=admin'
 
     }).success( function( data, status, headers, config ) {
         console.log( data );
