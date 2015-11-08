@@ -42,7 +42,14 @@ class test_group extends route {
 				'callback'        => array( $this, 'get_items' ),
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				'args'            => array(
-
+					'page' => array(
+						'default' => 1,
+						'sanitize_callback'  => 'absint',
+					),
+					'limit' => array(
+						'default' => 10,
+						'sanitize_callback'  => 'absint',
+					)
 				),
 			),
 			array(
@@ -93,6 +100,34 @@ class test_group extends route {
 		) );
 
 		$this->register_more_routes();
+
+	}
+
+	/**
+	 * Get a list of tests
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_items( $request ) {
+
+		$args = array(
+			'page' => $request->get_param( 'page' ),
+			'limit' => $request->get_param( 'limit' )
+		);
+
+		$groups = group::get_items( $args );
+
+		if( empty( $groups ) ) {
+			return rest_ensure_response( __( 'No matching grups found.', 'ignot' ), 404 );
+
+		}else{
+			return rest_ensure_response( $groups, 200 );
+
+		}
 
 	}
 

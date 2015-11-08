@@ -436,5 +436,33 @@ class test_click_group extends ingot_rest_test_case {
 
 	}
 
+	/**
+	 * Test get items
+	 *
+	 * @since 0.2.0
+	 *
+	 * @covers \ingot\testing\api\rest\test_group::get_items()
+	 */
+	public function testGetItems() {
+		wp_set_current_user( 1 );
+		for( $i = 0; $i <= rand( 3, 5 ); $i++ ) {
+			$params = array(
+				'type' => 'click',
+			);
+
+			$groups[] = \ingot\testing\crud\group::create( $params );
+		}
+
+		$request = new \WP_REST_Request( 'GET', $this->namespaced_route );
+		$response = $this->server->dispatch( $request );
+		$response = rest_ensure_response( $response );
+		$this->assertEquals( 200, $response->get_status() );
+		$data = (array) $response->get_data();
+		$this->assertFalse( empty( $data ) );
+		$this->assertEquals( count( $groups ), count( $data ) );
+
+
+	}
+
 
 }
