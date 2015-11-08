@@ -91,6 +91,9 @@ class test_group extends route {
 			'methods'         => \WP_REST_Server::READABLE,
 			'callback'        => array( $this, 'get_public_item_schema' ),
 		) );
+
+		$this->register_more_routes();
+
 	}
 
 	/**
@@ -253,6 +256,48 @@ class test_group extends route {
 
 	}
 
+	/**
+	 * Get tests by group ID
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_tests_by_group( $request ) {
+		$url = $request->get_url_params( );
+		$id = helpers::v( 'id', $url, 0 );
+		$group = group::read( $id );
+		if( ! $id || ! is_array( $group ) ) {
+			return rest_ensure_response( new \WP_Error( 'no-group-found', __( 'No group found.', 'ingot' ) ), 500 );
+		}
+
+		$tests = $group[ 'order' ];
+
+		if( empty( $tests ) ) {
+			return rest_ensure_response( new \WP_Error( 'no-tests-found', __( 'No matching tests found.', 'ingot' ) ), 404 );
+
+		}
+
+		$the_tests = array();
+		foreach( $tests as $test_id ){
+			$value = test::read( $test_id );
+			$the_tests[ $test_id ] = $value;
+			if( ! is_array( $value ) ) {
+				$the_tests[ $test_id ] = array();
+			}
+
+		}
+
+
+		return rest_ensure_response( $the_tests, 200 );
+
+
+
+	}
+
+
 
 
 	public function args( $require_id = true ) {
@@ -376,6 +421,24 @@ class test_group extends route {
 	 */
 	public function allowed_click_type( $value ) {
 		return in_array( $value, types::allowed_click_types() );
+	}
+
+	/**
+	 * Add extra route for tests by group
+	 *
+	 * @since 0.2.0
+	 */
+	protected function register_more_routes() {
+		$namespace = util::get_namespace();
+		$base = 'test-group';
+		register_rest_route( $namespace, $base . '/(?P<id>[\d]+)/tests', array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_tests_by_group' ),
+				'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				'args'                => array(),
+			)
+		) );
 	}
 
 }

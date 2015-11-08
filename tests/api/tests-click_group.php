@@ -351,5 +351,90 @@ class test_click_group extends ingot_rest_test_case {
 
 	}
 
+	/**
+	 * Test that our extra route works
+	 *
+	 * @since 0.2.0
+	 *
+	 * @covers \ingot\testing\api\rest\test_group::register_more_routes()
+	 */
+	public function testTestsByGroupRouteExists() {
+		$routes = $this->server->get_routes();
+		$expected = $this->namespaced_route  . '/(?P<id>[\d]+)/tests';
+		$this->assertArrayHasKey( $expected, $routes, get_class( $this ) );
+	}
+
+	/**
+	 * Test getting tests by group ID
+	 *
+	 * @since 0.2.0
+	 *
+	 * @covers \ingot\testing\api\rest\test_group::get_tests_by_group()
+	 */
+	public function testGetTestsByGroup() {
+		for( $i = 0; $i <= rand( 3, 5 ); $i++ ) {
+			$params = array(
+				'text' => rand(),
+				'name' => rand(),
+			);
+			\ingot\testing\crud\test::create( $params );
+			$params = array(
+				'type' => 'click',
+			);
+
+			\ingot\testing\crud\group::create( $params );
+		}
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_1 = \ingot\testing\crud\test::create( $params );
+
+		for( $i = 0; $i <= rand( 5, 8 ); $i++ ) {
+			$params = array(
+				'text' => rand(),
+				'name' => rand(),
+			);
+			\ingot\testing\crud\test::create( $params );
+		}
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_2 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_3 = \ingot\testing\crud\test::create( $params );
+
+
+		$params = array(
+			'type' => 'click',
+			'click_type' => 'link',
+			'order' => array( $test_1, $test_2, $test_3 ),
+
+		);
+		$group_id = \ingot\testing\crud\group::create( $params );
+		$group = \ingot\testing\crud\group::read( $group_id );
+		$order = $group[ 'order' ];
+		wp_set_current_user( 1 );
+
+
+		$request = new \WP_REST_Request( 'GET', $this->namespaced_route  . '/' . (int) $group_id . '/tests'  );
+		$response = $this->server->dispatch( $request );
+		$response = rest_ensure_response( $response );
+		$this->assertEquals( 200, $response->get_status() );
+		$data = (array) $response->get_data();
+		$this->assertFalse( empty( $data ) );
+		$ids = wp_list_pluck( $data, 'ID' );
+		$this->assertEquals( array_values( $ids ), $order );
+
+
+	}
+
 
 }
