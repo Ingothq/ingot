@@ -363,10 +363,7 @@ abstract class route extends \WP_REST_Controller  {
 	 * @return string
 	 */
 	protected function make_namespace() {
-		$version   = '1';
-		$namespace = 'ingot/v' . $version;
-
-		return $namespace;
+		return util::get_namespace();
 	}
 
 	/**

@@ -16,6 +16,7 @@ use ingot\testing\api\rest\price_test;
 use ingot\testing\api\rest\price_test_group;
 use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
+use ingot\testing\api\rest\util;
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_group;
 use ingot\testing\crud\sequence;
@@ -28,11 +29,37 @@ use ingot\testing\utility\helpers;
 class ingot {
 
 	/**
+	 * Class instance
+	 *
+	 * @since 0.2.0
+	 *
+	 * @var ingot
+	 */
+	private static $instance;
+
+	/**
+	 * Get class instance
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return ingot
+	 */
+	public static function instance() {
+		if( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * Constructor for class
+	 *
+	 * @access protected
 	 *
 	 * @since 0.0.5
 	 */
-	public function __construct() {
+	private function __construct() {
 		$this->hooks();
 	}
 
@@ -66,16 +93,28 @@ class ingot {
 	 * @uses "rest_api_init"
 	 */
 	public static function boot_rest_api() {
-		$test_group = new test_group();
-		$test_group->register_routes();
-		$test = new test();
-		$test->register_routes();
-		//$sequence = new \ingot\testing\api\rest\sequence();
-		//$sequence->register_routes();
-		$price_test_group = new price_test_group();
-		$price_test_group->register_routes();
-		$price_test = new price_test();
-		$price_test->register_routes();
+		if ( ! did_action( 'ingot_rest_api_booted' ) ) {
+			$test_group = new test_group();
+			$test_group->register_routes();
+			$test = new test();
+			$test->register_routes();
+			//$sequence = new \ingot\testing\api\rest\sequence();
+			//$sequence->register_routes();
+			$price_test_group = new price_test_group();
+			$price_test_group->register_routes();
+			$price_test = new price_test();
+			$price_test->register_routes();
+
+			/**
+			 * Runs after the Ingot REST API is booted up
+			 *
+			 * @since 0.2.0
+			 *
+			 * @param string $namespace Namespace of API
+			 */
+			do_action( 'ingot_rest_api_booted', util::get_namespace() );
+		}
+
 	}
 
 	/**
@@ -101,7 +140,7 @@ class ingot {
 	 */
 	static public function js_vars() {
 		$vars = array(
-			'api_url' => esc_url_raw( self::ingot_api_url() ),
+			'api_url' => esc_url_raw( util::get_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' )
 		);
 
@@ -176,19 +215,6 @@ class ingot {
 
 
 	}
-
-	/**
-	 * Get the URL for the INGOT REST API
-	 *
-	 * @since 0.0.6
-	 *
-	 * @return string
-	 */
-	static public function ingot_api_url() {
-		return trailingslashit( rest_url( 'ingot/v1' ) );
-	}
-
-
 
 
 }

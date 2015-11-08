@@ -59,6 +59,7 @@ class group extends options_crud {
 	protected static function needed() {
 		$needed = array(
 			'name',
+			'text',
 			'sequences',
 			'order',
 			'initial',

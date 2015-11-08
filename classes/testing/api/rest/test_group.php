@@ -14,6 +14,7 @@ namespace ingot\testing\api\rest;
 
 use ingot\testing\crud\group;
 use ingot\testing\crud\test;
+use ingot\testing\types;
 use ingot\testing\utility\helpers;
 
 class test_group extends route {
@@ -33,8 +34,7 @@ class test_group extends route {
 	 * Register the routes for the objects of the controller.
 	 */
 	public function register_routes() {
-		$version = '1';
-		$namespace = 'ingot/v' . $version;
+		$namespace = util::get_namespace();
 		$base = 'test-group';
 		register_rest_route( $namespace, '/' . $base, array(
 			array(
@@ -112,7 +112,9 @@ class test_group extends route {
 			return rest_ensure_response( array(), 404 );
 		}
 
+
 		$params = $request->get_params();
+
 
 		if( ! empty( $params[ 'tests' ] ) ) {
 			foreach( $params[ 'tests' ] as $test ) {
@@ -144,7 +146,13 @@ class test_group extends route {
 		}
 
 		$data = $this->prepare_click_test_meta( $params );
-		$data = array_merge(  $existing, $data );
+
+		foreach( $data as $key => $datum ) {
+			if( empty( $data[ $key ] ) && isset( $existing[ $key ] ) ) {
+				$data[ $key ] = $existing[ $key ];
+			}
+		}
+
 		$updated = group::update( $data, $id );
 		if ( ! is_wp_error( $updated ) && $updated ) {
 			$item = group::read( $updated );
@@ -232,11 +240,12 @@ class test_group extends route {
 		if( $request->get_param( 'all' ) ) {
 			$id = 'all';
 		}else{
-			$id = $request->get_url_params( 'id' );
+			$url = $request->get_url_params( );
+			$id = helpers::v( 'id', $url, 0 );
 		}
 
 		$deleted = group::delete( $id );
-		if( $deleted || is_array( $deleted ) ) {
+		if( $deleted  ) {
 			return rest_ensure_response( $id );
 		}else{
 			return rest_ensure_response( new \WP_Error( 'unknown-item', __( 'Can not delete a non-existent item', 'ingot' ) ), 404 );
@@ -257,7 +266,8 @@ class test_group extends route {
 			'type'               => array(
 				'description'        => __( 'Type of Test Group', 'ingot' ),
 				'type'               => 'string',
-				'default'            => 'link',
+				'default'            => 'click',
+				'validation_callback' => array( $this, 'allowed_type' ),
 				'sanitize_callback'  => array( $this, 'strip_tags' ),
 				'required'           => 'true',
 			),
@@ -302,6 +312,7 @@ class test_group extends route {
 				'description'        => __( 'Type of click test', 'ingot' ),
 				'type'               => 'text',
 				'default'            => 'text',
+				'validation_callback' => array( $this, 'allowed_click_type' ),
 				'sanitize_callback'  => array( $this, 'strip_tags' ),
 				'required'           => true,
 			),
@@ -337,6 +348,34 @@ class test_group extends route {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Validate test type
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
+	public function allowed_type( $value ) {
+		if( 'click' === $value ){
+			return true;
+		}
+	}
+
+	/**
+	 * Validate click type
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param $value
+	 *
+	 * @return bool
+	 */
+	public function allowed_click_type( $value ) {
+		return in_array( $value, types::allowed_click_types() );
 	}
 
 }

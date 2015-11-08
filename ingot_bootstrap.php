@@ -58,7 +58,7 @@ class ingot_bootstrap {
 				}
 
 
-				new ingot\testing\ingot();
+				ingot\testing\ingot::instance();
 				new ingot\ui\make();
 				self::maybe_load_api();
 

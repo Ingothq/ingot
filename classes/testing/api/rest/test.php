@@ -18,7 +18,8 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
 use ingot\testing\ingot;
 use ingot\testing\tests\flow;
-use ingot\ui\util;
+
+
 
 class test extends route {
 
@@ -264,7 +265,7 @@ class test extends route {
 			return false;
 		}
 
-		$verify = util::verify_click_nonce(
+		$verify = \ingot\ui\util::verify_click_nonce(
 			$request->get_param( 'click_nonce' ),
 			$request->get_param( 'id' ),
 			$sequence_id,
