@@ -47,7 +47,7 @@ class util {
 			$route = self::get_namespace();
 		}
 
-		$url = trailingslashit( $route );
+		$url = trailingslashit( rest_url( $route ) );
 
 		return $url;
 
