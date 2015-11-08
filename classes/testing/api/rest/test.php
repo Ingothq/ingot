@@ -102,7 +102,7 @@ class test extends route {
 	 * @param \WP_REST_Request $request Full data about the request.
 	 * @return \WP_Error|\WP_REST_Request
 	 */
-	public function update_item( $request ) {
+	public function _update_item( $request ) {
 		$params = $request->get_params();
 		unset( $params[0] );
 		unset( $params[1] );
@@ -130,7 +130,7 @@ class test extends route {
 	 * @param \WP_REST_Request $request Full data about the request.
 	 * @return \WP_Error|\WP_REST_Request
 	 */
-	public function create_item( $request ) {
+	public function _create_item( $request ) {
 		$params = $request->get_params();
 		unset( $params[0] );
 		unset( $params[1] );
