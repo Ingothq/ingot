@@ -177,4 +177,5 @@ class tests_click_tests extends ingot_rest_test_case {
 
 	}
 
+
 }

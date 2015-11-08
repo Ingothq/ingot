@@ -75,5 +75,5 @@ class tests_sequences extends ingot_rest_test_case {
 		$this->assertTrue( in_array( $s2_id, $ids ) );
 
 	}
-	
+
 }

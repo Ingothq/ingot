@@ -27,7 +27,7 @@ class sequence extends route {
 
 
 	/**
-	 * Get sequences by
+	 * Get sequences by page or group ID
 	 *
 	 * @since 0.0.7
 	 *
