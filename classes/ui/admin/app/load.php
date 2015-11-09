@@ -60,31 +60,48 @@ class load {
 	}
 
 	/**
+	 * Load scripts
 	 *
+	 * @todo Figure out how much of this is uneeded, switch the rest to local files managed with Bower or whatever
+	 *
+	 * @uses "admin_enqueue_scripts
+	 *
+	 * @since 0.2.0
 	 */
 	public function scripts() {
 
+		//angular
+		wp_enqueue_script( 'angular', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js', array( 'jquery' ) );
+		wp_enqueue_script( 'angular-ui-route', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js', array( 'angular' ) );
 
-		wp_enqueue_script( 'angular', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js', array( 'jquery') );
-		wp_enqueue_script( 'angular-ui-route', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js', array( 'angular') );
-		wp_enqueue_script( 'angular-ui-bootstrap', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap.min.js');
+		//bootstrap
+		wp_enqueue_script( 'angular-ui-bootstrap', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap.min.js' );
 		wp_enqueue_style( 'bootstrap', '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css' );
-		wp_enqueue_style( 'selectize', '//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css');
-		wp_enqueue_style( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/css/colorpicker.min.css');
-		wp_enqueue_script( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/js/bootstrap-colorpicker-module.js');
-		wp_enqueue_script( 'bootstrap', '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js', array( 'jquery') );
-		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery') );
-		wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css');
+		wp_enqueue_style( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/css/colorpicker.min.css' );
+		wp_enqueue_script( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/js/bootstrap-colorpicker-module.js' );
+		wp_enqueue_script( 'bootstrap', '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js', array( 'jquery' ) );
 
+		//angular translation etx
+		wp_enqueue_script( 'messageformat', "//cdn.rawgit.com/SlexAxton/messageformat.js/0.2.2/messageformat.js", array( 'angular' ) );
+
+		wp_enqueue_script( 'angular-sanitize', "//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-sanitize.js", array( 'angular' ) );
+		wp_enqueue_script( 'angular-translate', "//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.7.2/angular-translate.js", array( 'angular' ) );
+		wp_enqueue_script( 'angular-translate-interpolation-messageformat', "//cdnjs.cloudflare.com/ajax/libs/angular-translate-interpolation-messageformat/2.7.2/angular-translate-interpolation-messageformat.js", array( 'angular' ) );
+		wp_enqueue_script( 'angular-translate-storage-local', "//cdnjs.cloudflare.com/ajax/libs/angular-translate-storage-local/2.7.2/angular-translate-storage-local.js", array( 'angular' ) );
+
+
+		//sweet alert
+		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery' ) );
+		wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css' );
+
+		//ingot
 		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . 'assets/admin/js/admin-app.js', array( 'angular', 'jquery', 'swal' ), rand() );
 
 		//data to use in admin app
-		wp_localize_script( 'ingot-admin-app', 'INGOT_ADMIN', $this->vars()
-		);
+		wp_localize_script( 'ingot-admin-app', 'INGOT_ADMIN', $this->vars() );
 
 		//translation strings for admin app
-		wp_localize_script( 'ingot-admin-app', 'INGOT_I10N', $this->translation_strings()
-		);
+		wp_localize_script( 'ingot-admin-app', 'INGOT_TRANSLATION', $this->translation_strings() );
 
 
 
@@ -142,8 +159,7 @@ class load {
 	 */
 	protected function translation_strings() {
 		return array(
-			'api_url'                  => rest_url( 'ingot/v1' ),
-			'test_group_page_title'    => __( 'Ingot Test Group: ', 'ingot' ),
+
 			'group_saved'              => __( 'Group Saved', 'ingot' ),
 			'fail'                     => __( 'Could Not Save', 'ingot' ),
 			'sorry'                    => __( 'Please try again and/or contact support', 'ingot' ),
@@ -161,6 +177,26 @@ class load {
 			'spinner_alt'              => __( 'Loading Spinner', 'ingot' ),
 			'no_tests'                 => __( 'This group has no tests', 'ingot' ),
 			'invalid_price_test_range' => __( 'Please enter a number between -.99 and .99', 'ingot' ),
+			'groups' => array(
+				'test_group_page_title'    => __( 'Ingot Test Group', 'ingot' ),
+				'show_all' => __( 'Show All', 'ingot' ),
+				'create_new' => __( 'Create New', 'ingot' ),
+			),
+			'group' => array(
+				'save_group' => __( 'Save Group', 'ingot' ),
+				'type' => __( 'Type', 'ingot' ),
+				'name' => __( 'Name', 'ingot' ),
+				'group_settings_header' => __( 'Group Settings', 'ingot' ),
+				'link_label_group_setting' => __( 'Link', 'ingot' ),
+				'text_label_group_setting' => __( 'Text (Used For All Buttons)', 'ingot' ),
+				'color_label_group_setting' => __( 'Color (Used For All Buttons)', 'ingot' ),
+				'background_color_label_group_setting' => __( 'Background (Used For All Buttons)', 'ingot' ),
+				'tests_header' => __( 'Tests', 'ingot' ),
+				'text_label_test_setting' => __( 'Text', 'ingot' ),
+				'color_label_test_setting' => __( 'Color', 'ingot' ),
+				'background_color_label_test_setting' => __( 'Background Color', 'ingot' ),
+				'add_test' => __( 'Add Test', 'ingot' ),
+			)
 
 		);
 	}

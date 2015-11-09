@@ -1,4 +1,4 @@
-var ingotApp = angular.module('ingotApp', ['ui.router', 'ui.bootstrap', 'colorpicker.module'] )
+var ingotApp = angular.module('ingotApp', ['ui.router', 'ui.bootstrap', 'colorpicker.module','pascalprecht.translate'] )
     .run( function() {
 
     }
@@ -80,10 +80,10 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             } ).success(function(data) {
                 $scope.group = data;
                 swal({
-                    title: INGOT_I10N.group_saved,
+                    title: INGOT_TRANSLATION.group_saved,
                     text: '',
                     type: "success",
-                    confirmButtonText: INGOT_I10N.close
+                    confirmButtonText: INGOT_TRANSLATION.close
                 });
             } ).error(function(){
                 swal({
@@ -94,6 +94,12 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 });
             })
         };
+
+        $scope.HTML = function( key ) {
+            $scope.myHTML =
+                'I am an <code>HTML</code>string with ' +
+                '<a href="#">links!</a> and other <em>stuff</em>';
+        }
 
         $scope.isButton =function() {
             if( 'button' == $scope.group.click_type ) {
@@ -156,6 +162,13 @@ ingotApp.factory('click',function($resource){
         }
     });
 });
+
+ingotApp.config(['$translateProvider', function ($translateProvider) {
+    //@todo not make always english
+    $translateProvider
+        .translations('en', INGOT_TRANSLATION)
+        .preferredLanguage('en');
+}]);
 
 
 

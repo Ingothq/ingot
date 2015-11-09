@@ -1,9 +1,22 @@
 
 <ul class="list-inline">
-    <li><h2>Click Groups</h2></li>
-    <li><a ui-sref="clickTests.list" class="btn btn-default">Show All</a></li>
-    <li><a ui-sref="clickTests.list" class="btn btn-default">Create New</a></li>
+    <li>
+        <h2>
+            {{ 'groups.test_group_page_title' | translate }}
+        </h2>
+    </li>
+    <li>
+        <a ui-sref="clickTests.list" class="btn btn-default">
+            {{ 'groups.show_all' | translate }}
+        </a>
+    </li>
+    <li>
+        <a ui-sref="clickTests.list" class="btn btn-default">
+            {{ 'groups.create_new' | translate }}
+        </a>
+    </li>
 </ul>
+
 <hr />
 
 <div ui-view></div>
