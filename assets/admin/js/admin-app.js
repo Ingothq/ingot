@@ -65,6 +65,17 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: INGOT_ADMIN.partials + "/price-group.html",
             controller: 'priceGroup'
         } )
+        //other
+        .state('settings', {
+            url: "/settings",
+            templateUrl: INGOT_ADMIN.partials + "/settings.html",
+            controller: 'settings'
+        } )
+        .state('support', {
+            url: "/support",
+            templateUrl: INGOT_ADMIN.partials + "/support.html",
+            controller: 'support'
+        } )
 
 
 
@@ -278,8 +289,28 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         })
     };
 
+}]);
 
+/**
+ * Support Controller
+ *
+ * @since 0.2.0
+ */
+ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
+   //@todo wtf are we doing here?
+}]);
 
+ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
+    $http({
+        method: 'GET',
+        url: INGOT_ADMIN.api + 'price-group'
+
+    }).success( function( data, status, headers, config ) {
+        console.log( data );
+        $scope.groups = data;
+    }).error(function(data, status, headers, config) {
+        console.log( data );
+    });
 }]);
 
 /**
@@ -319,8 +350,3 @@ ingotApp.factory('click',function($resource){
         }
     });
 });
-
-
-
-
-
