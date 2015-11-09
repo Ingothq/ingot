@@ -139,6 +139,17 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                     return true;
                 }
             };
+            $scope.isButton =function() {
+                if( 'button' == $scope.group.click_type ) {
+                    return true;
+                }
+            };
+
+            $scope.isLink = function() {
+                if( 'link' == $scope.group.click_type ) {
+                    return true;
+                }
+            };
         }).error(function(data, status, headers, config) {
             console.log( data );
             swal({
@@ -189,17 +200,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         };
 
 
-        $scope.isButton =function() {
-            if( 'button' == $scope.group.click_type ) {
-                return true;
-            }
-        };
 
-        $scope.isLink = function() {
-            if( 'link' == $scope.group.click_type ) {
-                return true;
-            }
-        };
 
         $scope.addNewTest = function(e) {
             //make ID a random string so it will be treated as new by API
