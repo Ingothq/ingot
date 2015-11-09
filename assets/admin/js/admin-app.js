@@ -79,9 +79,7 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
         .state("otherwise",{
             url : '/',
             templateUrl: INGOT_ADMIN.partials + "/welcome.html",
-            controller: function() {
-
-            }
+            controller: 'welcome'
         })
 
 
@@ -306,6 +304,16 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
    //@todo wtf are we doing here?
 }]);
+
+/**
+ * Welcome Page Controller
+ *
+ * @since 0.2.0
+ */
+ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
+    $scope.welcome = INGOT_TRANSLATION.welcome;
+}]);
+
 
 /**
  * Settings Controller

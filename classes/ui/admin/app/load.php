@@ -233,6 +233,13 @@ class load {
 				'license_code_desc' => __( 'Enter your license code to enable support and updates.', 'ingot' ),
 				'save' => __( 'Save Settings', 'ingot' )
 
+			),
+			'welcome' => array(
+				'banner'                   => esc_url( INGOT_URL . 'assets/img/ingot-logo-chrome-cropped.png' ),
+				'banner_alt' => __( 'Ingot Banner Logo', 'ingot' ),
+				'header' => __( 'Ingot: Do Less, Convert More', 'ingot' ),
+				'links_header' => __( 'Helpful Links', 'ingot' ),
+				'video_header' => __( 'Watch This Short Video To Learn How To Use Ingot', 'ingot' )
 			)
 
 		);
