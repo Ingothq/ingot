@@ -24,37 +24,48 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise("/");
     $stateProvider
+        //click tests
         .state('clickTests', {
-            url: "/clickTests",
+            url: "/click-tests",
             templateUrl: INGOT_ADMIN.partials + "/click-groups.html"
         })
         .state('clickTests.list', {
-            url: "/clickTests/all",
+            url: "/click-tests/all",
             templateUrl: INGOT_ADMIN.partials + "/click-groups.list.html",
             controller: 'clickGroups'
         } )
         .state('clickTests.edit', {
-            url: "/clickTests/edit/:groupID",
+            url: "/click-tests/edit/:groupID",
             templateUrl: INGOT_ADMIN.partials + "/click-group.html",
             controller: 'clickGroup'
         } )
         .state('clickTests.new', {
-            url: "/clickTests/new/",
+            url: "/click-tests/new",
             templateUrl: INGOT_ADMIN.partials + "/click-group.html",
             controller: 'clickGroup'
         } )
-
-        .state('state2', {
-            url: "/state2",
-            templateUrl: INGOT_ADMIN.partials + "/state2.html"
+        //price tests
+        .state('priceTests', {
+            url: "/price-tests",
+            templateUrl: INGOT_ADMIN.partials + "/price-groups.html",
+            controller: 'priceGroups'
         })
-        .state('state2.list', {
-            url: "/list",
-            templateUrl: INGOT_ADMIN.partials + "/state2.list.html",
-            controller: function($scope) {
-                $scope.things = ["A", "Set", "Of", "Things"];
-            }
-        });
+        .state('priceTests.list', {
+            url: "/price-tests/all",
+            templateUrl: INGOT_ADMIN.partials + "/price-groups.list.html",
+            controller: 'priceGroups'
+        } )
+        .state('priceTests.edit', {
+            url: "/price-tests/edit/:groupID",
+            templateUrl: INGOT_ADMIN.partials + "/price-group.html",
+            controller: 'priceGroup'
+        } )
+        .state('priceTests.new', {
+            url: "/price-tests/new/",
+            templateUrl: INGOT_ADMIN.partials + "/price-group.html",
+            controller: 'priceGroup'
+        } )
+
 
 
 });
@@ -183,6 +194,93 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
 }]);
 
+/**
+ * Price Tests
+ *
+ * @since 2.0.0
+ */
+//Controller for price groups list
+ingotApp.controller( 'priceGroups', ['$scope', '$http', function( $scope, $http ) {
+    $http({
+        method: 'GET',
+        url: INGOT_ADMIN.api + 'price-group'
+
+    }).success( function( data, status, headers, config ) {
+        console.log( data );
+        $scope.groups = data;
+    }).error(function(data, status, headers, config) {
+        console.log( data );
+    });
+}]);
+
+//controller for creating/editing a price group
+ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
+    if( 'priceGroup.new' == $state.current.name ) {
+        $scope.group = {
+            price_type_options : INGOT_ADMIN.price_type_options
+        };
+    }else{
+        var groupID = $stateParams.groupID;
+        $http({
+            method: 'GET',
+            url: INGOT_ADMIN.api + 'price-group/' + groupID + '?context=admin'
+
+        }).success( function( data, status, headers, config ) {
+
+            $scope.group = data;
+
+        }).error(function(data, status, headers, config) {
+            console.log( data );
+            swal({
+                title: INGOT_TRANSLATION.fail,
+                text: INGOT_TRANSLATION.sorry,
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        });
+    }
+
+    $scope.submit = function( data ){
+        var url;
+        if( 'priceGroup.new' == $state.current.name ) {
+            url =INGOT_ADMIN.api + 'price-group/?context=admin';
+        }else{
+            url = INGOT_ADMIN.api + 'price-group/' + groupID + '?context=admin';
+        }
+
+        $http({
+            method: 'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            },
+            url: url,
+            data: $scope.group
+        } ).success(function(data) {
+            $scope.group = data;
+            if( 'priceGroup.new' == $state.current.name ) {
+                $state.go('priceGroup.edit' ).toParams({
+                    groupID: data.ID
+                });
+            }
+            swal({
+                title: INGOT_TRANSLATION.group_saved,
+                text: '',
+                type: "success",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        } ).error(function(){
+            swal({
+                title: INGOT_TRANSLATION.fail,
+                text: INGOT_TRANSLATION.sorry,
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        })
+    };
+
+
+
+}]);
 
 /**
  * Click Factory
