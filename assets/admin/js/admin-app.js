@@ -1,4 +1,10 @@
-var ingotApp = angular.module('ingotApp', ['ui.router', 'ui.bootstrap', 'colorpicker.module','pascalprecht.translate'] )
+var ingotApp = angular.module('ingotApp', [
+    'ui.router',
+    'ui.bootstrap',
+    'colorpicker.module',
+    'pascalprecht.translate',
+    'ngAria'
+] )
     .run( function() {
 
     }
@@ -167,7 +173,8 @@ ingotApp.config(['$translateProvider', function ($translateProvider) {
     //@todo not make always english
     $translateProvider
         .translations('en', INGOT_TRANSLATION)
-        .preferredLanguage('en');
+        .preferredLanguage('en')
+        .useSanitizeValueStrategy('escape');
 }]);
 
 
