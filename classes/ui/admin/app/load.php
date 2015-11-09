@@ -48,17 +48,21 @@ class load {
 
 
 		wp_enqueue_script( 'angular', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js', array( 'jquery') );
-		wp_enqueue_script( 'angular-route', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-route.js', array( 'angular') );
-		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'angular-ui-route', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js', array( 'angular') );
+		wp_enqueue_script( 'angular-ui-bootstrap', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap.min.js');
+		wp_enqueue_style( 'bootstrap', '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css' );
+		wp_enqueue_style( 'selectize', '//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css');
+		wp_enqueue_style( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/css/colorpicker.min.css');
+		wp_enqueue_script( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/js/bootstrap-colorpicker-module.js');
+		wp_enqueue_script( 'bootstrap', '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js', array( 'jquery') );
 		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery') );
 		wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css');
 
-		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . 'assets/admin/js/admin-app.js', array( 'angular', 'jquery', 'swal', 'wp-color-picker' ), rand() );
-
+		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . 'assets/admin/js/admin-app.js', array( 'angular', 'jquery', 'swal' ), rand() );
 
 		wp_localize_script( 'ingot-admin-app', 'INGOT_ADMIN', array(
-				'api_url' => esc_url_raw( util::get_url() ),
-				'rest_nonce' => wp_create_nonce( 'wp_rest' ),
+				'api' => esc_url_raw( util::get_url() ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'partials' => esc_url_raw( INGOT_URL . 'assets/admin/partials/' )
 			)
 		);
@@ -77,22 +81,35 @@ class load {
 	}
 
 	public function ingot_page() {?>
-		<div ng-app="ingotApp">
-			<div>
-				<ul>
-					<li><a href="<?php echo esc_url( $this->admin_url( '' ) ); ?>">Home</a></li>`
-					<li><a href="<?php echo esc_url( $this->admin_url( '#!click-groups' ) ); ?>">Click Groups</a></li>
-				</ul>
-			</div>
-			<div ng-controller="clickGroups">
-				<article ng-repeat="group in groups">
-					<h3>{{ group.name }}</h3>
-					<a href="#click-groups/{{group.ID}}" class="button">Edit</a>
-					<a href="#click-groups/stats/{{group.ID}}" class="button">Stats</a>
-				</article>
-			</div>
+		<div class="container" id="ingot-admin-app" ng-app="ingotApp">
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+							<span class="sr-only"><?php _e( 'Toogle Navigation', 'ingot' ); ?></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand active" href="#"><?php _e( 'Ingot', 'ingot' ); ?></a>
+					</div>
+					<div id="navbar" class="navbar-collapse collapse">
+						<ul class="nav navbar-nav">
+							<li><a ui-sref="clickTests"><?php _e( 'Click Tests', 'ingot' ); ?></a></li>
+							<li><a ui-sref="state2"><?php _e( 'Price Tests', 'ingot' ); ?></a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="#"><?php _e( 'Settings', 'ingot' ); ?></a></li>
+							<li><a href="#"><?php _e( 'Support', 'ingot' ); ?></a></li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div><!--/.container-fluid -->
+			</nav>
+			<div ng-controller="alerts">
+				<uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
 
-
+			</div>
+			<div ui-view></div>
 
 		</div>
 

@@ -1,7 +1,9 @@
-<div ng-controller="clickGroups">
-    <article ng-repeat="group in groups">
-        <h3>{{ group.name }}</h3>
-        <p>{{ group.ID }}</p>
 
-    </article>
-</div>
+<ul class="list-inline">
+    <li><h2>Click Groups</h2></li>
+    <li><a ui-sref="clickTests.list" class="btn btn-default">Show All</a></li>
+    <li><a ui-sref="clickTests.list" class="btn btn-default">Create New</a></li>
+</ul>
+<hr />
+
+<div ui-view></div>

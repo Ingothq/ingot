@@ -16,6 +16,7 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\test;
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
+use ingot\testing\api\rest\util;
 
 class test_group extends route {
 
@@ -151,6 +152,14 @@ class test_group extends route {
 			if( $group ) {
 				if( 'admin' == $request->get_param( 'context' ) ) {
 					$group[ 'tests' ] = $this->group_tests( $group );
+					$_options = types::allowed_click_types( true );
+					foreach ( $_options as $value => $label ) {
+						$options[] = array(
+							'value' => $value,
+							'label' => $label
+						);
+					}
+					$group[ 'click_type_options' ] = $options;
 				}
 				return rest_ensure_response( $group );
 			}
@@ -183,7 +192,7 @@ class test_group extends route {
 
 		if( ! empty( $params[ 'tests' ] ) ) {
 			foreach( $params[ 'tests' ] as $test ) {
-				$test_id = helpers::v( 'id', $test, 0 );
+				$test_id = helpers::v( 'ID', $test, 0 );
 				$test = $this->prepare_click_test_meta( $test );
 				if( absint( $test_id ) > 0 ) {
 					$_id = test::update( $test, $test_id );
