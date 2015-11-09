@@ -532,15 +532,7 @@ class test_group extends route {
 	 */
 	protected function prepare_group_in_admin_context( $group ) {
 		$group[ 'tests' ] = $this->group_tests( $group );
-		$_options       = types::allowed_click_types( true );
-		$options        = array();
-		foreach ( $_options as $value => $label ) {
-			$options[] = array(
-				'value' => $value,
-				'label' => $label
-			);
-		}
-		$group['click_type_options'] = $options;
+		$group['click_type_options'] = types::allowed_click_types( true );
 
 		return $group;
 	}

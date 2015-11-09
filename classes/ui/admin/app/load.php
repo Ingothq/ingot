@@ -13,6 +13,7 @@ namespace ingot\ui\admin\app;
 
 
 use ingot\testing\api\rest\util;
+use ingot\testing\types;
 use ingot\testing\utility\helpers;
 
 class load {
@@ -219,7 +220,9 @@ class load {
 			'spinner_url'         => trailingslashit( INGOT_URL ) . 'assets/img/loading.gif',
 			'edd_active'          => esc_attr( ingot_is_edd_active() ),
 			'woo_active'          => esc_attr( ingot_is_woo_active() ),
-			'price_tests_enabled' => esc_attr( ingot_enable_price_testing() )
+			'price_tests_enabled' => esc_attr( ingot_enable_price_testing() ),
+			'click_type_options'  => types::allowed_click_types( true ),
+			'price_type_options'  => types::allowed_price_types(),
 		);
 	}
 

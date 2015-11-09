@@ -26,11 +26,14 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
         .state('clickTests.edit', {
             url: "/clickTests/edit/:groupID",
             templateUrl: INGOT_ADMIN.partials + "/click-group.html",
-            controller: 'clickGroup',
-            stateChangeSuccess: function() {
-                alert();
-            }
+            controller: 'clickGroup'
         } )
+        .state('clickTests.new', {
+            url: "/clickTests/new/",
+            templateUrl: INGOT_ADMIN.partials + "/click-group.html",
+            controller: 'clickGroup'
+        } )
+
         .state('state2', {
             url: "/state2",
             templateUrl: INGOT_ADMIN.partials + "/state2.html"
@@ -61,30 +64,58 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', function( $scope, $http 
     });
 }]);
 
-ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', function( $scope, $http, $stateParams, $rootScope ) {
-    var groupID = $stateParams.groupID;
-    $http({
-        method: 'GET',
-        url: INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin'
-
-    }).success( function( data, status, headers, config ) {
-
-        $scope.group = data;
-        $scope.isButtonColor = function() {
-            if( 'button_color' == $scope.group.click_type ) {
-                return true;
-            }
+ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
+    if( 'clickTests.new' == $state.current.name ) {
+        $scope.group = {
+            click_type_options : INGOT_ADMIN.click_type_options
         };
+    }else{
+        var groupID = $stateParams.groupID;
+        $http({
+            method: 'GET',
+            url: INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin'
+
+        }).success( function( data, status, headers, config ) {
+
+            $scope.group = data;
+            $scope.isButtonColor = function() {
+                if( 'button_color' == $scope.group.click_type ) {
+                    return true;
+                }
+            };
+        }).error(function(data, status, headers, config) {
+            console.log( data );
+            swal({
+                title: INGOT_TRANSLATION.fail,
+                text: INGOT_TRANSLATION.sorry,
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        });
+    }
+
         $scope.submit = function( data ){
+            var url;
+            if( 'clickTests.new' == $state.current.name ) {
+                url =INGOT_ADMIN.api + 'test-group/?context=admin';
+            }else{
+                url = INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin';
+            }
+
             $http({
                 method: 'POST',
                 headers: {
                     'X-WP-Nonce': INGOT_ADMIN.nonce
                 },
-                url: INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin',
+                url: url,
                 data: $scope.group
             } ).success(function(data) {
                 $scope.group = data;
+                if( 'clickTests.new' == $state.current.name ) {
+                    $state.go('clickTests.edit' ).toParams({
+                       groupID: data.ID
+                    });
+                }
                 swal({
                     title: INGOT_TRANSLATION.group_saved,
                     text: '',
@@ -93,19 +124,14 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 });
             } ).error(function(){
                 swal({
-                    title: INGOT_I10N.fail,
-                    text: INGOT_I10N.sorry,
+                    title: INGOT_TRANSLATION.fail,
+                    text: INGOT_TRANSLATION.sorry,
                     type: "error",
-                    confirmButtonText: INGOT.close
+                    confirmButtonText: INGOT_TRANSLATION.close
                 });
             })
         };
 
-        $scope.HTML = function( key ) {
-            $scope.myHTML =
-                'I am an <code>HTML</code>string with ' +
-                '<a href="#">links!</a> and other <em>stuff</em>';
-        }
 
         $scope.isButton =function() {
             if( 'button' == $scope.group.click_type ) {
@@ -126,14 +152,8 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         };
 
 
-    }).error(function(data, status, headers, config) {
-        console.log( data );
-    });
 
-    $rootScope.$on('$viewContentLoaded',
-        function( event){
 
-        });
 
 }]);
 
