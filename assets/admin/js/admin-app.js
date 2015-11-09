@@ -1,3 +1,8 @@
+/**
+ * Create app
+ *
+ * @since 2.0.0
+ */
 var ingotApp = angular.module('ingotApp', [
     'ui.router',
     'ui.bootstrap',
@@ -10,6 +15,11 @@ var ingotApp = angular.module('ingotApp', [
     }
 );
 
+/**
+ * Router
+ *
+ * @since 2.0.0
+ */
 ingotApp.config(function($stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise("/");
@@ -49,8 +59,26 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
+/**
+ * Translation
+ *
+ * @since 2.0.0
+ */
+ingotApp.config(['$translateProvider', function ($translateProvider) {
+    //@todo not make always english
+    $translateProvider
+        .translations('en', INGOT_TRANSLATION)
+        .preferredLanguage('en')
+        .useSanitizeValueStrategy('escape');
+}]);
 
 
+/**
+ * Click Tests
+ *
+ * @since 2.0.0
+ */
+//Controller for click groups list
 ingotApp.controller( 'clickGroups', ['$scope', '$http', function( $scope, $http ) {
     $http({
         method: 'GET',
@@ -64,6 +92,7 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', function( $scope, $http 
     });
 }]);
 
+//controller for creating/editing a click group
 ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
     if( 'clickTests.new' == $state.current.name ) {
         $scope.group = {
@@ -152,12 +181,16 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         };
 
 
-
-
-
 }]);
 
 
+/**
+ * Click Factory
+ *
+ * @since 2.0.0
+ *
+ * @todo make work, use, etc.
+ */
 ingotApp.factory('click',function($resource){
     return $resource(INGOT_ADMIN.api + 'group/:ID',{
         ID:'@id'
@@ -189,30 +222,7 @@ ingotApp.factory('click',function($resource){
     });
 });
 
-ingotApp.config(['$translateProvider', function ($translateProvider) {
-    //@todo not make always english
-    $translateProvider
-        .translations('en', INGOT_TRANSLATION)
-        .preferredLanguage('en')
-        .useSanitizeValueStrategy('escape');
-}]);
 
 
 
-/**
- * Hide an element
- *
- * @param el
- */
-function hide( el ){
-    jQuery( el ).css( 'visibility', 'hidden' ).attr( 'aria-hidden', 'true' ).hide();
-}
 
-/**
- * Show an element
- *
- * @param el
- */
-function show( el ){
-    jQuery( el ).css( 'visibility', 'visible' ).attr( 'aria-hidden', 'false' ).show();
-}
