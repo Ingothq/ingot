@@ -129,7 +129,7 @@ class load {
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand active" href="#">
+						<a class="navbar-brand active" ui-sref="otherwise">
 							<?php _e( 'Ingot', 'ingot' ); ?>
 						</a>
 					</div>

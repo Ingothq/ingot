@@ -76,6 +76,13 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: INGOT_ADMIN.partials + "/support.html",
             controller: 'support'
         } )
+        .state("otherwise",{
+            url : '/',
+            templateUrl: INGOT_ADMIN.partials + "/welcome.html",
+            controller: function() {
+
+            }
+        })
 
 
 
