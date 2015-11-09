@@ -144,8 +144,9 @@ class load {
 		return array(
 			'api_url'                  => rest_url( 'ingot/v1' ),
 			'test_group_page_title'    => __( 'Ingot Test Group: ', 'ingot' ),
-			'success'                  => __( 'Group Saved', 'ingot' ),
+			'group_saved'              => __( 'Group Saved', 'ingot' ),
 			'fail'                     => __( 'Could Not Save', 'ingot' ),
+			'sorry'                    => __( 'Please try again and/or contact support', 'ingot' ),
 			'close'                    => __( 'Close', 'ingot' ),
 			'saved'                    => __( 'Saved Group: ', 'ingot' ),
 			'cant_remove'              => __( 'At this time, you can not remove a test from a group.', 'ingot' ),

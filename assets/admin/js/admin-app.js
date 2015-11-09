@@ -79,6 +79,19 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 data: $scope.group
             } ).success(function(data) {
                 $scope.group = data;
+                swal({
+                    title: INGOT_I10N.group_saved,
+                    text: '',
+                    type: "success",
+                    confirmButtonText: INGOT_I10N.close
+                });
+            } ).error(function(){
+                swal({
+                    title: INGOT_I10N.fail,
+                    text: INGOT_I10N.sorry,
+                    type: "error",
+                    confirmButtonText: INGOT.close
+                });
             })
         };
 
@@ -111,20 +124,6 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         });
 
 }]);
-
-
-ingotApp.controller('alerts', function ($scope) {
-    $scope.alerts = [
-    ];
-
-    $scope.addAlert = function( msg, type ) {
-        $scope.alerts.push({msg:msg, type:type});
-    };
-
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
-    };
-});
 
 
 ingotApp.factory('click',function($resource){
