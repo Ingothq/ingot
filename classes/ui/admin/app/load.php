@@ -132,7 +132,7 @@ class load {
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li><a ui-sref="clickTests"><?php _e( 'Click Tests', 'ingot' ); ?></a></li>
-							<li><a ui-sref="state2"><?php _e( 'Price Tests', 'ingot' ); ?></a></li>
+							<li><a ui-sref="priceTests"><?php _e( 'Price Tests', 'ingot' ); ?></a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="#"><?php _e( 'Settings', 'ingot' ); ?></a></li>
@@ -180,24 +180,28 @@ class load {
 			'no_tests'                 => __( 'This group has no tests', 'ingot' ),
 			'invalid_price_test_range' => __( 'Please enter a number between -.99 and .99', 'ingot' ),
 			'groups' => array(
-				'test_group_page_title'    => __( 'Ingot Test Group', 'ingot' ),
-				'show_all' => __( 'Show All', 'ingot' ),
-				'create_new' => __( 'Create New', 'ingot' ),
+				'click_group_page_title' => __( 'Click Test Groups', 'ingot' ),
+				'price_group_page_title' => __( 'Price Test Groups', 'ingot' ),
+				'show_all'               => __( 'Show All', 'ingot' ),
+				'create_new'             => __( 'Create New', 'ingot' ),
+				'edit'  => __( 'Edit Group', 'ingot' ),
+				'stats' => __( 'Group Stats', 'ingot' ),
+				'delete' => __( 'Delete Group', 'ingot' ),
 			),
 			'group' => array(
-				'save_group' => __( 'Save Group', 'ingot' ),
-				'type' => __( 'Type', 'ingot' ),
-				'name' => __( 'Name', 'ingot' ),
-				'group_settings_header' => __( 'Group Settings', 'ingot' ),
-				'link_label_group_setting' => __( 'Link', 'ingot' ),
-				'text_label_group_setting' => __( 'Text (Used For All Buttons)', 'ingot' ),
-				'color_label_group_setting' => __( 'Color (Used For All Buttons)', 'ingot' ),
+				'save_group'                           => __( 'Save Group', 'ingot' ),
+				'type'                                 => __( 'Type', 'ingot' ),
+				'name'                                 => __( 'Name', 'ingot' ),
+				'group_settings_header'                => __( 'Group Settings', 'ingot' ),
+				'link_label_group_setting'             => __( 'Link', 'ingot' ),
+				'text_label_group_setting'             => __( 'Text (Used For All Buttons)', 'ingot' ),
+				'color_label_group_setting'            => __( 'Color (Used For All Buttons)', 'ingot' ),
 				'background_color_label_group_setting' => __( 'Background (Used For All Buttons)', 'ingot' ),
-				'tests_header' => __( 'Tests', 'ingot' ),
-				'text_label_test_setting' => __( 'Text', 'ingot' ),
-				'color_label_test_setting' => __( 'Color', 'ingot' ),
-				'background_color_label_test_setting' => __( 'Background Color', 'ingot' ),
-				'add_test' => __( 'Add Test', 'ingot' ),
+				'tests_header'                         => __( 'Tests', 'ingot' ),
+				'text_label_test_setting'              => __( 'Text', 'ingot' ),
+				'color_label_test_setting'             => __( 'Color', 'ingot' ),
+				'background_color_label_test_setting'  => __( 'Background Color', 'ingot' ),
+				'add_test'                             => __( 'Add Test', 'ingot' ),
 			)
 
 		);
