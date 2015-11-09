@@ -181,7 +181,6 @@ class load {
 	 */
 	protected function translation_strings() {
 		return array(
-
 			'group_saved'              => __( 'Group Saved', 'ingot' ),
 			'fail'                     => __( 'Could Not Save', 'ingot' ),
 			'sorry'                    => __( 'Please try again and/or contact support', 'ingot' ),
@@ -199,6 +198,7 @@ class load {
 			'spinner_alt'              => __( 'Loading Spinner', 'ingot' ),
 			'no_tests'                 => __( 'This group has no tests', 'ingot' ),
 			'invalid_price_test_range' => __( 'Please enter a number between -.99 and .99', 'ingot' ),
+			'settings_saved'           => __( 'Settings Saved', 'ingot' ),
 			'groups' => array(
 				'click_group_page_title' => __( 'Click Test Groups', 'ingot' ),
 				'price_group_page_title' => __( 'Price Test Groups', 'ingot' ),
@@ -222,6 +222,17 @@ class load {
 				'color_label_test_setting'             => __( 'Color', 'ingot' ),
 				'background_color_label_test_setting'  => __( 'Background Color', 'ingot' ),
 				'add_test'                             => __( 'Add Test', 'ingot' ),
+			),
+			'settings' => array(
+				'page_header' => __( 'Settings', 'ingot' ),
+				'click_tracking_label' => __( 'Advanced Click Tracking', 'ingot' ),
+				'click_tracking_desc' => __( 'Ingot always tracks clicks, in advanced mode, more details are tracked. This takes up more space in the database, but enables Ingot to be more powerful.', 'ingot' ),
+				'anon_tracking_label' => __( 'Share Your Data Anonymously', 'ingot' ),
+				'anon_tracking_desc' => __( 'When enabled, your test data is shared with Ingot to help us improve the service.', 'ingot' ),
+				'license_code_label' => __( 'License Code', 'ingot' ),
+				'license_code_desc' => __( 'Enter your license code to enable support and updates.', 'ingot' ),
+				'save' => __( 'Save Settings', 'ingot' )
+
 			)
 
 		);

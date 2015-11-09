@@ -258,7 +258,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         });
     }
 
-    $scope.submit = function( data ){
+    $scope.submit = function( ){
         var url;
         if( 'priceGroup.new' == $state.current.name ) {
             url =INGOT_ADMIN.api + 'price-group/?context=admin';
@@ -307,17 +307,61 @@ ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
    //@todo wtf are we doing here?
 }]);
 
+/**
+ * Settings Controller
+ *
+ * @since 0.2.0
+ */
 ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
+    var url =  INGOT_ADMIN.api + 'settings';
     $http({
         method: 'GET',
-        url: INGOT_ADMIN.api + 'price-group'
+        url:url,
+        headers: {
+            'X-WP-Nonce': INGOT_ADMIN.nonce
+        },
 
     }).success( function( data, status, headers, config ) {
-        console.log( data );
-        $scope.groups = data;
-    }).error(function(data, status, headers, config) {
+        $scope.settings = prepare( data );
+    }).error(function( data ){
         console.log( data );
     });
+
+    $scope.submit = function(){
+        $http({
+            method: 'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            },
+            url: url,
+            data: $scope.settings
+        } ).success(function(data) {
+            $scope.settings = prepare( data );
+            swal({
+                title: INGOT_TRANSLATION.settings_saved,
+                text: '',
+                type: "success",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        } ).error(function(){
+            swal({
+                title: INGOT_TRANSLATION.fail,
+                text: INGOT_TRANSLATION.sorry,
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        })
+    };
+
+    function prepare( data ){
+        jQuery.each( data, function( i, setting ) {
+            if( 1 == setting ) {
+                data.setting == 'on';
+            }
+        });
+
+        return data;
+    }
 }]);
 
 /**
