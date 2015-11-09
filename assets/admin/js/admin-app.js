@@ -24,7 +24,7 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             controller: 'clickGroups'
         } )
         .state('clickTests.edit', {
-            url: "/clickTests/edit:groupID",
+            url: "/clickTests/edit/:groupID",
             templateUrl: INGOT_ADMIN.partials + "/click-group.html",
             controller: 'clickGroup',
             stateChangeSuccess: function() {
