@@ -62,7 +62,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         url: INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin'
 
     }).success( function( data, status, headers, config ) {
-        console.log( data );
+
         $scope.group = data;
         $scope.isButtonColor = function() {
             if( 'button_color' == $scope.group.click_type ) {
@@ -75,10 +75,10 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 headers: {
                     'X-WP-Nonce': INGOT_ADMIN.nonce
                 },
-                url: INGOT_ADMIN.api + 'test-group/' + groupID,
+                url: INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin',
                 data: $scope.group
-            } ).success(function() {
-                alert( '!!');
+            } ).success(function(data) {
+                $scope.group = data;
             })
         };
 
@@ -93,6 +93,13 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 return true;
             }
         };
+
+        $scope.addNewTest = function(e) {
+            //make ID a random string so it will be treated as new by API
+            var id = Math.random().toString(36).substring(7);
+            $scope.group.tests[ id ] = {'ID':id};
+        };
+
 
     }).error(function(data, status, headers, config) {
         console.log( data );

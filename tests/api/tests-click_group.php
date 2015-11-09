@@ -293,6 +293,7 @@ class test_click_group extends ingot_rest_test_case {
 		$request = new \WP_REST_Request( 'POST', $this->namespaced_route . '/' . $group_id );
 		$request->set_query_params( array(
 			'type' => 'click',
+			'click_type' =>  'button',
 			'link' => 'http://farts.com',
 		) );
 
