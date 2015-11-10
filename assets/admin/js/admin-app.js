@@ -271,6 +271,15 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
  */
 //Controller for price groups list
 ingotApp.controller( 'priceGroups', ['$scope', '$http', function( $scope, $http ) {
+    swal({
+        title: INGOT_TRANSLATION.beta_error_header,
+        text: '',
+        type: "error",
+        confirmButtonText: INGOT_TRANSLATION.close
+    });
+
+    return;
+
     $http({
         method: 'GET',
         url: INGOT_ADMIN.api + 'price-group'
@@ -285,6 +294,16 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', function( $scope, $http 
 
 //controller for creating/editing a price group
 ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
+    swal({
+        title: INGOT_TRANSLATION.beta_error_header,
+        text: '',
+        type: "error",
+        confirmButtonText: INGOT_TRANSLATION.close
+    });
+
+    return;
+
+
     if( 'priceGroup.new' == $state.current.name ) {
         $scope.group = {
             price_type_options : INGOT_ADMIN.price_type_options
@@ -356,7 +375,12 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
  * @since 0.2.0
  */
 ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
-   //@todo wtf are we doing here?
+    swal({
+        title: INGOT_TRANSLATION.beta_error_header,
+        text: '',
+        type: "error",
+        confirmButtonText: INGOT_TRANSLATION.close
+    });
 }]);
 
 /**
