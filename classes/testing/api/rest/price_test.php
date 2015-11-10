@@ -110,16 +110,18 @@ class price_test extends route {
 				'required'           => 'true',
 			),
 			'default'  => array(
-				'description'        => __( 'Default price varients', 'ingot' ),
+				'description'        => __( 'Default price change percentage expressed as a float.', 'ingot' ),
+				'type'               => 'float',
+				'default'            => array(),
+				'sanitize_callback'  => function( $value ) {
+					return (float) $value;
+				},
+			),
+			'variable_prices'  => array(
+				'description'        => __( 'Variable price change percentages expressed as a float', 'ingot' ),
 				'type'               => 'array',
 				'default'            => array(),
 				'sanitize_callback'  => array( $this, 'make_array_values_floats' ),
-			),
-			'button_color' => array(
-				'description'        => __( 'Button color for button tests', 'ingot' ),
-				'type'               => 'string',
-				'default'            => array(),
-				'sanitize_callback'  => array( 'ingot\testing\utility\helpers', 'prepare_color' ),
 			)
 
 		);
