@@ -99,7 +99,7 @@ class price_test extends options_crud {
 	 * @return array|\WP_Error Array of prepared data or WP_Error if invalid.
 	 */
 	protected static function validate_config( $data ) {
-		if( empty( $data[ 'default' ] ) ) {
+		if( ! isset( $data[ 'default' ] ) ) {
 			return new \WP_Error( 'ingot-invalid-price-test', __( 'Price tests must have a default set of price variations' ), 'ingot' );
 		}
 
