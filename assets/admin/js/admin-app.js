@@ -236,9 +236,8 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             } ).success(function(data) {
                 $scope.group = data;
                 if( 'clickTests.new' == $state.current.name ) {
-                    $state.go('clickTests.edit' ).toParams({
-                       groupID: data.ID
-                    });
+
+                    $state.go('clickTests.edit', { groupID: data.ID } );
                 }
                 swal({
                     title: INGOT_TRANSLATION.group_saved,
