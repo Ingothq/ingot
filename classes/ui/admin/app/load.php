@@ -236,7 +236,7 @@ class load {
 
 			),
 			'welcome' => array(
-				'banner'                   => esc_url( INGOT_URL . 'assets/img/ingot-logo-chrome-cropped.png' ),
+				'banner'                   => esc_url( INGOT_URL . 'assets/img/Ingot-logo-dark.png' ),
 				'banner_alt' => __( 'Ingot Banner Logo', 'ingot' ),
 				'header' => __( 'Ingot: Do Less, Convert More', 'ingot' ),
 				'links_header' => __( 'Helpful Links', 'ingot' ),
