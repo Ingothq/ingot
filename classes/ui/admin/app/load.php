@@ -98,6 +98,7 @@ class load {
 
 		//ingot
 		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . 'assets/admin/js/admin-app.js', array( 'angular', 'jquery', 'swal' ), rand() );
+		wp_enqueue_style( 'ingot-admin-app', INGOT_URL . 'assets/admin/css/admin-app.css' );
 
 		//data to use in admin app
 		wp_localize_script( 'ingot-admin-app', 'INGOT_ADMIN', $this->vars() );

@@ -199,9 +199,6 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             })
         };
 
-
-
-
         $scope.addNewTest = function(e) {
             //make ID a random string so it will be treated as new by API
             var id = Math.random().toString(36).substring(7);

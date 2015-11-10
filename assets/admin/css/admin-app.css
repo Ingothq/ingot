@@ -1,0 +1,11 @@
+.btn-primary a {
+    color: white;
+}
+
+label.btn.btn-primary:hover {
+    background: #e6e6e6;
+}
+
+label.btn.btn-primary:hover a {
+    color: #337ab7;
+}
