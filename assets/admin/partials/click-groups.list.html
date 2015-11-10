@@ -1,5 +1,5 @@
 <ul>
-    <li ng-repeat="group in groups">
+    <li ng-repeat="group in groups" class="col-md-6 panel">
         <h5>{{ group.name }}</h5>
         <div class="btn-group">
             <label class="btn btn-primary">
@@ -14,5 +14,9 @@
                 {{ 'groups.delete' | translate }}
             </label>
         </div>
+        <div>
+            <pre>[ingot id="{{group.ID}}"]</pre>
+        </div>
     </li>
 </ul>
+
