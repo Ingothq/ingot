@@ -384,7 +384,7 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
         },
 
     }).success( function( data, status, headers, config ) {
-        $scope.settings = prepare( data );
+        $scope.settings = data;
     }).error(function( data ){
         console.log( data );
     });
@@ -398,7 +398,7 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
             url: url,
             data: $scope.settings
         } ).success(function(data) {
-            $scope.settings = prepare( data );
+            $scope.settings =  data;
             swal({
                 title: INGOT_TRANSLATION.settings_saved,
                 text: '',
@@ -415,15 +415,6 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
         })
     };
 
-    function prepare( data ){
-        jQuery.each( data, function( i, setting ) {
-            if( 1 == setting ) {
-                data.setting == 'on';
-            }
-        });
-
-        return data;
-    }
 }]);
 
 /**
