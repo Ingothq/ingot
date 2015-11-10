@@ -12,6 +12,7 @@ namespace ingot\testing\crud;
 
 
 use ingot\testing\utility\defaults;
+use ingot\testing\utility\price;
 
 class price_test extends options_crud {
 
@@ -102,18 +103,18 @@ class price_test extends options_crud {
 			return new \WP_Error( 'ingot-invalid-price-test', __( 'Price tests must have a default set of price variations' ), 'ingot' );
 		}
 
-		$data[ 'default' ] = self::validate_test_part( $data[ 'default' ] );
-		if( is_wp_error( $data[ 'default' ] ) ){
-			return $data[ 'default' ];
+		if( ! price::valid_percentage( $data[ 'default'] ) ) {
+			return new \WP_Error( 'ingot-invalid-float' );
+
 		}
 
 		$data = self::fill_in( $data );
 
 		if( is_array( $data[ 'variable_prices' ] ) && ! empty( $data[ 'variable_prices' ] ) ){
 			foreach( $data[ 'variable_prices' ] as $i => $test_part ) {
-				$test_part = self::validate_test_part( $test_part );
-				if( is_wp_error( $test_part ) ) {
-					return $test_part;
+
+				if( ! price::valid_percentage( $test_part ) ) {
+					return new \WP_Error( 'ingot-invalid-float' );
 				}
 
 				$data[ 'variable_prices' ][ $i ] = $test_part;
@@ -135,6 +136,8 @@ class price_test extends options_crud {
 
 
 	}
+
+
 
 
 	/**
@@ -173,40 +176,6 @@ class price_test extends options_crud {
 
 	}
 
-	/**
-	 * Validate a part of a test
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param $test_part
-	 *
-	 * @return array|\WP_Error Test part if OK, WP_Error if not
-	 */
-	protected static function validate_test_part( $test_part ) {
-		if( ! is_array( $test_part ) || ( ! isset( $test_part[ 'a' ] ) || ! isset( $test_part[ 'b' ] ) ) ) {
-			return new \WP_Error( 'ingot-invalid-price-test-part', __( 'Price test parts must be an array and have an A and B', 'ingot' ) );
-		}
-
-		foreach( array( 'a', 'b' ) as $part ){
-			if( 0 === $test_part[ $part ] ){
-				continue;
-			}
-
-			$value = (float) $test_part[ $part ];
-
-			if( 0 == $value || false === self::float_in_allowed_range( $value ) ) {
-				return new \WP_Error( 'ingot-invalid-price-test-part-value', __( 'Price test parts values must be a float less than 1 and greater than -1.', 'ingot' ) );
-			}
-
-			$test_part[ $part ] = $value;
-		}
-
-		return $test_part;
-
-
-	}
 
 	/**
 	 * Check that we have a float less than 1 and greater than -1
