@@ -69,7 +69,6 @@ class init {
 		$this->set_cookie( $cookies );
 		$this->get_ingot_cookie();
 		$this->setup_cookies();
-		$this->refresh_cache();
 
 	}
 
