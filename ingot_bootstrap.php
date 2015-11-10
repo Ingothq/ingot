@@ -62,8 +62,8 @@ class ingot_bootstrap {
 				new ingot\ui\make();
 				self::maybe_load_api();
 
-				add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
-				add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
+				//add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
+				//add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
 
 				/**
 				 * Runs when Ingot has loaded.
