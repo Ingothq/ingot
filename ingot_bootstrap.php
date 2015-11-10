@@ -297,13 +297,11 @@ class ingot_bootstrap {
 	 * @since 0.0.9
 	 */
 	public static function init_price_tests() {
-		$tests = \ingot\testing\cookies\cache::instance()->get( 'price' );
-		if( ! empty( $tests ) ){
-			new \ingot\testing\tests\price\init( $tests );
-			if ( ingot_is_edd_active() ) {
-				self::track_edd();
-			}
+
+		if ( ingot_is_edd_active() ) {
+			self::track_edd();
 		}
+
 	}
 
 	/**

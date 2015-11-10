@@ -42,6 +42,17 @@ class init {
 	);
 
 	/**
+	 * The ingot cookie
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @var array
+	 */
+	protected $cookie = array();
+
+	/**
 	 * Set and check our cookies
 	 *
 	 * @since 0.0.9
@@ -86,17 +97,7 @@ class init {
 		return $this->cookie_name;
 	}
 
-	/**
-	 * Refresh the non-peristant cache used to share this data within a session
-	 *
-	 * @since 0.0.9
-	 */
-	public function refresh_cache() {
-		foreach ( $this->cookie_parts as $part  ) {
-			cache::instance()->update( $part, $this->cookie[ $part ] );
-		}
 
-	}
 
 	/**
 	 * Set the cookie property of this class
