@@ -43,7 +43,10 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/click-tests/new",
             templateUrl: INGOT_ADMIN.partials + "/click-group.html",
             controller: 'clickGroup'
-        } )
+        } ).state('clickTests.delete', {
+            url: "/click-tests/delete/:groupID",
+            controller: 'clickDelete'
+        })
         //price tests
         .state('priceTests', {
             url: "/price-tests",
@@ -117,6 +120,59 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', function( $scope, $http 
     }).error(function(data, status, headers, config) {
         console.log( data );
     });
+}]);
+
+//controller for deleting a group
+ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state', function( $scope, $http, $stateParams, $state ){
+    var groupID = $stateParams.groupID;
+    if( 'undefined' == groupID ) {
+        swal({
+            title: INGOT_TRANSLATION.fail,
+            text: INGOT_TRANSLATION.sorry,
+            type: "error",
+            confirmButtonText: INGOT_TRANSLATION.close
+        });
+        $state.go('clickTests.list' );
+    }else{
+        swal( {
+            title: INGOT_TRANSLATION.are_you_sure,
+            text: INGOT_TRANSLATION.delete_confirm,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText:INGOT_TRANSLATION.delete,
+            cancelButtonText: INGOT_TRANSLATION.cancel,
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function ( isConfirm ) {
+            if ( isConfirm ) {
+                $http({
+                    url: INGOT_ADMIN.api + 'test-group/' + groupID,
+                    method:'DELETE',
+                    headers: {
+                        'X-WP-Nonce': INGOT_ADMIN.nonce
+                    }
+                } ).success( function(){
+                    swal( INGOT_TRANSLATION.deleted, "", "success" );
+                    $scope.group = {};
+                    $state.go('clickTests.list' );
+                } ).error( function( data ) {
+                    console.log( data );
+                    $state.go('clickTests.list' );
+                    swal({
+                        title: INGOT_TRANSLATION.fail,
+                        text: INGOT_TRANSLATION.sorry,
+                        type: "error",
+                        confirmButtonText: INGOT_TRANSLATION.close
+                    });
+                });
+
+            } else{
+                swal( INGOT_TRANSLATION.canceled, "", "success" );
+                $state.go('clickTests.list' );
+            }
+        } );
+    }
+
 }]);
 
 //controller for creating/editing a click group

@@ -11,7 +11,9 @@
                 {{ 'groups.stats' | translate }}
             </label>
             <label class="btn btn-primary">
-                {{ 'groups.delete' | translate }}
+                <a ui-sref="clickTests.delete({groupID:group.ID})">
+                    {{ 'groups.delete' | translate }}
+                </a>
             </label>
         </div>
         <div>
