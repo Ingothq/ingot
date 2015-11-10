@@ -74,6 +74,8 @@ class settings {
 			return update_option( self::option_key_name( $setting ), $value, false );
 		}
 
+		return false;
+
 	}
 
 	/**
@@ -133,7 +135,13 @@ class settings {
 
 		}else{
 			if ( is_string( $value )  ) {
-				$value = trim( strip_tags( $value ) );
+				if( is_array( json_decode( $value, true ) ) ) {
+					$value = '';
+				}elseif( is_array( maybe_unserialize( $value ) ))	{
+					$value = '';
+				}else{
+					$value = trim( strip_tags( $value ) );
+				}
 			}else{
 				$value = '';
 			}

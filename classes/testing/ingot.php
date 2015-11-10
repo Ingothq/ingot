@@ -104,6 +104,8 @@ class ingot {
 			$price_test_group->register_routes();
 			$price_test = new price_test();
 			$price_test->register_routes();
+			$settings = new \ingot\testing\api\rest\settings();
+			$settings->register_routes();
 
 			/**
 			 * Runs after the Ingot REST API is booted up

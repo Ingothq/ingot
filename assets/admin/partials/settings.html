@@ -1,0 +1,47 @@
+<div ng-controller="settings">
+    <form ng-submit="submit()" class="simple-form">
+        <ul class="list-inline">
+            <li>
+                <h3>{{ 'settings.page_header' | translate }}</h3>
+            </li>
+            <li>
+                <input type="submit" class="btn btn-primary" value="{{ 'settings.save' | translate }}">
+            </li>
+        </ul>
+
+        <div class="form-settings">
+            <label for="click_tracking" >
+                {{ 'settings.click_tracking_label' | translate }}
+            </label>
+
+                <input id="click_tracking" type="checkbox" ng-model="settings.click_tracking" ng-true-value="'1'" ng-false-value="'0'" />
+                <p>
+                    {{ 'settings.click_tracking_desc' | translate }}
+                </p>
+        </div>
+
+        <div class="form-settings">
+            <label for="anon_tracking">
+                {{ 'settings.anon_tracking_label' | translate }}
+            </label>
+            <input id="anon_tracking" type="checkbox" ng-model="settings.anon_tracking" ng-true-value="'1'" ng-false-value="'0'" />
+            <p>
+                {{ 'settings.anon_tracking_desc' | translate }}
+            </p>
+
+        </div>
+
+        <div class="form-settings">
+            <label for="license_code">
+                {{ 'settings.license_code_label' | translate }}
+            </label>
+
+            <input id="license_code" type="text" ng-model="settings.license_code" />
+            <p>
+                {{ 'settings.license_code_desc' | translate }}
+            </p>
+
+
+        </div>
+    </form>
+</div>

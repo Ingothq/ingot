@@ -305,6 +305,8 @@ abstract class route extends \WP_REST_Controller  {
 	public function validate_boolean( $value ) {
 		if( in_array( $value, array( true, false, 'TRUE', 'FALSE', 'true', 'false', 1, 0, '1', '0' ) ) ){
 			return true;
+		}else{
+			return false;
 		}
 
 	}

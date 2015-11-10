@@ -1,0 +1,24 @@
+<ul>
+    <li ng-repeat="group in groups" class="col-md-6 panel">
+        <h5>{{ group.name }}</h5>
+        <div class="btn-group">
+            <label class="btn btn-primary">
+                <a ui-sref="clickTests.edit({groupID:group.ID})">
+                    {{ 'groups.edit' | translate }}
+                </a>
+            </label>
+            <label class="btn btn-primary">
+                {{ 'groups.stats' | translate }}
+            </label>
+            <label class="btn btn-primary">
+                <a ui-sref="clickTests.delete({groupID:group.ID})">
+                    {{ 'groups.delete' | translate }}
+                </a>
+            </label>
+        </div>
+        <div>
+            <pre>[ingot id="{{group.ID}}"]</pre>
+        </div>
+    </li>
+</ul>
+

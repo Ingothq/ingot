@@ -202,7 +202,7 @@ class test_group_crud extends \WP_UnitTestCase {
 
 		$params = array(
 			'type' => 'click',
-			'click_type' => 'text'
+			'click_type' => 'button'
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );

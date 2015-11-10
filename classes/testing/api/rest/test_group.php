@@ -16,6 +16,7 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\test;
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
+use ingot\testing\api\rest\util;
 
 class test_group extends route {
 
@@ -104,7 +105,7 @@ class test_group extends route {
 	}
 
 	/**
-	 * Get a list of tests
+	 * Get a collection of groups
 	 *
 	 * @since 0.2.0
 	 *
@@ -122,7 +123,7 @@ class test_group extends route {
 		$groups = group::get_items( $args );
 
 		if( empty( $groups ) ) {
-			return rest_ensure_response( __( 'No matching grups found.', 'ignot' ), 404 );
+			return rest_ensure_response( __( 'No matching groups found.', 'ingot' ), 404 );
 
 		}else{
 			return rest_ensure_response( $groups, 200 );
@@ -132,7 +133,37 @@ class test_group extends route {
 	}
 
 	/**
+	 * Get a single groupo
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_item( $request ) {
+		$url = $request->get_url_params();
+		$id = helpers::v( 'id', $url, 0 );
+		if( $id ) {
+
+			$group = group::read( $id );
+
+
+			if( $group ) {
+				if( 'admin' == $request->get_param( 'context' ) ) {
+					$group = $this->prepare_group_in_admin_context( $group );
+				}
+
+				return rest_ensure_response( $group );
+			}
+
+		}
+	}
+
+	/**
 	 * Update one item from the collection
+	 *
+	 * @since 0.7.0
 	 *
 	 * @param \WP_REST_Request $request Full data about the request.
 	 * @return \WP_Error|\WP_REST_Request
@@ -153,19 +184,21 @@ class test_group extends route {
 
 		$params = $request->get_params();
 
-
+		$test_order = $existing[ 'order' ];
 		if( ! empty( $params[ 'tests' ] ) ) {
 			foreach( $params[ 'tests' ] as $test ) {
-				$test_id = helpers::v( 'id', $test, 0 );
+				$test_id = helpers::v( 'ID', $test, 0 );
 				$test = $this->prepare_click_test_meta( $test );
-				if( absint( $test_id ) > 0 ) {
+				if( 0 < absint( $test_id ) ) {
 					$_id = test::update( $test, $test_id );
 				}else{
+					unset( $test[ 'ID' ] );
 					$_id = test::create( $test );
 				}
 
 				if(  is_numeric( $_id ) && ! in_array( $_id, $existing[ 'order' ] ) ){
-					$data[ 'order' ][] = $_id;
+					array_push( $test_order, $_id );
+
 				}
 
 			}
@@ -191,10 +224,11 @@ class test_group extends route {
 			}
 		}
 
+		$data[ 'order' ] = $test_order;
+
 		$updated = group::update( $data, $id );
 		if ( ! is_wp_error( $updated ) && $updated ) {
-			$item = group::read( $updated );
-			return rest_ensure_response( $item, 200 );
+			return $this->return_group( $request, $updated );
 		}else{
 			if ( ! is_wp_error( $updated ) ) {
 				$updated = __( 'FAIL', 'ingot' );
@@ -254,8 +288,7 @@ class test_group extends route {
 		unset( $params['tests'] );
 		$created = group::create( $params );
 		if ( ! is_wp_error( $created ) && is_numeric( $created ) ) {
-			$item = group::read( $created );
-			return rest_ensure_response( $item, 200 );
+			return $this->return_group( $request, $created );
 		}else{
 			if ( ! is_wp_error( $created ) ) {
 				$created = __( 'FAIL', 'ingot' );
@@ -308,6 +341,20 @@ class test_group extends route {
 			return rest_ensure_response( new \WP_Error( 'no-group-found', __( 'No group found.', 'ingot' ) ), 500 );
 		}
 
+		$tests = $this->group_tests( $group );
+
+		if( empty( $tests ) ) {
+			return rest_ensure_response( new \WP_Error( 'no-tests-found', __( 'No matching tests found.', 'ingot' ) ), 404 );
+
+		}
+
+		return rest_ensure_response( $tests, 200 );
+
+
+
+	}
+
+	protected function group_tests( $group ) {
 		$tests = $group[ 'order' ];
 
 		if( empty( $tests ) ) {
@@ -325,11 +372,7 @@ class test_group extends route {
 
 		}
 
-
-		return rest_ensure_response( $the_tests, 200 );
-
-
-
+		return $the_tests;
 	}
 
 
@@ -474,6 +517,46 @@ class test_group extends route {
 				'args'                => array(),
 			)
 		) );
+	}
+
+	/**
+	 * Prepare a group if in admin context
+	 *
+	 * @since 0.2.0
+	 *
+	 * @access protected
+	 *
+	 * @param array $group Group Config
+	 *
+	 * @return array Group config with additional data for making admin
+	 */
+	protected function prepare_group_in_admin_context( $group ) {
+		$group[ 'tests' ] = $this->group_tests( $group );
+		$group['click_type_options'] = types::allowed_click_types( true );
+
+		return $group;
+	}
+
+	/**
+	 * Return updated/created group
+	 *
+	 * @since 0.2.0
+	 *
+	 * @access protected
+	 *
+	 * @param \WP_REST_Request $request
+	 * @param int $id Group ID
+	 *
+	 * @return \WP_REST_Response
+	 */
+	protected function return_group( $request, $id ) {
+		$item = group::read( $id );
+		if ( 'admin' == $request->get_param( 'context' ) ) {
+			$item = $this->prepare_group_in_admin_context( $item );
+		}
+
+		return new \WP_REST_Response( $item, 200 );
+
 	}
 
 }
