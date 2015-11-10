@@ -62,8 +62,8 @@ class ingot_bootstrap {
 				new ingot\ui\make();
 				self::maybe_load_api();
 
-				//add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
-				//add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
+				add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
+				add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
 
 				/**
 				 * Runs when Ingot has loaded.
@@ -284,8 +284,10 @@ class ingot_bootstrap {
 		 * Should happen at init:25
 		 *
 		 * @since 0.0.9
+		 *
+		 * @param \ingot\testing\cookies\init $cookies Cookies object
 		 */
-		do_action( 'ingot_cookies_set' );
+		do_action( 'ingot_cookies_set', $cookies );
 
 	}
 
@@ -294,9 +296,13 @@ class ingot_bootstrap {
 	 *
 	 * @uses "ingot_cookies_set"
 	 *
+	 * @params \ingot\testing\cookies\init $cookies Cookies object
+	 *
 	 * @since 0.0.9
 	 */
-	public static function init_price_tests() {
+	public static function init_price_tests( $cookies ) {
+
+		new \ingot\testing\tests\price\init( $cookies->get_ingot_cookie( false )[ 'price' ] );
 
 		if ( ingot_is_edd_active() ) {
 			self::track_edd();

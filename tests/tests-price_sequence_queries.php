@@ -48,7 +48,8 @@ class tests_price_sequence_queries extends \WP_UnitTestCase{
 	 *
 	 * @covers \ingot\testing\crud\sequence::get_items()
 	 * @covers \ingot\testing\crud\sequence::get_for_price_tests()
-	 * @covers 	\ingot\testing\crud\price_group::get_items()
+	 * @covers \ingot\testing\crud\price_group::get_items()
+	 * @covers \ingot\testing\cookies\init::collect_sequences()
 	 */
 	public function testGetActive() {
 

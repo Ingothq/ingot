@@ -14,6 +14,7 @@ namespace ingot\testing\tests\price;
 
 use ingot\testing\cookies\cache;
 use ingot\testing\tests\flow;
+use ingot\testing\utility\price;
 
 class track {
 
@@ -45,7 +46,8 @@ class track {
 	protected static function check_for_winners( $products, $plugin ) {
 
 		$winners = array();
-		$testing = cache::instance()->get( 'products' );
+
+		$testing = price::current();
 
 		if ( ! empty( $testing ) && isset( $testing[ $plugin ])) {
 			foreach ( $products as $product ) {

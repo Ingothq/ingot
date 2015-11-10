@@ -20,7 +20,7 @@ use ingot\testing\utility\helpers;
 class init {
 
 	/**
-	 * Constructor
+	 *
 	 *
 	 * @since 0.0.9
 	 *
@@ -43,6 +43,13 @@ class init {
 	 */
 	private $current_tests = array();
 
+	/**
+	 *  Init class
+	 *
+	 * @since 0.0.0
+	 *
+	 * @param array $tests Tests in cookie
+	 */
 	public function  __construct( $tests ) {
 		$this->setup_tests( $tests );
 	}

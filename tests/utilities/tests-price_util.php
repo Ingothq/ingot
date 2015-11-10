@@ -65,4 +65,49 @@ class tests_price_util extends \WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Check price detail util
+	 *
+	 * @since 0.2.0
+	 *
+	 * @covers \ingot\testing\utility\price::price_detail()
+	 */
+	function testPriceDetails(){
+		$product_id = 9;
+		$params     = array(
+			'product_ID' => $product_id,
+			'default'    => rand( -0.9, 0.9 )
+		);
+
+		for ( $i = 0; $i <= 3; $i ++ ) {
+			$id = \ingot\testing\crud\price_test::create( $params );
+			$tests[ $i ] = $id;
+			$params[ 'default' ] = rand( -0.9, 0.9 );
+
+		}
+
+		$params = array(
+			'type'       => 'price',
+			'plugin'     => 'edd',
+			'group_name' => rand(),
+			'test_order' => $tests,
+			'product_ID' => $product_id
+
+		);
+
+		$group_id = \ingot\testing\crud\price_group::create( $params );
+		$group = \ingot\testing\crud\price_group::read( $group_id );
+		$sequence_id =  $group[ 'current_sequence' ];
+
+		$test = \ingot\testing\crud\price_test::read( $tests[ rand( 0, 3 )  ] );
+
+		$details = \ingot\testing\utility\price::price_detail( $test, $sequence_id, $group_id );
+
+		$this->assertEquals( $details[ 'plugin' ], $test[ 'plugin' ] );
+		$this->assertEquals( $details[ 'product_ID' ], $test[ 'product_ID' ] );
+		$this->assertEquals( $details[ 'test_ID' ], $test[ 'ID' ] );
+		$this->assertEquals( $details[ 'sequence_ID' ], $sequence_id );
+		$this->assertEquals( $details[ 'group_ID' ], $group_id );
+	}
+
 }

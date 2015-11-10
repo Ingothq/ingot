@@ -12,6 +12,10 @@
 namespace ingot\testing\cookies;
 
 
+use ingot\testing\crud\price_test;
+use ingot\testing\tests\flow;
+use ingot\testing\utility\price;
+
 class init {
 
 	/**
@@ -147,8 +151,32 @@ class init {
 	 */
 	protected function setup_price_cookie() {
 
-		$price = new price( $this->cookie[ 'price' ], INGOT_DEV_MODE );
+		$price = new \ingot\testing\cookies\price( $this->collect_sequence(), $this->cookie[ 'price' ] );
 		$this->cookie[ 'price' ] = $price->get_price_cookie();
+	}
+
+	/**
+	 * Collect the tests we need
+	 *
+	 * @since 0.2.0
+	 *
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function collect_sequence() {
+
+		$args = array(
+			'price_test' => true,
+			'current' => true,
+			'limit' => -1
+		);
+
+		$active_sequences = \ingot\testing\crud\sequence::get_items( $args );
+
+		return $active_sequences;
+
+
 	}
 
 	/**
