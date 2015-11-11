@@ -8,7 +8,8 @@ var ingotApp = angular.module('ingotApp', [
     'ui.bootstrap',
     'colorpicker.module',
     'pascalprecht.translate',
-    'ngAria'
+    'ngAria',
+    'ngResource'
 ] )
     .run( function( $rootScope, $state ) {
 		
@@ -127,17 +128,13 @@ ingotApp.config(['$translateProvider', function ($translateProvider) {
  * @since 2.0.0
  */
 //Controller for click groups list
-ingotApp.controller( 'clickGroups', ['$scope', '$http', function( $scope, $http ) {
-    $http({
-        method: 'GET',
-        url: INGOT_ADMIN.api + 'test-group'
-
-    }).success( function( data, status, headers, config ) {
-        console.log( data );
-        $scope.groups = data;
-    }).error(function(data, status, headers, config) {
-        console.log( data );
-    });
+ingotApp.controller( 'clickGroups', ['$scope', '$http', 'testGroups', function( $scope, $http, testGroups ) {
+    
+    testGroups.query({limit: 10}, function(res){
+	    console.log(res);
+	    $scope.groups = res;
+    })
+    
 }]);
 
 //controller for deleting a group
@@ -480,4 +477,41 @@ ingotApp.factory('click',function($resource){
             }
         }
     });
+});
+
+/**
+ * Test Groups Factory
+ *
+ */
+ingotApp.factory( 'testGroups', function( $resource ) {
+	
+	return $resource( INGOT_ADMIN.api + 'test-group/:id', {
+		id: '@id'
+	},{
+        'update':{
+            method:'PUT',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'post':{
+            method:'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'save':{
+            method:'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'delete':{
+            method:'DELETE',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        }
+    })
+	
 });
