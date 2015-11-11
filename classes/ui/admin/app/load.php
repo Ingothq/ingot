@@ -130,18 +130,18 @@ class load {
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand active" ui-sref="otherwise">
+						<a class="navbar-brand active" ui-sref="otherwise" >
 							<?php _e( 'Ingot', 'ingot' ); ?>
 						</a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
-							<li>
+							<li ng-class="isActiveNav('clickTests');">
 								<a ui-sref="clickTests">
 									<?php _e( 'Click Tests', 'ingot' ); ?>
 								</a>
 							</li>
-							<li>
+							<li ng-class="isActiveNav('price');">
 								<a ui-sref="priceTests">
 									<?php _e( 'Price Tests', 'ingot' ); ?>
 								</a>

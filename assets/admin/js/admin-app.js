@@ -10,8 +10,17 @@ var ingotApp = angular.module('ingotApp', [
     'pascalprecht.translate',
     'ngAria'
 ] )
-    .run( function() {
-
+    .run( function( $rootScope, $state ) {
+		
+		$rootScope.isActiveNav = function( page ) {
+			
+			if( !$state.current.name ) { return }			
+			if( $state.current.name.indexOf( page ) >= 0 ) {
+				return 'active';
+			}
+			
+		}
+		
     }
 );
 
