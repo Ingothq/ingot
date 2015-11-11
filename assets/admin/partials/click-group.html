@@ -34,7 +34,7 @@
                     </label>
                     <select name="click-type-select" id="click-type-select" class="col-md-8 col-sm-12"
                             ng-model="group.click_type" ng-value="group.click_type" ng-model="pants">
-                        <option ng-repeat="option in group.click_type_options" value="{{option.value}}">
+                        <option ng-repeat="option in group.click_type_options" ng-selected="group.click_type == option.value" value="{{option.value}}">
                             {{option.label}}
                         </option>
                     </select>
