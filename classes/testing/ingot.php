@@ -14,6 +14,7 @@ namespace ingot\testing;
 
 use ingot\testing\api\rest\price_test;
 use ingot\testing\api\rest\price_test_group;
+use ingot\testing\api\rest\products;
 use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
 use ingot\testing\api\rest\util;
@@ -106,6 +107,8 @@ class ingot {
 			$price_test->register_routes();
 			$settings = new \ingot\testing\api\rest\settings();
 			$settings->register_routes();
+			$products = new products();
+			$products->register_routes();
 
 			/**
 			 * Runs after the Ingot REST API is booted up
