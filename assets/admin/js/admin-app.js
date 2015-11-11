@@ -130,9 +130,19 @@ ingotApp.config(['$translateProvider', function ($translateProvider) {
 //Controller for click groups list
 ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function( $scope, $http, clickGroups ) {
     
-    clickGroups.query({limit: 10}, function(res){
+    var page_limit = 2;
+    
+    clickGroups.query({page: 1, limit: page_limit}, function(res){
 	    $scope.groups = res;
-    })
+	    $scope.total_pages = new Array( 3 );
+    });
+    
+    $scope.paginate = function( page ) {
+	    page = page + 1;
+		clickGroups.query({page: page, limit: page_limit}, function(res){
+		    $scope.groups = res;
+	    });   
+    }
     
 }]);
 
@@ -196,7 +206,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             click_type_options : INGOT_ADMIN.click_type_options,
             tests: {}
         };
-    }else{
+    } else {
         var groupID = $stateParams.groupID;
        
         
