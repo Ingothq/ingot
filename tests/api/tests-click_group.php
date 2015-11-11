@@ -373,6 +373,7 @@ class test_click_group extends ingot_rest_test_case {
 	 * @covers \ingot\testing\api\rest\test_group::get_tests_by_group()
 	 */
 	public function testGetTestsByGroup() {
+		wp_set_current_user( 1 );
 		for( $i = 0; $i <= rand( 3, 5 ); $i++ ) {
 			$params = array(
 				'text' => rand(),
@@ -435,6 +436,32 @@ class test_click_group extends ingot_rest_test_case {
 		$this->assertEquals( array_values( $ids ), $order );
 
 
+	}
+
+	/**
+	 * Test that pagination works
+	 *
+	 * @since 0.2.0
+	 *
+	 * @covers \ingot\testing\api\rest\test_group::get_items()
+	 * */
+	public function testPagination() {
+		for( $i = 0; $i <= 20; $i++ ) {
+			$params = array(
+				'type' => 'click'
+			);
+
+			$groups[] = \ingot\testing\crud\group::create( $params );
+		}
+
+		for ( $i = 1; $i <= 4; $i++  ) {
+			$request  = new \WP_REST_Request( 'GET', $this->namespaced_route . '/?page=' . $i . '&limit=5' );
+			$response = $this->server->dispatch( $request );
+			$response = rest_ensure_response( $response );
+			$this->assertEquals( 200, $response->get_status() );
+			$data = (array) $response->get_data();
+			$this->assertEquals( 5, count( $data ) );
+		}
 	}
 
 
