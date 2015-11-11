@@ -12,6 +12,15 @@ var ingotApp = angular.module('ingotApp', [
 ] )
     .run( function( $rootScope, $state ) {
 		
+		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+			
+			if( toState.name == 'clickTests' ) {
+				$rootScope.main_click_tests_page = true;
+			} else {
+				$rootScope.main_click_tests_page = false;
+			}
+			
+		});
 		$rootScope.isActiveNav = function( page ) {
 			
 			if( !$state.current.name ) { return }			
