@@ -144,7 +144,10 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
     
     $scope.paginate = function( page, $event ) {
 
-	    if( jQuery('.paginate a.active').length ) { jQuery('.paginate a.active').toggleClass('active'); }
+	    if( jQuery('.paginate a.active').length ) {
+            jQuery('.paginate a.active').toggleClass('active');
+        }
+        
 	    jQuery( $event.currentTarget ).toggleClass('active');
 	    
 	    page = page + 1;
