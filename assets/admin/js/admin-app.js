@@ -133,8 +133,12 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
     var page_limit = 2;
     
     clickGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
-	    $scope.groups = res;
-	    $scope.total_pages = new Array( 3 );
+	    
+	    $scope.groups = JSON.parse( res.data );
+	    
+	    var total_groups = parseInt( res.headers['x-ingot-total'] );
+	    total_pages = total_groups / page_limit;
+	    $scope.total_pages = new Array( Math.round( total_pages ) );
     });
     
     $scope.paginate = function( page, $event ) {
@@ -144,7 +148,8 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
 	    
 	    page = page + 1;
 		clickGroups.query({page: page, limit: page_limit, context: 'admin'}, function(res){
-		    $scope.groups = res;
+			if( res.data.indexOf('No matching groups found.') >= 0 ) { return; }
+		    $scope.groups = JSON.parse( res.data );
 	    });   
     }
     
@@ -460,6 +465,15 @@ ingotApp.factory( 'clickGroups', function( $resource ) {
 	return $resource( INGOT_ADMIN.api + 'test-group/:id', {
 		id: '@id'
 	},{
+		'query' : {
+			transformResponse: function( data, headers ) {
+				var response = {
+					data: data,
+					headers: headers()
+				}
+				return response;
+			}
+		},
         'update':{
             method:'PUT',
             headers: {
