@@ -26,43 +26,41 @@
                     <label for="name" class="col-md-4 col-sm-12">
                         {{ 'group.name' | translate }}
                     </label>
-                    <input id="name" type="text" ng-model="group.name" class="col-md-8 col-sm-12"/>
+                    <input id="name" type="text" ng-model="group.name" class="col-md-8 col-sm-12" ng-required="true" />
                 </div>
                 <div class="form-group row">
                     <label for="click-type-select" class="col-md-4 col-sm-12">
                         {{ 'group.type' | translate }}
                     </label>
-                    <select name="click-type-select" id="click-type-select" class="col-md-8 col-sm-12"
-                            ng-model="group.click_type" ng-value="group.click_type" ng-model="pants">
+                    <select name="click-type-select" id="click-type-select" class="col-md-8 col-sm-12" ng-model="group.click_type" ng-value="group.click_type">
                         <option ng-repeat="option in group.click_type_options" ng-selected="group.click_type == option.value" value="{{option.value}}">
                             {{option.label}}
                         </option>
                     </select>
-
                 </div>
-                <div class="form-group row" ng-show="'link' == group.click_type">
+                <div class="form-group row">
                     <label for="link" class="col-md-4 col-sm-12">
                         {{ 'group.link_label_group_setting' | translate }}
                     </label>
-                    <input id="link" type="text" ng-model="group.link" class="col-md-8 col-sm-12"/>
+                    <input id="link" type="text" ng-model="group.link" class="col-md-8 col-sm-12" ng-required="true" />
                 </div>
-                <div class="form-group row" ng-show="isButtonColor()">
+                <div class="form-group row" ng-show="'button_color' == group.click_type">
                     <label for="color_test_text" class="col-md-4 col-sm-12">
                         {{ 'group.text_label_group_setting' | translate }}
                     </label>
-                    <input id="color_test_text" type="text" ng-model="group.meta.color_test_text" class="col-md-8 col-sm-12" />
+                    <input id="color_test_text" type="text" ng-model="group.meta.color_test_text" class="col-md-8 col-sm-12" ng-required="'button_color' == group.click_type" />
                 </div>
-                <div class="form-group row" ng-show="isButton()">
+                <div class="form-group row" ng-show="'button' == group.click_type">
                     <label for="button_test_color" class="col-md-4 col-sm-12">
                         {{ 'group.color_label_group_setting' | translate }}
                     </label>
-                    <input colorpicker="hex" id="button_test_color" type="text" ng-model="group.meta.color" class="col-md-8 col-sm-12" />
+                    <input colorpicker="hex" id="button_test_color" type="text" ng-model="group.meta.color" class="col-md-8 col-sm-12" ng-required="'button' == group.click_type" />
                 </div>
                 <div class="form-group row" ng-show="'button' == group.click_type">
                     <label for="button_test_background_color" class="col-md-4 col-sm-12">
                         {{ 'group.background_color_label_group_setting' | translate }}
                     </label>
-                    <input colorpicker="hex" id="button_test_background_color" type="text" ng-model="group.meta.background_color" class="col-md-8 col-sm-12" />
+                    <input colorpicker="hex" id="button_test_background_color" type="text" ng-model="group.meta.background_color" class="col-md-8 col-sm-12" ng-required="'button' == group.click_type" />
                 </div>
             </div>
             <div class="col-md-6 col-sm-12">
@@ -75,25 +73,19 @@
                             <label for="text-{{test.ID}}" class="col-md-4 col-sm-12">
                                 {{ 'group.text_label_test_setting' | translate }}
                             </label>
-                            <input name="text" type="text" id="text-{{test.ID}}" ng-model="test.text"
-                                   class="col-md-8 col-sm-12"/>
+                            <input name="text" type="text" id="text-{{test.ID}}" ng-model="test.text" ng-required="'button_color' == group.click_type" class="col-md-8 col-sm-12"/>
                         </div>
                         <div class="form-group row"  ng-show="'button_color' == group.click_type">
                             <label for="button-color-{{test.ID}}" class="col-md-4 col-sm-12">
                                 {{ 'group.color_label_test_setting' | translate }}
                             </label>
-                            <input colorpicker="hex" name="button-color" id="button-color-{{test.ID}}" type="text"
-                                   ng-model="test.meta.color" class="col-md-8 col-sm-12"
-                            />
+                            <input colorpicker="hex" name="button-color" id="button-color-{{test.ID}}" type="text" ng-model="test.meta.color" class="col-md-8 col-sm-12" ng-required="'button_color' == group.click_type" />
                         </div>
                         <div class="form-group row" ng-show="'button_color' == group.click_type">
                             <label for="button-background_color-{{test.ID}}" class="col-md-4 col-sm-12">
                                 {{ 'group.background_color_label_test_setting' | translate }}
                             </label>
-                            <input colorpicker="hex" name="button-background_color"
-                                   id="button-background_color-{{test.ID}}" type="text"
-                                   ng-model="test.meta.background_color" class="col-md-8 col-sm-12"
-                            />
+                            <input colorpicker="hex" name="button-background_color" id="button-background_color-{{test.ID}}" type="text" ng-model="test.meta.background_color" class="col-md-8 col-sm-12" ng-required="'button_color' == group.click_type" />
                         </div>
 
                     </div>

@@ -191,7 +191,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         }).success( function( data, status, headers, config ) {
 
             $scope.group = data;
-          
+
         }).error(function(data, status, headers, config) {
             console.log( data );
             swal({
