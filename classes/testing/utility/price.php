@@ -12,6 +12,9 @@
 namespace ingot\testing\utility;
 
 
+use ingot\testing\crud\group;
+use ingot\testing\crud\price_test;
+
 class price {
 
 	/**
@@ -50,8 +53,18 @@ class price {
 	 * @return array
 	 */
 	public static function price_detail( $price_test, $a_or_b, $sequence_id, $group_id ) {
+		if( is_numeric( $price_test ) ) {
+			$price_test = price_test::read( $price_test );
+		}
+
+		$group = group::read( $group_id );
+
+		if(  ! is_array( $price_test ) || ! is_array( $group ) ) {
+			return array();
+		}
+
 		$details = array(
-			'plugin'      => $price_test['plugin'],
+			'plugin'      => $group['plugin'],
 			'product_ID'  => $price_test['product_ID'],
 			'test_ID'     => $price_test['ID'],
 			'sequence_ID' => $sequence_id,
