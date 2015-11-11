@@ -128,10 +128,9 @@ ingotApp.config(['$translateProvider', function ($translateProvider) {
  * @since 2.0.0
  */
 //Controller for click groups list
-ingotApp.controller( 'clickGroups', ['$scope', '$http', 'testGroups', function( $scope, $http, testGroups ) {
+ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function( $scope, $http, clickGroups ) {
     
-    testGroups.query({limit: 10}, function(res){
-	    console.log(res);
+    clickGroups.query({limit: 10}, function(res){
 	    $scope.groups = res;
     })
     
@@ -483,7 +482,7 @@ ingotApp.factory('click',function($resource){
  * Test Groups Factory
  *
  */
-ingotApp.factory( 'testGroups', function( $resource ) {
+ingotApp.factory( 'clickGroups', function( $resource ) {
 	
 	return $resource( INGOT_ADMIN.api + 'test-group/:id', {
 		id: '@id'
