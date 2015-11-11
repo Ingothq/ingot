@@ -132,14 +132,18 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
     
     var page_limit = 2;
     
-    clickGroups.query({page: 1, limit: page_limit}, function(res){
+    clickGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
 	    $scope.groups = res;
 	    $scope.total_pages = new Array( 3 );
     });
     
-    $scope.paginate = function( page ) {
+    $scope.paginate = function( page, $event ) {
+
+	    if( jQuery('.paginate a.active').length ) { jQuery('.paginate a.active').toggleClass('active'); }
+	    jQuery( $event.currentTarget ).toggleClass('active');
+	    
 	    page = page + 1;
-		clickGroups.query({page: page, limit: page_limit}, function(res){
+		clickGroups.query({page: page, limit: page_limit, context: 'admin'}, function(res){
 		    $scope.groups = res;
 	    });   
     }
