@@ -441,44 +441,6 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
 }]);
 
 /**
- * Click Factory
- *
- * @since 2.0.0
- *
- * @todo make work, use, etc.
- */
-ingotApp.factory('click',function($resource){
-    return $resource(INGOT_ADMIN.api + 'group/:ID',{
-        ID:'@id'
-    },{
-        'update':{
-            method:'PUT',
-            headers: {
-                'X-WP-Nonce': INGOT_ADMIN.nonce
-            }
-        },
-        'post':{
-            method:'POST',
-            headers: {
-                'X-WP-Nonce': INGOT_ADMIN.nonce
-            }
-        },
-        'save':{
-            method:'POST',
-            headers: {
-                'X-WP-Nonce': INGOT_ADMIN.nonce
-            }
-        },
-        'delete':{
-            method:'DELETE',
-            headers: {
-                'X-WP-Nonce': INGOT_ADMIN.nonce
-            }
-        }
-    });
-});
-
-/**
  * Test Groups Factory
  *
  */
