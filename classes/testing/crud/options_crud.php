@@ -331,5 +331,24 @@ abstract class options_crud extends crud {
 		return $like;
 	}
 
+	/**
+	 * Get total number of items
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return int
+	 */
+	public static function total(){
+		global $wpdb;
+		$what = static::what();
+		$like = "%ingot_{$what}%";
+		$sql = sprintf( 'SELECT `option_id` FROM %s WHERE `option_name` LIKE "%s"', $wpdb->options, $like );
+		$wpdb->get_results( $sql, ARRAY_A );
+		if ( is_numeric(  $wpdb->num_rows ) ){
+			return $wpdb->num_rows;
+		}
+
+	}
+
 
 }

@@ -585,4 +585,17 @@ abstract class crud {
 		return apply_filters( 'ingot_user_can', $can, $id, static::what() );
 	}
 
+	/**
+	 * Get total number of items
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return int
+	 */
+	public static function total(){
+		_doing_it_wrong( __FUNCTION__, __( 'Must ovveride', 'ingot' ), '0.2.0' );
+		return 0;
+
+	}
+
 }
