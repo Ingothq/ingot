@@ -127,10 +127,7 @@ class test_group extends route {
 
 		}else{
 			$response = new \WP_REST_Response( $groups, 200 );
-			if ( 'admin' == $request->get_param( 'context' ) ) {
-				$response->header( 'X-Ingot-Total', (int) group::total() );
-
-			}
+			$response->header( 'X-Ingot-Total', (int) group::total() );
 
 			return $response;
 
