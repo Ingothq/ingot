@@ -486,6 +486,6 @@ function ingot_enable_price_testing() {
 	 *
 	 * @param bool $enable True to allow, false to not allow.
 	 */
-	return (bool) apply_filters( 'ingot_enable_price_testing', true );
+	return (bool) apply_filters( 'ingot_enable_price_testing', $enable );
 
 }
