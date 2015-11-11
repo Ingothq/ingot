@@ -191,22 +191,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         }).success( function( data, status, headers, config ) {
 
             $scope.group = data;
-            $scope.isButtonColor = function() {
-                if( 'button_color' == $scope.group.click_type ) {
-                    return true;
-                }
-            };
-            $scope.isButton =function() {
-                if( 'button' == $scope.group.click_type ) {
-                    return true;
-                }
-            };
-
-            $scope.isLink = function() {
-                if( 'link' == $scope.group.click_type ) {
-                    return true;
-                }
-            };
+          
         }).error(function(data, status, headers, config) {
             console.log( data );
             swal({
