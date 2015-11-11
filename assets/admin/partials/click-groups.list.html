@@ -22,3 +22,7 @@
     </li>
 </ul>
 
+<div class="paginate">
+	<a ng-click="paginate( $index )" ng-repeat="page in total_pages track by $index">{{$index + 1}}</a>
+</div>
+
