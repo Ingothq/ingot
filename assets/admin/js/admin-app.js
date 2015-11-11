@@ -190,7 +190,7 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
 }]);
 
 //controller for creating/editing a click group
-ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
+ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'clickGroups', function( $scope, $http, $stateParams, $rootScope, $state, clickGroups ) {
     if( 'clickTests.new' == $state.current.name ) {
         $scope.group = {
             click_type_options : INGOT_ADMIN.click_type_options,
@@ -198,15 +198,11 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         };
     }else{
         var groupID = $stateParams.groupID;
-        $http({
-            method: 'GET',
-            url: INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin'
-
-        }).success( function( data, status, headers, config ) {
-
-            $scope.group = data;
-
-        }).error(function(data, status, headers, config) {
+       
+        
+		clickGroups.get({id: groupID}, function(res){
+	       $scope.group = res;
+		}, function(data, status, headers, config) {
             console.log( data );
             swal({
                 title: INGOT_TRANSLATION.fail,
@@ -214,7 +210,8 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 type: "error",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
-        });
+        }) 
+        
     }
 
         $scope.submit = function( data ){
