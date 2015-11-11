@@ -130,7 +130,7 @@ ingotApp.config(['$translateProvider', function ($translateProvider) {
 //Controller for click groups list
 ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function( $scope, $http, clickGroups ) {
     
-    var page_limit = 2;
+    var page_limit = 10;
     
     clickGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
 	    
@@ -139,6 +139,7 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
 	    var total_groups = parseInt( res.headers['x-ingot-total'] );
 	    total_pages = total_groups / page_limit;
 	    $scope.total_pages = new Array( Math.round( total_pages ) );
+
     });
     
     $scope.paginate = function( page, $event ) {

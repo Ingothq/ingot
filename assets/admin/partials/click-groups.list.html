@@ -22,7 +22,7 @@
     </li>
 </ul>
 
-<div class="paginate">
+<div class="paginate" ng-show="total_pages.length > 1">
 	<a ng-click="paginate( $index, $event )" ng-repeat="page in total_pages track by $index" class="btn btn-warning" ng-class="{true: 'active'}[$index == 0]">{{$index + 1}}</a>
 </div>
 
