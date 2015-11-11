@@ -126,7 +126,13 @@ class test_group extends route {
 			return rest_ensure_response( __( 'No matching groups found.', 'ingot' ), 404 );
 
 		}else{
-			return rest_ensure_response( $groups, 200 );
+			$response = new \WP_REST_Response( $groups, 200 );
+			if ( 'admin' == $request->get_param( 'context' ) ) {
+				$response->header( 'X-Ingot-Total', (int) group::total() );
+
+			}
+
+			return $response;
 
 		}
 
@@ -462,6 +468,10 @@ class test_group extends route {
 				'description'       => __( 'Tests to add to group', 'ingot' ),
 				'type'              => 'array',
 				'default'           => array()
+			),
+			'context' => array(
+				'type' => 'string',
+				'default' => 'view'
 			)
 
 		);

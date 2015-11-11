@@ -344,7 +344,7 @@ abstract class options_crud extends crud {
 		$like = "%ingot_{$what}%";
 		$sql = sprintf( 'SELECT `option_id` FROM %s WHERE `option_name` LIKE "%s"', $wpdb->options, $like );
 		$wpdb->get_results( $sql, ARRAY_A );
-		if ( is_numeric(  $wpdb->num_rows ) ){
+		if ( is_numeric(  $wpdb->num_rows ) ) {
 			return $wpdb->num_rows;
 		}
 
