@@ -136,7 +136,7 @@ class test_group extends route {
 	}
 
 	/**
-	 * Get a single groupo
+	 * Get a single group
 	 *
 	 * @since 0.2.0
 	 *
