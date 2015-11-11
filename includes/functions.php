@@ -489,3 +489,17 @@ function ingot_enable_price_testing() {
 	return (bool) apply_filters( 'ingot_enable_price_testing', $enable );
 
 }
+
+/**
+ * Delete all Ingot data
+ *
+ * @since 0.2.0
+ */
+function ingot_destroy(){
+	\ingot\testing\crud\price_test::delete( 'all' );
+	\ingot\testing\crud\price_group::delete( 'all' );
+	\ingot\testing\crud\sequence::delete( 'all' );
+	\ingot\testing\crud\test::delete( 'all' );
+	\ingot\testing\crud\group::delete( 'all' );
+
+}
