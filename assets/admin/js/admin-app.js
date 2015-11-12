@@ -351,7 +351,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         priceGroups.get({id: groupID}, function(res){
 	        if( res[0] != 'N' && res[1] != 'o' ) {   
 		        $scope.group = res;
-	            products();
+	            $scope.products();
 	        }
         }, function(data, status, headers, config) {
             console.log( data );
