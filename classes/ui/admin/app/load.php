@@ -241,7 +241,10 @@ class load {
 				'banner_alt' => __( 'Ingot Banner Logo', 'ingot' ),
 				'header' => __( 'Ingot: Do Less, Convert More', 'ingot' ),
 				'links_header' => __( 'Helpful Links', 'ingot' ),
-				'video_header' => __( 'Watch This Short Video To Learn How To Use Ingot', 'ingot' )
+				'video_header' => __( 'Watch This Short Video To Learn How To Use Ingot', 'ingot' ),
+				'price_tests' => __( 'Price Tests', 'ingot' ),
+				'click_tests' => __( 'Click Tests', 'ingot' ),
+				'learn_more' => __( 'Learn more about Ingot', 'ingot' )
 			)
 
 		);

@@ -13,18 +13,18 @@
             <h3 ng-bind="welcome.links_header"></h3>
             <ul class="list-inline">
                 <li>
-                    <a href="#">
-                        One
+                    <a href="http://ingothq.com">
+                        {{ 'welcome.learn_more' | translate }}
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        Two
+                    <a ui-sref="clickTests">
+                        {{ 'welcome.click_tests' | translate }}
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        Three
+                    <a ui-sref="priceTests">
+                        {{ 'welcome.price_tests' | translate }}
                     </a>
                 </li>
             </ul>
