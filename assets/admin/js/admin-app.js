@@ -293,12 +293,14 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'priceGroups', function(
     var page_limit = 10;
 
     priceGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
-
-        $scope.groups = JSON.parse( res.data );
-
-        var total_groups = parseInt( res.headers['x-ingot-total'] );
-        total_pages = total_groups / page_limit;
-        $scope.total_pages = new Array( Math.round( total_pages ) );
+		
+		$scope.total_pages = false;
+		$scope.groups = JSON.parse( res.data );
+		if( res.headers['x-ingot-total'] ) {
+			var total_groups = parseInt( res.headers['x-ingot-total'] );
+			total_pages = total_groups / page_limit;
+			$scope.total_pages = new Array( Math.round( total_pages ) );
+		}
 
     });
 
@@ -347,8 +349,10 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         var groupID = $stateParams.groupID;
 
         priceGroups.get({id: groupID}, function(res){
-            $scope.group = res;
-            products();
+	        if( res[0] != 'N' && res[1] != 'o' ) {   
+		        $scope.group = res;
+	            products();
+	        }
         }, function(data, status, headers, config) {
             console.log( data );
             swal({
@@ -405,7 +409,8 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     };
 
 
-    function products() {
+    $scope.products = function() {
+	    console.log( $scope.group );
         if( 'string' != typeof $scope.group.plugin){
             $scope.products = {};
         }

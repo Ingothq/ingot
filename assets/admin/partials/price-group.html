@@ -30,8 +30,8 @@
                     <label for="plugin" class="col-md-4 col-sm-12">
                         {{ 'group.plugin' | translate }}
                     </label>
-                    <select  id="plugin" class="col-md-8 col-sm-12" ng-model="plugins" ng-value="group.plugin" ng-change="products()">
-                        <option ng-repeat="option in plugins" ng-selected="group.plugin == option.value" value="{{option.value}}" ng-required="true">
+                    <select  id="plugin" class="col-md-8 col-sm-12" ng-model="group.plugin" ng-change="products()">
+                        <option ng-repeat="option in plugins" ng-selected="group.plugin == option.label" value="{{option.label}}" ng-required="true">
                             {{option.label}}
                         </option>
                     </select>
@@ -40,7 +40,7 @@
                     <label for="product" class="col-md-4 col-sm-12">
                         {{ 'group.product' | translate }}
                     </label>
-                    <select id="product"  class="col-md-8 col-sm-12" ng-model="products" ng-value="group.product" ng-required="true">
+                    <select id="product"  class="col-md-8 col-sm-12" ng-model="group.product" ng-required="true">
                         <option ng-repeat="option in products" ng-selected="group.product == option.value" value="{{option.value}}">
                             {{option.label}}
                         </option>
