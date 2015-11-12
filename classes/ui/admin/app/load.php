@@ -224,6 +224,9 @@ class load {
 				'color_label_test_setting'             => __( 'Color', 'ingot' ),
 				'background_color_label_test_setting'  => __( 'Background Color', 'ingot' ),
 				'add_test'                             => __( 'Add Test', 'ingot' ),
+				'plugin' => __( 'eCommerce Plugin', 'ingot' ),
+				'product' => __( 'Product', 'ingot' ),
+				'price_variation' => __( 'Price Variation (percentage)', 'ingot ')
 			),
 			'settings' => array(
 				'page_header' => __( 'Settings', 'ingot' ),

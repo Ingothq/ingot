@@ -39,7 +39,16 @@ abstract class route extends \WP_REST_Controller  {
 				'methods'         => \WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_items' ),
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				'args'            => $this->args()
+				'args'            => array(
+					'page' => array(
+						'default' => 1,
+						'sanitize_callback'  => 'absint',
+					),
+					'limit' => array(
+						'default' => 10,
+						'sanitize_callback'  => 'absint',
+					)
+				),
 			),
 			array(
 				'methods'         => \WP_REST_Server::CREATABLE,

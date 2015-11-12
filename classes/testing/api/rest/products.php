@@ -24,9 +24,15 @@ class products extends route {
 			'args'            => array(
 				'plugin' => array(
 					'default' => 'edd',
-					'sanitize_callback'  => 'strip_tags',
+					'sanitize_callback'  => array( $this, 'strip_tags' ),
 				)
 			)
+		));
+		register_rest_route( $namespace, '/products/plugins', array(
+			'methods'         => \WP_REST_Server::READABLE,
+			'callback'        => array( $this, 'get_plugins' ),
+			'permission_callback' => array( $this, 'get_items_permissions_check' ),
+
 		));
 	}
 	/**
@@ -51,8 +57,32 @@ class products extends route {
 			$products = array();
 		}
 
-		rest_ensure_response( $products );
+		return rest_ensure_response( $products );
 
+	}
+
+	/**
+	 * Get plugins we can use for price tests
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_plugins( $request ) {
+		$allowed = ingot_accepted_plugins_for_price_tests();
+		if( ! empty( $allowed ) ) {
+			foreach( $allowed as $value => $label ) {
+				$plugins[] = array(
+					'value' => $value,
+					'label' => $label
+				);
+			}
+
+			return rest_ensure_response( $plugins );
+		}else{
+			return rest_ensure_response( '', 404 );
+		}
 	}
 
 	/**
@@ -110,6 +140,7 @@ class products extends route {
 		$maybe_cached = get_transient( $cache_key );
 		if( is_array( $maybe_cached ) ) {
 			return $maybe_cached;
+
 		}
 
 		$args = array(
@@ -117,18 +148,21 @@ class products extends route {
 			'post_type'   => $post_type
 		);
 
-		$posts = array();
+		$products = array();
 
 		$query = new \WP_Query( $args );
 		if ( $query->have_posts() ) {
 			foreach ( $query->posts as $post ) {
-				$posts[ $post->ID ] = $post->post_title;
+				$products[] = array(
+					'value' => $post->ID,
+					'label' => $post->post_title
+				);
 			}
 
-			set_transient( $cache_key, $posts, 599 );
+			set_transient( $cache_key, $products, 599 );
 		}
 
-		return $posts;
+		return $products;
 
 	}
 

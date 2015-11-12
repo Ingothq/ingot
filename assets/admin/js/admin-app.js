@@ -289,38 +289,54 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
  * @since 2.0.0
  */
 //Controller for price groups list
-ingotApp.controller( 'priceGroups', ['$scope', '$http', function( $scope, $http ) {
-    swal({
-        title: INGOT_TRANSLATION.beta_error_header,
-        text: '',
-        type: "error",
-        confirmButtonText: INGOT_TRANSLATION.close
+ingotApp.controller( 'priceGroups', ['$scope', '$http', 'priceGroups', function( $scope, $http, priceGroups ) {
+    var page_limit = 10;
+
+    priceGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
+
+        $scope.groups = JSON.parse( res.data );
+
+        var total_groups = parseInt( res.headers['x-ingot-total'] );
+        total_pages = total_groups / page_limit;
+        $scope.total_pages = new Array( Math.round( total_pages ) );
+
     });
 
-    return;
+    $scope.paginate = function( page, $event ) {
 
-    $http({
-        method: 'GET',
-        url: INGOT_ADMIN.api + 'price-group'
+        if( jQuery('.paginate a.active').length ) {
+            jQuery('.paginate a.active').toggleClass('active');
+        }
 
-    }).success( function( data, status, headers, config ) {
-        console.log( data );
-        $scope.groups = data;
-    }).error(function(data, status, headers, config) {
-        console.log( data );
-    });
+        jQuery( $event.currentTarget ).toggleClass('active');
+
+        page = page + 1;
+        priceGroups.query({page: page, limit: page_limit, context: 'admin'}, function(res){
+            if( res.data.indexOf('No matching groups found.') >= 0 ) {
+                return;
+            }
+
+            $scope.groups = JSON.parse( res.data );
+        });
+    }
 }]);
 
 //controller for creating/editing a price group
-ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
-    swal({
-        title: INGOT_TRANSLATION.beta_error_header,
-        text: '',
-        type: "error",
-        confirmButtonText: INGOT_TRANSLATION.close
-    });
+ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'priceGroups', function( $scope, $http, $stateParams, $rootScope, $state, priceGroups ) {
 
-    return;
+
+    $http({
+        url: INGOT_ADMIN.api + 'products/plugins',
+        method: 'GET',
+        headers: {
+            'X-WP-Nonce': INGOT_ADMIN.nonce
+        }
+
+    }).success( function( data, status, headers, config ) {
+        $scope.plugins = data;
+    } ).error( function ( data ) {
+        console.log( data );
+    } );
 
 
     if( 'priceGroup.new' == $state.current.name ) {
@@ -329,15 +345,11 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         };
     }else{
         var groupID = $stateParams.groupID;
-        $http({
-            method: 'GET',
-            url: INGOT_ADMIN.api + 'price-group/' + groupID + '?context=admin'
 
-        }).success( function( data, status, headers, config ) {
-
-            $scope.group = data;
-
-        }).error(function(data, status, headers, config) {
+        priceGroups.get({id: groupID}, function(res){
+            $scope.group = res;
+            products();
+        }, function(data, status, headers, config) {
             console.log( data );
             swal({
                 title: INGOT_TRANSLATION.fail,
@@ -345,7 +357,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 type: "error",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
-        });
+        })
     }
 
     $scope.submit = function( ){
@@ -385,6 +397,31 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
             });
         })
     };
+
+    $scope.addNewTest = function(e) {
+        //make ID a random string so it will be treated as new by API
+        var id = Math.random().toString(36).substring(7);
+        $scope.group.tests[ id ] = {'ID':id};
+    };
+
+
+    function products() {
+        if( 'string' != typeof $scope.group.plugin){
+            $scope.products = {};
+        }
+        $http({
+            url: INGOT_ADMIN.api + 'products?plugin=' + $scope.group.plugin,
+            method: 'GET',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+
+        }).success( function( data, status, headers, config ) {
+            $scope.products = data;
+        } ).error( function ( data ) {
+            console.log( data );
+        } );
+    }
 
 }]);
 
@@ -463,6 +500,7 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
 /**
  * Test Groups Factory
  *
+ * @since 0.2.0
  */
 ingotApp.factory( 'clickGroups', function( $resource ) {
 	
@@ -505,3 +543,53 @@ ingotApp.factory( 'clickGroups', function( $resource ) {
     })
 	
 });
+
+/**
+ * Price Groups Factory
+ *
+ * @since 0.2.0
+ */
+ingotApp.factory( 'priceGroups', function( $resource ) {
+
+    return $resource( INGOT_ADMIN.api + 'price-group/:id', {
+        id: '@id'
+    },{
+        'query' : {
+            transformResponse: function( data, headers ) {
+                var response = {
+                    data: data,
+                    headers: headers()
+                };
+
+                return response;
+
+            }
+        },
+        'update':{
+            method:'PUT',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'post':{
+            method:'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'save':{
+            method:'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'delete':{
+            method:'DELETE',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        }
+    })
+
+});
+

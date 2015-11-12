@@ -29,6 +29,63 @@ class price_test_group extends route {
 	 */
 	protected $what = 'price_group';
 
+	/**
+	 * Get a collection of groups
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_items( $request ) {
+
+		$args = array(
+			'page' => $request->get_param( 'page' ),
+			'limit' => $request->get_param( 'limit' )
+		);
+
+		$groups = price_group::get_items( $args );
+
+		if( empty( $groups ) ) {
+			return rest_ensure_response( __( 'No matching groups found.', 'ingot' ), 404 );
+
+		}else{
+			$response = new \WP_REST_Response( $groups, 200 );
+			$response->header( 'X-Ingot-Total', (int) price_group::total() );
+
+			return $response;
+
+		}
+
+	}
+
+	/**
+	 * Get a single group
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_item( $request ) {
+		$url = $request->get_url_params();
+		$id = helpers::v( 'id', $url, 0 );
+		if( $id ) {
+
+			$group = price_group::read( $id );
+
+
+			if( $group ) {
+				return rest_ensure_response( $group );
+			}
+
+		}else{
+			return new \WP_REST_Response( array(), 404 );
+		}
+	}
+
 
 	/**
 	 * Create an item

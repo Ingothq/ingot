@@ -399,13 +399,17 @@ function ingot_sanitize_amount( $amount ) {
  *
  * @since 0.0.9
  *
+ * @param bool $with_labels Optional. If true labels as values. Default is false
+ *
  * @return array
  */
-function ingot_accepted_plugins_for_price_tests() {
+function ingot_accepted_plugins_for_price_tests( $with_labels = false ) {
 	$plugins = array(
-		'edd',
-		'woo',
+		'edd' => __( 'Easy Digital Downloads', 'ingot' ),
+		'woo' => __( 'WooCommerce', 'ingot' )
 	);
+
+
 
 	/**
 	 * Add or remove allowed plugins for price tests
@@ -414,7 +418,13 @@ function ingot_accepted_plugins_for_price_tests() {
 	 *
 	 * @param array $plugins Array of plugins
 	 */
-	return apply_filters( 'ingot_accepted_plugins_for_price_tests', $plugins );
+	$plugins = apply_filters( 'ingot_accepted_plugins_for_price_tests', $plugins );
+
+	if( false == $with_labels ) {
+		return array_keys( $plugins );
+	}else{
+		return $plugins;
+	}
 }
 
 /**
