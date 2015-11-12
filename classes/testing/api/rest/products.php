@@ -73,10 +73,12 @@ class products extends route {
 		$allowed = ingot_accepted_plugins_for_price_tests();
 		if( ! empty( $allowed ) ) {
 			foreach( $allowed as $value => $label ) {
-				$plugins[] = array(
-					'value' => $value,
-					'label' => $label
-				);
+				if( ingot_check_ecommerce_active( $value ) ) {
+					$plugins[] = array(
+						'value' => $value,
+						'label' => $label
+					);
+				}
 			}
 
 			return rest_ensure_response( $plugins );
