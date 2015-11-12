@@ -129,11 +129,7 @@ class test_price_group_crud extends \WP_UnitTestCase {
 
 		$params = array(
 			'product_ID' => $product_id,
-			'default' => array(
-				'a' => 0.1,
-				'b' => 0.9
-			)
-
+			'default' => 0.9
 		);
 
 		$test_1 = \ingot\testing\crud\price_test::create( $params );
@@ -179,10 +175,7 @@ class test_price_group_crud extends \WP_UnitTestCase {
 
 		$params = array(
 			'product_ID' => $product_id,
-			'default' => array(
-				'a' => 0.1,
-				'b' => 0.9
-			)
+			'default' => 0.1,
 
 		);
 

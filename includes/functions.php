@@ -486,6 +486,24 @@ function ingot_enable_price_testing() {
 	 *
 	 * @param bool $enable True to allow, false to not allow.
 	 */
-	return (bool) apply_filters( 'ingot_enable_price_testing', true );
+	return (bool) apply_filters( 'ingot_enable_price_testing', $enable );
+
+}
+
+/**
+ * Delete all Ingot data
+ *
+ * @since 0.2.0
+ */
+function ingot_destroy(){
+	\ingot\testing\crud\price_test::delete( 'all' );
+	\ingot\testing\crud\price_group::delete( 'all' );
+	\ingot\testing\crud\sequence::delete( 'all' );
+	\ingot\testing\crud\test::delete( 'all' );
+	\ingot\testing\crud\group::delete( 'all' );
+	$cookies = new ingot\testing\cookies\init( array(), false );
+	$cookie_name = $cookies->get_cookie_name();
+	setcookie( $cookie_name, '', time() + -3600 , COOKIEPATH, COOKIE_DOMAIN, false );
+
 
 }

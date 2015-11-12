@@ -27,8 +27,6 @@ class price_group extends table_crud {
 	 */
 	protected static $what = 'price_group';
 
-
-
 	/**
 	 * Get price groups
 	 *

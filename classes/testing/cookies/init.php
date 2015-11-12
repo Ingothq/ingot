@@ -12,6 +12,10 @@
 namespace ingot\testing\cookies;
 
 
+use ingot\testing\crud\price_test;
+use ingot\testing\tests\flow;
+use ingot\testing\utility\price;
+
 class init {
 
 	/**
@@ -42,6 +46,17 @@ class init {
 	);
 
 	/**
+	 * The ingot cookie
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @var array
+	 */
+	protected $cookie = array();
+
+	/**
 	 * Set and check our cookies
 	 *
 	 * @since 0.0.9
@@ -49,13 +64,26 @@ class init {
 	 * @uses "init"
 	 *
 	 * @param array $cookies cookies super var
+	 * @param bool $rebuild Optional. Trigger a rebuild.
 	 */
-	public function __construct( $cookies ) {
+	public function __construct( $cookies, $rebuild = true ) {
+		if( $rebuild ) {
+			$this->rebuild( $cookies );
+		}
+
+	}
+
+	/**
+	 * Rebuild the cookies
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param array $cookies cookies super var
+	 */
+	public function rebuild( $cookies ) {
 		$this->set_cookie( $cookies );
 		$this->get_ingot_cookie();
 		$this->setup_cookies();
-		$this->refresh_cache();
-
 	}
 
 	/**
@@ -86,17 +114,7 @@ class init {
 		return $this->cookie_name;
 	}
 
-	/**
-	 * Refresh the non-peristant cache used to share this data within a session
-	 *
-	 * @since 0.0.9
-	 */
-	public function refresh_cache() {
-		foreach ( $this->cookie_parts as $part  ) {
-			cache::instance()->update( $part, $this->cookie[ $part ] );
-		}
 
-	}
 
 	/**
 	 * Set the cookie property of this class
@@ -146,8 +164,32 @@ class init {
 	 */
 	protected function setup_price_cookie() {
 
-		$price = new price( $this->cookie[ 'price' ], INGOT_DEV_MODE );
+		$price = new \ingot\testing\cookies\price( $this->collect_sequence(), $this->cookie[ 'price' ] );
 		$this->cookie[ 'price' ] = $price->get_price_cookie();
+	}
+
+	/**
+	 * Collect the tests we need
+	 *
+	 * @since 0.2.0
+	 *
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function collect_sequence() {
+
+		$args = array(
+			'price_test' => true,
+			'current' => true,
+			'limit' => -1
+		);
+
+		$active_sequences = \ingot\testing\crud\sequence::get_items( $args );
+
+		return $active_sequences;
+
+
 	}
 
 	/**
