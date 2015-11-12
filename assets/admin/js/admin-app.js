@@ -293,12 +293,14 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'priceGroups', function(
     var page_limit = 10;
 
     priceGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
-
-        $scope.groups = JSON.parse( res.data );
-
-        var total_groups = parseInt( res.headers['x-ingot-total'] );
-        total_pages = total_groups / page_limit;
-        $scope.total_pages = new Array( Math.round( total_pages ) );
+		
+		$scope.total_pages = false;
+		$scope.groups = JSON.parse( res.data );
+		if( res.headers['x-ingot-total'] ) {
+			var total_groups = parseInt( res.headers['x-ingot-total'] );
+			total_pages = total_groups / page_limit;
+			$scope.total_pages = new Array( Math.round( total_pages ) );
+		}
 
     });
 
@@ -347,8 +349,10 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         var groupID = $stateParams.groupID;
 
         priceGroups.get({id: groupID}, function(res){
-            $scope.group = res;
-            products();
+	        if( res[0] != 'N' && res[1] != 'o' ) {   
+		        $scope.group = res;
+	            $scope.products();
+	        }
         }, function(data, status, headers, config) {
             console.log( data );
             swal({
@@ -400,12 +404,17 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
-        var id = Math.random().toString(36).substring(7);
-        $scope.group.tests[ id ] = {'ID':id};
+        var id = Math.floor( Math.random() * 10000 ) + 1;
+        console.log( id );
+        if( !$scope.group.tests )
+        	$scope.group.tests = [];
+        $scope.group.tests[id] = { 'ID': id };
+        console.log( $scope.group );
     };
 
 
-    function products() {
+    $scope.products = function() {
+	    console.log( $scope.group );
         if( 'string' != typeof $scope.group.plugin){
             $scope.products = {};
         }
