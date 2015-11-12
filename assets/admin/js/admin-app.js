@@ -404,8 +404,12 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
-        var id = Math.random().toString(36).substring(7);
-        $scope.group.tests[ id ] = {'ID':id};
+        var id = Math.floor( Math.random() * 10000 ) + 1;
+        console.log( id );
+        if( !$scope.group.tests )
+        	$scope.group.tests = [];
+        $scope.group.tests[id] = { 'ID': id };
+        console.log( $scope.group );
     };
 
 
