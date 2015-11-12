@@ -64,12 +64,26 @@ class init {
 	 * @uses "init"
 	 *
 	 * @param array $cookies cookies super var
+	 * @param bool $rebuild Optional. Trigger a rebuild.
 	 */
-	public function __construct( $cookies ) {
+	public function __construct( $cookies, $rebuild = true ) {
+		if( $rebuild ) {
+			$this->rebuild( $cookies );
+		}
+
+	}
+
+	/**
+	 * Rebuild the cookies
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param array $cookies cookies super var
+	 */
+	public function rebuild( $cookies ) {
 		$this->set_cookie( $cookies );
 		$this->get_ingot_cookie();
 		$this->setup_cookies();
-
 	}
 
 	/**

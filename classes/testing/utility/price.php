@@ -57,7 +57,14 @@ class price {
 			$price_test = price_test::read( $price_test );
 		}
 
-		$group = group::read( $group_id );
+		if ( is_numeric( $group_id ) ) {
+			$group = group::read( $group_id );
+		}elseif( is_array( $group_id ) ) {
+			$group = $group_id;
+			$group_id = helpers::v( 'ID', $group, 0 );
+		}else{
+			return array();
+		}
 
 		if(  ! is_array( $price_test ) || ! is_array( $group ) ) {
 			return array();

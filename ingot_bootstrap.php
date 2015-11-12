@@ -272,9 +272,18 @@ class ingot_bootstrap {
 		$ingot_cookies = $cookies->get_ingot_cookie();
 		if( ! empty( $ingot_cookies ) ){
 			$cookie_time = 15 * DAY_IN_SECONDS;
-			setcookie($cookies->get_cookie_name(), $ingot_cookies, $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
 
-
+			/**
+			 * Change cookie time
+			 *
+			 * @since 0.2.0
+			 *
+			 * @param int $cookie_time Length to keep cookie. Default is 15 days
+			 */
+			$cookie_time = apply_filters( 'ingot_cookie_time', $cookie_time );
+			$cookie_name = $cookies->get_cookie_name();
+			setcookie( $cookie_name, $ingot_cookies, time() + $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
+			
 		}
 
 		/**

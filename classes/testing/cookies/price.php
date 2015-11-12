@@ -154,7 +154,7 @@ class price {
 		if ( is_array( $group ) ) {
 			$test_id = $this->get_test_id( $sequence, $a_or_b );
 			$test = test::read( $test_id );
-			$test_details = \ingot\testing\utility\price::price_detail( $test_id, $a_or_b, $sequence[ 'ID' ], $group[ 'ID' ] );
+			$test_details = \ingot\testing\utility\price::price_detail( $test_id, $a_or_b, $sequence[ 'ID' ], $group );
 
 			$this->price_cookie[ $sequence[ 'ID' ] ] = $test_details;
 		}

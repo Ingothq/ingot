@@ -501,5 +501,9 @@ function ingot_destroy(){
 	\ingot\testing\crud\sequence::delete( 'all' );
 	\ingot\testing\crud\test::delete( 'all' );
 	\ingot\testing\crud\group::delete( 'all' );
+	$cookies = new ingot\testing\cookies\init( array(), false );
+	$cookie_name = $cookies->get_cookie_name();
+	setcookie( $cookie_name, '', time() + -3600 , COOKIEPATH, COOKIE_DOMAIN, false );
+
 
 }
