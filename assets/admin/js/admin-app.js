@@ -472,7 +472,8 @@ ingotApp.factory( 'clickGroups', function( $resource ) {
 
 	return $resource( INGOT_ADMIN.api + 'test-group/:id', {
 		id: '@id',
-        _wp_rest_nonce: INGOT_ADMIN.nonce
+        _wp_rest_nonce: INGOT_ADMIN.nonce,
+        context: 'admin'
 	},{
 		'query' : {
 			transformResponse: function( data, headers ) {
