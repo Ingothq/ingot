@@ -258,6 +258,13 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 	    }
 	    
     }
+    
+    $scope.removeTest = function( index ) {
+	    
+	    delete $scope.group.tests[index];
+	    return false;
+	    
+    }
 
     $scope.submit = function( data ){
         var url;
