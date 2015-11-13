@@ -398,12 +398,6 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
  * @since 0.2.0
  */
 ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
-    swal({
-        title: INGOT_TRANSLATION.beta_error_header,
-        text: INGOT_TRANSLATION.beta_message,
-        type: "error",
-        confirmButtonText: INGOT_TRANSLATION.close
-    });
 }]);
 
 /**
