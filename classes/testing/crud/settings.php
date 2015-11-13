@@ -71,7 +71,14 @@ class settings {
 	 */
 	public static function write( $setting, $value ) {
 		if( self::option_key_name( $setting ) ) {
+			if( 'license_code' == $setting && ! empty( $value ) && $value != self::read( $setting ) ) {
+				$handled = self::handle_license( $value );
+				return $handled;
+
+			}
+
 			return update_option( self::option_key_name( $setting ), $value, false );
+
 		}
 
 		return false;
@@ -92,6 +99,34 @@ class settings {
 		}
 
 		return $keys;
+
+	}
+
+	/**
+	 * Handle license update
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param $value License code
+	 *
+	 * @return bool|\WP_Error
+	 */
+	protected static function handle_license( $value ){
+		$current = ingot_sl_get_license();
+		if( $value == $current ) {
+			return true;
+
+		}else{
+			$activated = ingot_sl_activate_license( $value );
+			if( 'valid' == $activated ){
+				return true;
+
+			}else{
+				return new \WP_Error( 'ingot-license-invalid' );
+
+			}
+
+		}
 
 	}
 

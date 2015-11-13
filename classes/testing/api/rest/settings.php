@@ -37,6 +37,7 @@ class settings extends route {
 				'methods'         => \WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'read' ),
 				'permission_callback' => array( $this, 'permissions_check' ),
+				'args'            => $this->args( false )
 			),
 			array(
 				'methods'         => \WP_REST_Server::EDITABLE,
@@ -57,12 +58,7 @@ class settings extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function read( $request ) {
-		$settings = array();
-		foreach( array_keys( $this->args() ) as $setting ) {
-			$settings[ $setting ] = \ingot\testing\crud\settings::read( $setting );
-		}
-
-		return rest_ensure_response( $settings );
+		return $this->response( $request );
 	}
 
 	/**
@@ -84,6 +80,7 @@ class settings extends route {
 				if( is_wp_error( $saved  ) ) {
 					return rest_ensure_response( $saved, 500 );
 				}
+
 				$settings[ $setting ] = $params[ $setting ];
 			}else{
 				$settings[ $setting ] = \ingot\testing\crud\settings::read( $setting );
@@ -92,8 +89,38 @@ class settings extends route {
 		}
 
 
-		return rest_ensure_response( $settings );
+		return $this->response( $request, $settings );
 
+	}
+
+	/**
+	 * Create a response
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @param array $settings Optional. Current settings. If not used current settings will be queried
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	protected function response( $request, $settings = array() ){
+		if( empty( $settings ) ){
+			foreach( array_keys( $this->args() ) as $setting ) {
+				$settings[ $setting ] = \ingot\testing\crud\settings::read( $setting );
+			}
+		}
+
+		if( 'admin' == $request->get_param( 'context' ) ){
+			$valid = false;
+			if( ingot_sl_check_license( false ) ) {
+				$valid = true;
+			}
+
+			$settings[ 'license_valid' ] = (int) $valid;
+
+		}
+
+		return rest_ensure_response( $settings );
 	}
 
 	/**
@@ -117,8 +144,11 @@ class settings extends route {
 			'license_code' => array(
 				'type'              => 'string',
 				'default'           => '',
-
 			),
+			'context' => array(
+				'type' => 'string',
+				'default' => 'admin'
+			)
 
 		);
 	}

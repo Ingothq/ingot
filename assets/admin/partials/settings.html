@@ -40,6 +40,16 @@
             <p>
                 {{ 'settings.license_code_desc' | translate }}
             </p>
+            <div ng-show="1 == settings.license_valid">
+                <p class="alert alert-success" style="display: inline-block;">
+                    License active
+                </p>
+            </div>
+            <div ng-show="0 == settings.license_valid">
+                <p class="alert alert-warning" style="display: inline-block;">
+                    License not active or not valid
+                </p>
+            </div>
 
 
         </div>

@@ -416,7 +416,7 @@ ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
  * @since 0.2.0
  */
 ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
-    var url =  INGOT_ADMIN.api + 'settings&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
+    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
     $http({
         method: 'GET',
         url:url,

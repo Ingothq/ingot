@@ -322,4 +322,5 @@ class ingot_bootstrap {
 
 	}
 
+
 }
