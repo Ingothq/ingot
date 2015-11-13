@@ -294,7 +294,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 ingotApp.controller( 'priceGroups', ['$scope', '$http', function( $scope, $http ) {
     swal({
         title: INGOT_TRANSLATION.beta_error_header,
-        text: '',
+        text: INGOT_TRANSLATION.beta_message,
         type: "error",
         confirmButtonText: INGOT_TRANSLATION.close
     });
@@ -317,7 +317,7 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', function( $scope, $http 
 ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
     swal({
         title: INGOT_TRANSLATION.beta_error_header,
-        text: '',
+        text: INGOT_TRANSLATION.beta_message,
         type: "error",
         confirmButtonText: INGOT_TRANSLATION.close
     });
@@ -400,7 +400,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
     swal({
         title: INGOT_TRANSLATION.beta_error_header,
-        text: '',
+        text: INGOT_TRANSLATION.beta_message,
         type: "error",
         confirmButtonText: INGOT_TRANSLATION.close
     });

@@ -190,6 +190,7 @@ class load {
 			'saved'                    => __( 'Saved Group: ', 'ingot' ),
 			'cant_remove'              => __( 'At this time, you can not remove a test from a group.', 'ingot' ),
 			'beta_error_header'        => __( 'Beta Limitation Encountered', 'ingot' ),
+			'beta_message'              => __( 'Sorry about that but Ingot is still in beta. We will be adding this feature soon.', 'ingot' ),
 			'no_stats'                 => __( 'We do not have a functional stats viewer yet.', 'ingot' ),
 			'deleted'                  => __( 'Test Group Deleted', 'ingot' ),
 			'are_you_sure'             => __( 'Are You Sure About That?', 'ingot' ),
