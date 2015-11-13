@@ -119,7 +119,7 @@ class test_group extends route {
 			'page' => $request->get_param( 'page' ),
 			'limit' => $request->get_param( 'limit' )
 		);
-
+		
 		$groups = group::get_items( $args );
 
 		if( empty( $groups ) ) {
@@ -230,6 +230,7 @@ class test_group extends route {
 		$data[ 'order' ] = $test_order;
 
 		$updated = group::update( $data, $id );
+		
 		if ( ! is_wp_error( $updated ) && $updated ) {
 			return $this->return_group( $request, $updated );
 		}else{
@@ -541,7 +542,8 @@ class test_group extends route {
 		$group[ 'meta' ] = (object) $group[ 'meta' ];
 		if( ! empty( $group[ 'tests' ] ) ){
 			foreach( $group[ 'tests' ] as $i => $test ) {
-				$group[ 'tests' ][ $i ][ 'meta' ] = (object) $test[ 'meta' ];
+				if( isset( $test[ 'meta' ] ) )
+					$group[ 'tests' ][ $i ][ 'meta' ] = (object) $test[ 'meta' ];
 			}
 		}
 

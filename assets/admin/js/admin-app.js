@@ -134,6 +134,11 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
     
     clickGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
 	    
+	    if( res.data.indexOf('No matching') > -1 ){
+		    $scope.groups = {};
+		    return;
+	    };
+	    
 	    $scope.groups = JSON.parse( res.data );
 	    
 	    var total_groups = parseInt( res.headers['x-ingot-total'] );
@@ -225,6 +230,10 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
 		clickGroups.get({id: groupID}, function(res){
 	       $scope.group = res;
+	        
+		    if( $scope.group.tests.hasOwnProperty('errors') )
+		    	$scope.group.tests = {};
+	       
 		}, function(data, status, headers, config) {
             console.log( data );
             swal({
@@ -236,51 +245,64 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         })
 
     }
+    
+    $scope.buttonStyle = function( id, type ) {
+	    
+	    if( type == 'button_color' ) {
+		    var css = {}
+		    if( $scope.group.tests[id].meta && $scope.group.tests[id].meta.background_color )
+			    css['background-color'] = $scope.group.tests[id].meta.background_color;
+			if( $scope.group.tests[id].meta && $scope.group.tests[id].meta.color )
+			    css['color'] = $scope.group.tests[id].meta.color;
+		    return css;
+	    }
+	    
+    }
 
-        $scope.submit = function( data ){
-            var url;
+    $scope.submit = function( data ){
+        var url;
+        if( 'clickTests.new' == $state.current.name ) {
+            url =INGOT_ADMIN.api + 'test-group/?context=admin';
+        }else{
+            url = INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin';
+        }
+
+        url +='&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
+
+        $http({
+            method: 'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            },
+            url: url,
+            data: $scope.group
+        } ).success(function(data) {
+            $scope.group = data;
             if( 'clickTests.new' == $state.current.name ) {
-                url =INGOT_ADMIN.api + 'test-group/?context=admin';
-            }else{
-                url = INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin';
+
+                $state.go('clickTests.edit', { groupID: data.ID } );
             }
+            swal({
+                title: INGOT_TRANSLATION.group_saved,
+                text: '',
+                type: "success",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        } ).error(function(){
+            swal({
+                title: INGOT_TRANSLATION.fail,
+                text: INGOT_TRANSLATION.sorry,
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        })
+    };
 
-            url +='&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
-
-            $http({
-                method: 'POST',
-                headers: {
-                    'X-WP-Nonce': INGOT_ADMIN.nonce
-                },
-                url: url,
-                data: $scope.group
-            } ).success(function(data) {
-                $scope.group = data;
-                if( 'clickTests.new' == $state.current.name ) {
-
-                    $state.go('clickTests.edit', { groupID: data.ID } );
-                }
-                swal({
-                    title: INGOT_TRANSLATION.group_saved,
-                    text: '',
-                    type: "success",
-                    confirmButtonText: INGOT_TRANSLATION.close
-                });
-            } ).error(function(){
-                swal({
-                    title: INGOT_TRANSLATION.fail,
-                    text: INGOT_TRANSLATION.sorry,
-                    type: "error",
-                    confirmButtonText: INGOT_TRANSLATION.close
-                });
-            })
-        };
-
-        $scope.addNewTest = function(e) {
-            //make ID a random string so it will be treated as new by API
-            var id = Math.random().toString(36).substring(7);
-            $scope.group.tests[ id ] = {'ID':id};
-        };
+    $scope.addNewTest = function(e) {
+        //make ID a random string so it will be treated as new by API
+        var id = Math.random().toString(36).substring(7);
+        $scope.group.tests[ id ] = {'ID':id};
+    };
 
 
 }]);
