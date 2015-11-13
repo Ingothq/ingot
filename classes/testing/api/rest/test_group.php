@@ -455,12 +455,6 @@ class test_group extends route {
 				'default'            => 1,
 				'sanitize_callback'  => 'absint',
 			),
-			'button_color' => array(
-				'description'        => __( 'Default button color for button tests', 'ingot' ),
-				'type'               => 'string',
-				'default'            => array(),
-				'sanitize_callback'  => array( 'ingot\testing\utility\helpers', 'prepare_color' ),
-			),
 			'tests' => array(
 				'description'       => __( 'Tests to add to group', 'ingot' ),
 				'type'              => 'array',
@@ -469,6 +463,10 @@ class test_group extends route {
 			'context' => array(
 				'type' => 'string',
 				'default' => 'view'
+			),
+			'meta' => array(
+				'type' => 'array',
+				'default' => array()
 			)
 
 		);

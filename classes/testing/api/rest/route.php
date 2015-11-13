@@ -383,17 +383,16 @@ abstract class route extends \WP_REST_Controller  {
 	 * @return array Request params
 	 */
 	protected function prepare_click_test_meta( $params ) {
-		$params['meta'] = array();
+		if( ! isset( $params[ 'meta' ] ) || empty( $params[ 'meta' ] ) ){
+			return $params;
+		}
 		foreach ( array( 'color', 'background_color', 'color_test_text' ) as $meta ) {
-			if ( ! empty( $params[ $meta ] ) ) {
-				$params['meta'][ $meta ] = $params[ $meta ];
+			if ( isset( $params[ 'meta' ][ $meta ] ) && ! empty( $params[ 'meta' ][ $meta ] ) ) {
+				$params['meta'][ $meta ] = strip_tags( $params[ 'meta' ][ $meta ] );
 			}
 
-			unset( $params[ $meta ] );
+
 		}
-
-		unset( $params[ 'button_color' ] );
-
 
 		return $params;
 
