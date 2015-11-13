@@ -222,8 +222,8 @@ class load {
 				'background_color_label_group_setting' => __( 'Background (Used For All Buttons)', 'ingot' ),
 				'tests_header'                         => __( 'Tests', 'ingot' ),
 				'text_label_test_setting'              => __( 'Text', 'ingot' ),
-				'color_label_test_setting'             => __( 'Color', 'ingot' ),
-				'background_color_label_test_setting'  => __( 'Background Color', 'ingot' ),
+				'color_label_test_setting'             => __( 'Button Text Color', 'ingot' ),
+				'background_color_label_test_setting'  => __( 'Button Background Color', 'ingot' ),
 				'add_test'                             => __( 'Add Test', 'ingot' ),
 			),
 			'settings' => array(
