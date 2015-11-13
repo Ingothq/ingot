@@ -1,11 +1,11 @@
 <?php
 /**
  Plugin Name: Ingot
-Version: 0.1.2
+Version: 0.2.0
  */
 
 
-define( 'INGOT_VER', '0.1.2' );
+define( 'INGOT_VER', '0.2.0' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
