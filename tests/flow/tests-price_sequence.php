@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @TODO What this does.
+ * Test flow for price sequences
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -21,10 +21,7 @@ class tests_price_sequence extends \WP_UnitTestCase {
 		$product_id = 42;
 		$params = array(
 			'product_ID' => $product_id,
-			'default' => array(
-				'a' => 0.1,
-				'b' => 0.9
-			)
+			'default' => 0.1,
 
 		);
 
@@ -68,11 +65,7 @@ class tests_price_sequence extends \WP_UnitTestCase {
 		$product_id = 42;
 		$params = array(
 			'product_ID' => $product_id,
-			'default' => array(
-				'a' => 0.1,
-				'b' => 0.9
-			)
-
+			'default' => 0.9
 		);
 
 		for ( $i = 0; $i <= 1 ; $i++ ) {
@@ -127,10 +120,7 @@ class tests_price_sequence extends \WP_UnitTestCase {
 		$product_id = 42;
 		$params = array(
 			'product_ID' => $product_id,
-			'default' => array(
-				'a' => 0.1,
-				'b' => 0.9
-			)
+			'default' => -0.1
 
 		);
 
@@ -186,10 +176,7 @@ class tests_price_sequence extends \WP_UnitTestCase {
 		$product_id = 42;
 		$params = array(
 			'product_ID' => $product_id,
-			'default' => array(
-				'a' => 0.1,
-				'b' => 0.9
-			)
+			'default' => 0.9
 
 		);
 

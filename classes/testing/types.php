@@ -42,23 +42,52 @@ class types {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @param bool $with_labels Optional. If true, labels are included. If false, the default, only types are returned
+	 * @param bool $api_format Optional. Format for use in API. Default is true. Only used if $with_labels is true
+	 *
 	 * @return array $types The allowed click test types
 	 */
-	public static function allowed_click_types() {
+	public static function allowed_click_types( $with_labels = false, $api_format = true ) {
 		$types = array(
-			'link',
-			'text',
-			'button'
+			'link' => __( 'Link', 'ingot' ),
+			'text' => __( 'Text', 'ingot' ),
+			'button' => __( 'Button', 'ingot' ),
+			'button_color' => __( 'Button Color', 'ingot' ),
 		);
+
+		//@todo figure out how to make content blocks work
+		unset( $types[ 'text' ] );
 
 		/**
 		 * Allowed test types
+		 *
+		 * Types are keys, labels are values
 		 *
 		 * @since 0.0.7
 		 *
 		 * @param array $types The allowed click test types
 		 */
-		return apply_filters( 'ingot_allowed_click_types', $types );
+		$types = apply_filters( 'ingot_allowed_click_types', $types );
+
+		if( false == $with_labels ) {
+			return array_keys( $types );
+
+		}else{
+			if( $api_format ) {
+				$options = array();
+				foreach ( $types as $value => $label ) {
+					$options[] = array(
+						'value' => $value,
+						'label' => $label
+					);
+				}
+
+				return $options;
+			}
+
+			return $types;
+
+		}
 
 	}
 

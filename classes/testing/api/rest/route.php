@@ -153,7 +153,10 @@ abstract class route extends \WP_REST_Controller  {
 
 		}
 
-		return current_user_can( permissions::get_for( $this->what, 'read' ) );
+
+		$cap = permissions::get_for($this->what, 'read' );
+		$can = current_user_can(  $cap );
+		return $can;
 	}
 
 	/**
@@ -305,6 +308,8 @@ abstract class route extends \WP_REST_Controller  {
 	public function validate_boolean( $value ) {
 		if( in_array( $value, array( true, false, 'TRUE', 'FALSE', 'true', 'false', 1, 0, '1', '0' ) ) ){
 			return true;
+		}else{
+			return false;
 		}
 
 	}
@@ -363,10 +368,7 @@ abstract class route extends \WP_REST_Controller  {
 	 * @return string
 	 */
 	protected function make_namespace() {
-		$version   = '1';
-		$namespace = 'ingot/v' . $version;
-
-		return $namespace;
+		return util::get_namespace();
 	}
 
 	/**
@@ -381,17 +383,16 @@ abstract class route extends \WP_REST_Controller  {
 	 * @return array Request params
 	 */
 	protected function prepare_click_test_meta( $params ) {
-		$params['meta'] = array();
+		if( ! isset( $params[ 'meta' ] ) || empty( $params[ 'meta' ] ) ){
+			return $params;
+		}
 		foreach ( array( 'color', 'background_color', 'color_test_text' ) as $meta ) {
-			if ( ! empty( $params[ $meta ] ) ) {
-				$params['meta'][ $meta ] = $params[ $meta ];
+			if ( isset( $params[ 'meta' ][ $meta ] ) && ! empty( $params[ 'meta' ][ $meta ] ) ) {
+				$params['meta'][ $meta ] = strip_tags( $params[ 'meta' ][ $meta ] );
 			}
 
-			unset( $params[ $meta ] );
+
 		}
-
-		unset( $params[ 'button_color' ] );
-
 
 		return $params;
 

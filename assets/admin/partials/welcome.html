@@ -1,0 +1,41 @@
+<div ng-controller="welcome">
+
+    <div class="row">
+        <div class="col-md-12" style="padding: 0;">
+            <img ng-src="{{welcome.banner}}" alt="{{welcome.banner_alt}}" style="width:100%;height: auto;" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="jumbotron sm-col-12">
+            <h1 ng-bind="welcome.header"></h1>
+
+            <h3 ng-bind="welcome.links_header"></h3>
+            <ul class="list-inline">
+                <li>
+                    <a href="http://ingothq.com">
+                        {{ 'welcome.learn_more' | translate }}
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="clickTests">
+                        {{ 'welcome.click_tests' | translate }}
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="priceTests">
+                        {{ 'welcome.price_tests' | translate }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+<!--
+
+    <h3 ng-bind="welcome.video_header"></h3>
+
+    <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="" allowfullscreen>></iframe>
+    </div>
+    -->
+</div>

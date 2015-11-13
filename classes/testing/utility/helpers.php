@@ -164,7 +164,7 @@ class helpers {
 	 * @return string
 	 */
 	public static function get_color_from_meta( $config, $with_hash = true ){
-		$color = 'ffffff';
+		$color = defaults::text_color();
 		if( isset( $config[ 'meta' ] ) && ( isset( $config[ 'meta' ][ 'color'] ) || isset(  $config[ 'meta' ][ 'button_color' ] ) ) ){
 			if ( isset( $config[ 'meta' ][ 'color'] ) ) {
 				$color = $config['meta']['color'];

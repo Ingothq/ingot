@@ -29,7 +29,16 @@ global $current_user;
 
 $current_user = new WP_User(1);
 $current_user->set_role('administrator');
+global $wp_rest_server;
+if(  ! is_object( $wp_rest_server )) {
+	$wp_rest_server_class = apply_filters( 'wp_rest_server_class', 'WP_REST_Server' );
+	$wp_rest_server = new $wp_rest_server_class;
+}
 
+if( ! defined( 'INGOT_DEV_MODE' ) ) {
+	define( 'INGOT_DEV_MODE', true );
+}
 
 
 // Include helpers
+include_once( dirname( __FILE__ ) .'/api/rest-test-case.php' );

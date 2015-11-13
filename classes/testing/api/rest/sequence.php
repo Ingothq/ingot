@@ -27,7 +27,7 @@ class sequence extends route {
 
 
 	/**
-	 * Get sequences by
+	 * Get sequences by page or group ID
 	 *
 	 * @since 0.0.7
 	 *
@@ -60,7 +60,7 @@ class sequence extends route {
 
 	}
 
-	public function args() {
+	public function args( $require_id = true ) {
 		$args = array(
 			'group_ID' => array(
 				'type' => 'integer',

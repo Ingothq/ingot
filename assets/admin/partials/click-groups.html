@@ -1,0 +1,50 @@
+
+<ul class="list-inline">
+    <li>
+        <h2>
+            {{ 'groups.click_group_page_title' | translate }}
+        </h2>
+    </li>
+    <li>
+        <a ui-sref="clickTests.list" class="btn btn-default">
+            {{ 'groups.show_all' | translate }}
+        </a>
+    </li>
+    <li>
+        <a ui-sref="clickTests.new" class="btn btn-default">
+            {{ 'groups.create_new' | translate }}
+        </a>
+    </li>
+</ul>
+
+<hr />
+
+<div ng-show="main_click_tests_page" class="row">
+	<h3>Click tests allow you to try different things to see what generates the most click.</h3>
+    <h4>Currently Supported Click Types:</h4>
+    <ul>
+        <li>
+            <em>Link:</em> Test the text of a link.
+        </li>
+        <li>
+            <em>Button:</em> Test the text of a button.
+        </li>
+        <li>
+            <em>Button Color:</em> Test the color of a button.
+        </li>
+    </ul>
+    <h4>Click Types Coming Soon:</h4>
+    <ul>
+        <li>
+            <em>Images & Featured Images</em>
+        </li>
+        <li>
+            <em>Forms & Form Layouts</em>
+        </li>
+        <li>
+            <em>Sales Funnels</em>
+        </li>
+    </ul>
+</div>
+
+<div ui-view></div>

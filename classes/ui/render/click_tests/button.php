@@ -65,7 +65,7 @@ class button extends \ingot\ui\render\click_tests\click {
 	protected function make_style( $config ) {
 		$color = helpers::get_color_from_meta( $config );
 		$background_color = helpers::get_background_color_from_meta( $config );
-		return sprintf( 'style="background-color=%s;color:%s"', $background_color, $color );
+		return sprintf( 'style="background-color:%s;color:%s"', $background_color, $color );
 
 	}
 }

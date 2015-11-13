@@ -18,7 +18,8 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
 use ingot\testing\ingot;
 use ingot\testing\tests\flow;
-use ingot\ui\util;
+
+
 
 class test extends route {
 
@@ -33,65 +34,6 @@ class test extends route {
 	 */
 	protected  $what = 'test';
 
-	/**
-	 * Register the routes for the objects of the controller.
-	 *
-	 * @since 0.0.6
-	 */
-	public function register_routes() {
-		$version = '1';
-		$namespace = 'ingot/v' . $version;
-		$base = 'test';
-		register_rest_route( $namespace, '/' . $base, array(
-			array(
-				'methods'         => \WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_items' ),
-				'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				'args'            => array(
-
-				),
-			),
-			array(
-				'methods'         => \WP_REST_Server::CREATABLE,
-				'callback'        => array( $this, 'create_item' ),
-				'permission_callback' => array( $this, 'create_item_permissions_check' ),
-				'args'            => $this->args( false )
-			),
-		) );
-		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => \WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_item' ),
-				'permission_callback' => array( $this, 'get_item_permissions_check' ),
-				'args'            => array(
-					'context'          => array(
-						'default'      => 'view',
-					),
-				),
-			),
-			array(
-				'methods'         => \WP_REST_Server::EDITABLE,
-				'callback'        => array( $this, 'update_item' ),
-				'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				'args'            => $this->args( false )
-			),
-			array(
-				'methods'  => \WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'delete_item' ),
-				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
-				'args'     => array(
-					'force'    => array(
-						'default'      => false,
-					),
-				),
-			),
-		) );
-
-		register_rest_route( $namespace, '/' . $base . '/schema', array(
-			'methods'         => \WP_REST_Server::READABLE,
-			'callback'        => array( $this, 'get_public_item_schema' ),
-		) );
-	}
 
 	/**
 	 * Update one item from the collection
@@ -101,7 +43,7 @@ class test extends route {
 	 * @param \WP_REST_Request $request Full data about the request.
 	 * @return \WP_Error|\WP_REST_Request
 	 */
-	public function update_item( $request ) {
+	public function _update_item( $request ) {
 		$params = $request->get_params();
 		unset( $params[0] );
 		unset( $params[1] );
@@ -129,7 +71,7 @@ class test extends route {
 	 * @param \WP_REST_Request $request Full data about the request.
 	 * @return \WP_Error|\WP_REST_Request
 	 */
-	public function create_item( $request ) {
+	public function _create_item( $request ) {
 		$params = $request->get_params();
 		unset( $params[0] );
 		unset( $params[1] );
@@ -264,7 +206,7 @@ class test extends route {
 			return false;
 		}
 
-		$verify = util::verify_click_nonce(
+		$verify = \ingot\ui\util::verify_click_nonce(
 			$request->get_param( 'click_nonce' ),
 			$request->get_param( 'id' ),
 			$sequence_id,

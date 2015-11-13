@@ -141,11 +141,12 @@ class tests_color_helpers extends \WP_UnitTestCase {
 	 * @since 0.1.1
 	 *
 	 * @covers \ingot\testing\utility\helpers::get_color_from_meta()
+	 * @covers \ingot\testing\utility\defaults::text_color()
 	 */
 	public function testColorUnset() {
 		$color = '#fff';
 		$a[ 'meta'][ rand() ] = $color;
-		$this->assertSame( \ingot\testing\utility\defaults::color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
+		$this->assertSame( \ingot\testing\utility\defaults::text_color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
 	}
 
 	/**
@@ -154,11 +155,12 @@ class tests_color_helpers extends \WP_UnitTestCase {
 	 * @since 0.1.1
 	 *
 	 * @covers \ingot\testing\utility\helpers::get_color_from_meta()
+	 * @covers \ingot\testing\utility\defaults::text_color()
 	 */
 	public function testColorMetaUnset() {
 		$color = '#fff';
 		$a[ rand() ][ rand() ] = $color;
-		$this->assertSame( \ingot\testing\utility\defaults::color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
+		$this->assertSame( \ingot\testing\utility\defaults::text_color(), \ingot\testing\utility\helpers::get_color_from_meta( $a, false ) );
 	}
 
 	/**

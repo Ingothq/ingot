@@ -220,6 +220,24 @@ abstract class table_crud extends crud {
 
 	}
 
+	/**
+	 * Get total number of items
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return int
+	 */
+	public static function total() {
+		global $wpdb;
+		$table_name = static::get_table_name();
+		$sql = sprintf( 'SELECT COUNT(ID) FROM %s', $table_name );
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+		if( ! empty( $results ) && isset( $results[0], $results[0][ 'COUNT(ID)'] ) ){
+			return $results[0][ 'COUNT(ID)'];
+		}
+
+	}
+
 
 
 
