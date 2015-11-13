@@ -70,7 +70,8 @@ class products extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_plugins( $request ) {
-		$allowed = ingot_accepted_plugins_for_price_tests();
+		
+		$allowed = ingot_accepted_plugins_for_price_tests( true );
 		if( ! empty( $allowed ) ) {
 			foreach( $allowed as $value => $label ) {
 				if( ingot_check_ecommerce_active( $value ) ) {
@@ -80,7 +81,6 @@ class products extends route {
 					);
 				}
 			}
-
 			return rest_ensure_response( $plugins );
 		}else{
 			return rest_ensure_response( '', 404 );

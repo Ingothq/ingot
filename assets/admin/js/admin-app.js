@@ -321,6 +321,7 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'priceGroups', function(
             $scope.groups = JSON.parse( res.data );
         });
     }
+    
 }]);
 
 //controller for creating/editing a price group
@@ -365,22 +366,15 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     }
 
     $scope.submit = function( ){
-        var url;
-        if( 'priceGroup.new' == $state.current.name ) {
-            url =INGOT_ADMIN.api + 'price-group/?context=admin';
-        }else{
-            url = INGOT_ADMIN.api + 'price-group/' + groupID + '?context=admin';
-        }
-
-        $http({
-            method: 'POST',
-            headers: {
-                'X-WP-Nonce': INGOT_ADMIN.nonce
-            },
-            url: url,
-            data: $scope.group
-        } ).success(function(data) {
-            $scope.group = data;
+	    
+        var url;        
+        angular.forEach( $scope.group.tests, function( value, key ) {
+	        value.default = parseFloat( value.default / 100 );	        
+        });
+        
+        priceGroups.save({ data: $scope.group }, function(res){
+	        console.log(res);
+	        $scope.group = data;
             if( 'priceGroup.new' == $state.current.name ) {
                 $state.go('priceGroup.edit' ).toParams({
                     groupID: data.ID
@@ -392,14 +386,16 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 type: "success",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
-        } ).error(function(){
-            swal({
+        }, function( error ) {
+	        console.log( error );
+	        swal({
                 title: INGOT_TRANSLATION.fail,
                 text: INGOT_TRANSLATION.sorry,
                 type: "error",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
         })
+		
     };
 
     $scope.addNewTest = function(e) {
@@ -410,6 +406,21 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         	$scope.group.tests = [];
         $scope.group.tests[id] = { 'ID': id };
         console.log( $scope.group );
+        
+		setTimeout( function() {
+			jQuery(".slider-" + id).slider({
+				value:0,
+				min: 0,
+				max: 100,
+				step: 5,
+				slide: function( event, ui ) {
+					$scope.group.tests[id].default = ui.value;
+					jQuery(".slider-" + id + "-val").html( ui.value + '%' );
+				}
+			});
+			$scope.$apply();
+		}, 50 );
+        
     };
 
 

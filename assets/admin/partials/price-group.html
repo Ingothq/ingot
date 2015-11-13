@@ -31,7 +31,7 @@
                         {{ 'group.plugin' | translate }}
                     </label>
                     <select  id="plugin" class="col-md-8 col-sm-12" ng-model="group.plugin" ng-change="products()">
-                        <option ng-repeat="option in plugins" ng-selected="group.plugin == option.label" value="{{option.label}}" ng-required="true">
+                        <option ng-repeat="option in plugins" ng-selected="group.plugin == option.value" value="{{option.value}}" ng-required="true">
                             {{option.label}}
                         </option>
                     </select>
@@ -56,11 +56,12 @@
                             <label for="default-{{test.ID}}" class="col-md-4 col-sm-12">
                                 {{ 'group.price_variation' | translate }}
                             </label>
-                            <input name="default" type="default" id="default-{{test.ID}}" ng-model="test.default" ng-required="true" class="col-md-8 col-sm-12"/>
+                            <div class="slider-{{test.ID}}-val col-md-2 col-sm-6">0%</div>
+                            <div class="slider-{{test.ID}} col-md-6 col-sm-6"></div>
                         </div>
                     </div>
                 </div>
-                <a class="btn btn-default btn-block" ng-click="addNewTest()" href="">
+                <a class="btn btn-default btn-block" ng-click="addNewTest()" href="" ng-show="group.product">
                     {{ 'group.add_test' | translate }}
                 </a>
             </div>
