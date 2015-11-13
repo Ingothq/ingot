@@ -153,7 +153,10 @@ abstract class route extends \WP_REST_Controller  {
 
 		}
 
-		return current_user_can( permissions::get_for( $this->what, 'read' ) );
+
+		$cap = permissions::get_for($this->what, 'read' );
+		$can = current_user_can(  $cap );
+		return $can;
 	}
 
 	/**
