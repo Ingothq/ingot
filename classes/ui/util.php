@@ -111,6 +111,7 @@ class util {
 	 * @return string
 	 */
 	public static function click_nonce( $test_id, $sequence_id, $group_id  ){
+		return wp_create_nonce();
 		$action = self::click_nonce_action( $test_id, $sequence_id, $group_id );
 		return wp_create_nonce( $action );
 	}
@@ -128,7 +129,8 @@ class util {
 	 * @return bool
 	 */
 	public static function verify_click_nonce( $nonce, $test_id, $sequence_id, $group_id ){
-		$user = wp_get_current_user();
+
+		return wp_verify_nonce( $nonce );
 		$action = self::click_nonce_action( $test_id, $sequence_id, $group_id );
 
 		return (bool) wp_verify_nonce( $nonce, $action );

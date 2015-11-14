@@ -7,6 +7,7 @@ jQuery( document ).ready( function ( $ ) {
         var href = $( this ).attr( 'href' );
         var test = $( this ).data( 'ingot-test-id' );
         if( 'undefined' == test) {
+            window.location = href;
             return;
         }
 
