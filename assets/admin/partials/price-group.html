@@ -1,3 +1,73 @@
 <div ng-controller="priceGroup">
-    Coming Soon.
+    <form ng-submit="submit()" class="simple-form">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <ul class="list-inline">
+                    <li>
+                        <input type="submit" value="Save Group" id="save-group" class="btn btn-primary" />
+                    </li>
+                    <li>
+                        {{ group.name }}
+                    </li>
+                    <li>
+                        {{  group.ID }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <h4 translate>
+                    {{ 'group.group_settings_header' | translate }}
+                </h4>
+                <div class="form-group row">
+                    <label for="name" class="col-md-4 col-sm-12">
+                        {{ 'group.name' | translate }}
+                    </label>
+                    <input id="name" type="text" ng-model="group.name" class="col-md-8 col-sm-12" ng-required="true" />
+                </div>
+                <div class="form-group row">
+                    <label for="plugin" class="col-md-4 col-sm-12">
+                        {{ 'group.plugin' | translate }}
+                    </label>
+                    <select  id="plugin" class="col-md-8 col-sm-12" ng-model="group.plugin" ng-change="products()">
+                        <option ng-repeat="option in plugins" ng-selected="group.plugin == option.value" value="{{option.value}}" ng-required="true">
+                            {{option.label}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group row" ng-show="products.length > 0">
+                    <label for="product" class="col-md-4 col-sm-12">
+                        {{ 'group.product' | translate }}
+                    </label>
+                    <select id="product"  class="col-md-8 col-sm-12" ng-model="group.product" ng-required="true">
+                        <option ng-repeat="option in products" ng-selected="group.product == option.value" value="{{option.value}}">
+                            {{option.label}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <h4>{{ 'group.tests_header' | translate }}</h4>
+                <div id="tests" ng-repeat="test in group.tests track by $index" ng-if="test.ID">
+                    <div id="test-{{test.ID}}">
+                        <div>{{test.ID}}</div>
+                        <div class="form-group row" >
+                            <label for="default-{{test.ID}}" class="col-md-4 col-sm-12">
+                                {{ 'group.price_variation' | translate }}
+                            </label>
+                            <div class="slider-{{test.ID}}-val col-md-2 col-sm-6">0%</div>
+                            <div class="slider-{{test.ID}} col-md-6 col-sm-6"></div>
+                        </div>
+                    </div>
+                </div>
+                <a class="btn btn-default btn-block" ng-click="addNewTest()" href="" ng-show="group.product">
+                    {{ 'group.add_test' | translate }}
+                </a>
+            </div>
+
+
+        </div>
+
+    </form>
 </div>

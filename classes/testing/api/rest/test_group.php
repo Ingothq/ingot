@@ -160,7 +160,11 @@ class test_group extends route {
 				return rest_ensure_response( $group );
 			}
 
+		}else{
+			return new \WP_REST_Response( array(), 404 );
 		}
+
+
 	}
 
 	/**

@@ -1,10 +1,11 @@
 <ul>
     <li ng-repeat="group in groups">
-        <h5>{{ group.name }}</h5>
+        <h5>{{ group.group_name }}</h5>
+
         <div class="btn-group">
             <label class="btn btn-primary">
-                <a ui-sref="clickTests.edit({groupID:group.ID})">
-                    {{ 'groups.show_all' | translate }}
+                <a ui-sref="priceTests.edit({groupID:group.ID})">
+                    {{ 'groups.edit' | translate }}
                 </a>
             </label>
             <label class="btn btn-primary">
