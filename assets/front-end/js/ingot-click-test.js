@@ -18,7 +18,7 @@ jQuery( document ).ready( function ( $ ) {
 
         $.when(
             $.ajax({
-                url: INGOT_VARS.api_url + 'test/' + test + '/click',
+                url: INGOT_VARS.api_url + 'test/' + test + '/click?_wpnonce=' + INGOT_VARS.nonce,
                 method: "POST",
                 data: data,
                 beforeSend: function ( xhr ) {
