@@ -358,7 +358,7 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'priceGroups', function(
 ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'priceGroups', function( $scope, $http, $stateParams, $rootScope, $state, priceGroups ) {
 
     $http({
-        url: INGOT_ADMIN.api + 'products?_wpnonce=' + INGOT_ADMIN.nonce,
+        url: INGOT_ADMIN.api + 'products/plugins?_wpnonce=' + INGOT_ADMIN.nonce,
         method: 'GET',
         headers: {
             'X-WP-Nonce': INGOT_ADMIN.nonce
