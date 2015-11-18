@@ -188,7 +188,7 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
         }, function ( isConfirm ) {
             if ( isConfirm ) {
                 $http({
-                    url: INGOT_ADMIN.api + 'test-group/' + groupID + '?_wp_rest_nonce=' + INGOT_ADMIN.nonce,
+                    url: INGOT_ADMIN.api + 'test-group/' + groupID + '?_wpnonce=' + INGOT_ADMIN.nonce,
                     method:'DELETE',
                     headers: {
                         'X-WP-Nonce': INGOT_ADMIN.nonce
@@ -274,7 +274,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             url = INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin';
         }
 
-        url +='&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
+        url +='&_wpnonce=' + INGOT_ADMIN.nonce;
 
         $http({
             method: 'POST',
@@ -358,7 +358,7 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'priceGroups', function(
 ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'priceGroups', function( $scope, $http, $stateParams, $rootScope, $state, priceGroups ) {
 
     $http({
-        url: INGOT_ADMIN.api + 'products/plugins',
+        url: INGOT_ADMIN.api + 'products?_wpnonce=' + INGOT_ADMIN.nonce,
         method: 'GET',
         headers: {
             'X-WP-Nonce': INGOT_ADMIN.nonce
@@ -456,7 +456,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
             $scope.products = {};
         }
         $http({
-            url: INGOT_ADMIN.api + 'products?plugin=' + $scope.group.plugin,
+            url: INGOT_ADMIN.api + 'products?plugin=' + $scope.group.plugin + '&_wpnonce=' + INGOT_ADMIN.nonce,
             method: 'GET',
             headers: {
                 'X-WP-Nonce': INGOT_ADMIN.nonce
@@ -495,7 +495,7 @@ ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
  * @since 0.2.0
  */
 ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
-    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
+    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wpnonce=' + INGOT_ADMIN.nonce;
     $http({
         method: 'GET',
         url:url,
@@ -546,7 +546,7 @@ ingotApp.factory( 'clickGroups', function( $resource ) {
 
 	return $resource( INGOT_ADMIN.api + 'test-group/:id', {
 		id: '@id',
-        _wp_rest_nonce: INGOT_ADMIN.nonce,
+        _wpnonce: INGOT_ADMIN.nonce,
         context: 'admin'
 	},{
 		'query' : {
@@ -595,7 +595,7 @@ ingotApp.factory( 'priceGroups', function( $resource ) {
 
     return $resource( INGOT_ADMIN.api + 'price-group/:id', {
         id: '@id',
-        _wp_rest_nonce: INGOT_ADMIN.nonce,
+        _wpnonce: INGOT_ADMIN.nonce,
         context: 'admin'
     },{
         'query' : {
