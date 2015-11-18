@@ -188,7 +188,7 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
         }, function ( isConfirm ) {
             if ( isConfirm ) {
                 $http({
-                    url: INGOT_ADMIN.api + 'test-group/' + groupID + '&_wp_rest_nonce=' + INGOT_ADMIN.nonce,
+                    url: INGOT_ADMIN.api + 'test-group/' + groupID + '?_wp_rest_nonce=' + INGOT_ADMIN.nonce,
                     method:'DELETE',
                     headers: {
                         'X-WP-Nonce': INGOT_ADMIN.nonce
