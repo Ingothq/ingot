@@ -15,7 +15,7 @@ namespace ingot;
 class permissions {
 
 	public static function get_for( $what, $context = 'create' ) {
-		if ( in_array( $what, array( 'sequence', 'group', 'test' ) ) ) {
+		if ( in_array( $what, array( 'sequence', 'group', 'test', 'price_group', 'products' ) ) ) {
 			return apply_filters( 'ingot_permissions', 'manage_options', $what, $context );
 		}
 	}

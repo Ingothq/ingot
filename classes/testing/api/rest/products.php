@@ -14,7 +14,20 @@ namespace ingot\testing\api\rest;
 
 class products extends route {
 
+	/**
+	 * Marks what object this is for.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @var string
+	 */
+	protected $what = 'products';
 
+	/**
+	 * Register the routes for the objects of the controller.
+	 *
+	 * @since 0.2.0
+	 */
 	public function register_routes(){
 		$namespace = util::get_namespace();
 		register_rest_route( $namespace, '/products', array(
