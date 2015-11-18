@@ -594,7 +594,9 @@ ingotApp.factory( 'clickGroups', function( $resource ) {
 ingotApp.factory( 'priceGroups', function( $resource ) {
 
     return $resource( INGOT_ADMIN.api + 'price-group/:id', {
-        id: '@id'
+        id: '@id',
+        _wp_rest_nonce: INGOT_ADMIN.nonce,
+        context: 'admin'
     },{
         'query' : {
             transformResponse: function( data, headers ) {
