@@ -15,13 +15,13 @@
         }
     ],
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/WP-API/WP-API"
-        }
+      {
+        "type":"composer",
+        "url":"http://wpackagist.org"
+      }
     ],
     "require": {
-        "wp-api/wp-api" : "*",
+        "wpackagist-plugin/rest-api" : "*",
         "calderawp/dismissible-notice": "dev-master"
     },
     "require-dev": {
