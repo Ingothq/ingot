@@ -401,18 +401,18 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
         var id = Math.floor( Math.random() * 10000 ) + 1;
-        console.log( id );
+        id = id.toString();
+        console.log( typeof id );
+
         if( !$scope.group.tests )
         	$scope.group.tests = [];
-        $scope.group.tests[id] = { 'ID': id };
-        console.log( $scope.group );
+        $scope.group.tests[id] = { 'ID': parseInt( id ) };
         
 		setTimeout( function() {
 			jQuery(".slider-" + id).slider({
 				value:0,
-				min: 0,
-				max: 100,
-				step: 5,
+				min: -99,
+				max: 99,
 				slide: function( event, ui ) {
 					$scope.group.tests[id].default = ui.value;
 					jQuery(".slider-" + id + "-val").html( ui.value + '%' );
