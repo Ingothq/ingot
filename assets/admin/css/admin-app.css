@@ -10,3 +10,10 @@ label.btn.btn-primary:hover a {
     color: #337ab7;
 }
 
+#notices{
+    margin-top: 24px;
+}
+
+#notices .alert {
+    text-align: center;
+}

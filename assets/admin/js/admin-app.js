@@ -486,6 +486,22 @@ ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
  */
 ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
     $scope.welcome = INGOT_TRANSLATION.welcome;
+
+    //temporary for #61, #62 should make this uneed
+    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wpnonce=' + INGOT_ADMIN.nonce;
+    $http({
+        method: 'GET',
+        url:url,
+        headers: {
+            'X-WP-Nonce': INGOT_ADMIN.nonce
+        }
+
+    }).success( function( data, status, headers, config ) {
+        $scope.welcome.settings = data;
+    }).error(function( data ){
+        console.log( data );
+    });
+
 }]);
 
 
