@@ -3,4 +3,4 @@ vendor/*
 vendor/composer
 node_modules
 build/*
-.idea/*
+wp-api
