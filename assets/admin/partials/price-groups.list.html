@@ -1,5 +1,5 @@
 <ul>
-    <li ng-repeat="group in groups">
+    <li ng-repeat="group in groups track by $index" ng-if="groups !== 'No matching groups found.'">
         <h5>{{ group.group_name }}</h5>
 
         <div class="btn-group">
@@ -15,5 +15,8 @@
                 {{ 'groups.delete' | translate }}
             </label>
         </div>
+    </li>
+    <li ng-if="!groups.legnth">
+        There are no groups, create one.
     </li>
 </ul>

@@ -431,13 +431,12 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         if( !$scope.group.tests )
         	$scope.group.tests = [];
         $scope.group.tests.push({ 'ID': id, default: 0 });
-        
+
 		setTimeout( function() {
 			jQuery(".slider-" + id).slider({
 				value:0,
-				min: 0,
-				max: 100,
-				step: 5,
+				min: -99,
+				max: 99,
 				slide: function( event, ui ) {
 					$scope.group.tests[jQuery(event.target).data('index')].default = ui.value;
 					jQuery(".slider-" + id + "-val").html( ui.value + '%' );
@@ -485,6 +484,22 @@ ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
  */
 ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
     $scope.welcome = INGOT_TRANSLATION.welcome;
+
+    //temporary for #61, #62 should make this uneed
+    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wpnonce=' + INGOT_ADMIN.nonce;
+    $http({
+        method: 'GET',
+        url:url,
+        headers: {
+            'X-WP-Nonce': INGOT_ADMIN.nonce
+        }
+
+    }).success( function( data, status, headers, config ) {
+        $scope.welcome.settings = data;
+    }).error(function( data ){
+        console.log( data );
+    });
+
 }]);
 
 
