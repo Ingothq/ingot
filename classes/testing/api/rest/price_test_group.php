@@ -76,7 +76,9 @@ class price_test_group extends route {
 
 			$group = price_group::read( $id );
 
-
+			//hack for #65
+			$group[ 'product' ] = $group[ 'product_ID' ];
+			unset( $group[ 'product_ID' ] );
 			if ( $group ) {
 				return rest_ensure_response( $group );
 			}
@@ -101,6 +103,9 @@ class price_test_group extends route {
 		unset( $params[ 0 ] );
 		unset( $params[ 1 ] );
 
+		//this is a hack for #65
+		$params[ 'product_ID' ] = $params[ 'product' ];
+
 		if ( ! empty( $params[ 'tests' ] ) ) {
 			foreach ( $params[ 'tests' ] as $test ) {
 				$test_id = helpers::v( 'id', $test, 0 );
@@ -110,7 +115,7 @@ class price_test_group extends route {
 					$test[ 'product_ID' ] = $params[ 'product_ID' ];
 					$_id = price_test::update( $test, $test_id );
 				} else {
-
+					$test[ 'product_ID' ] = $params[ 'product_ID' ];
 					$_id = price_test::create( $test );
 				}
 
@@ -283,12 +288,13 @@ class price_test_group extends route {
 				'default'           => 0,
 				'sanitize_callback' => 'absint',
 			),
-			'product_ID'       => array(
+			'product'       => array(
 				'description'       => __( 'ID of product to test', 'ingot' ),
 				'type'              => 'integer',
 				'required'          => true,
 				'sanitize_callback' => 'absint',
-			)
+			),
+
 
 
 		);
