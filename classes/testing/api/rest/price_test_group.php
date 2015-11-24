@@ -212,7 +212,6 @@ class price_test_group extends route {
 			'plugin'               => array(
 				'description'        => __( 'Plugin To Use For Price Test', 'ingot' ),
 				'type'               => 'string',
-				'default'            => 'link',
 				'sanitize_callback'  => array( $this, 'strip_tags' ),
 				'validate_callback'  => array( $this, 'validate_plugin' ),
 				'required'           => 'true',
@@ -292,9 +291,19 @@ class price_test_group extends route {
 
 	}
 
+	/**
+	 * Validate plugin field
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param $value
+	 *
+	 * @return bool
+	 */
 	public function validate_plugin( $value ) {
-		if( ! in_array( $value, ingot_accepted_plugins_for_price_tests() ) ){
-			return false;
+		$valid = ingot_accepted_plugins_for_price_tests();
+		if( in_array( $value, $valid ) ){
+			return true;
 
 		}
 	}
