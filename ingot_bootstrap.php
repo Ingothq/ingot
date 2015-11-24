@@ -72,6 +72,7 @@ class ingot_bootstrap {
 				 *
 				 */
 				do_action( 'ingot_loaded' );
+
 			}
 
 		}
