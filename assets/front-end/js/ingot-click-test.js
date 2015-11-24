@@ -26,6 +26,8 @@ jQuery( document ).ready( function ( $ ) {
                 },
             }).then(function( data, textStatus, jqXHR ) {
                 window.location = href;
+            } ).fail( function()  {
+                window.location = href;
             })
         );
     });
