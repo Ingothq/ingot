@@ -139,7 +139,7 @@ abstract class price {
 	 * @return string
 	 */
 	protected function apply_price( $price, $index = 'default' ) {
-		$p = $this->test[ 'test' ][ $index ][ $this->a_or_b ];
+		$p = $this->test[ $index ];
 
 		$price = $this->change_price( $price, $p );
 

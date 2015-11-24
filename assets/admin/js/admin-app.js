@@ -399,11 +399,11 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         });
         
         priceGroups.save( $scope.group, function(res){
-	        console.log(res);
-	        $scope.group = data;
-            if( 'priceGroup.new' == $state.current.name ) {
-                $state.go('priceGroup.edit' ).toParams({
-                    groupID: data.ID
+	        console.log( res);
+	        $scope.group = res;
+            if( 'priceTests.new' == $state.current.name ) {
+                $state.go('priceTests.edit' ).toParams({
+                    groupID: res.ID
                 });
             }
             swal({

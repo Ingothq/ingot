@@ -74,11 +74,7 @@ class price_test_group extends route {
 		$id  = helpers::v( 'id', $url, 0 );
 		if ( $id ) {
 
-			$group = price_group::read( $id );
-
-			//hack for #65
-			$group[ 'product' ] = $group[ 'product_ID' ];
-			unset( $group[ 'product_ID' ] );
+			$group = $this->read_group_for_return( $id );
 			if ( $group ) {
 				return rest_ensure_response( $group );
 			}
@@ -132,7 +128,7 @@ class price_test_group extends route {
 
 		$created = price_group::create( $params );
 		if ( ! is_wp_error( $created ) && is_numeric( $created ) ) {
-			$item = price_group::read( $created );
+			$item = $group = $this->read_group_for_return( $created );
 
 			return rest_ensure_response( $item, 200 );
 		} else {
@@ -338,5 +334,19 @@ class price_test_group extends route {
 			return true;
 
 		}
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return array|mixed|null|object|void
+	 */
+	protected function read_group_for_return( $id ) {
+		$group = price_group::read( $id );
+		//hack for #65
+		$group[ 'product' ] = $group[ 'product_ID' ];
+		unset( $group[ 'product_ID' ] );
+
+		return $group;
 	}
 }
