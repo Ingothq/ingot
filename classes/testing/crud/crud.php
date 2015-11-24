@@ -271,7 +271,7 @@ abstract class crud {
 		$required = static::required();
 		foreach( $required as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {
-				return false;
+				return new \WP_Error( 'ingot-invalid-config', __( sprintf( '%s require the field %s', static::what(), $key )  ) );
 			}
 
 		}
@@ -531,7 +531,11 @@ abstract class crud {
 				return $data;
 			}
 
-			return new \WP_Error( 'ingot-invalid-config' );
+			$class = get_called_class();
+			$class = explode( "\\", $class );
+			$class =  array_pop( $class );
+
+			return new \WP_Error( 'ingot-invalid-config', '', array( $class ) );
 
 		}
 

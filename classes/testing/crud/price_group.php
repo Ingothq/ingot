@@ -154,7 +154,7 @@ class price_group extends table_crud {
 
 		foreach( $required as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {
-				return false;
+				return new \WP_Error( 'ingot-invalid-config', __( sprintf( '%s require the field %s', static::what(), $key )  ) );
 			}
 
 		}
@@ -166,7 +166,7 @@ class price_group extends table_crud {
 			foreach ( $data['test_order'] as $i => $test ) {
 				$test = price_test::read( $test );
 				if ( $product_id != $test['product_ID'] ) {
-					return new \WP_Error( 'ingot-invalid-test-group-test', __( 'All price tests in a pricte test group must be for the same product', 'ingot' ) );
+					return new \WP_Error( 'ingot-invalid-test-group-test', __( 'All price tests in a price test group must be for the same product', 'ingot' ) );
 				}
 			}
 		}

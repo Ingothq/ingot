@@ -41,16 +41,16 @@ class price_test_group extends route {
 	public function get_items( $request ) {
 
 		$args = array(
-			'page' => $request->get_param( 'page' ),
+			'page'  => $request->get_param( 'page' ),
 			'limit' => $request->get_param( 'limit' )
 		);
 
 		$groups = price_group::get_items( $args );
 
-		if( empty( $groups ) ) {
+		if ( empty( $groups ) ) {
 			return rest_ensure_response( __( 'No matching groups found.', 'ingot' ), 404 );
 
-		}else{
+		} else {
 			$response = new \WP_REST_Response( $groups, 200 );
 			$response->header( 'X-Ingot-Total', (int) price_group::total() );
 
@@ -71,17 +71,17 @@ class price_test_group extends route {
 	 */
 	public function get_item( $request ) {
 		$url = $request->get_url_params();
-		$id = helpers::v( 'id', $url, 0 );
-		if( $id ) {
+		$id  = helpers::v( 'id', $url, 0 );
+		if ( $id ) {
 
 			$group = price_group::read( $id );
 
 
-			if( $group ) {
+			if ( $group ) {
 				return rest_ensure_response( $group );
 			}
 
-		}else{
+		} else {
 			return new \WP_REST_Response( array(), 404 );
 		}
 	}
@@ -93,17 +93,44 @@ class price_test_group extends route {
 	 * @since 0.0.9
 	 *
 	 * @param \WP_REST_Request $request Full data about the request.
+	 *
 	 * @return \WP_Error|\WP_REST_Request
 	 */
 	public function create_item( $request ) {
 		$params = $request->get_params();
-		unset( $params[0] );
-		unset( $params[1] );
+		unset( $params[ 0 ] );
+		unset( $params[ 1 ] );
+
+		if ( ! empty( $params[ 'tests' ] ) ) {
+			foreach ( $params[ 'tests' ] as $test ) {
+				$test_id = helpers::v( 'id', $test, 0 );
+
+				unset( $test[ 'id' ] );
+				if ( absint( $test_id ) > 0 ) {
+					$test[ 'product_ID' ] = $params[ 'product_ID' ];
+					$_id = price_test::update( $test, $test_id );
+				} else {
+
+					$_id = price_test::create( $test );
+				}
+
+				if ( 0 != $_id && is_numeric( $_id ) ) {
+					$params[ 'test_order' ][] = $_id;
+				}
+
+
+			}
+
+		}
+
+		unset( $params[ 'tests' ] );
+
 		$created = price_group::create( $params );
 		if ( ! is_wp_error( $created ) && is_numeric( $created ) ) {
 			$item = price_group::read( $created );
+
 			return rest_ensure_response( $item, 200 );
-		}else{
+		} else {
 			if ( ! is_wp_error( $created ) ) {
 				$created = __( 'FAIL', 'ingot' );
 			}
@@ -119,14 +146,15 @@ class price_test_group extends route {
 	 * @since 0.0.9
 	 *
 	 * @param \WP_REST_Request $request Full data about the request.
+	 *
 	 * @return \WP_Error|\WP_REST_Request
 	 */
 	public function update_item( $request ) {
-		$params = $request->get_params();
-		$url = $request->get_url_params( );
-		$id = helpers::v( 'id', $url, 0 );
+		$params   = $request->get_params();
+		$url      = $request->get_url_params();
+		$id       = helpers::v( 'id', $url, 0 );
 		$existing = price_group::read( $id );
-		if( ! is_array( $existing ) ){
+		if ( ! is_array( $existing ) ) {
 			if ( is_wp_error( $existing ) ) {
 				return $existing;
 			}
@@ -136,45 +164,48 @@ class price_test_group extends route {
 
 		//test order
 		//@todo deal with removals
-		if( ! empty( $params[ 'tests_update' ] ) ){
-			foreach( $params[ 'tests_update' ] as $test ){
+		if ( ! empty( $params[ 'tests_update' ] ) ) {
+			foreach ( $params[ 'tests_update' ] as $test ) {
 				$_id = price_test::update( $test, helpers::v( 'ID', $test, 0, 'absint' ) );
 			}
 		}
 
-		if( ! empty( $params[ 'tests_new' ] ) ){
-			foreach( $params[ 'tests_new' ] as $test ){
+		if ( ! empty( $params[ 'tests_new' ] ) ) {
+			foreach ( $params[ 'tests_new' ] as $test ) {
 				$data[ 'test_order' ] = $existing[ 'test_order' ];
-				$new_test = price_test::create( $test );;
+				$new_test             = price_test::create( $test );;
 				if ( ! is_wp_error( $new_test ) ) {
-					$data['test_order'][] = $new_test;
+					$data[ 'test_order' ][] = $new_test;
 				}
 			}
 		}
 
 		//@todo allow for more fields to be updated
-		foreach( array(
-			'group_name',
-			'initial',
-			'threshold'
-		) as $field ){
-			if( ! empty( $params[ $field ] ) ){
+		foreach (
+			array(
+				'group_name',
+				'initial',
+				'threshold'
+			) as $field
+		) {
+			if ( ! empty( $params[ $field ] ) ) {
 				$data[ $field ] = $params[ $field ];
 			}
 		}
 
-		$data = array_merge(  $existing, $data );
+		$data = array_merge( $existing, $data );
 
 		$updated = \ingot\testing\crud\price_group::update( $data, $id, true );
 
 		//this is a massive violation of separation of concerns.
-		if( empty( $data[ 'sequences' ] ) ){
+		if ( empty( $data[ 'sequences' ] ) ) {
 			\ingot\testing\tests\sequence_progression::make_initial_sequence( $id, true );
 		}
 		if ( ! is_wp_error( $updated ) && is_numeric( $updated ) ) {
 			$item = \ingot\testing\crud\price_group::read( $updated );
+
 			return rest_ensure_response( $item, 200 );
-		}else{
+		} else {
 			if ( ! is_wp_error( $updated ) ) {
 				$created = __( 'FAIL', 'ingot' );
 			}
@@ -194,80 +225,75 @@ class price_test_group extends route {
 	 * @return array
 	 */
 	public function args( $require_id = true ) {
-		$args =  array(
-			'id'                   => array(
-				'description'        => __( 'ID of group', 'ingot' ),
-				'type'               => 'integer',
-				'default'            => 1,
-				'sanitize_callback'  => 'absint',
+		$args = array(
+			'id'               => array(
+				'description'       => __( 'ID of group', 'ingot' ),
+				'type'              => 'integer',
+				'default'           => 1,
+				'sanitize_callback' => 'absint',
 			),
-			'type'               => array(
-				'description'        => __( 'Type of Test Group', 'ingot' ),
-				'type'               => 'string',
-				'default'            => 'link',
-				'sanitize_callback'  => array( $this, 'strip_tags' ),
-				'validate_callback'  => array( $this, 'validate_type' ),
-				'required'           => 'true',
+			'type'             => array(
+				'description'       => __( 'Type of Test Group', 'ingot' ),
+				'type'              => 'string',
+				'default'           => 'price',
+				'sanitize_callback' => array( $this, 'strip_tags' ),
+				'validate_callback' => array( $this, 'validate_type' ),
 			),
-			'plugin'               => array(
-				'description'        => __( 'Plugin To Use For Price Test', 'ingot' ),
-				'type'               => 'string',
-				'sanitize_callback'  => array( $this, 'strip_tags' ),
-				'validate_callback'  => array( $this, 'validate_plugin' ),
-				'required'           => 'true',
+			'plugin'           => array(
+				'description'       => __( 'Plugin To Use For Price Test', 'ingot' ),
+				'type'              => 'string',
+				'sanitize_callback' => array( $this, 'strip_tags' ),
+				'validate_callback' => array( $this, 'validate_plugin' ),
+				'required'          => 'true',
 			),
-			'group_name'              => array(
-				'description'        => __( 'Name of Test Group', 'ingot' ),
-				'type'               => 'string',
-				'default'            => '',
-				'sanitize_callback'  => array( $this, 'strip_tags' ),
-				'required'           => true,
+			'group_name'       => array(
+				'description'       => __( 'Name of Test Group', 'ingot' ),
+				'type'              => 'string',
+				'default'           => '',
+				'sanitize_callback' => array( $this, 'strip_tags' ),
+				'required'          => true,
 			),
-			'sequences'  => array(
-				'description'        => __( 'Sequences', 'ingot' ),
-				'type'               => 'array',
-				'default'            => array(),
-				'sanitize_callback'  => array( $this, 'make_array_values_numeric' ),
+			'sequences'        => array(
+				'description'       => __( 'Sequences', 'ingot' ),
+				'type'              => 'array',
+				'default'           => array(),
+				'sanitize_callback' => array( $this, 'make_array_values_numeric' ),
 			),
-			'test_order' => array(
-				'description'        => __( 'Order of Tests', 'ingot' ),
-				'type'               => 'array',
-				'default'            => array(),
-				'sanitize_callback'  => array( $this, 'make_array_values_numeric' ),
+			'tests'            => array(
+				'description'       => __( 'Order of Tests', 'ingot' ),
+				'type'              => 'array',
+				'default'           => array(),
+				'sanitize_callback' => array( $this, 'make_array_values_numeric' ),
 			),
-			'initial'  => array(
-				'description'        => __( 'Number of times to run test at 50/50', 'ingot' ),
-				'type'               => 'integer',
-				'default'            => 50,
-				'sanitize_callback'  => 'absint',
+			'initial'          => array(
+				'description'       => __( 'Number of times to run test at 50/50', 'ingot' ),
+				'type'              => 'integer',
+				'default'           => 50,
+				'sanitize_callback' => 'absint',
 			),
-			'threshold'  => array(
-				'description'        => __( 'Threshold to end a test.', 'ingot' ),
-				'type'               => 'integer',
-				'default'            => 20,
-				'sanitize_callback'  => 'absint',
+			'threshold'        => array(
+				'description'       => __( 'Threshold to end a test.', 'ingot' ),
+				'type'              => 'integer',
+				'default'           => 20,
+				'sanitize_callback' => 'absint',
 			),
-			'current_sequence'  => array(
-				'description'        => __( 'Current sequence', 'ingot' ),
-				'type'               => 'integer',
-				'default'            => 0,
-				'sanitize_callback'  => 'absint',
+			'current_sequence' => array(
+				'description'       => __( 'Current sequence', 'ingot' ),
+				'type'              => 'integer',
+				'default'           => 0,
+				'sanitize_callback' => 'absint',
 			),
-			'tests_new' => array(
-				'description'        => __( 'New tests to add.', 'ingot' ),
-				'type'               => 'array',
-				'default'            => array(),
-			),
-			'tests_update' => array(
-				'description'        => __( 'Tests to update.', 'ingot' ),
-				'type'               => 'array',
-				'default'            => array(),
-			),
+			'product_ID'       => array(
+				'description'       => __( 'ID of product to test', 'ingot' ),
+				'type'              => 'integer',
+				'required'          => true,
+				'sanitize_callback' => 'absint',
+			)
 
 
 		);
 
-		if ( $require_id ){
+		if ( $require_id ) {
 			$args[ 'ID' ][ 'required' ] = true;
 		}
 
@@ -284,7 +310,7 @@ class price_test_group extends route {
 	 * @return bool
 	 */
 	public function validate_type( $value ) {
-		if( 'price' !== $value ) {
+		if ( 'price' !== $value ) {
 			return false;
 
 		}
@@ -300,9 +326,9 @@ class price_test_group extends route {
 	 *
 	 * @return bool
 	 */
-	public function validate_plugin( $value ) {
+	public function validate_plugin( $value, $request ) {
 		$valid = ingot_accepted_plugins_for_price_tests();
-		if( in_array( $value, $valid ) ){
+		if ( in_array( $value, $valid ) ) {
 			return true;
 
 		}
