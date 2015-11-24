@@ -51,7 +51,6 @@
                 <h4>{{ 'group.tests_header' | translate }}</h4>
                 <div id="tests" ng-repeat="test in group.tests track by $index" ng-if="test.ID">
                     <div id="test-{{test.ID}}">
-                        <div>{{test.ID}}</div>
                         <div class="form-group row" >
                             <label for="default-{{test.ID}}" class="col-md-4 col-sm-12">
                                 {{ 'group.price_variation' | translate }}
