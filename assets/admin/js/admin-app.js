@@ -398,7 +398,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 	        value.default = parseFloat( value.default / 100 );	        
         });
         
-        priceGroups.save({ data: $scope.group }, function(res){
+        priceGroups.save( $scope.group, function(res){
 	        console.log(res);
 	        $scope.group = data;
             if( 'priceGroup.new' == $state.current.name ) {
