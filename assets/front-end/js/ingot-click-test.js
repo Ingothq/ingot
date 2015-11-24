@@ -7,6 +7,7 @@ jQuery( document ).ready( function ( $ ) {
         var href = $( this ).attr( 'href' );
         var test = $( this ).data( 'ingot-test-id' );
         if( 'undefined' == test) {
+            window.location = href;
             return;
         }
 
@@ -24,7 +25,9 @@ jQuery( document ).ready( function ( $ ) {
                 beforeSend: function ( xhr ) {
                     xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
                 },
-            }).then(function( data, textStatus, jqXHR ) {
+            }).success(function( data, textStatus, jqXHR ) {
+                window.location = href;
+            } ).error( function(){
                 window.location = href;
             } ).fail( function()  {
                 window.location = href;
