@@ -427,11 +427,10 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
         var id = Math.floor( Math.random() * 10000 ) + 1;
-        console.log( id );
+        id = id.toString();
         if( !$scope.group.tests )
         	$scope.group.tests = [];
-        $scope.group.tests[id] = { 'ID': id };
-        console.log( $scope.group );
+        $scope.group.tests.push({ 'ID': id, default: 0 });
         
 		setTimeout( function() {
 			jQuery(".slider-" + id).slider({
@@ -440,7 +439,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 				max: 100,
 				step: 5,
 				slide: function( event, ui ) {
-					$scope.group.tests[id].default = ui.value;
+					$scope.group.tests[jQuery(event.target).data('index')].default = ui.value;
 					jQuery(".slider-" + id + "-val").html( ui.value + '%' );
 				}
 			});
