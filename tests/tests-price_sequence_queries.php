@@ -48,7 +48,8 @@ class tests_price_sequence_queries extends \WP_UnitTestCase{
 	 *
 	 * @covers \ingot\testing\crud\sequence::get_items()
 	 * @covers \ingot\testing\crud\sequence::get_for_price_tests()
-	 * @covers 	\ingot\testing\crud\price_group::get_items()
+	 * @covers \ingot\testing\crud\price_group::get_items()
+	 * @covers \ingot\testing\cookies\init::collect_sequences()
 	 */
 	public function testGetActive() {
 
@@ -133,18 +134,14 @@ class tests_price_sequence_queries extends \WP_UnitTestCase{
 	protected function make_group( $product_id ) {
 		$params     = array(
 			'product_ID' => $product_id,
-			'default'    => array(
-				'a' => rand( -0.9, 0.9 ),
-				'b' => rand( -0.9, 0.9 )
-			)
-
+			'default'    => rand( -0.9, 0.9 )
 		);
 
 		for ( $i = 0; $i <= 1; $i ++ ) {
 			$id = \ingot\testing\crud\price_test::create( $params );
 			$tests[ $i ] = $id;
-			$params[ 'default' ][ 'a' ] = rand( -0.9, 0.9 );
-			$params[ 'default' ][ 'b' ] = rand( -0.9, 0.9 );
+			$params[ 'default' ] = rand( -0.9, 0.9 );
+
 		}
 
 		$params = array(

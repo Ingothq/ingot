@@ -15,32 +15,53 @@ namespace ingot\testing\cookies;
 use ingot\testing\crud\price_group;
 use ingot\testing\crud\price_test;
 use ingot\testing\crud\sequence;
+use ingot\testing\crud\test;
 use ingot\testing\tests\chance;
 use ingot\testing\tests\flow;
 use ingot\testing\utility\helpers;
 
 class price {
 
+	/**
+	 * The price cookie
+	 *
+	 * @since 0.2.0
+	 *
+	 * @access protected
+	 *
+	 * @var array
+	 */
 	private $price_cookie;
 
-	private $current_sequences;
+	/**
+	 * Current price sequences
+	 *
+	 * @since 0.2.0
+	 *
+	 * @access private
+	 *
+	 * @var array
+	 */
+	private $current_sequences = array();
 
 	/**
 	 * Construct object
 	 *
 	 * @since 0.0.9
 	 *
+	 * @param array $current_sequences Current sequences
 	 * @param array $price_cookie Price cookie portion of our cookie
 	 * @param bool $reset Optional. Whether to rest or not, default is false
 	 */
-	public function __construct( $price_cookie, $reset = true ){
+	public function __construct( $current_sequences, $price_cookie, $reset = true ){
 		if ( false == $reset  ) {
 			$this->price_cookie = $price_cookie;
 		}else{
 			$this->price_cookie = array();
 		}
 
-		$this->set_current_sequences();
+		$this->current_sequences = $current_sequences;
+
 		if( ! empty( $this->current_sequences )) {
 			$this->check_sequences();
 			$this->check_sequence_lives();
@@ -58,26 +79,7 @@ class price {
 		return $this->price_cookie;
 	}
 
-	/**
-	 * Query for current sequences
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 */
-	protected function set_current_sequences() {
-		$args = array(
-			'price_test' => true,
-			'current' => true,
-			'limit' => -1
-		);
-		$_sequences = sequence::get_items( $args );
-		if( ! empty( $_sequences ) ) {
-			$this->current_sequences = $_sequences;
-		}
 
-	}
 
 	/**
 	 * Make sure all current sequences are set
@@ -129,7 +131,6 @@ class price {
 			$sequence = $this->current_sequences[ $sequence_id ];
 		}else{
 			$sequence = sequence::read( $sequence_id );
-
 		}
 
 		if( is_array( $sequence ) ){
@@ -152,16 +153,10 @@ class price {
 		$group = price_group::read( $sequence[ 'group_ID' ] );
 		if ( is_array( $group ) ) {
 			$test_id = $this->get_test_id( $sequence, $a_or_b );
-			$test = array(
-				'a_or_b'      => $a_or_b,
-				'test_ID'     => $test_id,
-				'expires'     => $this->expires(),
-				'plugin'      => helpers::v( 'plugin', $group, 0 ),
-				'sequence_ID' => helpers::v( 'ID', $sequence, 0 ),
-				'product_ID'  => helpers::v( 'product_ID', $group, 0 )
-			);
+			$test = test::read( $test_id );
+			$test_details = \ingot\testing\utility\price::price_detail( $test_id, $a_or_b, $sequence[ 'ID' ], $group );
 
-			$this->price_cookie[ $sequence['ID'] ] = $test;
+			$this->price_cookie[ $sequence[ 'ID' ] ] = $test_details;
 		}
 
 	}

@@ -7,6 +7,14 @@
     </div>
 
     <div class="row">
+        <div class="sm-col-12" id="notices">
+            <div ng-show="0 == welcome.settings.license_valid" class="alert alert-danger">
+                    <a ui-sref="settings" class="alert-link">License not active or not valid</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="jumbotron sm-col-12">
             <h1 ng-bind="welcome.header"></h1>
 

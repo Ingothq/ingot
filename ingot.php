@@ -1,14 +1,15 @@
 <?php
 /**
  Plugin Name: Ingot
-Version: 0.2.0.1
+Version: 0.2.1
  */
 
 
-define( 'INGOT_VER', '0.2.0.1' );
+define( 'INGOT_VER', '0.2.1' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
+//define( 'INGOT_DEV_MODE', true );
 
 add_action( 'plugins_loaded', 'ingot_maybe_load', 0 );
 function ingot_maybe_load() {
