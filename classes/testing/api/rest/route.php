@@ -14,7 +14,7 @@ namespace ingot\testing\api\rest;
 
 use ingot\permissions;
 
-abstract class route extends \WP_REST_Controller  {
+abstract class route  {
 
 	/**
 	 * Marks what object this is for.
