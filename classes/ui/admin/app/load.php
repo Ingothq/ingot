@@ -137,7 +137,10 @@ class load {
 							<span class="icon-bar"></span>
 						</button>
 						<a class="navbar-brand active" ui-sref="otherwise" >
-							<?php _e( 'Ingot', 'ingot' ); ?>
+							<?php
+								_e( 'Ingot', 'ingot' );
+								printf( ' <small>%s</small>',  INGOT_VER );
+							?>
 						</a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">

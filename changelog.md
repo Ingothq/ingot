@@ -1,4 +1,7 @@
-
+# 0.2.1.1
+* Improved compatibility with WordPress 4.4
+* Plugin header meta data
+* Show version number in admin header
 
 # 0.2.1
 * Price testing for Easy Digital Downloads -- still experimental

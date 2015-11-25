@@ -1,7 +1,12 @@
 <?php
 /**
- Plugin Name: Ingot
+Plugin Name: Ingot
 Version: 0.2.1
+Description: The Automatic A/B Tester -- Do Less, Convert More
+Author: Ingot LLC
+Author URI: http://IngotHQ.com
+Requires at least: 4.3.1
+Tested up to: 4.4.0
  */
 
 

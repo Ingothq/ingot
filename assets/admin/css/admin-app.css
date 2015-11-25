@@ -17,3 +17,8 @@ label.btn.btn-primary:hover a {
 #notices .alert {
     text-align: center;
 }
+
+.navbar-header small {
+    font-size: 50%;
+    vertical-align: middle;
+}
