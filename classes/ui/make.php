@@ -32,11 +32,6 @@ class make {
 	 */
 	public function __construct() {
 		if ( is_admin() ) {
-			/*
-			$this->screens = new screens();
-			$this->make_screens();
-			add_action( 'init', array( $this, 'add_admin_nonce' ) );
-			*/
 			new load();
 		}
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );

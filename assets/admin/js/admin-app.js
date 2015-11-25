@@ -134,6 +134,11 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
     
     clickGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
 	    
+	    if( res.data.indexOf('No matching') > -1 ){
+		    $scope.groups = {};
+		    return;
+	    };
+	    
 	    $scope.groups = JSON.parse( res.data );
 	    
 	    var total_groups = parseInt( res.headers['x-ingot-total'] );
@@ -183,7 +188,7 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
         }, function ( isConfirm ) {
             if ( isConfirm ) {
                 $http({
-                    url: INGOT_ADMIN.api + 'test-group/' + groupID + '&_wp_rest_nonce=' + INGOT_ADMIN.nonce,
+                    url: INGOT_ADMIN.api + 'test-group/' + groupID + '?_wpnonce=' + INGOT_ADMIN.nonce,
                     method:'DELETE',
                     headers: {
                         'X-WP-Nonce': INGOT_ADMIN.nonce
@@ -225,6 +230,10 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
 		clickGroups.get({id: groupID}, function(res){
 	       $scope.group = res;
+	        
+		    if( $scope.group.tests.hasOwnProperty('errors') )
+		    	$scope.group.tests = {};
+	       
 		}, function(data, status, headers, config) {
             console.log( data );
             swal({
@@ -236,129 +245,36 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         })
 
     }
-
-        $scope.submit = function( data ){
-            var url;
-            if( 'clickTests.new' == $state.current.name ) {
-                url =INGOT_ADMIN.api + 'test-group/?context=admin';
-            }else{
-                url = INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin';
-            }
-
-            url +='&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
-
-            $http({
-                method: 'POST',
-                headers: {
-                    'X-WP-Nonce': INGOT_ADMIN.nonce
-                },
-                url: url,
-                data: $scope.group
-            } ).success(function(data) {
-                $scope.group = data;
-                if( 'clickTests.new' == $state.current.name ) {
-
-                    $state.go('clickTests.edit', { groupID: data.ID } );
-                }
-                swal({
-                    title: INGOT_TRANSLATION.group_saved,
-                    text: '',
-                    type: "success",
-                    confirmButtonText: INGOT_TRANSLATION.close
-                });
-            } ).error(function(){
-                swal({
-                    title: INGOT_TRANSLATION.fail,
-                    text: INGOT_TRANSLATION.sorry,
-                    type: "error",
-                    confirmButtonText: INGOT_TRANSLATION.close
-                });
-            })
-        };
-
-        $scope.addNewTest = function(e) {
-            //make ID a random string so it will be treated as new by API
-            var id = Math.random().toString(36).substring(7);
-            $scope.group.tests[ id ] = {'ID':id};
-        };
-
-
-}]);
-
-/**
- * Price Tests
- *
- * @since 2.0.0
- */
-//Controller for price groups list
-ingotApp.controller( 'priceGroups', ['$scope', '$http', function( $scope, $http ) {
-    swal({
-        title: INGOT_TRANSLATION.beta_error_header,
-        text: INGOT_TRANSLATION.beta_message,
-        type: "error",
-        confirmButtonText: INGOT_TRANSLATION.close
-    });
-
-    return;
-
-    $http({
-        method: 'GET',
-        url: INGOT_ADMIN.api + 'price-group&_wp_rest_nonce=' + INGOT_ADMIN.nonce
-
-    }).success( function( data, status, headers, config ) {
-        console.log( data );
-        $scope.groups = data;
-    }).error(function(data, status, headers, config) {
-        console.log( data );
-    });
-}]);
-
-//controller for creating/editing a price group
-ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', function( $scope, $http, $stateParams, $rootScope, $state ) {
-    swal({
-        title: INGOT_TRANSLATION.beta_error_header,
-        text: INGOT_TRANSLATION.beta_message,
-        type: "error",
-        confirmButtonText: INGOT_TRANSLATION.close
-    });
-
-    return;
-
-
-    if( 'priceGroup.new' == $state.current.name ) {
-        $scope.group = {
-            price_type_options : INGOT_ADMIN.price_type_options
-        };
-    }else{
-        var groupID = $stateParams.groupID;
-        $http({
-            method: 'GET',
-            url: INGOT_ADMIN.api + 'price-group/' + groupID + '?context=admin&_wp_rest_nonce=' + INGOT_ADMIN.nonce
-
-        }).success( function( data, status, headers, config ) {
-
-            $scope.group = data;
-
-        }).error(function(data, status, headers, config) {
-            console.log( data );
-            swal({
-                title: INGOT_TRANSLATION.fail,
-                text: INGOT_TRANSLATION.sorry,
-                type: "error",
-                confirmButtonText: INGOT_TRANSLATION.close
-            });
-        });
+    
+    $scope.buttonStyle = function( id, type ) {
+	    
+	    if( type == 'button_color' ) {
+		    var css = {}
+		    if( $scope.group.tests[id].meta && $scope.group.tests[id].meta.background_color )
+			    css['background-color'] = $scope.group.tests[id].meta.background_color;
+			if( $scope.group.tests[id].meta && $scope.group.tests[id].meta.color )
+			    css['color'] = $scope.group.tests[id].meta.color;
+		    return css;
+	    }
+	    
+    }
+    
+    $scope.removeTest = function( index ) {
+	    
+	    delete $scope.group.tests[index];
+	    return false;
+	    
     }
 
-    $scope.submit = function( ){
+    $scope.submit = function( data ){
         var url;
-        if( 'priceGroup.new' == $state.current.name ) {
-            url =INGOT_ADMIN.api + 'price-group/?context=admin';
+        if( 'clickTests.new' == $state.current.name ) {
+            url =INGOT_ADMIN.api + 'test-group/?context=admin';
         }else{
-            url = INGOT_ADMIN.api + 'price-group/' + groupID + '?context=admin';
+            url = INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin';
         }
 
-        url += '&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
+        url +='&_wpnonce=' + INGOT_ADMIN.nonce;
 
         $http({
             method: 'POST',
@@ -369,10 +285,9 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
             data: $scope.group
         } ).success(function(data) {
             $scope.group = data;
-            if( 'priceGroup.new' == $state.current.name ) {
-                $state.go('priceGroup.edit' ).toParams({
-                    groupID: data.ID
-                });
+            if( 'clickTests.new' == $state.current.name ) {
+
+                $state.go('clickTests.edit', { groupID: data.ID } );
             }
             swal({
                 title: INGOT_TRANSLATION.group_saved,
@@ -389,6 +304,167 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
             });
         })
     };
+
+    $scope.addNewTest = function(e) {
+        //make ID a random string so it will be treated as new by API
+        var id = Math.random().toString(36).substring(7);
+        $scope.group.tests[ id ] = {'ID':id};
+    };
+
+
+}]);
+
+/**
+ * Price Tests
+ *
+ * @since 2.0.0
+ */
+//Controller for price groups list
+ingotApp.controller( 'priceGroups', ['$scope', '$http', 'priceGroups', function( $scope, $http, priceGroups ) {
+    var page_limit = 10;
+    priceGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
+		
+		$scope.total_pages = false;
+		$scope.groups = JSON.parse( res.data );
+		if( res.headers['x-ingot-total'] ) {
+			var total_groups = parseInt( res.headers['x-ingot-total'] );
+			total_pages = total_groups / page_limit;
+			$scope.total_pages = new Array( Math.round( total_pages ) );
+		}
+
+    });
+
+    $scope.paginate = function( page, $event ) {
+        if( jQuery('.paginate a.active').length ) {
+            jQuery('.paginate a.active').toggleClass('active');
+        }
+
+
+        jQuery( $event.currentTarget ).toggleClass('active');
+
+        page = page + 1;
+        priceGroups.query({page: page, limit: page_limit, context: 'admin'}, function(res){
+            if( res.data.indexOf('No matching groups found.') >= 0 ) {
+                return;
+            }
+
+            $scope.groups = JSON.parse( res.data );
+        });
+    }
+    
+}]);
+
+//controller for creating/editing a price group
+ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'priceGroups', function( $scope, $http, $stateParams, $rootScope, $state, priceGroups ) {
+
+    $http({
+        url: INGOT_ADMIN.api + 'products/plugins?_wpnonce=' + INGOT_ADMIN.nonce,
+        method: 'GET',
+        headers: {
+            'X-WP-Nonce': INGOT_ADMIN.nonce
+        }
+
+    }).success( function( data, status, headers, config ) {
+        $scope.plugins = data;
+    } ).error( function ( data ) {
+        console.log( data );
+    } );
+
+
+    if( 'priceGroup.new' == $state.current.name ) {
+        $scope.group = {
+            price_type_options : INGOT_ADMIN.price_type_options
+        };
+    }else{
+        var groupID = $stateParams.groupID;
+        priceGroups.get({id: groupID}, function(res){
+	        if( res[0] != 'N' && res[1] != 'o' ) {   
+		        $scope.group = res;
+	            $scope.products();
+	        }
+        }, function(data, status, headers, config) {
+            console.log( data );
+            swal({
+                title: INGOT_TRANSLATION.fail,
+                text: INGOT_TRANSLATION.sorry,
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        })
+    }
+
+    $scope.submit = function( ){
+        angular.forEach( $scope.group.tests, function( value, key ) {
+	        value.default = parseFloat( value.default / 100 );	        
+        });
+        
+        priceGroups.save( $scope.group, function(res){
+	        console.log( res);
+	        $scope.group = res;
+            if( 'priceTests.new' == $state.current.name ) {
+                $state.go('priceTests.edit' ).toParams({
+                    groupID: res.ID
+                });
+            }
+            swal({
+                title: INGOT_TRANSLATION.group_saved,
+                text: '',
+                type: "success",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        }, function( error ) {
+	        console.log( error );
+	        swal({
+                title: INGOT_TRANSLATION.fail,
+                text: INGOT_TRANSLATION.sorry,
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            });
+        })
+		
+    };
+
+    $scope.addNewTest = function(e) {
+        //make ID a random string so it will be treated as new by API
+        var id = Math.random().toString(36).substring(7);
+        if( !$scope.group.tests )
+        	$scope.group.tests = [];
+        $scope.group.tests.push({ 'ID': id, default: 0 });
+
+		setTimeout( function() {
+			jQuery(".slider-" + id).slider({
+				value:0,
+				min: -99,
+				max: 99,
+				slide: function( event, ui ) {
+					$scope.group.tests[jQuery(event.target).data('index')].default = ui.value;
+					jQuery(".slider-" + id + "-val").html( ui.value + '%' );
+				}
+			});
+			$scope.$apply();
+		}, 50 );
+        
+    };
+
+
+    $scope.products = function() {
+	    console.log( $scope.group );
+        if( 'string' != typeof $scope.group.plugin){
+            $scope.products = {};
+        }
+        $http({
+            url: INGOT_ADMIN.api + 'products?plugin=' + $scope.group.plugin + '&_wpnonce=' + INGOT_ADMIN.nonce,
+            method: 'GET',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+
+        }).success( function( data, status, headers, config ) {
+            $scope.products = data;
+        } ).error( function ( data ) {
+            console.log( data );
+        } );
+    }
 
 }]);
 
@@ -407,6 +483,22 @@ ingotApp.controller( 'support', ['$scope', '$http', function( $scope, $http ) {
  */
 ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
     $scope.welcome = INGOT_TRANSLATION.welcome;
+
+    //temporary for #61, #62 should make this uneed
+    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wpnonce=' + INGOT_ADMIN.nonce;
+    $http({
+        method: 'GET',
+        url:url,
+        headers: {
+            'X-WP-Nonce': INGOT_ADMIN.nonce
+        }
+
+    }).success( function( data, status, headers, config ) {
+        $scope.welcome.settings = data;
+    }).error(function( data ){
+        console.log( data );
+    });
+
 }]);
 
 
@@ -416,7 +508,7 @@ ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
  * @since 0.2.0
  */
 ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
-    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wp_rest_nonce=' + INGOT_ADMIN.nonce;
+    var url =  INGOT_ADMIN.api + 'settings?context=admin&_wpnonce=' + INGOT_ADMIN.nonce;
     $http({
         method: 'GET',
         url:url,
@@ -461,12 +553,13 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
 /**
  * Test Groups Factory
  *
+ * @since 0.2.0
  */
 ingotApp.factory( 'clickGroups', function( $resource ) {
 
 	return $resource( INGOT_ADMIN.api + 'test-group/:id', {
 		id: '@id',
-        _wp_rest_nonce: INGOT_ADMIN.nonce,
+        _wpnonce: INGOT_ADMIN.nonce,
         context: 'admin'
 	},{
 		'query' : {
@@ -505,3 +598,55 @@ ingotApp.factory( 'clickGroups', function( $resource ) {
     })
 	
 });
+
+/**
+ * Price Groups Factory
+ *
+ * @since 0.2.0
+ */
+ingotApp.factory( 'priceGroups', function( $resource ) {
+
+    return $resource( INGOT_ADMIN.api + 'price-group/:id', {
+        id: '@id',
+        _wpnonce: INGOT_ADMIN.nonce,
+        context: 'admin'
+    },{
+        'query' : {
+            transformResponse: function( data, headers ) {
+                var response = {
+                    data: data,
+                    headers: headers()
+                };
+
+                return response;
+
+            }
+        },
+        'update':{
+            method:'PUT',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'post':{
+            method:'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'save':{
+            method:'POST',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        },
+        'delete':{
+            method:'DELETE',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        }
+    })
+
+});
+

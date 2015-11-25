@@ -218,7 +218,7 @@ class tests_price_test_crud extends \WP_UnitTestCase {
 	 *
 	 * @covers \ingot\testing\crud\price_test::update()
 	 */
-	public function testUpadate() {
+	public function testUpdate() {
 		$now    = time();
 		$params = array(
 			'product_ID' => 100,
@@ -236,7 +236,7 @@ class tests_price_test_crud extends \WP_UnitTestCase {
 		$test = \ingot\testing\crud\price_test::read( $created );
 		$this->assertTrue( is_array( $test ) );
 
-		$params['default']['b'] = 0.01;
+		$params['default'] = 0.01;
 		$params['name']         = 'DRAGONS!';
 		$updated                = \ingot\testing\crud\price_test::update( $params, $created );
 		$this->assertEquals( $updated, $created );

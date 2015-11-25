@@ -13,6 +13,7 @@
 			<directory prefix="tests-" suffix=".php">./tests/flow</directory>
 			<directory prefix="tests-" suffix=".php">./tests/price</directory>
 			<directory prefix="tests-" suffix=".php">./tests/api</directory>
+            <directory prefix="tests-" suffix=".php">./tests/utilities</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

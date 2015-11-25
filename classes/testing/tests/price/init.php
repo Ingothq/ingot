@@ -20,7 +20,7 @@ use ingot\testing\utility\helpers;
 class init {
 
 	/**
-	 * Constructor
+	 *
 	 *
 	 * @since 0.0.9
 	 *
@@ -31,9 +31,9 @@ class init {
 	private $tests;
 
 	/**
-	 * Holds the data to put into cookie cache[ 'products' ]
+	 * Data to track.
 	 *
-	 * Used to create an array of data to track in purchases
+	 * array( 'plugin_name' => array( 'product_id' => array( 'test_id' => int, 'sequence_id' => int ) ) ) etc...
 	 *
 	 * @since 0.0.9
 	 *
@@ -41,13 +41,28 @@ class init {
 	 *
 	 * @var array
 	 */
-	private $product_map;
+	private $current_tests = array();
 
+	/**
+	 *  Init class
+	 *
+	 * @since 0.0.0
+	 *
+	 * @param array $tests Tests in cookie
+	 */
 	public function  __construct( $tests ) {
-
 		$this->setup_tests( $tests );
-		cache::instance()->update( 'products', $this->product_map );
+	}
 
+	/**
+	 * Get the current tests
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return array
+	 */
+	public function get_current_tests() {
+		return $this->current_tests;
 	}
 
 	/**
@@ -90,7 +105,7 @@ class init {
 	 * @param $data
 	 */
 	protected function add_to_product_map( $data ) {
-		$this->product_map[ $data['plugin'] ][ $data['product_ID'] ] = array(
+		$this->current_tests[ $data['plugin'] ][ $data['product_ID'] ] = array(
 			'sequence' => $data[ 'sequence_ID' ],
 			'test_ID'  => $data[ 'test_ID' ]
 		);
