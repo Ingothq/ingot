@@ -107,7 +107,7 @@ class settings {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param $value License code
+	 * @param string $value License code
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -122,7 +122,11 @@ class settings {
 				return true;
 
 			}else{
-				return new \WP_Error( 'ingot-license-invalid' );
+				if ( ! ingot_is_rest_api()  ) {
+					return new \WP_Error( 'ingot-license-invalid' );
+				}else{
+					return false;
+				}
 
 			}
 

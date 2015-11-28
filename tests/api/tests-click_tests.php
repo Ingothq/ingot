@@ -88,7 +88,7 @@ class tests_click_tests extends ingot_rest_test_case {
 			$sequence_id,
 			$group_id
 		);
-		$this->assertTrue( $verify );
+		$this->assertTrue( (bool) $verify );
 
 		$dont_verify = \ingot\ui\util::verify_click_nonce(
 			$nonce,
@@ -96,7 +96,7 @@ class tests_click_tests extends ingot_rest_test_case {
 			$sequence_id,
 			$group_id
 		);
-		$this->assertFalse( $dont_verify );
+		$this->assertFalse( (bool) $dont_verify );
 
 	}
 
