@@ -75,7 +75,7 @@ class settings extends route {
 
 
 		foreach( array_keys( $this->args() ) as $setting ) {
-			if( isset( $params[ $setting ] ) && ! empty( $params[ $setting ] ) ) {
+			if( isset( $params[ $setting ] ) ) {
 				$saved = \ingot\testing\crud\settings::write( $setting, $params[ $setting ] );
 				if( is_wp_error( $saved  ) ) {
 					return rest_ensure_response( $saved, 500 );
@@ -144,6 +144,10 @@ class settings extends route {
 			'license_code' => array(
 				'type'              => 'string',
 				'default'           => '',
+			),
+			'cache_mode' => array(
+				'type' => 'string',
+				'default' => false,
 			),
 			'context' => array(
 				'type' => 'string',

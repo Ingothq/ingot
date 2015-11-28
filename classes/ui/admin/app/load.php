@@ -239,6 +239,8 @@ class load {
 			),
 			'settings' => array(
 				'page_header' => __( 'Settings', 'ingot' ),
+				'cache_mode_label' => __( 'Work around caching', 'ingot' ),
+				'cache_mode_desc' => __( 'If you are using a static HTML cache testing will not work properly, since the same version of your site is shown to all visitors. Use this mode to work around this issue.', 'ingot' ),
 				'click_tracking_label' => __( 'Advanced Click Tracking', 'ingot' ),
 				'click_tracking_desc' => __( 'Ingot always tracks clicks, in advanced mode, more details are tracked. This takes up more space in the database, but enables Ingot to be more powerful.', 'ingot' ),
 				'anon_tracking_label' => __( 'Share Your Data Anonymously', 'ingot' ),

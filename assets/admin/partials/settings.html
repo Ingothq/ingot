@@ -21,6 +21,17 @@
         </div>
 
         <div class="form-settings">
+            <label for="cache_mode" >
+                {{ 'settings.cache_mode_label' | translate }}
+            </label>
+
+            <input id="cache_mode" type="checkbox" ng-model="settings.cache_mode" ng-true-value="'1'" ng-false-value="'0'" />
+            <p>
+                {{ 'settings.cache_mode_desc' | translate }}
+            </p>
+        </div>
+
+        <div class="form-settings">
             <label for="anon_tracking">
                 {{ 'settings.anon_tracking_label' | translate }}
             </label>

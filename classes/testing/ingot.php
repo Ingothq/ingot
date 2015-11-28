@@ -130,7 +130,8 @@ class ingot {
 	 * @uses "pre_update_option"
 	 */
 	public function presave_settings( $value, $option ){
-		if( in_array( $option, settings::get_key_names()) ) {
+		$keys = settings::get_key_names();
+		if( in_array( $option, $keys ) ) {
 			$value = settings::sanatize_setting( $option, $value );
 		}
 
