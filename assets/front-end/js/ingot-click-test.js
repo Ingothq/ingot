@@ -25,9 +25,11 @@ jQuery( document ).ready( function ( $ ) {
             click_nonce: $( this ).data( 'ingot-test-nonce' )
         };
 
+        var url = INGOT_VARS.api_url + 'test/' + test + '/click?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&ingot_session_ID=' + session_id;
+
         $.when(
             $.ajax({
-                url: INGOT_VARS.api_url + 'test/' + test + '/click?_wpnonce=' + INGOT_VARS.nonce,
+                url: url,
                 method: "POST",
                 data: data,
                 beforeSend: function ( xhr ) {
@@ -52,13 +54,12 @@ jQuery( document ).ready( function ( $ ) {
         var tests, test_list, url;
         var the_tests = [];
         tests = $( '.ingot-click-test' );
-        console.log( tests );
         $.each( tests, function( i, test ) {
             the_tests.push( $( test ).attr( 'data-ingot-test-id' ) );
         });
         if( tests.length > 0 ) {
             test_list =  the_tests.join(",");
-            url = INGOT_VARS.api_url + 'session/' + session_id + '/click?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list;
+            url = INGOT_VARS.api_url + 'sessions/' + session_id + '/session?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list;
             $.when(
                 $.ajax({
                     url: url,
@@ -85,9 +86,37 @@ jQuery( document ).ready( function ( $ ) {
             );
         }
 
-
-
-
     } );
+
+    /**
+     * Track all clicks by session
+     *
+     * @since 0.3.0
+     */
+    $(document).click(function(e) {
+        e.preventDefault();
+        if( 'undefined' != e.target.href && ! $( e.target ).hasClass( '.ingot-click-test' ) ) {
+            var url = INGOT_VARS.api_url + 'sessions/' + session_id + '?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&click_url=' + encodeURIComponent( e.target.href );
+            $.ajax({
+                url: url,
+                method: "GET",
+                beforeSend: function ( xhr ) {
+                    xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
+                },
+            }).success(function( data, textStatus, jqXHR ) {
+                window.location = e.target.href;
+            } ).error( function(){
+                window.location = e.target.href;
+            } ).fail( function()  {
+                window.location = e.target.href;
+            })
+        }else{
+            if( 'undefined' != e.target.href ){
+                window.location = e.target.href;
+            }
+        }
+
+
+    });
 } );
 

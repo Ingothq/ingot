@@ -223,7 +223,11 @@ class ingot {
 	 * @param string $what Item type
 	 */
 	public  function update_hook( $id, $what){
-
+		if( 'test' == $what ) {
+			$session = \ingot\testing\object\session::instance()->get_session_info();
+			$session[ 'click_ID' ] = $id;
+			session::update($session, $session[ 'ID' ] );
+		}
 
 	}
 

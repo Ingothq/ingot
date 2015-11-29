@@ -23,7 +23,7 @@ class session extends route {
 	 *
 	 * @var string
 	 */
-	protected $what = 'session';
+	protected $what = 'sessions';
 
 
 	/**
@@ -128,9 +128,10 @@ class session extends route {
 			return $this->response( $session );
 		}
 
-		\ingot\testing\crud\session::mark_used( $session[ 'ID' ] );
-
-		$session = $this->get_session_by_url_params( $request );
+		if ( ! empty( $request->get_param( 'click_url' ) ) ) {
+			$session[ 'click_url' ] = $request->get_param( 'click_url ' );
+			\ingot\testing\crud\session::update( $session, $session[ 'ID' ] );
+		}
 
 		return $this->response( $session );
 
@@ -151,6 +152,11 @@ class session extends route {
 				'default'             => array(),
 				'validation_callback' => array( $this, 'make_array_values_numeric' )
 
+			),
+			'click_url' => array(
+				'type' => 'string',
+				'required' => false,
+				'default' => '0'
 			)
 
 		];
