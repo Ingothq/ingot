@@ -65,7 +65,7 @@ abstract class route  {
 				'args'            => array(
 					'context'          => array(
 						'default'      => 'view',
-					),
+					)
 				),
 			),
 			array(

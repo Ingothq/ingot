@@ -18,7 +18,7 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
 use ingot\testing\ingot;
 use ingot\testing\tests\flow;
-
+use ingot\testing\utility\helpers;
 
 
 class test extends route {
@@ -33,6 +33,54 @@ class test extends route {
 	 * @var string
 	 */
 	protected  $what = 'test';
+
+
+	/**
+	 * Get one price test -- either as data or rendered HTML.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Request
+	 */
+	public function get_item( $request ) {
+		return rest_ensure_response( 200 );
+		$context = $request->get_param( 'context' );
+		$url = $request->get_url_params();
+		$id = helpers::v( 'ID', $url, 0 );
+		if( 0 == absint( $id ) || ! is_array( \ingot\testing\crud\test::read( $id ) ) ) {
+			return new \WP_Error( 'ingot-invalid-test' );
+		}elseif( 'context' != 'view' ) {
+			return new \WP_Error( 'ingot-test-context-invalid' );
+		}else{
+			$test = \ingot\testing\crud\test::read( $id );
+			$html = ingot_click_test( $test );
+		}
+
+
+
+	}
+
+	/**
+	 * Permissions check for get_item.
+	 *
+	 * Always returns true if request is for context view. Requires permission if not.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return bool
+	 */
+	public function get_item_permissions_check( $request ) {
+		$context = $request->get_param( 'context' );
+		if ( 'view' == $context ) {
+			return true;
+
+		}else{
+			return $this->get_items_permissions_check( $request );
+
+		}
+	}
 
 
 	/**
