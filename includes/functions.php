@@ -517,3 +517,17 @@ function ingot_destroy(){
 
 
 }
+
+/**
+ * Verify the Ingot session nonce
+ *
+ * @since 0.3.0
+ *
+ * @param string $nonce The nonce to check
+ *
+ * @return bool
+ */
+function ingot_verify_session_nonce( $nonce ) {
+	return (bool) wp_verify_nonce( $nonce, 'ingot_session' );
+
+}

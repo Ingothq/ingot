@@ -1,6 +1,14 @@
 /* globals INGOT_VARS */
 jQuery( document ).ready( function ( $ ) {
 
+    var session_id = INGOT_VARS.session.ID;
+    var ingot_id = INGOT_VARS.session.ingot_ID;
+
+    /**
+     * Track click tests
+     *
+     * @since 0.0.x
+     */
     $( document ).on( 'click', '.ingot-click-test', function(e) {
         e.preventDefault();
 
@@ -35,9 +43,51 @@ jQuery( document ).ready( function ( $ ) {
         );
     });
 
+    /**
+     * Double check our tests are correct -- IE not cached versions
+     *
+     * @since 0.3.0
+     */
+    $( window ).load( function () {
+        var tests, test_list, url;
+        var the_tests = [];
+        tests = $( '.ingot-click-test' );
+        console.log( tests );
+        $.each( tests, function( i, test ) {
+            the_tests.push( $( test ).attr( 'data-ingot-test-id' ) );
+        });
+        if( tests.length > 0 ) {
+            test_list =  the_tests.join(",");
+            url = INGOT_VARS.api_url + 'session/' + session_id + '/click?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list;
+            $.when(
+                $.ajax({
+                    url: url,
+                    method: "GET",
+                    beforeSend: function ( xhr ) {
+                        xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
+                    },
+                }).success(function( data, textStatus, jqXHR ) {
+                    ingot_id = data.ingot_ID;
+                    session_id = data.session_ID;
+                    if( 'undefined' != data.tests && 'object' == typeof  data.tests && ! $.isEmptyObject( data.tests ) ) {
+                        $.each( data.tests, function( i, test ){
+                            var id = test.ID;
+                            var html = test.html;
+                            var html_id = 'ingot-test-' + id;
+                            var el = document.getElementById( html_id );
+                            if( ! is_null( el ) ) {
+                                el.innerHTML = html;
+                            }
 
-    $( '.ingot-click-test-text' ).each( function( i, el ) {
-            //@todo this
-    });
+                        });
+                    }
+                } )
+            );
+        }
+
+
+
+
+    } );
 } );
 

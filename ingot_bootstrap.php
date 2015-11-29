@@ -46,32 +46,49 @@ class ingot_bootstrap {
 			if (  ! did_action( 'ingot_loaded') ) {
 				include_once( $autoloader );
 
-				self::maybe_add_sequence_table();
-				self::maybe_add_tracking_table();
-				self::maybe_add_price_group_table();
-				if( ! self::table_exists( \ingot\testing\crud\sequence::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() ) ) {
-					if( is_admin() ) {
+				self::add_tables();
+
+				if( self::check_if_tables_exist() ) {
+					ingot\testing\ingot::instance();
+					new ingot\ui\make();
+					self::maybe_load_api();
+
+					add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
+					add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
+
+					/**
+					 * Runs when Ingot has loaded.
+					 *
+					 * @since 0.0.5
+					 *
+					 */
+					do_action( 'ingot_loaded' );
+return;
+					$id = \ingot\testing\crud\session::create( array() );
+					$x = 1;
+					$x = \ingot\testing\crud\session::is_used( $id );
+					\ingot\testing\crud\session::mark_used( $id );
+					$s = \ingot\testing\crud\session::read( $id );
+
+					$x = \ingot\testing\crud\session::is_used( $id );
+					$y = 1;
+				}else{
+					if ( is_admin() ) {
 						printf( '<div class="error"><p>%s</p></div>', __( 'Ingot Not Loaded', 'ingot' ) );
+
 					}
 
+					/**
+					 * Runs if Ingot failed to load
+					 *
+					 * @since 0.3.0
+					 *
+					 */
+					do_action( 'ingot_loaded_failed' );
+
 					return;
+
 				}
-
-
-				ingot\testing\ingot::instance();
-				new ingot\ui\make();
-				self::maybe_load_api();
-
-				add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
-				add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
-
-				/**
-				 * Runs when Ingot has loaded.
-				 *
-				 * @since 0.0.5
-				 *
-				 */
-				do_action( 'ingot_loaded' );
 
 			}
 
@@ -232,6 +249,49 @@ class ingot_bootstrap {
 	}
 
 	/**
+	 * If needed, add the custom table for session
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param bool $drop_first Optional. If true, DROP TABLE statement is made first. Default is false
+	 */
+	public static function maybe_add_session_table( $drop_first = false ) {
+		global $wpdb;
+
+		$table_name = \ingot\testing\crud\session::get_table_name();
+
+		if( $drop_first  ) {
+			if( self::table_exists( $table_name )  ) {
+				$wpdb->query( "DROP TABLE $table_name" );
+			}
+
+		}
+
+		if(  self::table_exists( $table_name ) ) {
+			return;
+		}
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE $table_name (
+		  ID BIGINT NOT NULL AUTO_INCREMENT,
+		  used tinyint NOT NULL,
+		  IP VARCHAR(255) NOT NULL,
+		  uID BIGINT NOT NULL,
+		  ingot_ID BIGINT NOT NULL,
+		  slug VARCHAR(255) NOT NULL,
+		  click_url VARCHAR(255) NOT NULL,
+		  click_test_ID BIGINT NOT NULL,
+		  created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		  UNIQUE KEY ID (ID)
+		) $charset_collate;";
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
+
+	}
+
+	/**
 	 * Check if table exists
 	 *
 	 * @since 0.0.7
@@ -334,6 +394,40 @@ class ingot_bootstrap {
 			'track_edd_sale'
 		) );
 
+	}
+
+	/**
+	 * Add tables if needed
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 */
+	protected static function add_tables() {
+		self::maybe_add_sequence_table();
+		self::maybe_add_tracking_table();
+		self::maybe_add_price_group_table();
+		self::maybe_add_session_table();
+		self::check_if_tables_exist();
+	}
+
+	/**
+	 * Check if all tables exists
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @return bool
+	 */
+	protected static function check_if_tables_exist() {
+		if ( ! self::table_exists( \ingot\testing\crud\sequence::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\session::get_table_name() ) ) {
+			return false;
+
+
+		}
+
+		return true;
 	}
 
 

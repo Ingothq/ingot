@@ -13,6 +13,7 @@
 namespace ingot\ui;
 
 
+
 use ingot\ui\admin\app\load;
 use ingot\ui\admin\screens;
 
@@ -73,7 +74,7 @@ class make {
 		wp_register_style( 'ingot-click-test', trailingslashit( INGOT_URL ) . 'assets/front-end/css/ingot-click-tests.css' );
 		wp_register_script( 'ingot-click-test', trailingslashit( INGOT_URL ) . 'assets/front-ends/js/ingot-click-tests.js', array( 'jquery' ) );
 		wp_localize_script( 'ingot-click-test', 'INGOT', array(
-				'api_url' => rest_url( 'ingot/v1'),
+				'api_url' => esc_url( rest_url( 'ingot/v1' ) ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 
 			)
