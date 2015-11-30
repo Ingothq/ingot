@@ -12,6 +12,8 @@
 namespace ingot\testing\api\rest;
 
 
+use ingot\testing\utility\helpers;
+
 class sequence extends route {
 
 	/**
@@ -24,6 +26,29 @@ class sequence extends route {
 	 * @var string
 	 */
 	protected $what = 'sequence';
+
+	/**
+	 * Get one sequence, by sequence ID
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_item( $request ){
+		$url = $request->get_url_params();
+		$id = helpers::v( 'id', $url, 0 );
+		if( 0 == absint( $id ) || ! is_array( \ingot\testing\crud\sequence::read( $id )) ) {
+			$response = new \WP_REST_Response(array(), 404 );
+			return $response;
+		}
+
+		$sequence = \ingot\testing\crud\sequence::read( $id );
+		return rest_ensure_response( $sequence );
+
+
+	}
 
 
 	/**
