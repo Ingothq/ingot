@@ -48,6 +48,7 @@ class products extends route {
 
 		));
 	}
+
 	/**
 	 * Get all products from an ecommerce plugin
 	 *

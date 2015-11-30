@@ -98,7 +98,18 @@ abstract class crud {
 		 * @param string $what Object name
 		 */
 		do_action( 'ingot_crud_pre_update', $data, $id, static::what() );
-		$data = apply_filters( 'ingot_crud_update', $data, static::what() );
+
+		/**
+		 * Modify data before saving (read or update)
+		 *
+		 * @since 0.0.6
+		 *
+		 * @param array $data Data to be saved.
+		 * @param int $id Item ID
+		 * @param string $what Object name
+		 */
+		$data = apply_filters( 'ingot_crud_update', $data, $id, static::what() );
+
 		$id = static::save( $data, $id, $bypass_cap );
 		if ( $id ){
 			/**

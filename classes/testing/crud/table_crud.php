@@ -149,8 +149,8 @@ abstract class table_crud extends crud {
 	 */
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 
-		$data = self::prepare_data( $data );
-		if( is_wp_error( $data ) ) {
+		$data = static::prepare_data( $data );
+		if( is_wp_error( $data ) || ! is_array( $data ) ) {
 			return $data;
 		}
 

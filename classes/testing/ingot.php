@@ -21,8 +21,10 @@ use ingot\testing\api\rest\util;
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_group;
 use ingot\testing\crud\sequence;
+use ingot\testing\crud\session;
 use ingot\testing\crud\settings;
 use ingot\testing\crud\tracking;
+
 use ingot\testing\tests\click\click;
 use ingot\testing\tests\flow;
 use ingot\testing\utility\helpers;
@@ -86,6 +88,8 @@ class ingot {
 		add_filter( 'ingot_crud_read', array( $this, 'read_hook' ), 10, 2 );
 
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
+
+		add_action( 'parse_request', array( $this, 'init_session' ), 50 );
 	}
 
 	/**
@@ -109,6 +113,8 @@ class ingot {
 			$settings->register_routes();
 			$products = new products();
 			$products->register_routes();
+			$session = new \ingot\testing\api\rest\session();
+			$session->register_routes();
 
 			/**
 			 * Runs after the Ingot REST API is booted up
@@ -147,7 +153,9 @@ class ingot {
 	static public function js_vars() {
 		$vars = array(
 			'api_url' => esc_url_raw( util::get_url() ),
-			'nonce' => wp_create_nonce( 'wp_rest' )
+			'nonce' => wp_create_nonce( 'wp_rest' ),
+			'session_nonce' => wp_create_nonce( 'ingot_session' ),
+			'session' => \ingot\testing\object\session::instance()->get_session_info()
 		);
 
 		return $vars;
@@ -218,8 +226,28 @@ class ingot {
 	 * @param string $what Item type
 	 */
 	public  function update_hook( $id, $what){
+		if( 'test' == $what ) {
 
+		}
 
+	}
+
+	/**
+	 * Inititialize Ingot session
+	 *
+	 * @uses "parse_request"
+	 *
+	 * @since 0.3.0
+	 */
+	public function init_session(){
+		$id = null;
+		if( isset( $_GET[ 'ingot_session_ID' ] ) && ingot_verify_session_nonce( helpers::v( 'ingot_session_nonce', $_GET, '' ) ) ) {
+			$id = helpers::v( 'ingot_session_ID', $_GET, null );
+		}
+
+		$session = \ingot\testing\object\session::instance( $id );
+		$session_data = $session->get_session_info();
+		do_action( 'ingot_session_initialized', $session_data );
 	}
 
 
