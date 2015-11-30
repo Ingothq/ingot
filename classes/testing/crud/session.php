@@ -88,7 +88,7 @@ class session extends table_crud {
 		}
 
 		if( ! isset( $data[ 'ingot_ID' ] ) ){
-			$data[ 'ingot_ID' ] = self::find_ingot_id();
+			$data[ 'ingot_ID' ] = self::find_ingot_id( $data[ 'uID' ],$data[ 'IP' ] );
 		}
 
 		$data[ 'used' ] = (bool) $data[ 'used' ];
@@ -146,15 +146,17 @@ class session extends table_crud {
 		}else{
 			if( ! $ip ) {
 				$ip = ingot_get_ip();
-				$id =  self::lookup_by_IP( $ip );
 			}
+
+			$id =  self::lookup_by_IP( $ip );
+
 
 		}
 
 		if( ! $id ) {
 			$last_assigned_key = '_ingot_session_ID_last_assigned';
 			$last_assigned = get_option( $last_assigned_key, 0 );
-			$id = $last_assigned++;
+			$id = $last_assigned + 1;
 			update_option( $last_assigned_key, $id );
 		}
 
@@ -238,10 +240,10 @@ class session extends table_crud {
 			$lookup_by = '"' .  $lookup_by . '"';
 		}
 
-		$sql    = sprintf( 'SELECT `ingot_ID` FROM %s WHERE `%s` = %s LIMIT 1', $table_name, $lookup_field, $lookup_by );
-		$result = $wpdb->get_results( $sql, ARRAY_A );
-		if ( is_array( $result ) && ! empty( $result ) ) {
-			return $result[ 0 ][ 'ingot_ID' ];
+		$sql    = sprintf( 'SELECT MAX(`ingot_ID`) FROM %s WHERE `%s` = %s LIMIT 1', $table_name, $lookup_field, $lookup_by );
+		$result = $wpdb->get_results( $sql, ARRAY_N );
+		if ( is_array( $result ) && ! empty( $result ) && isset( $result[ 0 ], $result[ 0 ][ 0 ] ) ) {
+			return $result[ 0 ][ 0 ];
 		}
 	}
 
