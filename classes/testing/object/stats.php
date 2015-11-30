@@ -35,8 +35,8 @@ class stats extends sequence {
 	 * @var array
 	 */
 	protected $stats_keys = [
-		'a_ID',
-		'b_ID',
+		'a_id',
+		'b_id',
 		'a_total',
 		'b_total',
 		'a_win',
@@ -76,7 +76,7 @@ class stats extends sequence {
 	 * @return array
 	 */
 	private function make_stats() {
-		foreach( $this->stats_keys() as $key ) {
+		foreach( $this->stats_keys as $key ) {
 			$this->stats[ $key ] = $this->$key;
 		}
 	}

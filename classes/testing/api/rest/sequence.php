@@ -50,7 +50,7 @@ class sequence extends route {
 
 		}
 
-		if( 'stats' == $request->get_param( 'stats' ) ) {
+		if( 'stats' == $request->get_param( 'context' ) ) {
 			$stats = new \ingot\testing\object\stats( $sequence );
 			return rest_ensure_response( $stats->get_stats() );
 

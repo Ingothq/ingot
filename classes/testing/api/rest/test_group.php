@@ -457,7 +457,7 @@ class test_group extends route {
 			)
 		) );
 
-		register_rest_route( $namespace, $base . '/sequences/(?P<id>[\d]+)', array(
+		register_rest_route( $namespace, $base . '/(?P<id>[\d]+)/sequences', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_sequences_by_group' ),
@@ -476,7 +476,7 @@ class test_group extends route {
 	 *
 	 * @return \WP_REST_Response
 	 */
-	protected function get_sequences_by_group( $request ){
+	public function get_sequences_by_group( $request ){
 		$url = $request->get_url_params();
 		$id = helpers::v( 'id', $url, 0 );
 		if( 0 == absint( $id ) || ! is_array( group::read( $id ) ) ){
