@@ -13,6 +13,7 @@ namespace ingot\testing\api\rest;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\crud\sequence;
 use ingot\testing\crud\test;
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
@@ -446,7 +447,7 @@ class test_group extends route {
 	 */
 	protected function register_more_routes() {
 		$namespace = util::get_namespace();
-		$base = 'test-group';
+		$base = $this->base();
 		register_rest_route( $namespace, $base . '/(?P<id>[\d]+)/tests', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -455,6 +456,41 @@ class test_group extends route {
 				'args'                => array(),
 			)
 		) );
+
+		register_rest_route( $namespace, $base . '/sequences/(?P<id>[\d]+)', array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_sequences_by_group' ),
+				'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				'args'                => array(),
+			)
+		) );
+	}
+
+	/**
+	 * Get all sequences in a group
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	protected function get_sequences_by_group( $request ){
+		$url = $request->get_url_params();
+		$id = helpers::v( 'id', $url, 0 );
+		if( 0 == absint( $id ) || ! is_array( group::read( $id ) ) ){
+			return new \WP_REST_Response( array(), '404' );
+
+		}
+
+		$sequences = sequence::get_items( [
+			'group_ID' => $id,
+			'return'   => 'ids'
+		]);
+
+		return rest_ensure_response( $sequences );
+
 	}
 
 	/**
