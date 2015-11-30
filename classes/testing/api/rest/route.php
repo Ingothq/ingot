@@ -76,13 +76,22 @@ abstract class route  {
 				'args'            => $this->args( false )
 			),
 			array(
-				'methods'  => \WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'delete_item' ),
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'delete_item' ),
 				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
-				'args'     => array(
-					'force'    => array(
-						'default'      => false,
+				'args'                => array(
+					'force' => array(
+						'default'  => false,
+						'required' => false,
 					),
+					'all'   => array(
+						'default'  => false,
+						'required' => false,
+					),
+					'id'    => array(
+						'default'               => 0,
+						'sanatization_callback' => 'absint'
+					)
 				),
 			),
 		) );
