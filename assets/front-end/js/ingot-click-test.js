@@ -51,6 +51,10 @@ jQuery( document ).ready( function ( $ ) {
      * @since 0.3.0
      */
     $( window ).load( function () {
+        if( null == INGOT_VARS.session.ID ) {
+            return;
+        }
+
         var tests, test_list, url;
         var the_tests = [];
         tests = $( '.ingot-click-test' );
@@ -59,7 +63,7 @@ jQuery( document ).ready( function ( $ ) {
         });
         if( tests.length > 0 ) {
             test_list =  the_tests.join(",");
-            url = INGOT_VARS.api_url + 'sessions/' + session_id + '/session?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list;
+            url = INGOT_VARS.api_url + 'sessions/' + INGOT_VARS.session.ID + '/session?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list + '&ingot_session_ID=' + INGOT_VARS.session.ID;
             $.when(
                 $.ajax({
                     url: url,
@@ -76,7 +80,7 @@ jQuery( document ).ready( function ( $ ) {
                             var html = test.html;
                             var html_id = 'ingot-test-' + id;
                             var el = document.getElementById( html_id );
-                            if( ! is_null( el ) ) {
+                            if( null != el ) {
                                 el.innerHTML = html;
                             }
 
@@ -95,11 +99,13 @@ jQuery( document ).ready( function ( $ ) {
      */
     $(document).click(function(e) {
         e.preventDefault();
+
         if( 'undefined' != e.target.href && ! $( e.target ).hasClass( '.ingot-click-test' ) ) {
             var url = INGOT_VARS.api_url + 'sessions/' + session_id + '?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&click_url=' + encodeURIComponent( e.target.href );
+
             $.ajax({
                 url: url,
-                method: "GET",
+                method: "POST",
                 beforeSend: function ( xhr ) {
                     xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
                 },
@@ -111,12 +117,11 @@ jQuery( document ).ready( function ( $ ) {
                 window.location = e.target.href;
             })
         }else{
+            alert( 0);
             if( 'undefined' != e.target.href ){
                 window.location = e.target.href;
             }
         }
-
-
     });
 } );
 

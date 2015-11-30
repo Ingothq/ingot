@@ -13,10 +13,8 @@
 namespace ingot\testing\api\rest;
 
 
-use ingot\testing\crud\crud;
-use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
-use ingot\testing\ingot;
+use ingot\testing\crud\session;
 use ingot\testing\tests\flow;
 use ingot\testing\utility\helpers;
 
@@ -210,6 +208,16 @@ class test extends route {
 				'sanitize_callback'  => array( $this, 'strip_tags' ),
 				'required'           => true,
 			),
+			'ingot_session_nonce' => array(
+				'type'     => 'string',
+				'required' => false,
+				'default' => '0'
+			),
+			'ingot_session_ID' => array(
+				'type' => 'string',
+				'required' => false,
+				'default' => '0'
+			)
 
 		);
 
@@ -228,6 +236,18 @@ class test extends route {
 		$id = $request->get_param( 'id' );
 		$sequence = $request->get_param( 'sequence' );
 		$increased = flow::increase_victory( $id, $sequence  );
+
+		if( $request->get_param( 'ingot_session_ID' ) && util::verify_session_nonce( $request ) ) {
+			$session = session::read($request->get_param( 'ingot_session_ID' ) );
+			if( is_array( $session ) ) {
+				$session[ 'click_test_ID' ] = $id;
+				$saved_session = session::update( $session, $session[ 'ID' ], true );
+			}
+
+		}
+
+
+
 		if( is_wp_error( $increased ) ) {
 			return rest_ensure_response( $increased, 500 );
 		}else{

@@ -39,7 +39,7 @@ class session extends route {
 		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/session', array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'session_status' ),
+					'callback'            => array( $this, 'session' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => $this->args()
 				),
@@ -59,32 +59,35 @@ class session extends route {
 	 */
 	public function session( $request ) {
 		$session = $this->get_session_by_url_params( $request );
+		$tests = [];
 		if ( ! is_array( $session ) ) {
 			return $session;
 		} else {
 			if ( \ingot\testing\crud\session::is_used( $session[ 'ID' ] ) ) {
+				$data[ 'session_ID' ] = \ingot\testing\crud\session::create( array() );
+				$session = \ingot\testing\crud\session::read( $data[ 'session_ID' ] );
+
+
+				if ( ! empty( $request->get_param( 'test_ids' ) ) ) {
+					foreach ( $request->get_param( 'test_ids' ) as $id ) {
+						$tests[] = [
+							'html' => ingot_click_test( $id ),
+							'ID'   => $id
+						];
+					}
+
+				}
+
+			}else{
 				\ingot\testing\crud\session::mark_used( $session[ 'ID' ] );
 				$data[ 'session_ID' ] = $session[ 'ID' ];
 
-			}else{
-				$data[ 'session_ID' ] = \ingot\testing\crud\session::create( array() );
-				$session = \ingot\testing\crud\session::read( $data[ 'session_ID' ] );
 
 			}
 
 			$data[ 'ingot_ID' ] = $session[ 'ingot_ID' ];
 
-			$tests = [];
 
-			if ( ! empty( $request->get_param( 'test_ids' ) ) ) {
-				foreach ( $request->get_param( 'test_ids' ) as $id ) {
-					$tests[] = [
-						'html' => ingot_click_test( $id ),
-						'ID'   => $id
-					];
-				}
-
-			}
 
 			$data[ 'tests' ] = $tests;
 
@@ -128,21 +131,17 @@ class session extends route {
 			return $this->response( $session );
 		}
 
-		if ( ! empty( $request->get_param( 'click_url' ) ) ) {
-			$session[ 'click_url' ] = $request->get_param( 'click_url ' );
-			\ingot\testing\crud\session::update( $session, $session[ 'ID' ] );
+		if ( ! empty( $request->get_param( 'click_url' ) ) && 'undefined' != $request->get_param( 'click_url' ) ) {
+			$session[ 'click_url' ] = $request->get_param( 'click_url' );
+			\ingot\testing\crud\session::update( $session, $session[ 'ID' ], true );
 		}
 
 		return $this->response( $session );
 
 	}
 
-	public function args() {
+	public function args( $required = true ) {
 		return [
-			'ingot_session_ID'    => array(
-				'type'     => 'string',
-				'required' => true,
-			),
 			'ingot_session_nonce' => array(
 				'type'     => 'string',
 				'required' => true,
@@ -150,7 +149,7 @@ class session extends route {
 			'test_ids'            => array(
 				'type'                => 'array',
 				'default'             => array(),
-				'validation_callback' => array( $this, 'make_array_values_numeric' )
+				'sanitize_callback' => array( $this, 'prepare_test_id_array' )
 
 			),
 			'click_url' => array(
@@ -181,9 +180,7 @@ class session extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	protected function verify_session_nonce( $request ) {
-		$nonce = $request->get_param( 'ingot_session_nonce' );
-
-		return ingot_verify_session_nonce( $nonce );
+		return util::verify_session_nonce( $request );
 
 	}
 
@@ -194,12 +191,28 @@ class session extends route {
 	 */
 	protected function get_session_by_url_params( $request ) {
 		$url = $request->get_url_params();
-		$id  = helpers::v( 'ID', $url, 0 );
+		$id  = helpers::v( 'id', $url, 0 );
 		if ( absint( $id ) && is_array( \ingot\testing\crud\session::read( $id ) ) ) {
 			return \ingot\testing\crud\session::read( $id );
 		} else {
 			return new \WP_Error( 'ingot-invalid-session' );
 		}
+
+	}
+
+	public function prepare_test_id_array( $value, $request ) {
+		if( empty( $value  ) ){
+			$value = [];
+		}elseif( is_numeric( $value ) ){
+			$value = [ $value ];
+		}elseif( false != strpos( $value, ',' ) ) {
+			$value = implode( $value );
+		}else{
+			$value = [];
+		}
+
+		$value = $this->make_array_values_numeric( $value );
+		return $value;
 
 	}
 

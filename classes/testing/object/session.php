@@ -49,10 +49,12 @@ class session {
 			$this->ID = \ingot\testing\crud\session::create( [
 				'uID' => get_current_user_id(),
 				'IP' => ingot_get_ip()
-			] );
+			], true );
 
-			$this->session = \ingot\testing\crud\session::read( $this->ID );
+
 		}
+
+		$this->session = \ingot\testing\crud\session::read( $this->ID );
 
 
 		$this->ID = $this->session[ 'ID' ];

@@ -89,7 +89,7 @@ class ingot {
 
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
 
-		add_action( 'ingot_loaded', array( $this, 'init_session' ) );
+		add_action( 'parse_request', array( $this, 'init_session' ), 50 );
 	}
 
 	/**
@@ -113,6 +113,8 @@ class ingot {
 			$settings->register_routes();
 			$products = new products();
 			$products->register_routes();
+			$session = new \ingot\testing\api\rest\session();
+			$session->register_routes();
 
 			/**
 			 * Runs after the Ingot REST API is booted up
@@ -224,9 +226,7 @@ class ingot {
 	 */
 	public  function update_hook( $id, $what){
 		if( 'test' == $what ) {
-			$session = \ingot\testing\object\session::instance()->get_session_info();
-			$session[ 'click_ID' ] = $id;
-			session::update($session, $session[ 'ID' ] );
+
 		}
 
 	}
@@ -234,17 +234,19 @@ class ingot {
 	/**
 	 * Inititialize Ingot session
 	 *
-	 * @uses "ingot_loaded"
+	 * @uses "parse_request"
 	 *
 	 * @since 0.3.0
 	 */
 	public function init_session(){
 		$id = null;
-		if( ingot_is_rest_api()  && isset( $_GET ) && ingot_verify_session_nonce( helpers::v( 'ingot_session_nonce', $_GET, '' ) ) ) {
+		if( isset( $_GET[ 'ingot_session_ID' ] ) && ingot_verify_session_nonce( helpers::v( 'ingot_session_nonce', $_GET, '' ) ) ) {
 			$id = helpers::v( 'ingot_session_ID', $_GET, null );
 		}
 
-		\ingot\testing\object\session::instance( $id );
+		$session = \ingot\testing\object\session::instance( $id );
+		$session_data = $session->get_session_info();
+		do_action( 'ingot_session_initialized', $session_data );
 	}
 
 

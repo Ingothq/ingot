@@ -463,6 +463,11 @@ function ingot_is_front_end() {
  * @return bool
  */
 function ingot_is_rest_api() {
+
+	if ( isset( $GLOBALS[ 'wp' ] ) && ! empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
+		return true;
+	}
+
 	if( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 		return true;
 	}
@@ -528,6 +533,7 @@ function ingot_destroy(){
  * @return bool
  */
 function ingot_verify_session_nonce( $nonce ) {
-	return (bool) wp_verify_nonce( $nonce, 'ingot_session' );
+	$good =  (bool) wp_verify_nonce( $nonce, 'ingot_session' );
+	return $good;
 
 }
