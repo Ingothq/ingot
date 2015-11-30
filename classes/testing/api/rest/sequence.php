@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * REST API Endpoints
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -85,6 +85,15 @@ class sequence extends route {
 
 	}
 
+	/**
+	 * Request params
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param bool|true $require_id
+	 *
+	 * @return array
+	 */
 	public function args( $require_id = true ) {
 		$args = array(
 			'group_ID' => array(
