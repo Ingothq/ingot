@@ -45,7 +45,16 @@ class sequence extends route {
 		}
 
 		$sequence = \ingot\testing\crud\sequence::read( $id );
-		return rest_ensure_response( $sequence );
+		if ( 'admin' == $request->get_param( 'context' ) ) {
+			return rest_ensure_response( $sequence );
+
+		}
+
+		if( 'stats' == $request->get_param( 'stats' ) ) {
+			$stats = new \ingot\testing\object\stats( $sequence );
+			return rest_ensure_response( $stats->get_stats() );
+
+		}
 
 
 	}
@@ -86,6 +95,18 @@ class sequence extends route {
 	}
 
 	/**
+	 * Add the special extra routes for sequences API
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 */
+	protected function register_more_routes() {
+		$namespace = util::get_namespace();
+		$base = $this->base();
+	}
+
+	/**
 	 * Request params
 	 *
 	 * @since 0.0.7
@@ -115,6 +136,18 @@ class sequence extends route {
 				'type' => 'boolean',
 				'default' => true,
 				'validation_callback' => array( $this, 'validate_boolean' )
+			),
+			'context' => array(
+				'type'                => 'string',
+				'default'             => 'admin',
+				'validation_callback' => function ( $value ) {
+					if ( ! in_array( $value, [ 'stats', 'admin' ] ) ) {
+						$value = 'admin';
+					}
+
+					return $value;
+
+				}
 			)
 		);
 
