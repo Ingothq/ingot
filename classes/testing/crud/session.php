@@ -117,11 +117,29 @@ class session extends table_crud {
 
 	}
 
+	/**
+	 * Check if a session is used
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param int $id Session ID
+	 *
+	 * @return bool True if used, false if not
+	 */
 	public static function is_used( $id ) {
 		$session = self::read( $id );
-		return $session[ 'used' ];
+		return (bool) $session[ 'used' ];
 	}
 
+	/**
+	 * Mark a session as having been used
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param int $id Sessi
+	 *
+	 * @return bool|int
+	 */
 	public static function mark_used( $id ){
 		if( ! self::is_used( $id ) ) {
 			$session = self::read( $id );
@@ -132,6 +150,13 @@ class session extends table_crud {
 
 	}
 
+	/**
+	 * Get "slug" for request if possible.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @return string|void
+	 */
 	protected static function get_slug() {
 		if( isset( $_SERVER ) && isset( $_SERVER[ 'REQUEST_URI']) ){
 			return $_SERVER[ 'REQUEST_URI' ];
@@ -139,7 +164,17 @@ class session extends table_crud {
 
 	}
 
-	static function find_ingot_id( $uID = false, $ip = false ){
+	/**
+	 * Find ingot_ID value to tie sessions to same user/IP
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param bool|false $uID
+	 * @param bool|false $ip
+	 *
+	 * @return int Returns ingot_ID, possibly a fresh new one, maybe a matched one
+	 */
+	public static function find_ingot_id( $uID = false, $ip = false ){
 		if( ! $uID && 0 != get_current_user_id() ){
 			$uID = get_current_user_id();
 			$id =  self::lookup_by_uID( $uID );
@@ -160,18 +195,40 @@ class session extends table_crud {
 			update_option( $last_assigned_key, $id );
 		}
 
-		return $id;
+		return (int) $id;
 
 	}
 
+	/**
+	 * Looks up ingot_ID by user ID
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @param int $uID User ID
+	 *
+	 * @return int
+	 */
 	protected static function lookup_by_uID( $uID ) {
 
 		$lookup_field = 'uID';
 
-		return self::lookup_ingot_id_by( $lookup_field, $uID );
+		return (int) self::lookup_ingot_id_by( $lookup_field, $uID );
 
 	}
 
+	/**
+	 * Looks up ingot_ID by user IP
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @param string $ip IP address
+	 *
+	 * @return string|void
+	 */
 	protected static function lookup_by_IP( $ip ) {
 
 		$lookup_field = 'IP';

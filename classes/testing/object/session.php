@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * Handles ingot session
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -12,22 +12,69 @@
 namespace ingot\testing\object;
 
 
-class session {
+final class session {
 
-
+	/**
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @var int
+	 */
 	protected $ID;
 
+	/**
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @var array
+	 */
 	protected $session;
 
+	/**
+	 *
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @var int
+	 */
 	protected $ingot_id;
 
+	/**
+	 * Holds class instance.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access private
+	 *
+	 * @var \ingot\testing\object\session
+	 */
 	private static $instance;
 
 
+	/**
+	 * Contructor
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param null|int $id Optional. Session ID or null, the default, to create a new session
+	 */
 	private function __construct( $id = null ){
 		$this->set_up_session ( $id );
 	}
 
+	/**
+	 * Create or get class instance
+	 *
+	 * @param null|int $id Optional. Session ID or null, the default, to create a new session
+	 *
+	 * @return \ingot\testing\object\session
+	 */
 	public static function instance( $id = null ) {
 		if( is_null( self::$instance ) ) {
 			self::$instance = new self( $id );
@@ -37,6 +84,13 @@ class session {
 
 	}
 
+	/**
+	 * Get session ID and ingot_id
+	 *
+	 * @since 0.3.0
+	 *
+	 * @return array
+	 */
 	public function get_session_info(){
 		return [
 			'ID' => $this->ID,
@@ -44,6 +98,15 @@ class session {
 		];
 	}
 
+	/**
+	 * Set class properties
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access private
+	 *
+	 * @param $id
+	 */
 	private function set_up_session( $id ) {
 		if( is_null(  $id ) || ! is_array( \ingot\testing\crud\session::read( $id ) ) ) {
 			$this->ID = \ingot\testing\crud\session::create( [

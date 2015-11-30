@@ -140,6 +140,15 @@ class session extends route {
 
 	}
 
+	/**
+	 * Request arguments
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param bool|true $required
+	 *
+	 * @return array
+	 */
 	public function args( $required = true ) {
 		return [
 			'ingot_session_nonce' => array(
@@ -161,10 +170,26 @@ class session extends route {
 		];
 	}
 
+	/**
+	 * Check if a given request has access to update a specific item
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|bool
+	 */
 	public function update_item_permissions_check( $request ) {
 		return $this->verify_session_nonce( $request );
 	}
 
+	/**
+	 * Check if a given request has access to get a specific item
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|bool
+	 */
 	public function get_item_permissions_check( $request ) {
 		return $this->verify_session_nonce( $request );
 	}
@@ -200,7 +225,16 @@ class session extends route {
 
 	}
 
-	public function prepare_test_id_array( $value, $request ) {
+	/**
+	 * Ensure test ID array is a valid and clean array
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param string|array $value
+	 *
+	 * @return array|string
+	 */
+	public function prepare_test_id_array( $value ) {
 		if( empty( $value  ) ){
 			$value = [];
 		}elseif( is_numeric( $value ) ){
@@ -217,9 +251,15 @@ class session extends route {
 	}
 
 	/**
-	 * @param $session
+	 * Prepare response for session data
 	 *
-	 * @return mixed
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @param array|\WP_Error $session Session array or error.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	protected function response( $session ) {
 		if ( is_wp_error( $session ) ) {
