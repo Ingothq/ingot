@@ -31,78 +31,6 @@ class test_group extends route {
 	 */
 	protected $what = 'group';
 
-	/**
-	 * Register the routes for the objects of the controller.
-	 */
-	public function register_routes() {
-		$namespace = util::get_namespace();
-		$base = 'test-group';
-		register_rest_route( $namespace, '/' . $base, array(
-			array(
-				'methods'         => \WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_items' ),
-				'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				'args'            => array(
-					'page' => array(
-						'default' => 1,
-						'sanitize_callback'  => 'absint',
-					),
-					'limit' => array(
-						'default' => 10,
-						'sanitize_callback'  => 'absint',
-					)
-				),
-			),
-			array(
-				'methods'         => \WP_REST_Server::CREATABLE,
-				'callback'        => array( $this, 'create_item' ),
-				'permission_callback' => array( $this, 'create_item_permissions_check' ),
-				'args'            => $this->args( false )
-			),
-		) );
-		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => \WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_item' ),
-				'permission_callback' => array( $this, 'get_item_permissions_check' ),
-				'args'            => array(
-					'context'          => array(
-						'default'      => 'view',
-					),
-				),
-			),
-			array(
-				'methods'         => \WP_REST_Server::EDITABLE,
-				'callback'        => array( $this, 'update_item' ),
-				'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				'args'            => $this->args( false )
-			),
-			array(
-				'methods'  => \WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'delete_item' ),
-				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
-				'args'     => array(
-					'force'    => array(
-						'default'      => false,
-					),
-					'all' => array(
-						'default' => false,
-					),
-					'id' => array(
-						'default' => 0,
-						'sanatization_callback' => 'absint'
-					)
-				),
-			),
-		) );
-		register_rest_route( $namespace, '/' . $base . '/schema', array(
-			'methods'         => \WP_REST_Server::READABLE,
-			'callback'        => array( $this, 'get_public_item_schema' ),
-		) );
-
-		$this->register_more_routes();
-
-	}
 
 	/**
 	 * Get a collection of groups
@@ -574,6 +502,17 @@ class test_group extends route {
 
 		return new \WP_REST_Response( $item, 200 );
 
+	}
+
+	/**
+	 * Create route base
+	 *
+	 * @since 0.3.0
+	 *
+	 * @return string
+	 */
+	protected function base() {
+		return 'test-group';
 	}
 
 }
