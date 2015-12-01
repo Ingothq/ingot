@@ -23,10 +23,60 @@ class test_click_tests extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Pre-test behaviour of threshold exceeded check before doing the in context tests
+	 *
+	 * @since 0.3.0
+	 *
+	 * @group click-flow
+	 * 
+	 * @covers \ingot\testing\tests\flow::threshold_exceeded()
+	 */
+	public function testThreshold() {
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_1 = \ingot\testing\crud\test::create( $params );
+		$params = array(
+			'text' => rand(),
+			'name' => rand(),
+		);
+		$test_2 = \ingot\testing\crud\test::create( $params );
+
+		$params = array(
+			'test_type' => 'click',
+			'a_id' => $test_1,
+			'b_id' => $test_2
+		);
+
+		$created = \ingot\testing\crud\sequence::create( $params );
+		$sequence = \ingot\testing\crud\sequence::read( $created );
+
+		$this->assertFalse( \ingot\testing\tests\flow::threshold_exceeded( $sequence, 20, 100 ) );
+
+		$this->assertFalse( \ingot\testing\tests\flow::threshold_exceeded( $sequence, 20, 98 ) );
+
+
+		$sequence[ 'b_win' ] = 1;
+		$this->assertFalse( \ingot\testing\tests\flow::threshold_exceeded( $sequence, 20, 100 ) );
+
+		$sequence[ 'a_win' ] = 9999;
+		$sequence[ 'b_win' ] = 9999;
+
+		$this->assertFalse( \ingot\testing\tests\flow::threshold_exceeded( $sequence, 20, 100 ) );
+
+
+
+
+	}
+
+	/**
 	 * Test that initial sequence is created for a group
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group click-flow
+	 * 
 	 * @covers ingot\testing\tests\sequence_progression::make_initial_sequence
 	 */
 	public function testInitialSequence() {
@@ -52,7 +102,6 @@ class test_click_tests extends \WP_UnitTestCase {
 		$params = array(
 			'type' => 'click',
 			'name' => 'hats',
-			'selector' => '.hats',
 			'link' => 'https://hats.com',
 			'order' => array( $test_1, $test_2, $test_3 )
 		);
@@ -83,6 +132,8 @@ class test_click_tests extends \WP_UnitTestCase {
 	 * Test that the is A utility function works properly
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group click-flow
 	 *
 	 * @covers ingot\testing\tests\flow::is_a
 	 */
@@ -119,6 +170,8 @@ class test_click_tests extends \WP_UnitTestCase {
 	 * Test that the is A utility function returns a WP_Error when test is not a part of the squence
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group click-flow
 	 *
 	 * @covers ingot\testing\tests\flow::is_a
 	 */
@@ -168,6 +221,8 @@ class test_click_tests extends \WP_UnitTestCase {
 	 * Test that we can increase totals or tests within a sequence properly.
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group click-flow
 	 *
 	 * @covers ingot\testing\tests\flow::increase_total
 	 */
@@ -232,6 +287,8 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group click-flow
+	 *
 	 * @covers ingot\testing\tests\flow::increase_victory
 	 */
 	public function testIncreaseVictory() {
@@ -252,7 +309,7 @@ class test_click_tests extends \WP_UnitTestCase {
 			'selector' => '.hats',
 			'link' => 'https://hats.com',
 			'order' => array( $test_1, $test_2 ),
-			'threshold' => 500
+			'threshold' => 10
 		);
 
 		$group_id = \ingot\testing\crud\group::create( $params );
@@ -297,6 +354,8 @@ class test_click_tests extends \WP_UnitTestCase {
 	 * Test that we can create the next sequence arbitrarily
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group click-flow
 	 *
 	 * @covers \ingot\testing\tests\sequence_progression::make_next_sequence
 	 */
@@ -355,6 +414,8 @@ class test_click_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group click-flow
+	 *
 	 * @covers \ingot\testing\tests\sequence_progression::make_next_sequence
 	 */
 	public function testMakeNextInContext() {
@@ -387,27 +448,28 @@ class test_click_tests extends \WP_UnitTestCase {
 			'selector' => '.hats',
 			'link' => 'https://hats.com',
 			'order' => array( $test_1, $test_2, $test_3 ),
-			'threshold' => rand( 15, 27 )
+			'threshold' => 20,
+			'initial' => 10,
 		);
 		$group_id = \ingot\testing\crud\group::create( $params );
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$sequence_id = $group[ 'sequences' ][0];
-		$sequence = \ingot\testing\crud\sequence::read( $sequence_id );
 
-		for( $i = 0; $i <= 37; $i++ ){
-
+		for( $i = 0; $i <= 9; $i++ ){
+			\ingot\testing\tests\flow::increase_total( $test_2, $sequence_id );
 			\ingot\testing\tests\flow::increase_victory( $test_2, $sequence_id );
 			$sequence = \ingot\testing\crud\sequence::read( $sequence_id );
+			$this->assertEquals( $i + 1,  $sequence[ 'b_win' ] );
+			$this->assertEquals( 0, (int) $sequence['completed'], $i );
 
-			if ( $i + 1 < $group[ 'threshold' ] ) {
-				$this->assertEquals( $i + 1,  $sequence[ 'b_win' ] );
-				$this->assertEquals( 0, (int) $sequence['completed'] );
-			}else{
-				$this->assertEquals( 1, (int) $sequence[ 'completed' ] );
-				break;
-			}
 		}
+		\ingot\testing\tests\flow::increase_total( $test_2, $sequence_id );
+		\ingot\testing\tests\flow::increase_victory( $test_2, $sequence_id );
+		\ingot\testing\tests\flow::increase_total( $test_2, $sequence_id );
+		\ingot\testing\tests\flow::increase_victory( $test_2, $sequence_id );
+		$sequence = \ingot\testing\crud\sequence::read( $sequence_id );
 
+		$this->assertEquals( 1, (int) $sequence[ 'completed' ], $sequence[ 'b_total']);
 
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$new_sequence_id = $group[ 'current_sequence'];

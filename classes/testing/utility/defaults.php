@@ -48,7 +48,7 @@ class defaults {
 		 *
 		 * @param int $initial
 		 */
-		return (int) apply_filters( 'ingot_default_initial', 100 );
+		return (int) apply_filters( 'ingot_default_initial', 1000 );
 
 	}
 

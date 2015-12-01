@@ -30,7 +30,7 @@ class tests_defaults extends \WP_UnitTestCase{
 	 * @covers \ingot\testing\utility\defaults::initial()
 	 */
 	public function testInitial() {
-		$this->assertEquals( 100, \ingot\testing\utility\defaults::initial() );
+		$this->assertEquals( 1000, \ingot\testing\utility\defaults::initial() );
 	}
 
 	/**
@@ -188,7 +188,7 @@ class tests_defaults extends \WP_UnitTestCase{
 		$created = \ingot\testing\crud\group::create( $params );
 		$group = \ingot\testing\crud\group::read( $created );
 		$this->assertArrayHasKey( 'initial', $group );
-		$this->assertEquals( 100, $group[ 'initial'] );
+		$this->assertEquals( 1000, $group[ 'initial'] );
 	}
 
 	/**
@@ -209,7 +209,7 @@ class tests_defaults extends \WP_UnitTestCase{
 		$created = \ingot\testing\crud\price_group::create( $params );
 		$group = \ingot\testing\crud\price_group::read( $created );
 		$this->assertArrayHasKey( 'initial', $group );
-		$this->assertEquals( 100, $group[ 'initial'] );
+		$this->assertEquals( '1000', $group[ 'initial'] );
 	}
 
 	/**

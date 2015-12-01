@@ -12,6 +12,8 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\tests\flow;
+use ingot\testing\tests\sequence_progression;
 use ingot\testing\types;
 use ingot\testing\utility\defaults;
 use ingot\testing\utility\helpers;
@@ -301,7 +303,6 @@ abstract class crud {
 
 		}
 
-		$fields = static::get_all_fields();
 		foreach ( static::get_all_fields() as  $key  ) {
 			if ( 'order' == $key || 'sequences' == $key || 'UTM' == $key || 'meta' == $key ) {
 				if ( ! is_array( $data[ $key ] ) ) {
@@ -311,9 +312,11 @@ abstract class crud {
 				if(  ! in_array( $data[ 'completed' ], array( false, true, 1, 0, 'false', 'true', 'FALSE', 'TRUE', '1', '0' ) ) ) {
 					$data[ 'completed' ] = 0;
 				}
-			}elseif( is_int( $data[ $key ] ) || is_string( $data[ $key ] ) ){
+			} elseif ( is_int( $data[ $key ] ) || is_string( $data[ $key ] ) ) {
 				continue;
-			} else  {
+			} elseif ( 'group' == static::what() && empty( $data[ 'current_sequence' ] ) ) {
+				$data[ 'current_sequence' ] = 0;
+		} else {
 				return new \WP_Error( $key . '-invalid', __( 'Invalid data type', 'ingot' ), array( $key => $data[ $key ] ) );
 			}
 		}
