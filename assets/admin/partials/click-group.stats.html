@@ -1,0 +1,7 @@
+<h2>Stats for Group: {{group_id}}</h2>
+<span ng-repeat="(key, value) in stats track by $index" class="btn btn-primary" ng-click="setChart( key, $index )">{{ key }}</span>
+
+<div ng-show="active_chart_id">
+    <h2>Chart for {{active_chart_id}}</h2>
+    <canvas id="ingotChart" width="400" height="400"></canvas>
+</div>

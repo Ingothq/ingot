@@ -65,7 +65,11 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
         } ).state('clickTests.delete', {
             url: "/click-tests/delete/:groupID",
             controller: 'clickDelete'
-        })
+        }).state('clickTests.stats', {
+            url: "/click-tests/stats/:groupID",
+            templateUrl: INGOT_ADMIN.partials + "/click-group.stats.html",
+            controller: 'clickStats'
+        } )
         //price tests
         .state('priceTests', {
             url: "/price-tests",
@@ -310,6 +314,218 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         var id = Math.random().toString(36).substring(7);
         $scope.group.tests[ id ] = {'ID':id};
     };
+
+
+}]);
+
+//controller for group stats
+ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state', function( $scope, $http, $stateParams, $state ) {
+
+    console.log( 'starting stats..' );
+
+    Chart.defaults.global = {
+        // Boolean - Whether to animate the chart
+        animation: true,
+
+        // Number - Number of animation steps
+        animationSteps: 60,
+
+        // String - Animation easing effect
+        // Possible effects are:
+        // [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
+        //  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
+        //  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
+        //  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
+        //  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
+        //  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
+        //  easeOutElastic, easeInCubic]
+        animationEasing: "easeOutQuart",
+
+        // Boolean - If we should show the scale at all
+        showScale: true,
+
+        // Boolean - If we want to override with a hard coded scale
+        scaleOverride: false,
+
+        // ** Required if scaleOverride is true **
+        // Number - The number of steps in a hard coded scale
+        scaleSteps: null,
+        // Number - The value jump in the hard coded scale
+        scaleStepWidth: null,
+        // Number - The scale starting value
+        scaleStartValue: null,
+
+        // String - Colour of the scale line
+        scaleLineColor: "rgba(0,0,0,.1)",
+
+        // Number - Pixel width of the scale line
+        scaleLineWidth: 1,
+
+        // Boolean - Whether to show labels on the scale
+        scaleShowLabels: true,
+
+        // Interpolated JS string - can access value
+        scaleLabel: "<%=value%>",
+
+        // Boolean - Whether the scale should stick to integers, not floats even if drawing space is there
+        scaleIntegersOnly: true,
+
+        // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+        scaleBeginAtZero: false,
+
+        // String - Scale label font declaration for the scale label
+        scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+        // Number - Scale label font size in pixels
+        scaleFontSize: 12,
+
+        // String - Scale label font weight style
+        scaleFontStyle: "normal",
+
+        // String - Scale label font colour
+        scaleFontColor: "#666",
+
+        // Boolean - whether or not the chart should be responsive and resize when the browser does.
+        responsive: false,
+
+        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        maintainAspectRatio: true,
+
+        // Boolean - Determines whether to draw tooltips on the canvas or not
+        showTooltips: true,
+
+        // Function - Determines whether to execute the customTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-custom-tooltips))
+        customTooltips: false,
+
+        // Array - Array of string names to attach tooltip events
+        tooltipEvents: ["mousemove", "touchstart", "touchmove"],
+
+        // String - Tooltip background colour
+        tooltipFillColor: "rgba(0,0,0,0.8)",
+
+        // String - Tooltip label font declaration for the scale label
+        tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+        // Number - Tooltip label font size in pixels
+        tooltipFontSize: 14,
+
+        // String - Tooltip font weight style
+        tooltipFontStyle: "normal",
+
+        // String - Tooltip label font colour
+        tooltipFontColor: "#fff",
+
+        // String - Tooltip title font declaration for the scale label
+        tooltipTitleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+        // Number - Tooltip title font size in pixels
+        tooltipTitleFontSize: 14,
+
+        // String - Tooltip title font weight style
+        tooltipTitleFontStyle: "bold",
+
+        // String - Tooltip title font colour
+        tooltipTitleFontColor: "#fff",
+
+        // Number - pixel width of padding around tooltip text
+        tooltipYPadding: 6,
+
+        // Number - pixel width of padding around tooltip text
+        tooltipXPadding: 6,
+
+        // Number - Size of the caret on the tooltip
+        tooltipCaretSize: 8,
+
+        // Number - Pixel radius of the tooltip border
+        tooltipCornerRadius: 6,
+
+        // Number - Pixel offset from point x to tooltip edge
+        tooltipXOffset: 10,
+
+        // String - Template string for single tooltips
+        tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
+
+        // String - Template string for multiple tooltips
+        multiTooltipTemplate: "<%= value %>",
+
+        // Function - Will fire on animation progression.
+        onAnimationProgress: function(){},
+
+        // Function - Will fire on animation completion.
+        onAnimationComplete: function(){}
+    }
+
+    var groupID = $stateParams.groupID;
+    $scope.group_id = groupID;
+    if ( 'undefined' == groupID ) {
+        swal( {
+            title: INGOT_TRANSLATION.fail,
+            text: INGOT_TRANSLATION.sorry,
+            type: "error",
+            confirmButtonText: INGOT_TRANSLATION.close
+        } );
+        $state.go( 'clickTests.list' );
+    } else {
+        $http({
+            url: INGOT_ADMIN.api + 'test-group/' + groupID + '/sequences?_wpnonce=' + INGOT_ADMIN.nonce,
+            method:'GET',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        } ).success( function( res ){
+            $scope.sequences = res;
+            $scope.stats = {};
+            $scope.chart_data = [];
+            angular.forEach( $scope.sequences, function( sequence, i ){
+                var ID = sequence.ID;
+                $http({
+                    url: INGOT_ADMIN.api + 'sequence/' + ID + '?context=stats&_wpnonce=' + INGOT_ADMIN.nonce,
+                    method:'GET',
+                    headers: {
+                        'X-WP-Nonce': INGOT_ADMIN.nonce
+                    }
+                } ).success( function( res ){
+                    $scope.stats[ ID ] = res;
+
+                    var sequence_data = {
+                        labels: [ 'A', 'B' ],
+                        datasets : [
+                            {
+                                label: 'totals',
+                                fillColor: "rgba(220,220,220,0.5)",
+                                strokeColor: "rgba(220,220,220,0.8)",
+                                highlightFill: "rgba(220,220,220,0.75)",
+                                highlightStroke: "rgba(220,220,220,1)",
+                            },
+                            {
+                                label: 'wins',
+                                fillColor: "rgba(151,187,205,0.5)",
+                                strokeColor: "rgba(151,187,205,0.8)",
+                                highlightFill: "rgba(151,187,205,0.75)",
+                                highlightStroke: "rgba(151,187,205,1)",
+                            }
+                        ]
+                    }
+                    sequence_data.datasets[0].data = [ res.a_total, res.b_total ];
+                    sequence_data.datasets[1].data = [ res.a_win, res.b_win ];
+                    var key_string = 'id_' + ID.toString();
+                    $scope.chart_data.push( sequence_data );
+
+                } );
+            });
+
+        } );
+
+    }
+
+    $scope.setChart = function( id, key ) {
+
+        console.log( $scope.chart_data[key] );
+        $scope.active_chart_id = id;
+        var ctx = document.getElementById("ingotChart").getContext("2d");
+        new Chart(ctx).Bar( $scope.chart_data[key] );
+
+    }
 
 
 }]);

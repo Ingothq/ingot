@@ -98,6 +98,9 @@ class load {
 		wp_enqueue_script( 'angular-translate-storage-local', "//cdnjs.cloudflare.com/ajax/libs/angular-translate-storage-local/2.7.2/angular-translate-storage-local.js", array( 'angular' ) );
 
 
+		// ChartJS
+		wp_enqueue_script( 'ingot-d3', INGOT_URL . 'assets/admin/js/chartjs.min.js', array( 'angular', 'jquery' ), rand() );
+
 		//sweet alert
 		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery' ) );
 		wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css' );
