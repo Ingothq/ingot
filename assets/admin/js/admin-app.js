@@ -389,10 +389,12 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
     $scope.setChart = function( id, key ) {
 
-        console.log( $scope.chart_data[key] );
         $scope.active_chart_id = id;
-        jQuery('#ingotChart').css({'height': 400, 'width': 400 });
-        jQuery(window).resize();
+        if( jQuery('#ingotChart').length ) {
+            jQuery('#ingotChart').remove();
+        }
+        var newChart = jQuery( document.createElement('canvas') ).attr('id', 'ingotChart').css({'width': 400, 'height': 400});
+        jQuery('#chartWrapper').append( newChart );
         var ctx = document.getElementById("ingotChart").getContext("2d");
         new Chart(ctx).Bar( $scope.chart_data[key], {
             responsive: false,
