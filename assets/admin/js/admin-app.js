@@ -491,14 +491,14 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                         labels: [ 'A', 'B' ],
                         datasets : [
                             {
-                                label: 'totals',
+                                label: 'Totals',
                                 fillColor: "rgba(220,220,220,0.5)",
                                 strokeColor: "rgba(220,220,220,0.8)",
                                 highlightFill: "rgba(220,220,220,0.75)",
                                 highlightStroke: "rgba(220,220,220,1)",
                             },
                             {
-                                label: 'wins',
+                                label: 'Wins',
                                 fillColor: "rgba(151,187,205,0.5)",
                                 strokeColor: "rgba(151,187,205,0.8)",
                                 highlightFill: "rgba(151,187,205,0.75)",
