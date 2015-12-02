@@ -193,7 +193,7 @@ class price_test_group extends route {
 				price_test::delete( $id );
 				$key = array_search( $id, $params[ 'test_order' ] );
 				if( is_int( $key ) ) {
-					unset( $params[ 'test_order' ][][ $key ] );
+					unset( $params[ 'test_order' ][ $key ] );
 				}
 
 			}
