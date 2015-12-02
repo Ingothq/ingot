@@ -143,7 +143,7 @@ class session extends table_crud {
 	public static function mark_used( $id ){
 		if( ! self::is_used( $id ) ) {
 			$session = self::read( $id );
-			$session[ 'used' ] = true;
+			$session[ 'used' ] = 1;
 			return self::save( $session, $id, true );
 		}
 

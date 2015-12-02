@@ -13,21 +13,24 @@ class tests_session_crud extends \WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		if( ! isset( $_SERVER ) ) {
-			$_SERVER = array();
-		}
+
 	}
 	public function tearDown() {
 		parent::tearDown();
-		unset( $_SERVER[ 'REQUEST_URI' ] );
 
 	}
 
 
-
+	/**
+	 * Test creating a session
+	 *
+	 * @since 0.3.0
+	 *
+	 * @group session
+	 * @covers \ingot\testing\crud\session::create()
+	 * @covers \ingot\testing\crud\session::read()
+	 */
 	public function testCreate() {
-
-
 		$id = \ingot\testing\crud\session::create( array() );
 		$this->assertTrue( is_numeric( $id ) );
 		$session = \ingot\testing\crud\session::read( $id );
@@ -48,11 +51,18 @@ class tests_session_crud extends \WP_UnitTestCase {
 			$this->assertArrayHasKey( $field, $session );
 		}
 
-		$this->assertFalse( $session[ 'used' ] );
+		$this->assertFalse( (bool) $session[ 'used' ] );
 	}
 
+	/**
+	 * Test creating a session
+	 *
+	 * @since 0.3.0
+	 *
+	 * @group session
+	 * @covers \ingot\testing\crud\session::get_slug()
+	 */
 	public function testPageSlug() {
-
 		$_SERVER[ 'REQUEST_URI' ] = '/pants';
 		$id = \ingot\testing\crud\session::create( array() );
 
@@ -60,30 +70,41 @@ class tests_session_crud extends \WP_UnitTestCase {
 		$this->assertSame( '/pants', $session[ 'slug' ] );
 	}
 
+	/**
+	 * Test the is_used function
+	 *
+	 * @since 0.3.0
+	 *
+	 * @group session
+	 * @covers \ingot\testing\crud\session::is_used()
+	 */
 	public function testNotUsedYet() {
 
 		$id = \ingot\testing\crud\session::create( array() );
+		$this->assertTrue( is_numeric( $id ) );
 
 		$this->assertFalse( \ingot\testing\crud\session::is_used( $id ) );
 
 
 	}
 
+	/**
+	 * Test that we can mark a session as used
+	 *
+	 * @since 0.3.0
+	 *
+	 * @group session
+	 * @covers \ingot\testing\crud\session::mark_used()
+	 */
 	public function testMarkUsed() {
 
 		$id = \ingot\testing\crud\session::create( array() );
+
+		$this->assertTrue( is_numeric( $id ) );
 		\ingot\testing\crud\session::mark_used( $id );
 		$session = \ingot\testing\crud\session::read( $id );
-		$this->assertSame( 0, $session[ 'used' ] );
+		$this->assertSame( '1', $session[ 'used' ] );
 
 	}
-
-	public function testReadMarkedUsed(){
-
-		$id = \ingot\testing\crud\session::create( array() );
-		$session = \ingot\testing\crud\session::mark_used( $id );
-		$this->assertSame( 1, $session[ 'used' ] );
-	}
-
 
 }

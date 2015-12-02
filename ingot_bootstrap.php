@@ -63,15 +63,6 @@ class ingot_bootstrap {
 					 *
 					 */
 					do_action( 'ingot_loaded' );
-return;
-					$id = \ingot\testing\crud\session::create( array() );
-					$x = 1;
-					$x = \ingot\testing\crud\session::is_used( $id );
-					\ingot\testing\crud\session::mark_used( $id );
-					$s = \ingot\testing\crud\session::read( $id );
-
-					$x = \ingot\testing\crud\session::is_used( $id );
-					$y = 1;
 				}else{
 					if ( is_admin() ) {
 						printf( '<div class="error"><p>%s</p></div>', __( 'Ingot Not Loaded', 'ingot' ) );
