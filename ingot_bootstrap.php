@@ -311,6 +311,7 @@ class ingot_bootstrap {
 	 * @since 0.0.9
 	 */
 	public static function init_cookies() {
+		return;
 		if( false == ingot_is_front_end() ) {
 			return false;
 		}
