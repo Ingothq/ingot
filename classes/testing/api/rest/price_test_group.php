@@ -187,6 +187,19 @@ class price_test_group extends route {
 			}
 
 		}
+
+		if( ! empty( $params[ 'remove' ] ) && is_array( $params[ 'remove' ] ) ){
+			foreach ( $params[ 'remove' ] as $id ) {
+				price_test::delete( $id );
+				$key = array_search( $id, $params[ 'test_order' ] );
+				if( is_int( $key ) ) {
+					unset( $params[ 'test_order' ][][ $key ] );
+				}
+
+			}
+
+		}
+
 		//@todo allow for more fields to be updated
 		foreach (
 			array(
@@ -297,6 +310,11 @@ class price_test_group extends route {
 				'required'          => true,
 				'sanitize_callback' => 'absint',
 			),
+			'remove_tests' => array(
+				'type' => 'array',
+				'default' => array(),
+				'sanitize_callback'  => array( $this, 'make_array_values_numeric' ),
+			)
 
 
 

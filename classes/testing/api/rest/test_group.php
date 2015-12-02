@@ -121,6 +121,19 @@ class test_group extends route {
 		$params = $request->get_params();
 
 		$test_order = $existing[ 'order' ];
+
+		if( ! empty( $params[ 'remove' ] ) && is_array( $params[ 'remove' ] ) ){
+			foreach ( $params[ 'remove' ] as $id ) {
+				test::delete( $id );
+				$key = array_search( $id, $test_order );
+				if( is_int( $key ) ) {
+					unset( $test_order[ $key ] );
+				}
+
+			}
+
+		}
+
 		if( ! empty( $params[ 'tests' ] ) ) {
 			foreach( $params[ 'tests' ] as $test ) {
 				$test_id = helpers::v( 'ID', $test, 0 );
@@ -401,6 +414,11 @@ class test_group extends route {
 			'meta' => array(
 				'type' => 'array',
 				'default' => array()
+			),
+			'remove_tests' => array(
+				'type' => 'array',
+				'default' => array(),
+				'sanitize_callback'  => array( $this, 'make_array_values_numeric' ),
 			)
 
 		);
