@@ -48,10 +48,14 @@ label.btn.btn-primary:hover a {
 
 #chartWrapper { position: relative; }
 #ingotLegend {
+    background: white;
+    border: 1px solid black;
+    padding: 20px 30px;
     position: absolute;
     right: 0;
-    top: 0;
+    top: 10%;
 }
+#ingotLegend ul { margin: 0; }
 #ingotLegend span {
     display: inline-block;
     height: 20px;

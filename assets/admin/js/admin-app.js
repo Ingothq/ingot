@@ -423,7 +423,7 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
             jQuery('#ingotLegend').remove();
         }
         var newChart = jQuery( document.createElement('canvas') ).attr('id', 'ingotChart').css({'width': '50%', 'height': 400});
-        var newLegend = jQuery( document.createElement('div') ).attr('id', 'ingotLegend').css({'width': 200, 'height': 200});
+        var newLegend = jQuery( document.createElement('div') ).attr('id', 'ingotLegend');
         jQuery('#chartWrapper').append( newChart );
         jQuery('#chartWrapper').append( newLegend );
         var ctx = document.getElementById("ingotChart").getContext("2d");
