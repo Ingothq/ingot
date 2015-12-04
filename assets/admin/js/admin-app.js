@@ -420,15 +420,19 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
         $scope.active_chart_id = id;
         if( jQuery('#ingotChart').length ) {
             jQuery('#ingotChart').remove();
+            jQuery('#ingotLegend').remove();
         }
-        var newChart = jQuery( document.createElement('canvas') ).attr('id', 'ingotChart').css({'width': 400, 'height': 400});
+        var newChart = jQuery( document.createElement('canvas') ).attr('id', 'ingotChart').css({'width': '50%', 'height': 400});
+        var newLegend = jQuery( document.createElement('div') ).attr('id', 'ingotLegend').css({'width': 200, 'height': 200});
         jQuery('#chartWrapper').append( newChart );
+        jQuery('#chartWrapper').append( newLegend );
         var ctx = document.getElementById("ingotChart").getContext("2d");
-        new Chart(ctx).BarAlt( $scope.chart_data[key], {
+        var ingot_chart = new Chart(ctx).BarAlt( $scope.chart_data[key], {
             scaleLabel: "          <%=value%>",
-            responsive: false,
+            responsive: true,
             barValueSpacing: 10
         } );
+        document.getElementById("ingotLegend").innerHTML = ingot_chart.generateLegend();
 
     }
 
