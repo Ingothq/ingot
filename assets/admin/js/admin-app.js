@@ -427,12 +427,14 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
         jQuery('#chartWrapper').append( newChart );
         jQuery('#chartWrapper').append( newLegend );
         var ctx = document.getElementById("ingotChart").getContext("2d");
-        var ingot_chart = new Chart(ctx).BarAlt( $scope.chart_data[key], {
-            scaleLabel: "          <%=value%>",
-            responsive: true,
-            barValueSpacing: 10
-        } );
-        document.getElementById("ingotLegend").innerHTML = ingot_chart.generateLegend();
+        setTimeout(function(){
+            var ingot_chart = new Chart(ctx).BarAlt( $scope.chart_data[key], {
+                scaleLabel: "          <%=value%>",
+                responsive: true,
+                barValueSpacing: 10
+            } );
+            document.getElementById("ingotLegend").innerHTML = ingot_chart.generateLegend();
+        }, 100);
 
     }
 
