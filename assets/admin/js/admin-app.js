@@ -319,12 +319,17 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 }]);
 
 //controller for group stats
-ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state', function( $scope, $http, $stateParams, $state ) {
+ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state', 'clickGroups', function( $scope, $http, $stateParams, $state, clickGroups ) {
 
     console.log( 'starting stats..' );
 
 
     var groupID = $stateParams.groupID;
+
+    clickGroups.get({id: groupID }, function(res){
+        $scope.group = res;
+    })
+
     $scope.group_id = groupID;
     if ( 'undefined' == groupID ) {
         swal( {
@@ -387,6 +392,29 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
     }
 
+    Chart.types.Bar.extend({
+        name: "BarAlt",
+        draw: function () {
+            Chart.types.Bar.prototype.draw.apply(this, arguments);
+
+            var ctx = this.chart.ctx;
+            ctx.save();
+            // text alignment and color
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+            ctx.fillStyle = this.options.scaleFontColor;
+            // position
+            var x = this.scale.xScalePaddingLeft * 0.4;
+            var y = this.chart.height / 2;
+            // change origin
+            ctx.translate(x, y)
+            // rotate text
+            ctx.rotate(-90 * Math.PI / 180);
+            ctx.fillText("TOTALS & WINS", 0, 0);
+            ctx.restore();
+        }
+    });
+
     $scope.setChart = function( id, key ) {
 
         $scope.active_chart_id = id;
@@ -396,7 +424,8 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
         var newChart = jQuery( document.createElement('canvas') ).attr('id', 'ingotChart').css({'width': 400, 'height': 400});
         jQuery('#chartWrapper').append( newChart );
         var ctx = document.getElementById("ingotChart").getContext("2d");
-        new Chart(ctx).Bar( $scope.chart_data[key], {
+        new Chart(ctx).BarAlt( $scope.chart_data[key], {
+            scaleLabel: "          <%=value%>",
             responsive: false,
             barValueSpacing: 10
         } );
