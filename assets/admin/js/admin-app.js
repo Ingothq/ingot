@@ -65,7 +65,11 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
         } ).state('clickTests.delete', {
             url: "/click-tests/delete/:groupID",
             controller: 'clickDelete'
-        })
+        }).state('clickTests.stats', {
+            url: "/click-tests/stats/:groupID",
+            templateUrl: INGOT_ADMIN.partials + "/click-group.stats.html",
+            controller: 'clickStats'
+        } )
         //price tests
         .state('priceTests', {
             url: "/price-tests",
@@ -260,11 +264,11 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     }
     
     $scope.removeTest = function( index ) {
-	    
+	    $scope.group.remove.push( index );
 	    delete $scope.group.tests[index];
 	    return false;
 	    
-    }
+    };
 
     $scope.submit = function( data ){
         var url;
@@ -310,6 +314,129 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         var id = Math.random().toString(36).substring(7);
         $scope.group.tests[ id ] = {'ID':id};
     };
+
+
+}]);
+
+//controller for group stats
+ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state', 'clickGroups', function( $scope, $http, $stateParams, $state, clickGroups ) {
+
+    console.log( 'starting stats..' );
+
+
+    var groupID = $stateParams.groupID;
+
+    clickGroups.get({id: groupID }, function(res){
+        $scope.group = res;
+    })
+
+    $scope.group_id = groupID;
+    if ( 'undefined' == groupID ) {
+        swal( {
+            title: INGOT_TRANSLATION.fail,
+            text: INGOT_TRANSLATION.sorry,
+            type: "error",
+            confirmButtonText: INGOT_TRANSLATION.close
+        } );
+        $state.go( 'clickTests.list' );
+    } else {
+        $http({
+            url: INGOT_ADMIN.api + 'test-group/' + groupID + '/sequences?_wpnonce=' + INGOT_ADMIN.nonce,
+            method:'GET',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+        } ).success( function( res ){
+            $scope.sequences = res;
+            $scope.stats = {};
+            $scope.chart_data = [];
+            angular.forEach( $scope.sequences, function( sequence, i ){
+                var ID = sequence.ID;
+                $http({
+                    url: INGOT_ADMIN.api + 'sequence/' + ID + '?context=stats&_wpnonce=' + INGOT_ADMIN.nonce,
+                    method:'GET',
+                    headers: {
+                        'X-WP-Nonce': INGOT_ADMIN.nonce
+                    }
+                } ).success( function( res ){
+                    $scope.stats[ ID ] = res;
+
+                    var sequence_data = {
+                        labels: [ 'A', 'B' ],
+                        datasets : [
+                            {
+                                label: 'Totals',
+                                fillColor: "rgba(220,220,220,0.5)",
+                                strokeColor: "rgba(220,220,220,0.8)",
+                                highlightFill: "rgba(220,220,220,0.75)",
+                                highlightStroke: "rgba(220,220,220,1)",
+                            },
+                            {
+                                label: 'Wins',
+                                fillColor: "rgba(151,187,205,0.5)",
+                                strokeColor: "rgba(151,187,205,0.8)",
+                                highlightFill: "rgba(151,187,205,0.75)",
+                                highlightStroke: "rgba(151,187,205,1)",
+                            }
+                        ]
+                    }
+                    sequence_data.datasets[0].data = [ res.a_total, res.b_total ];
+                    sequence_data.datasets[1].data = [ res.a_win, res.b_win ];
+                    var key_string = 'id_' + ID.toString();
+                    $scope.chart_data.push( sequence_data );
+
+                } );
+            });
+
+        } );
+
+    }
+
+    Chart.types.Bar.extend({
+        name: "BarAlt",
+        draw: function () {
+            Chart.types.Bar.prototype.draw.apply(this, arguments);
+
+            var ctx = this.chart.ctx;
+            ctx.save();
+            // text alignment and color
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+            ctx.fillStyle = this.options.scaleFontColor;
+            // position
+            var x = this.scale.xScalePaddingLeft * 0.4;
+            var y = this.chart.height / 2;
+            // change origin
+            ctx.translate(x, y)
+            // rotate text
+            ctx.rotate(-90 * Math.PI / 180);
+            ctx.fillText("TOTALS & WINS", 0, 0);
+            ctx.restore();
+        }
+    });
+
+    $scope.setChart = function( id, key ) {
+
+        $scope.active_chart_id = id;
+        if( jQuery('#ingotChart').length ) {
+            jQuery('#ingotChart').remove();
+            jQuery('#ingotLegend').remove();
+        }
+        var newChart = jQuery( document.createElement('canvas') ).attr('id', 'ingotChart').css({'width': '50%', 'height': 400});
+        var newLegend = jQuery( document.createElement('div') ).attr('id', 'ingotLegend');
+        jQuery('#chartWrapper').append( newChart );
+        jQuery('#chartWrapper').append( newLegend );
+        var ctx = document.getElementById("ingotChart").getContext("2d");
+        setTimeout(function(){
+            var ingot_chart = new Chart(ctx).BarAlt( $scope.chart_data[key], {
+                scaleLabel: "          <%=value%>",
+                responsive: true,
+                barValueSpacing: 10
+            } );
+            document.getElementById("ingotLegend").innerHTML = ingot_chart.generateLegend();
+        }, 100);
+
+    }
 
 
 }]);

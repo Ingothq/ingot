@@ -8,7 +8,9 @@
                 </a>
             </label>
             <label class="btn btn-primary">
-                {{ 'groups.stats' | translate }}
+                <a ui-sref="clickTests.stats({groupID:group.ID})">
+                    {{ 'groups.stats' | translate }}
+                </a>
             </label>
             <label class="btn btn-primary">
                 <a ui-sref="clickTests.delete({groupID:group.ID})">

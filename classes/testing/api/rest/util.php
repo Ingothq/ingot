@@ -66,5 +66,23 @@ class util {
 		return trailingslashit( self::get_namespace() ) . trailingslashit( str_replace( '_', '-', $route ) );
 	}
 
+	/**
+	 * Verify sessions nonce
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public static function verify_session_nonce( $request ) {
+		$nonce = $request->get_param( 'ingot_session_nonce' );
+
+		if ( is_string( $nonce ) ) {
+			return ingot_verify_session_nonce( $nonce );
+		}
+
+	}
+
 
 }

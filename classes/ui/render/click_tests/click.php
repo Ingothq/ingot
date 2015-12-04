@@ -224,4 +224,17 @@ abstract class click {
 		return $this->sequence;
 	}
 
+	/**
+	 * Attribute for outermost element
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected function attr_id() {
+		return sprintf( 'ingot-test-%s', $this->test[ 'ID' ] );
+	}
+
 }

@@ -22,3 +22,44 @@ label.btn.btn-primary:hover a {
     font-size: 50%;
     vertical-align: middle;
 }
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: brown;
+}
+
+.axis {
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+    display: none;
+}
+
+#chartWrapper { position: relative; }
+#ingotLegend {
+    background: white;
+    border: 1px solid black;
+    padding: 20px 30px;
+    position: absolute;
+    right: 0;
+    top: 10%;
+}
+#ingotLegend ul { margin: 0; }
+#ingotLegend span {
+    display: inline-block;
+    height: 20px;
+    margin-right: 5px;
+    vertical-align: top;
+    width: 20px;
+}

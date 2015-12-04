@@ -123,7 +123,18 @@ class init {
 	 * @return string
 	 */
 	protected function class_name( $plugin ){
-		return "\\ingot\\testing\\tests\\price\\plugins\\" . $plugin;
+		$class_name =  "\\ingot\\testing\\tests\\price\\plugins\\" . $plugin;
+
+		/**
+		 * Ovveride, or set name of class to use to setup a price test
+		 *
+		 * @since 0.3.0
+		 *
+		 * @param string $class_name Name of class, must be callable and should be fully qualified if using namespaces.
+		 * @param string $plugin Name of eCommerce plugin test is based on.
+		 */
+		return apply_filters( 'ingot_plugin_price_test_handler_class', $class_name, $plugin );
+
 	}
 
 	/**

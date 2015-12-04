@@ -1,20 +1,14 @@
 <?php
 /**
-Plugin Name: Ingot
-Version: 0.2.2
-Description: The Automatic A/B Tester -- Do Less, Convert More
-Author: Ingot LLC
-Author URI: http://IngotHQ.com
-Requires at least: 4.3.1
-Tested up to: 4.4.0
+ Plugin Name: Ingot
+Version: 0.3.0-a-1
  */
 
 
-define( 'INGOT_VER', '0.2.2' );
+define( 'INGOT_VER', '0.3.0-a-1' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
-//define( 'INGOT_DEV_MODE', true );
 
 add_action( 'plugins_loaded', 'ingot_maybe_load', 0 );
 function ingot_maybe_load() {
@@ -62,6 +56,7 @@ define( 'INGOT_SL_STORE_URL', 'http://ingothq.com' );
 define( 'INGOT_SL_ITEM_NAME', 'Ingot Plugin: The Automatic A/B Tester' );
 add_action( 'admin_init', 'ingot_sl_plugin_updater', 0 );
 add_action( 'admin_init', 'ingot_sl_register_option');
-if( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
+if( is_admin() && ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 	include( dirname( __FILE__ ) . '/includes/EDD_SL_Plugin_Updater.php' );
 }
+

@@ -98,6 +98,9 @@ class load {
 		wp_enqueue_script( 'angular-translate-storage-local', "//cdnjs.cloudflare.com/ajax/libs/angular-translate-storage-local/2.7.2/angular-translate-storage-local.js", array( 'angular' ) );
 
 
+		// ChartJS
+		wp_enqueue_script( 'ingot-d3', INGOT_URL . 'assets/admin/js/chartjs.min.js', array( 'angular', 'jquery' ), rand() );
+
 		//sweet alert
 		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery' ) );
 		wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css' );
@@ -235,10 +238,13 @@ class load {
 				'add_test'                             => __( 'Add Test', 'ingot' ),
 				'plugin' => __( 'eCommerce Plugin', 'ingot' ),
 				'product' => __( 'Product', 'ingot' ),
-				'price_variation' => __( 'Price Variation (percentage)', 'ingot ')
+				'price_variation' => __( 'Price Variation (percentage)', 'ingot '),
+				'delete' => __( 'Delete', 'ingot' )
 			),
 			'settings' => array(
 				'page_header' => __( 'Settings', 'ingot' ),
+				'cache_mode_label' => __( 'Work around caching', 'ingot' ),
+				'cache_mode_desc' => __( 'If you are using a static HTML cache testing will not work properly, since the same version of your site is shown to all visitors. Use this mode to work around this issue.', 'ingot' ),
 				'click_tracking_label' => __( 'Advanced Click Tracking', 'ingot' ),
 				'click_tracking_desc' => __( 'Ingot always tracks clicks, in advanced mode, more details are tracked. This takes up more space in the database, but enables Ingot to be more powerful.', 'ingot' ),
 				'anon_tracking_label' => __( 'Share Your Data Anonymously', 'ingot' ),

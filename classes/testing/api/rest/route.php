@@ -26,6 +26,7 @@ abstract class route  {
 	protected $what;
 
 
+
 	/**
 	 * Register the routes for the objects of the controller.
 	 *
@@ -33,7 +34,7 @@ abstract class route  {
 	 */
 	public function register_routes() {
 		$namespace = $this->make_namespace();
-		$base = str_replace( '_', '-', $this->what );
+		$base = $this->base();
 		register_rest_route( $namespace, '/' . $base, array(
 			array(
 				'methods'         => \WP_REST_Server::READABLE,
@@ -65,7 +66,7 @@ abstract class route  {
 				'args'            => array(
 					'context'          => array(
 						'default'      => 'view',
-					),
+					)
 				),
 			),
 			array(
@@ -75,13 +76,22 @@ abstract class route  {
 				'args'            => $this->args( false )
 			),
 			array(
-				'methods'  => \WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'delete_item' ),
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'delete_item' ),
 				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
-				'args'     => array(
-					'force'    => array(
-						'default'      => false,
+				'args'                => array(
+					'force' => array(
+						'default'  => false,
+						'required' => false,
 					),
+					'all'   => array(
+						'default'  => false,
+						'required' => false,
+					),
+					'id'    => array(
+						'default'               => 0,
+						'sanatization_callback' => 'absint'
+					)
 				),
 			),
 		) );
@@ -405,5 +415,18 @@ abstract class route  {
 
 		return $params;
 
+	}
+
+	/**
+	 * Create route base
+	 *
+	 * @since 0.3.0
+	 *
+	 * @return string
+	 */
+	protected function base() {
+		$base = str_replace( '_', '-', $this->what );
+
+		return $base;
 	}
 }

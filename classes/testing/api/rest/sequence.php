@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * REST API Endpoints
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -11,6 +11,8 @@
 
 namespace ingot\testing\api\rest;
 
+
+use ingot\testing\utility\helpers;
 
 class sequence extends route {
 
@@ -24,6 +26,38 @@ class sequence extends route {
 	 * @var string
 	 */
 	protected $what = 'sequence';
+
+	/**
+	 * Get one sequence, by sequence ID
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_item( $request ){
+		$url = $request->get_url_params();
+		$id = helpers::v( 'id', $url, 0 );
+		if( 0 == absint( $id ) || ! is_array( \ingot\testing\crud\sequence::read( $id )) ) {
+			$response = new \WP_REST_Response(array(), 404 );
+			return $response;
+		}
+
+		$sequence = \ingot\testing\crud\sequence::read( $id );
+		if ( 'admin' == $request->get_param( 'context' ) ) {
+			return rest_ensure_response( $sequence );
+
+		}
+
+		if( 'stats' == $request->get_param( 'context' ) ) {
+			$stats = new \ingot\testing\object\stats( $sequence );
+			return rest_ensure_response( $stats->get_stats() );
+
+		}
+
+
+	}
 
 
 	/**
@@ -60,6 +94,27 @@ class sequence extends route {
 
 	}
 
+	/**
+	 * Add the special extra routes for sequences API
+	 *
+	 * @since 0.3.0
+	 *
+	 * @access protected
+	 */
+	protected function register_more_routes() {
+		$namespace = util::get_namespace();
+		$base = $this->base();
+	}
+
+	/**
+	 * Request params
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param bool|true $require_id
+	 *
+	 * @return array
+	 */
 	public function args( $require_id = true ) {
 		$args = array(
 			'group_ID' => array(
@@ -81,6 +136,18 @@ class sequence extends route {
 				'type' => 'boolean',
 				'default' => true,
 				'validation_callback' => array( $this, 'validate_boolean' )
+			),
+			'context' => array(
+				'type'                => 'string',
+				'default'             => 'admin',
+				'validation_callback' => function ( $value ) {
+					if ( ! in_array( $value, [ 'stats', 'admin' ] ) ) {
+						$value = 'admin';
+					}
+
+					return $value;
+
+				}
 			)
 		);
 

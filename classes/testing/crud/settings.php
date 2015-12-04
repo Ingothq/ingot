@@ -26,7 +26,8 @@ class settings {
 	protected static $settings_keys = array(
 		'click_tracking',
 		'anon_tracking',
-		'license_code'
+		'license_code',
+		'cache_mode'
 	);
 
 
@@ -122,7 +123,7 @@ class settings {
 				return true;
 
 			}else{
-				return new \WP_Error( 'ingot-license-invalid' );
+				return false;
 
 			}
 

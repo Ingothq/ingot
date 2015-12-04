@@ -18,6 +18,7 @@ use ingot\testing\crud\settings;
 use ingot\testing\crud\tracking;
 use ingot\testing\options;
 use ingot\testing\tests\click\click;
+use ingot\testing\utility\defaults;
 use ingot\testing\utility\helpers;
 
 class flow {
@@ -94,18 +95,45 @@ class flow {
 			$group = group::read( $sequence[ 'group_ID' ] );
 		}
 
-		$threshold = helpers::v( 'threshold', $group, 20 );
+		$updated = sequence::update( $sequence, $sequence_id, true );
+		$threshold = helpers::v( 'threshold', $group, defaults::threshold() );
+		$intial = helpers::v( 'initial', $group, defaults::initial() );
 
-		if( $total_win >= $threshold ) {
+		if( self::threshold_exceeded( $sequence, $threshold, $intial ) ) {
 			$updated = sequence_progression::make_next_sequence( $sequence[ 'group_ID' ], $winner, $group );
-		}else{
-			$updated = sequence::update( $sequence, $sequence_id, true );
 		}
-
 
 		self::maybe_track_click_details( $test_id, $sequence_id, $sequence );
 
 		return $updated;
+
+	}
+
+	/**
+	 * Check if threshold is exceeded
+	 *
+	 * @since 0.3.0
+	 *
+	 *
+	 * @param array $sequence
+	 * @param int $threshold Threshold percentage
+	 * @param int $inital Initital number of tests to run before making caluclation.
+	 *
+	 * @return bool
+	 */
+	public static function threshold_exceeded( $sequence, $threshold , $inital ) {
+		$sequence = new \ingot\testing\object\sequence( $sequence );
+
+		if( $sequence->total < $inital ) {
+			return false;
+		}
+
+		if( $sequence->a_win_percentage < $threshold || $sequence->b_win_percentage < $threshold ){
+			return true;
+
+		}
+
+		return false;
 
 	}
 

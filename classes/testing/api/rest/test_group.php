@@ -13,6 +13,7 @@ namespace ingot\testing\api\rest;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\crud\sequence;
 use ingot\testing\crud\test;
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
@@ -31,78 +32,6 @@ class test_group extends route {
 	 */
 	protected $what = 'group';
 
-	/**
-	 * Register the routes for the objects of the controller.
-	 */
-	public function register_routes() {
-		$namespace = util::get_namespace();
-		$base = 'test-group';
-		register_rest_route( $namespace, '/' . $base, array(
-			array(
-				'methods'         => \WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_items' ),
-				'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				'args'            => array(
-					'page' => array(
-						'default' => 1,
-						'sanitize_callback'  => 'absint',
-					),
-					'limit' => array(
-						'default' => 10,
-						'sanitize_callback'  => 'absint',
-					)
-				),
-			),
-			array(
-				'methods'         => \WP_REST_Server::CREATABLE,
-				'callback'        => array( $this, 'create_item' ),
-				'permission_callback' => array( $this, 'create_item_permissions_check' ),
-				'args'            => $this->args( false )
-			),
-		) );
-		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => \WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_item' ),
-				'permission_callback' => array( $this, 'get_item_permissions_check' ),
-				'args'            => array(
-					'context'          => array(
-						'default'      => 'view',
-					),
-				),
-			),
-			array(
-				'methods'         => \WP_REST_Server::EDITABLE,
-				'callback'        => array( $this, 'update_item' ),
-				'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				'args'            => $this->args( false )
-			),
-			array(
-				'methods'  => \WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'delete_item' ),
-				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
-				'args'     => array(
-					'force'    => array(
-						'default'      => false,
-					),
-					'all' => array(
-						'default' => false,
-					),
-					'id' => array(
-						'default' => 0,
-						'sanatization_callback' => 'absint'
-					)
-				),
-			),
-		) );
-		register_rest_route( $namespace, '/' . $base . '/schema', array(
-			'methods'         => \WP_REST_Server::READABLE,
-			'callback'        => array( $this, 'get_public_item_schema' ),
-		) );
-
-		$this->register_more_routes();
-
-	}
 
 	/**
 	 * Get a collection of groups
@@ -192,6 +121,19 @@ class test_group extends route {
 		$params = $request->get_params();
 
 		$test_order = $existing[ 'order' ];
+
+		if( ! empty( $params[ 'remove' ] ) && is_array( $params[ 'remove' ] ) ){
+			foreach ( $params[ 'remove' ] as $id ) {
+				test::delete( $id );
+				$key = array_search( $id, $test_order );
+				if( is_int( $key ) ) {
+					unset( $test_order[ $key ] );
+				}
+
+			}
+
+		}
+
 		if( ! empty( $params[ 'tests' ] ) ) {
 			foreach( $params[ 'tests' ] as $test ) {
 				$test_id = helpers::v( 'ID', $test, 0 );
@@ -472,6 +414,11 @@ class test_group extends route {
 			'meta' => array(
 				'type' => 'array',
 				'default' => array()
+			),
+			'remove_tests' => array(
+				'type' => 'array',
+				'default' => array(),
+				'sanitize_callback'  => array( $this, 'make_array_values_numeric' ),
 			)
 
 		);
@@ -518,7 +465,7 @@ class test_group extends route {
 	 */
 	protected function register_more_routes() {
 		$namespace = util::get_namespace();
-		$base = 'test-group';
+		$base = $this->base();
 		register_rest_route( $namespace, $base . '/(?P<id>[\d]+)/tests', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -527,6 +474,41 @@ class test_group extends route {
 				'args'                => array(),
 			)
 		) );
+
+		register_rest_route( $namespace, $base . '/(?P<id>[\d]+)/sequences', array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_sequences_by_group' ),
+				'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				'args'                => array(),
+			)
+		) );
+	}
+
+	/**
+	 * Get all sequences in a group
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_sequences_by_group( $request ){
+		$url = $request->get_url_params();
+		$id = helpers::v( 'id', $url, 0 );
+		if( 0 == absint( $id ) || ! is_array( group::read( $id ) ) ){
+			return new \WP_REST_Response( array(), '404' );
+
+		}
+
+		$sequences = sequence::get_items( [
+			'group_ID' => $id,
+			'return'   => 'ids'
+		]);
+
+		return rest_ensure_response( $sequences );
+
 	}
 
 	/**
@@ -574,6 +556,17 @@ class test_group extends route {
 
 		return new \WP_REST_Response( $item, 200 );
 
+	}
+
+	/**
+	 * Create route base
+	 *
+	 * @since 0.3.0
+	 *
+	 * @return string
+	 */
+	protected function base() {
+		return 'test-group';
 	}
 
 }
