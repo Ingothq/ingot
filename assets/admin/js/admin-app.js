@@ -225,7 +225,9 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
 ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'clickGroups', function( $scope, $http, $stateParams, $rootScope, $state, clickGroups ) {
 
     $scope.group_step = 1;
+    $scope.new_group = false;
     if( 'clickTests.new' == $state.current.name ) {
+        $scope.new_group = true;
         $scope.group = {
             click_type_options : INGOT_ADMIN.click_type_options,
             tests: {}
