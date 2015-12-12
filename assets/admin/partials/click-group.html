@@ -4,15 +4,15 @@
         <span ng-show="new_group">{{ 'New Content Test' | translate }}</span>
     </h2>
     <ul class="progress-indicator">
-        <li ng-click="change_step(1)" ng-class="{'active': group_step == 1, 'completed': group_step > 1}">
+        <li ng-click="change_step(1)" ng-class="{'active': group_step == 1, 'completed': group_step > 1 || !new_group }">
             <span class="bubble"></span>
             {{ 'Name' | translate }}
         </li>
-        <li ng-click="change_step(2)" ng-class="{'active': group_step == 2, 'completed': group_step > 2}">
+        <li ng-click="change_step(2)" ng-class="{'active': group_step == 2, 'completed': group_step > 2 || !new_group  }">
             <span class="bubble"></span>
             {{ 'Type' | translate }}
         </li>
-        <li ng-click="change_step(3)" ng-class="{'active': group_step == 3, 'completed': group_step > 3}">
+        <li ng-click="change_step(3)" ng-class="{'active': group_step == 3, 'completed': group_step > 3 || !new_group }">
             <span class="bubble"></span>
             {{ 'Data and Tests' | translate }}
         </li>
