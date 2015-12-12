@@ -223,6 +223,8 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
 
 //controller for creating/editing a click group
 ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'clickGroups', function( $scope, $http, $stateParams, $rootScope, $state, clickGroups ) {
+
+    $scope.group_step = 1;
     if( 'clickTests.new' == $state.current.name ) {
         $scope.group = {
             click_type_options : INGOT_ADMIN.click_type_options,
@@ -251,23 +253,28 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     }
     
     $scope.buttonStyle = function( id, type ) {
-	    
+
 	    if( type == 'button_color' ) {
-		    var css = {}
-		    if( $scope.group.tests[id].meta && $scope.group.tests[id].meta.background_color )
+		    var css = {};
+		    if( $scope.group.tests[id] && $scope.group.tests[id].meta && $scope.group.tests[id].meta.background_color )
 			    css['background-color'] = $scope.group.tests[id].meta.background_color;
-			if( $scope.group.tests[id].meta && $scope.group.tests[id].meta.color )
+			if( $scope.group.tests[id] && $scope.group.tests[id].meta && $scope.group.tests[id].meta.color )
 			    css['color'] = $scope.group.tests[id].meta.color;
 		    return css;
-	    }
+	    } else {
+            var css = {};
+            if( $scope.group.meta && $scope.group.meta.background_color )
+                css['background-color'] = $scope.group.meta.background_color;
+            if( $scope.group.meta && $scope.group.meta.color )
+                css['color'] = $scope.group.meta.color;
+            return css;
+        }
 	    
     }
     
     $scope.removeTest = function( index ) {
-	    $scope.group.remove.push( index );
 	    delete $scope.group.tests[index];
 	    return false;
-	    
     };
 
     $scope.submit = function( data ){
@@ -290,8 +297,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         } ).success(function(data) {
             $scope.group = data;
             if( 'clickTests.new' == $state.current.name ) {
-
-                $state.go('clickTests.edit', { groupID: data.ID } );
+                $state.go('clickTests.list');
             }
             swal({
                 title: INGOT_TRANSLATION.group_saved,
@@ -315,6 +321,15 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         $scope.group.tests[ id ] = {'ID':id};
     };
 
+    $scope.change_step = function( step ) {
+        $scope.group_step = step;
+    }
+    $scope.partials_url = INGOT_ADMIN.partials;
+
+    $scope.choose_group_type = function( type ) {
+        $scope.group.click_type = type;
+
+    }
 
 }]);
 

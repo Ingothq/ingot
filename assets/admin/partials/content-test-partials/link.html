@@ -1,0 +1,30 @@
+<div class="form-group row group-type-select">
+    <div class="col-sm-6">
+        <label for="link" class="col-md-4 col-sm-12">
+            {{ 'group.link_label_group_setting' | translate }}
+        </label>
+        <input id="link" type="text" ng-model="group.link" class="col-md-8 col-sm-12" ng-required="true" />
+    </div>
+    <div class="col-sm-6">
+        <div id="tests" ng-repeat="test in group.tests track by $index">
+            <div id="test-{{test.ID}}">
+                <ng-form name="innerForm">
+                    <div class="form-group row">
+                        <label for="text-{{test.ID}}" class="col-sm-3">
+                            {{ 'group.text_label_test_setting' | translate }}
+                        </label>
+                        <input name="text" type="text" id="text-{{test.ID}}" ng-model="test.text" class="col-sm-7"/>
+                        <div class="col-sm-2">
+                            <a ng-click="removeTest( test.ID )" ng-href="" class="btn btn-danger">
+                                {{ 'group.delete' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                </ng-form>
+            </div>
+        </div>
+        <a class="btn btn-default btn-block add-new-test" ng-click="addNewTest()" ng-href="">
+            {{ 'group.add_test' | translate }}
+        </a>
+    </div>
+</div>

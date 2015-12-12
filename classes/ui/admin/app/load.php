@@ -214,7 +214,7 @@ class load {
 			'invalid_price_test_range' => __( 'Please enter a number between -.99 and .99', 'ingot' ),
 			'settings_saved'           => __( 'Settings Saved', 'ingot' ),
 			'groups' => array(
-				'click_group_page_title' => __( 'Click Test Groups', 'ingot' ),
+				'click_group_page_title' => __( 'Content Test Groups', 'ingot' ),
 				'price_group_page_title' => __( 'Price Test Groups', 'ingot' ),
 				'show_all'               => __( 'Show All', 'ingot' ),
 				'create_new'             => __( 'Create New', 'ingot' ),

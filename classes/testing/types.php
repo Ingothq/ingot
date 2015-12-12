@@ -49,10 +49,10 @@ class types {
 	 */
 	public static function allowed_click_types( $with_labels = false, $api_format = true ) {
 		$types = array(
-			'link' => __( 'Link', 'ingot' ),
-			'text' => __( 'Text', 'ingot' ),
-			'button' => __( 'Button', 'ingot' ),
-			'button_color' => __( 'Button Color', 'ingot' ),
+			'link' => array( 'name' => __( 'Link', 'ingot' ), 'description' => 'Use this to test link location on a call to action' ),
+			'text' => array( 'name' => __( 'Text', 'ingot' ), 'description' => 'Use this to test text on a call to action' ),
+			'button' => array( 'name' => __( 'Button', 'ingot' ), 'description' => 'Use this to test button text call to action' ),
+			'button_color' => array( 'name' => __( 'Button Color', 'ingot' ), 'description' => 'Use this to test button coloring on a call to action' ),
 		);
 
 		//@todo figure out how to make content blocks work
@@ -78,7 +78,8 @@ class types {
 				foreach ( $types as $value => $label ) {
 					$options[] = array(
 						'value' => $value,
-						'label' => $label
+						'label' => $label['name'],
+						'description' => $label['description'],
 					);
 				}
 
