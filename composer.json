@@ -12,6 +12,11 @@
             "name": "Josh Pollock",
             "homepage": "http://JoshPress.net",
             "role": "Developer"
+        },
+        {
+          "name": "Roy Sivan",
+          "homepage": "http://roysivan.com",
+          "role": "Developer"
         }
     ],
     "repositories": [
