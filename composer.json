@@ -21,7 +21,6 @@
       }
     ],
     "require": {
-        "wpackagist-plugin/rest-api" : "*",
         "calderawp/dismissible-notice": "dev-master"
     },
     "require-dev": {
