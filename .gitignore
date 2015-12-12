@@ -4,3 +4,4 @@ vendor/composer
 node_modules
 build/*
 wp-api
+.idea/
