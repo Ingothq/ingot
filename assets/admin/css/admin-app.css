@@ -65,6 +65,8 @@ label.btn.btn-primary:hover a {
     vertical-align: top;
     width: 20px;
 }
+
+.delete { color: red; font-size: 18px; }
 /**
 * Content Test Listing
 */
@@ -87,7 +89,6 @@ label.btn.btn-primary:hover a {
     width: 30%;
 }
 .group-icons a.edit { color: black; }
-.group-icons a.delete { color: red; }
 
 .paginate {
     padding: 10px 20px;

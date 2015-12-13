@@ -14,9 +14,9 @@
                             {{ 'group.text_label_test_setting' | translate }}
                         </label>
                         <input name="text" type="text" id="text-{{test.ID}}" ng-model="test.text" class="col-sm-7"/>
-                        <div class="col-sm-2">
-                            <a ng-click="removeTest( test.ID )" ng-href="" class="btn btn-danger">
-                                {{ 'group.delete' | translate }}
+                        <div class="col-sm-2 text-right">
+                            <a ng-click="removeTest( test.ID )" class="delete" ng-href="" title="{{ 'group.delete' | translate }}">
+                                <i class="fa fa-minus-circle"></i>
                             </a>
                         </div>
                     </div>
