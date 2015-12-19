@@ -23,10 +23,15 @@
       {
         "type":"composer",
         "url":"http://wpackagist.org"
+      },
+      {
+        "type":"git",
+        "url":"https://github.com/Shelob9/multiarmedbandit"
       }
     ],
     "require": {
-        "calderawp/dismissible-notice": "dev-master"
+        "calderawp/dismissible-notice": "dev-master",
+        "shelob9/mabandit" : "*"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
