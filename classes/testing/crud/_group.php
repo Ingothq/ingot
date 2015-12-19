@@ -1,6 +1,6 @@
 <?php
 /**
- * Test CRUD
+ * Group CRUD
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -8,10 +8,12 @@
  * @link
  * @copyright 2015 Josh Pollock
  */
+
 namespace ingot\testing\crud;
 
 
-class test extends options_crud {
+class group extends options_crud {
+
 
 	/**
 	 * Name of this object
@@ -22,10 +24,10 @@ class test extends options_crud {
 	 *
 	 * @var string
 	 */
-	protected $what = 'test';
+	protected static $what = 'group';
 
 	protected static function what() {
-		return 'test';
+		return 'group';
 	}
 
 	/**
@@ -39,15 +41,14 @@ class test extends options_crud {
 	 */
 	protected static function required() {
 		$required = array(
-			'text',
+			'type'
 		);
 
 		return $required;
-
 	}
 
 	/**
-	 * Neccasary, but not required fields of this object
+	 * Necessary, but not required fields of this object
 	 *
 	 * @since 0.0.4
 	 *
@@ -56,15 +57,23 @@ class test extends options_crud {
 	 * @return array
 	 */
 	protected static function needed() {
-
 		$needed = array(
 			'name',
+			'text',
+			'sequences',
+			'order',
+			'initial',
+			'selector',
+			'threshold',
+			'click_type',
+			'link',
+			'meta',
 			'created',
 			'modified',
-			'meta'
+			'current_sequence'
 		);
 
 		return $needed;
-
 	}
+
 }

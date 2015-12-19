@@ -12,7 +12,7 @@
 namespace ingot\testing\crud;
 
 
-class group extends options_crud {
+class group extends table_crud {
 
 
 	/**
@@ -59,18 +59,10 @@ class group extends options_crud {
 	protected static function needed() {
 		$needed = array(
 			'name',
-			'text',
-			'sequences',
-			'order',
-			'initial',
-			'selector',
-			'threshold',
-			'click_type',
-			'link',
-			'meta',
-			'created',
+			'sub_type',
+			'variants',
 			'modified',
-			'current_sequence'
+			'created'
 		);
 
 		return $needed;
