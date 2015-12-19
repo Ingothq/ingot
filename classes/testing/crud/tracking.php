@@ -69,7 +69,7 @@ class tracking extends table_crud {
 		$needed = array(
 			'group_ID',
 			'sequence_ID',
-			'test_ID',
+			'ingot_ID',
 			'IP',
 			'referrer',
 			'UTM',

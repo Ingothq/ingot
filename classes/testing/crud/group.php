@@ -61,6 +61,7 @@ class group extends table_crud {
 			'name',
 			'sub_type',
 			'variants',
+			'meta',
 			'modified',
 			'created'
 		);
