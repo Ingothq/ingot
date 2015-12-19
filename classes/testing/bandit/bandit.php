@@ -12,15 +12,41 @@
 namespace ingot\testing\bandit;
 
 
+use ingot\testing\crud\group;
+
 abstract class bandit {
 
 	/**
-	 * @var
+	 * Current experiment object
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access private
+	 *
+	 * @var \MaBandit\Experiment
 	 */
 	private $experiment;
 
+	/**
+	 *
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access private
+	 *
+	 * @var
+	 */
 	private $bandit;
 
+	/**
+	 * Group ID
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access private
+	 *
+	 * @var int
+	 */
 	private $ID;
 
 
@@ -30,11 +56,11 @@ abstract class bandit {
 	 * @since 0.4.0
 	 *
 	 * @param int $id Group ID
-	 * @param array $variants Optional. Variants to add. Required if $id is not an existing group. @TODO REMOVE
+
 	 */
-	public function __construct( $id, $variants = null ){
+	public function __construct( $id ){
 		$this->ID = $id;
-		$this->go( $variants );
+		$this->go();
 	}
 
 	/**
@@ -70,6 +96,7 @@ abstract class bandit {
 	 *
 	 * @param array $variants Optional. Variants to add. Required if $id is not an existing group.
 	 */
+
 	protected function go( $variants ) {
 
 		$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery(3);
@@ -79,9 +106,15 @@ abstract class bandit {
 		//@todo remove this. Should never be used to create? Or move creation to seperate object
 		try {
 			$this->experiment = $this->bandit->getExperiment( $this->ID );
-		} catch(\MaBandit\Exception\ExperimentNotFoundException $e) {
-			$this->experiment = $this->bandit->createExperiment($this->ID, $variants );
+		} catch( \MaBandit\Exception\ExperimentNotFoundException $e ) {
+			$group = group::read( $this->ID );
+			if( ! empty( $group[ 'variants' ] ) )  {
+				$this->experiment = $this->bandit->createExperiment( $this->ID, $variants );
+			}
+
 		}
+
+
 
 
 	}

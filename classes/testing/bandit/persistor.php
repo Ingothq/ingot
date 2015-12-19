@@ -47,11 +47,16 @@ class persistor implements \MaBandit\Persistence\Persistor {
 	 */
 	private $_write_callback;
 
+	private $ID;
+
 	/**
+	 *
+	 * @param int $id Group ID
 	 * @param string|array $ $read_callback Name of function or callable array for class/method to to read levers.
 	 * @param string|array $write_callback Name of function or callable array for class/method to to write levers.
 	 */
-	public function __construct( $read_callback, $write_callback ) {
+	public function __construct( $id, $read_callback, $write_callback ) {
+		$this->ID = $id;
 		$this->_read_callback = $read_callback;
 		$this->_write_callback = $write_callback;
 	}
@@ -122,7 +127,7 @@ class persistor implements \MaBandit\Persistence\Persistor {
 	 * @access protected
 	 */
 	protected function get_levers() {
-		$this->_levers = call_user_func( $this->_read_callback );
+		$this->_levers = call_user_func( $this->_read_callback, $this->ID );
 	}
 
 	/**
@@ -133,7 +138,7 @@ class persistor implements \MaBandit\Persistence\Persistor {
 	 * @access protected
 	 */
 	protected function save_levers(){
-		call_user_func( $this->_write_callback, $this->_levers );
+		call_user_func( $this->_write_callback, $this->ID, $this->_levers );
 	}
 
 }
