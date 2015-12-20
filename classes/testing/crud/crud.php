@@ -371,8 +371,12 @@ abstract class crud {
 
 		foreach( $data as $key => $datum ) {
 			if( is_array( $data[ $key ] ) ) {
-				$data[ $key ] = helpers::sanitize( $data[ $key ] );
-				$data[ $key ] = serialize( $datum );
+				if ( empty( $data[ $key ]) ) {
+					$data[ $key ] = serialize( [] );
+				}else{
+					$data[ $key ] = helpers::sanitize( $data[ $key ] );
+					$data[ $key ] = serialize( $datum );
+				}
 			}
 
 		}
@@ -564,6 +568,8 @@ abstract class crud {
 			$date = current_time( 'mysql' );
 		}elseif( is_numeric( $date ) ) {
 			$date = date("Y-m-d H:i:s", $date );
+		}elseif( '0000-00-00 00:00:00' == $date ) {
+			$date = current_time( 'mysql' );
 		}elseif( is_string( $date ) ) {
 			$_date = strtotime( $date );
 			if( 0 == $_date ){

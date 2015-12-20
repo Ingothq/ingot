@@ -55,6 +55,10 @@ class variant extends crud {
 	}
 
 	protected static function fill_in( $data ){
+		if( ! isset( $data[ 'variants' ] ) || ! ! is_array( $data[ 'variants'] ) ) {
+			$data[ 'variants' ] = [];
+		}
+
 		return parent::fill_in( $data );
 	}
 
@@ -88,7 +92,6 @@ class variant extends crud {
 	protected static function needed(){
 		return [
 			'meta',
-			'levers',
 			'created',
 			'modified'
 		];

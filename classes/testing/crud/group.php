@@ -100,7 +100,22 @@ class group extends crud {
 		global $wpdb;
 		$sql = sprintf( 'SELECT `levers` FROM %s WHERE `ID` = %d', $table_name, $id );
 		$results = $wpdb->get_results( $sql, ARRAY_N );
-		return $results;
+		if ( ! empty( $results ) ) {
+			foreach( $results as $i => $result ) {
+				$result = maybe_unserialize( $result );
+				if ( ! empty( $result ) ) {
+					$result = helpers::make_array_values_numeric( $result, true );
+				}
+
+				$results[ $i ] = $result;
+
+			}
+
+			return $results;
+
+		}
+
+		return array();
 
 	}
 
@@ -139,7 +154,7 @@ class group extends crud {
 		}
 
 		foreach( self::get_all_fields() as $field ){
-			if( ! in_array( $field, array( 'variants', 'meta' ) ) ) {
+			if( ! in_array( $field, array( 'variants', 'meta', 'levers' ) ) ) {
 				$data[ $field ] = (string) $data[ $field ];
 			}else{
 				if( ! is_array( $data[ $field ] ) ) {
@@ -155,7 +170,7 @@ class group extends crud {
 
 		}
 
-		$data[ 'variants' ] == helpers::make_array_values_numeric( $data[ 'variants' ] );
+		$data[ 'variants' ] == helpers::make_array_values_numeric( $data[ 'variants' ], true );
 
 		return $data;
 
@@ -221,7 +236,7 @@ class group extends crud {
 					$data[  $field  ] = self::date_validation( $data[ $field ] );
 				}
 
-			}elseif( in_array( $field, ['variants', 'meta' ] ) && ( ! isset( $data[  $field ] ) || ! is_array( $data[ $field ] ) ) ) {
+			}elseif( in_array( $field, ['variants', 'meta', 'levers' ] ) && ( ! isset( $data[  $field ] ) || ! is_array( $data[ $field ] ) ) ) {
 				$data[ $field ] = [];
 			}else{
 				if ( ! isset( $data[ $field ] ) ) {
@@ -266,7 +281,8 @@ class group extends crud {
 			'variants',
 			'meta',
 			'modified',
-			'created'
+			'created',
+			'levers'
 		);
 
 		return $needed;

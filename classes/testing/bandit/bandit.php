@@ -13,6 +13,7 @@ namespace ingot\testing\bandit;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\utility\helpers;
 
 abstract class bandit {
 
@@ -88,6 +89,19 @@ abstract class bandit {
 	}
 
 	/**
+	 * Get group ID
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @return int
+	 */
+	protected function get_ID(){
+		return $this->ID;
+	}
+
+	/**
 	 * Start up the bandit.
 	 *
 	 * @since 0.4.0
@@ -97,7 +111,7 @@ abstract class bandit {
 	 * @param array $variants Optional. Variants to add. Required if $id is not an existing group.
 	 */
 
-	protected function go( $variants ) {
+	protected function go() {
 
 		$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery(3);
 		$persistor = $this->create_persistor();
@@ -105,11 +119,12 @@ abstract class bandit {
 
 		//@todo remove this. Should never be used to create? Or move creation to seperate object
 		try {
-			$this->experiment = $this->bandit->getExperiment( $this->ID );
+			$this->experiment = $this->bandit->getExperiment( (string) $this->ID );
 		} catch( \MaBandit\Exception\ExperimentNotFoundException $e ) {
 			$group = group::read( $this->ID );
 			if( ! empty( $group[ 'variants' ] ) )  {
-				$this->experiment = $this->bandit->createExperiment( $this->ID, $variants );
+				$variants = helpers::make_array_values_numeric( $group[ 'variants' ], true );
+				$this->experiment = $this->bandit->createExperiment( (string) $this->ID, $variants  );
 			}
 
 		}

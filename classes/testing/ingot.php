@@ -84,6 +84,8 @@ class ingot {
 		});
 
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
+
+		add_filter( 'ingot_crud_update', array( $this, 'pre_update' ), 98, 3 );
 		add_action( 'parse_request', array( $this, 'init_session' ), 50 );
 	}
 
@@ -174,5 +176,19 @@ class ingot {
 		do_action( 'ingot_session_initialized', $session_data );
 	}
 
+	public function pre_update( $data, $id, $what ){
+		if( 'group' == $what ) {
+			$data = self::update_levers( $data, $id );
+		}
+		return $data;
+	}
+
+	protected function update_levers( $group, $id ) {
+		return $group;
+
+	}
+
 
 }
+
+

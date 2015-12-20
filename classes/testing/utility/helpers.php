@@ -516,13 +516,18 @@ class helpers {
 	 *
 	 * @return array
 	 */
-	public static function make_array_values_numeric( $array ) {
+	public static function make_array_values_numeric( $array, $make_numeric_strings = false ) {
 		if ( ! empty( $array ) ) {
 			foreach( $array as $k => $v ) {
 				if ( ! is_array( $v ) ) {
 					if ( ! is_numeric( $v ) ) {
-						$array[ $k ] = 0;
+						$v = 0;
 					} else {
+						$v = (int) $v;
+					}
+					if( $make_numeric_strings ) {
+						$array[ $k ] = (string) $v;
+					}else {
 						$array[ $k ] = (int) $v;
 					}
 				}else{

@@ -29,6 +29,7 @@ class content extends bandit {
 	 protected function create_persistor(){
 
 		 $persistor = new persistor(
+			 $this->get_ID(),
 			 [ '\ingot\testing\crud\group', 'get_levers' ],
 			 [ '\ingot\testing\crud\group', 'save_levers' ]
 		 );
