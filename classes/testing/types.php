@@ -95,25 +95,16 @@ class types {
 	/**
 	 * Allowed price test types
 	 *
+	 * @todo deprecate this or ingot_accepted_plugins_for_price_tests()
 	 * @since 0.0.7
+	 *
+	 *  @param bool $with_labels Optional. If true labels as values. Default is false
 	 *
 	 * @return array $types The allowed click test types
 	 */
-	public static function allowed_price_types() {
-		$types = array(
-
-		);
-
-		/**
-		 * Allowed test types
-		 *
-		 * @since 0.0.7
-		 *
-		 * @param array $types The allowed price test types
-		 */
-		return apply_filters( 'ingot_allowed_price_types', $types );
+	public static function allowed_price_types( $with_labels = false ) {
+		return ingot_accepted_plugins_for_price_tests( $with_labels );
 
 	}
-
 
 }

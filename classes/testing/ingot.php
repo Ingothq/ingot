@@ -83,12 +83,7 @@ class ingot {
 			wp_localize_script( 'ingot', 'INGOT_VARS', ingot::js_vars() );
 		});
 
-		add_action( 'ingot_crud_created', array( $this, 'create_hook' ), 10, 2 );
-		add_action( 'ingot_crud_updated', array( $this, 'update_hook'), 10, 2 );
-		add_filter( 'ingot_crud_read', array( $this, 'read_hook' ), 10, 2 );
-
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
-
 		add_action( 'parse_request', array( $this, 'init_session' ), 50 );
 	}
 
@@ -159,77 +154,6 @@ class ingot {
 		);
 
 		return $vars;
-	}
-
-	public  function read_hook( $item, $what ) {
-		if ( 'group' == $what ){
-			if( empty( $item[ 'sequences'] ) ){
-				remove_filter( 'ingot_crud_read', array( $this, 'read_hook' ) );
-				\ingot\testing\tests\sequence_progression::make_initial_sequence( $item[ 'ID' ] );
-				$group = group::read( $item[ 'ID' ] );
-				return $group;
-
-
-			}
-		}elseif( 'tracking' == $what ) {
-			foreach( array(
-				'meta',
-				'UTM'
-			) as $key ) {
-				$item[ $key ] = maybe_unserialize( $item[ $key ] );
-			}
-
-			return $item;
-		}elseif( 'price_group' == $what ) {
-			foreach( array(
-				'sequences',
-				'test_order'
-			) as $key ) {
-				$item[ $key ] = maybe_unserialize( $item[ $key ] );
-			}
-			return $item;
-		}
-
-
-		return $item;
-	}
-	/**
-	 * Routes post create hook
-	 *
-	 * @uses "ingot_crud_created"
-	 *
-	 * @since 0.0.5
-	 *
-	 * @param int $id Item ID
-	 * @param string $what Item type
-	 */
-	public  function create_hook( $id, $what){
-		if( 'group' == $what || 'price_group' == $what ){
-			$price = false;
-			if( 'price_group' == $what ){
-				$price = true;
-			}
-
-			\ingot\testing\tests\sequence_progression::make_initial_sequence( $id, $price );
-
-		}
-	}
-
-	/**
-	 * Routes post update hook
-	 *
-	 * @uses "ingot_crud_updated"
-	 *
-	 * @since 0.0.5
-	 *
-	 * @param int $id Item ID
-	 * @param string $what Item type
-	 */
-	public  function update_hook( $id, $what){
-		if( 'test' == $what ) {
-
-		}
-
 	}
 
 	/**
