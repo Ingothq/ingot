@@ -131,6 +131,7 @@ class ingot_bootstrap {
 				type VARCHAR(255) NOT NULL,
 				sub_type VARCHAR(255) NOT NULL,
 				variants LONGTEXT NOT NULL,
+				levers LONGTEXT NOT NULL,
 				meta LONGTEXT NOT NULL,
 				modified datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -143,7 +144,7 @@ class ingot_bootstrap {
 	}
 
 	/**
-	 * If needed, add the custom table for varients
+	 * If needed, add the custom table for variants
 	 *
 	 * @since 0.0.7
 	 *
@@ -173,7 +174,6 @@ class ingot_bootstrap {
 				group_ID mediumint(9) NOT NULL,
 				content LONGTEXT NOT NULL,
 				meta LONGTEXT NOT NULL,
-				levers LONGTEXT NOT NULL,
 				modified datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				UNIQUE KEY ID (ID)
@@ -387,10 +387,10 @@ class ingot_bootstrap {
 	 * @access protected
 	 */
 	protected static function add_tables() {
-		self::maybe_add_tracking_table(true);
-		self::maybe_add_session_table(true);
-		self::maybe_add_group_table(true);
-		self::maybe_add_variant_table(true);
+		self::maybe_add_tracking_table();
+		self::maybe_add_session_table();
+		self::maybe_add_group_table();
+		self::maybe_add_variant_table();
 		self::check_if_tables_exist();
 	}
 
