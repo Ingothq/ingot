@@ -116,8 +116,7 @@ class group extends crud {
 	 * @return array|\WP_Error Item config array if valid, WP_Error if not
 	 */
 	protected static function validate_config( $data ) {
-		$required = static::required();
-		foreach( $required as $key ) {
+		foreach( self::required() as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {
 				return new \WP_Error( 'ingot-invalid-config', __( sprintf( 'Groups require the field %s', $key ), 'ingot'  ), $data );
 			}

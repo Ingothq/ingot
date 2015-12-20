@@ -56,7 +56,6 @@ class group_crud extends \WP_UnitTestCase {
 		$this->assertFalse(  is_wp_error( $created ) );
 		$this->assertTrue( is_numeric( $created ) );
 
-
 	}
 
 	/**

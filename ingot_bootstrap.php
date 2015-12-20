@@ -173,7 +173,8 @@ class ingot_bootstrap {
 				group_ID mediumint(9) NOT NULL,
 				content LONGTEXT NOT NULL,
 				meta LONGTEXT NOT NULL,
-				modifed datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				levers LONGTEXT NOT NULL,
+				modified datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				UNIQUE KEY ID (ID)
 		) $charset_collate;";

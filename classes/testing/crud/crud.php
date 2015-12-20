@@ -491,8 +491,8 @@ abstract class crud {
 				 } else {
 					 $data[ 'field' ] = self::date_validation( $data[ $field ] );
 				 }
-			 }elseif( 'meta' == $field ) {
-				if(  ! is_array( $data[ $field ] ) ) {
+			 }elseif(  'meta' == $field ) {
+				if(  ! isset( $data[ $field ] ) ||! is_array( $data[ $field ] ) ) {
 					$data[ $field ] = [];
 				}
 			 }else{
@@ -723,7 +723,7 @@ abstract class crud {
 	 * @return mixed
 	 */
 	private static function unseralize( $results ) {
-		foreach ( [ 'variants', 'meta', 'UTM' ] as $field ) {
+		foreach ( [ 'variants', 'meta', 'UTM', 'levers' ] as $field ) {
 			if ( isset( $results[ $field  ] ) ) {
 				$results[ $field ] = maybe_unserialize( $results[ $field ] );
 			}
