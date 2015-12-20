@@ -170,6 +170,16 @@ class group extends crud {
 
 		}
 
+		if ( ! empty( 'levers' ) ) {
+			foreach ( $data[ 'levers' ] as $i => $lever ) {
+				if( ! self::is_lever( $lever ) ) {
+					unset( $data[ 'levers' ][ $i ] );
+				}
+
+			}
+			
+		}
+
 		$data[ 'variants' ] == helpers::make_array_values_numeric( $data[ 'variants' ], true );
 
 		return $data;
@@ -246,6 +256,24 @@ class group extends crud {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Ensure the that an object of the \MaBandit\Lever class
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @param object $maybe_lever
+	 *
+	 * @return bool
+	 */
+	protected function is_lever( $maybe_lever ) {
+		if( is_object( $maybe_lever ) && is_a( $maybe_lever, '\MaBandit\Lever' ) ) {
+			return true;
+		}
+
 	}
 
 	/**
