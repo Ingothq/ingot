@@ -12,7 +12,9 @@
 namespace ingot\testing\crud;
 
 
-class group extends table_crud {
+use ingot\testing\utility\helpers;
+
+class group extends crud {
 
 
 	/**
@@ -100,6 +102,136 @@ class group extends table_crud {
 		$results = $wpdb->get_results( $sql, ARRAY_N );
 		return $results;
 
+	}
+
+	/**
+	 * Validate item config
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @param array $data Item config
+	 *
+	 * @return array|\WP_Error Item config array if valid, WP_Error if not
+	 */
+	protected static function validate_config( $data ) {
+		$required = static::required();
+		foreach( $required as $key ) {
+			if ( ! isset( $data[ $key ] ) ) {
+				return new \WP_Error( 'ingot-invalid-config', __( sprintf( 'Groups require the field %s', $key ), 'ingot'  ), $data );
+			}
+
+		}
+
+		if ( false == self::validate_type( $data ) ) {
+			return new \WP_Error( 'ingot-invalid-group-type', __( 'Invalid group type', 'ingot'  ), $data );
+		}
+
+		if( 'click' == $data[ 'type' ] && false == self::validate_click_type( $data ) ) {
+			return new \WP_Error( 'ingot-invalid-click-group-type', __( 'Invalid click group type', 'ingot'  ), $data );
+
+		}
+
+		//@todo this validation for price group subtypes
+		if( 'price' == $data[ 'type' ] && 1 == 3 ) {
+			return new \WP_Error( 'ingot-invalid-click-group-type', __( 'Invalid price group type', 'ingot'  ), $data );
+
+		}
+
+		foreach( self::get_all_fields() as $field ){
+			if( ! in_array( $field, array( 'variants', 'meta' ) ) ) {
+				$data[ $field ] = (string) $data[ $field ];
+			}else{
+				if( ! is_array( $data[ $field ] ) ) {
+					$data[ $field ] = array();
+				}
+
+			}
+		}
+
+		$data = self::prepare_meta( $data );
+		if( is_wp_error( $data ) ) {
+			return $data;
+
+		}
+
+		$data[ 'variants' ] == helpers::make_array_values_numeric( $data[ 'variants' ] );
+
+		return $data;
+
+	}
+
+	/**
+	 * Validate and sanitize meta array
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param array $data
+	 *
+	 * @return array|\WP_Error Prepared array or WP_Error if invalid
+	 */
+	protected static function prepare_meta( $data ) {
+		if( ! isset( $data[ 'meta' ] ) || empty( $data[ 'meta' ] || ! is_array( $data[ 'meta']) ) ){
+			$data[ 'meta'] = [];
+			return $data;
+		}
+
+		if ( 'click' == $data[ 'type' ] ) {
+			foreach ( [ 'color', 'background_color', 'color_test_text', 'link' ] as $field ) {
+				if ( isset( $data[ 'meta' ][ $field ] ) && ! empty( $data[ 'meta' ][ $field ] ) && is_string( $data[ 'meta' ][ $field ] ) ) {
+
+					if ( 'link' == $field ) {
+						if ( filter_var( $data[ 'meta' ][ $field ], FILTER_VALIDATE_URL ) ) {
+							$data[ 'meta' ][ $field ] = esc_url_raw( $data[ 'meta' ][ $field ] );
+						} else {
+							return new \WP_Error( 'ingot-invalid-config-click-link', __( 'Click groups must have a valid link.', 'ingot' ) );
+						}
+
+					} else {
+						$data[ 'meta' ][ $field ] = strip_tags( $data[ 'meta' ][ $field ] );
+					}
+				}else{
+					$data[ 'meta' ][ $field ] = '';
+				}
+
+			}
+		}
+
+		return $data;
+
+	}
+
+	/**
+	 * Fill in needed, but not required keys
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @param $data
+	 *
+	 * @return array
+	 */
+	protected static function fill_in( $data ) {
+		foreach( self::needed() as $field ) {
+			if( 'created' == $field || 'modified' == $field ) {
+				if( ! isset( $data[ $field ] ) ) {
+					$data[ $field ] = current_time( 'mysql' );
+				}else{
+					$data[  $field  ] = self::date_validation( $data[ $field ] );
+				}
+
+			}elseif( in_array( $field, ['variants', 'meta' ] ) && ( ! isset( $data[  $field ] ) || ! is_array( $data[ $field ] ) ) ) {
+				$data[ $field ] = [];
+			}else{
+				if ( ! isset( $data[ $field ] ) ) {
+					$data[ $field ] = '';
+				}
+			}
+		}
+
+		return $data;
 	}
 
 	/**

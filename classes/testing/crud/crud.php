@@ -12,26 +12,110 @@
 namespace ingot\testing\crud;
 
 
-use ingot\testing\tests\flow;
-use ingot\testing\tests\sequence_progression;
 use ingot\testing\types;
-use ingot\testing\utility\defaults;
 use ingot\testing\utility\helpers;
 
 abstract class crud {
 
 	/**
+	 * Name of the object this CRUD is for
+	 *
+	 * @since 0.0.4
+	 *
+	 * @access protected
+	 *
+	 * @var string
+	 */
+	protected static $what;
+
+	/**
+	 * Get name of the object this CRUD is for
+	 *
+	 * @since 0.0.4
+	 *
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected static function what() {
+		return static::$what;
+	}
+
+	/**
 	 * Get a collection of items
 	 *
-	 * @since 0.0.5
+	 * @since 0.4.0
 	 *
-	 * @param array $params Query params
+	 * @param array $params {
+	 *  $group_id int ID of group to get all
+	 *  $ids array Optional. Array of ids to get.
+	 *  $current bool Optional. Used with $ids or $group_id, if true, will return the first non-completed sequence for that group_id or set of ids. Default is false.
+	 *  $limit int Optional. Limit results, default is -1 which gets all.
+	 *  $page int Optional. Page of results, used with $limit. Default is 1
+	 *  $return string Optional. What to return all|IDs Return all fields or just IDs
+	 *  $price_test Optional bool if true and $current current sequences for all prices tests are returned
+	 * }
 	 *
 	 * @return array
 	 */
 	public static function get_items( $params ) {
-		_doing_it_wrong( __FUNCTION__, __( 'Must ovveride', 'ingot' ), '0.0.5' );
-		return array();
+		$args = wp_parse_args(
+			$params,
+			array(
+				'group_ID' => null,
+				'ids' => array(),
+				'current' => false,
+				'limit' => -1,
+				'page' => 1,
+				'return' => '*',
+				'price_test' => false,
+			)
+		);
+
+		if( -1 == $args[ 'limit' ] ) {
+			$args[ 'limit' ] = 999999999;
+		}
+
+
+
+		if( strtolower( 'ids' ) !== $args[ 'return' ] ) {
+			$fields = '*';
+		}else{
+			$fields = '`ID`';
+		}
+
+
+		global $wpdb;
+		$table_name = self::get_table_name();
+		if( helpers::v( 'group_ID', $args, null ) ){
+			$sql = sprintf(
+				'SELECT %s FROM `%s` WHERE `group_ID` = %d',
+				$fields,
+				$table_name, helpers::v( 'group_ID', $params )
+			);
+		}elseif( ! empty( helpers::v( 'ids', $args, array() ) ) ){
+			$in = implode( ',', helpers::v( 'ids', $params, array() ) );
+			$sql = sprintf( 'SELECT %s FROM `%s` WHERE `ID` IN( %s)', $fields,$table_name, $in );
+		}else{
+			$sql = sprintf( 'SELECT %s FROM `%s`', $fields, $table_name );
+		}
+
+		if( helpers::v( 'current', $args, false ) ) {
+			$sql .= ' AND `completed` != 1';
+		}
+
+		$sql .= sprintf( ' ORDER BY `ID` ASC LIMIT %d OFFSET %d', $args[ 'limit' ], self::calculate_offset( $args[ 'limit' ], $args[ 'page' ] )  );
+
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+		if( ! empty( $results ) ) {
+			foreach( $results as $i => $result ) {
+				$results[ $i ] = self::unseralize( $result );
+			}
+
+		}
+
+		return $results;
+
 	}
 
 	/**
@@ -74,6 +158,69 @@ abstract class crud {
 		}
 
 		return $id;
+
+	}
+
+	/**
+	 * Get one item from table
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param int $id
+	 *
+	 * @return array|mixed|null|object|void
+	 */
+	public static function read( $id ) {
+		/**
+		 * Runs before an object is read.
+		 *
+		 * @since 0.0.6
+		 *
+		 * @param int $id Item ID
+		 * @param string $what Object name
+		 */
+		do_action( 'ingot_crud_pre_read', $id, static::what() );
+
+		global $wpdb;
+
+		$table = static::get_table_name();
+		if ( is_numeric( $id )  ) {
+			$sql     = $wpdb->prepare( "SELECT * FROM $table WHERE `ID` = %d", $id );
+			$results = $wpdb->get_results( $sql, ARRAY_A );
+			if ( is_array( $results ) && ! empty( $results ) && isset( $results[ 0 ] ) ) {
+				$results = $results[ 0 ];
+			} else {
+				return false;
+
+			}
+
+			$results = self::unseralize( $results );
+
+			/**
+			 * Runs before an object is returned from DB
+			 *
+			 * @since 0.0.6
+			 *
+			 * @param array $item Data to be returned
+			 * @param string $what Object name
+			 */
+			$results = apply_filters( 'ingot_crud_read', $results, static::what() );
+
+			return $results;
+		}else{
+			$type = gettype( $id );
+			if( is_wp_error( $id ) ) {
+				$type .= ' ' . $id->get_error_messages();
+			}
+
+			$warning = __( sprintf( 'ID must be numeric, type is %s', $type ), 'ingot' );
+			if( WP_DEBUG ) {
+				trigger_error( $warning );
+			}
+
+			return new \WP_Error( 'ingot-crud-id-not-numeric', $warning, var_export( $id, true ) );
+
+		}
 
 	}
 
@@ -130,44 +277,16 @@ abstract class crud {
 	}
 
 
-	/**
-	 * Get an item
-	 *
-	 * @param int $id Item ID
-	 *
-	 * @return array Item config array.
-	 */
-	public static function read( $id ) {
-		/**
-		 * Runs before an object is read.
-		 *
-		 * @since 0.0.6
-		 *
-		 * @param int $id Item ID
-		 * @param string $what Object name
-		 */
-		do_action( 'ingot_crud_pre_read', $id, static::what() );
-		_doing_it_wrong( __FUNCTION__, __( 'Must ovveride', 'ingot' ), '0.0.5' );
 
-		/**
-		 * Runs before an object is returned from DB
-		 *
-		 * @since 0.0.6
-		 *
-		 * @param array $item Data to be returned
-		 * @param string $what Object name
-		 */
-		$item = apply_filters( 'ingot_crud_read', array(), static::what() );
-		return array();
-
-	}
 
 	/**
 	 * Delete an item or all items
 	 *
-	 * @since 0.0.1
+	 * @since 0.0.7
 	 *
 	 * @param int|string $id Item id or "all" to delete all
+	 *
+	 * @return bool
 	 */
 	public static function delete( $id ) {
 		/**
@@ -180,54 +299,54 @@ abstract class crud {
 		 */
 		do_action( 'ingot_crud_pre_delete', $id, static::what() );
 
-		_doing_it_wrong( __FUNCTION__, __( 'Must ovveride', 'ingot' ), '0.0.5' );
+		if( 'all' == $id ) {
+			return self::delete_all();
+		}
+
+		global $wpdb;
+		$deleted = $wpdb->delete( self::get_table_name(), array( 'ID' => $id ), array( '%d' ) );
+		if( is_numeric( $deleted ) ){
+			return true;
+
+		}else{
+			return false;
+
+		}
 
 	}
 
+	/**
+	 * Delete all rows from table
+	 *
+	 * @since 0.0.7
+	 *
+	 * @return bool
+	 */
+	protected static function delete_all() {
+		global $wpdb;
+		$table = static::get_table_name();
+		$deleted = $wpdb->query( "truncate table $table" );
 
+		if( is_numeric( $deleted ) ){
+			return true;
+
+		}else{
+			return false;
+
+		}
+	}
 
 	/**
-	 * Get the type of object we are CRUDing
+	 * Get table name
 	 *
-	 * @since 0.0.4
-	 *
-	 * @access protected
+	 * @since 0.0.7
 	 *
 	 * @return string
 	 */
-	protected static function what() {
-		_doing_it_wrong( __METHOD__ , __( 'must ovveride', 'ingot' ), '0.0.4' );
-		return '';
+	public static function get_table_name() {
+		global $wpdb;
+		return $wpdb->prefix . 'ingot_' . static::what();
 	}
-
-	/**
-	 * Get array of non-required, yet needed fields
-	 *
-	 * @since 0.0.4
-	 *
-	 * @access protected
-	 *
-	 * @return array
-	 */
-	protected static function needed() {
-		_doing_it_wrong( __METHOD__ , __( 'Must ovveride in subclass', 'ingot' ), INGOT_VER );
-		return array();
-	}
-
-	/**
-	 * Get array of required fields
-	 *
-	 * @since 0.0.4
-	 *
-	 * @access protected
-	 *
-	 * @return array
-	 */
-	protected static function required() {
-		_doing_it_wrong( __METHOD__ , __( 'Must ovveride in subclass', 'ingot' ), INGOT_VER );
-		return array();
-	}
-
 
 
 	/**
@@ -242,32 +361,100 @@ abstract class crud {
 	 * @return int|bool||WP_Error Item ID if created,or false if not created, or error if not allowed to create.
 	 */
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
-		_doing_it_wrong( __METHOD__ , __( 'Must ovveride in subclass', 'ingot' ), INGOT_VER );
-		return false;
+
+		$data = static::prepare_data( $data );
+		if( is_wp_error( $data ) || ! is_array( $data ) ) {
+			return $data;
+		}
+
+		$table_name = static::get_table_name();
+
+		foreach( $data as $key => $datum ) {
+			if( is_array( $data[ $key ] ) ) {
+				$data[ $key ] = helpers::sanitize( $data[ $key ] );
+				$data[ $key ] = serialize( $datum );
+			}
+
+		}
+
+		if( self::can( $id, $bypass_cap ) ) {
+			unset( $data[ 'ID' ] );
+
+			global $wpdb;
+			if( $id ) {
+				$wpdb->update(
+					$table_name,
+					$data,
+					array( 'ID' => $id )
+
+				);
+			}else{
+				$wpdb->insert(
+					$table_name,
+					$data
+				);
+
+			}
+
+			$id =  $wpdb->insert_id;
+
+			return $id;
+
+		}else{
+			return false;
+
+		}
+
 
 	}
 
+	/**
+	 * Get total number of items
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return int
+	 */
+	public static function total() {
+		global $wpdb;
+		$table_name = static::get_table_name();
+		$sql = sprintf( 'SELECT COUNT(ID) FROM %s', $table_name );
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+		if( ! empty( $results ) && isset( $results[0], $results[0][ 'COUNT(ID)'] ) ){
+			return $results[0][ 'COUNT(ID)'];
+		}
 
-	protected static function get_all( $limit, $page = 1) {
-		_doing_it_wrong( __METHOD__ , __( 'Must ovveride in subclass', 'ingot' ), INGOT_VER );
-		return array();
 	}
+
 
 
 	/**
-	 * Delete all items
+	 * Get array of non-required, yet needed fields
 	 *
 	 * @since 0.0.4
 	 *
 	 * @access protected
 	 *
-	 * @return array|null|object
+	 * @return array
 	 */
-	protected static function delete_all() {
-		_doing_it_wrong( __METHOD__ , __( 'Must ovveride in subclass', 'ingot' ), INGOT_VER );
-		return array();
+	protected static function needed(){
+		_doing_it_wrong( __CLASS__, __METHOD__, '0.0.4' );
+		return [];
 	}
 
+	/**
+	 * Get array of required fields
+	 *
+	 * @since 0.0.4
+	 *
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected static function required(){
+		_doing_it_wrong( __CLASS__, __METHOD__, '0.0.4' );
+		return [];
+	}
 
 	/**
 	 * Validate item config
@@ -278,56 +465,45 @@ abstract class crud {
 	 *
 	 * @param array $data Item config
 	 *
-	 * @return bool|array Item config array if valid, false if not.
+	 * @return \WP_Error|array Item config array if valid, WP_Error if not.
 	 */
-	protected static function validate_config( $data ) {
-		$required = static::required();
-		foreach( $required as $key ) {
-			if ( ! isset( $data[ $key ] ) ) {
-				return new \WP_Error( 'ingot-invalid-config', __( sprintf( '%s require the field %s', static::what(), $key )  ) );
-			}
+	 protected static function validate_config( $data ){
+		 _doing_it_wrong( __CLASS__, __METHOD__, '0.0.4' );
+		 return $data;
+	 }
 
-		}
-
-		$data = static::fill_in( $data );
-
-		if ( 'group' == static::what() ) {
-			if ( false == self::validate_type( $data ) || false == self::validate_click_type( $data ) ) {
-				return false;
-			}
-
-		}elseif( 'sequence' == static::what() ) {
-			if ( false == self::validate_type( $data, 'test_type' )  ) {
-				return false;
-			}
-
-		}
-
-		foreach ( static::get_all_fields() as  $key  ) {
-			if ( 'order' == $key || 'sequences' == $key || 'UTM' == $key || 'meta' == $key ) {
-				if ( ! is_array( $data[ $key ] ) ) {
-					$data[ $key ] = array();
+	/**
+	 * Fill in needed, but not required keys
+	 *
+	 * @since 0.0.4
+	 *
+	 * @access protected
+	 *
+	 * @param $data
+	 *
+	 * @return array
+	 */
+	 protected static function fill_in( $data ) {
+		 foreach( static::needed() as $field ) {
+			 if( in_array( $field, [ 'created', 'modified', 'time' ] ) ) {
+				 if ( ! isset( $data[ $field ] ) ) {
+					 $data[ 'field' ] = current_time( 'mysql' );
+				 } else {
+					 $data[ 'field' ] = self::date_validation( $data[ $field ] );
+				 }
+			 }elseif( 'meta' == $field ) {
+				if(  ! is_array( $data[ $field ] ) ) {
+					$data[ $field ] = [];
 				}
-			}elseif( 'completed' == $key ) {
-				if(  ! in_array( $data[ 'completed' ], array( false, true, 1, 0, 'false', 'true', 'FALSE', 'TRUE', '1', '0' ) ) ) {
-					$data[ 'completed' ] = 0;
-				}
-			} elseif ( is_int( $data[ $key ] ) || is_string( $data[ $key ] ) ) {
-				continue;
-			} elseif ( 'group' == static::what() && empty( $data[ 'current_sequence' ] ) ) {
-				$data[ 'current_sequence' ] = 0;
-		} else {
-				return new \WP_Error( $key . '-invalid', __( 'Invalid data type', 'ingot' ), array( $key => $data[ $key ] ) );
-			}
-		}
+			 }else{
+				 $data[ $field ] = '';
+			 }
+		 }
 
-		if ( 'tracking' != static::what() ) {
-			$data['modified'] = time();
-		}
+		 return $data;
+	 }
 
-		return $data;
 
-	}
 
 	/**
 	 * Validate item types
@@ -346,7 +522,6 @@ abstract class crud {
 			return false;
 		}
 
-
 		return true;
 
 	}
@@ -363,7 +538,7 @@ abstract class crud {
 	 * @return bool True if valid, false if not
 	 */
 	protected static function validate_click_type( $data ) {
-		if( 'click' === $data[ 'type' ] && ! in_array( $data[ 'click_type' ], types::allowed_click_types() ) ) {
+		if( ! in_array( $data[ 'sub_type' ], types::allowed_click_types() ) ) {
 			return false;
 
 		}
@@ -372,98 +547,33 @@ abstract class crud {
 
 	}
 
+
 	/**
-	 * Fill in needed, but not required keys
-	 * @since 0.0.4
+	 * Ensure a date is a MySQL data
+	 *
+	 * @since 0.4.0
 	 *
 	 * @access protected
 	 *
-	 * @param $data
+	 * @param int|string $date
 	 *
-	 * @return array
+	 * @return string
 	 */
-	protected static function fill_in( $data ) {
-
-		//not in love with any of this hack
-		$needed = static::needed() ;
-		foreach ( $needed as $key ) {
-			if ( ! isset( $data[ $key ] ) ) {
-				if ( 'created' == $key ) {
-					$data[ $key ] = time();
-				}elseif( 'name' == $key ){
-					if ( isset( $data[ 'ID']) ) {
-						$data[ $key ] = sprintf( '%s - %s', static::what(), $data['ID'] );
-					}else{
-						$data[ $key ] = rand();
-					}
-				} elseif( 'order' == $key || 'sequences' == $key ) {
-					$data[ $key ] = array();
-				} elseif( 'click_type' == $key ){
-					$data[ $key ] = 'link';
-				}elseif( 'IP' == $key ){
-					$data[ $key ] = ingot_get_ip();
-				}elseif( 'user_agent' == $key ) {
-					$data[ $key ] = ingot_get_user_agent();
-				}elseif( 'browser' == $key ){
-					$data[ $key ] = ingot_get_browser( false );
-				}elseif( 'time' == $key ) {
-					$data[ $key ] =  time();
-				}elseif( 'meta' == $data ) {
-					$data[ $key ] = array();
-				}elseif( 'referrer' == $data ) {
-					$data[ $key ] = ingot_get_refferer();
-				}elseif( 'threshold' == $key ) {
-					$data[ $key ] =  defaults::threshold();
-				}elseif( 'initial' == $key ) {
-					$data[ $key ] =  defaults::initial();
-				}else{
-					$data[ $key ] = 0;
-				}
-			}
-
-		}
-
-
-		//this date validation shit is serious fucking mess
-		if ( 'tracking' != static::what() ) {
-			foreach ( array( 'created', 'modified' ) as $key ) {
-				if ( ! isset( $data[ $key ] ) || 0 == $data[ $key ] || ( is_string( $data[ $key ] ) && false === strtotime( $data[ $key ] ) ) ) {
-					$data[ $key ] = time();
-				}
-
-				if ( ! is_numeric( $data[ $key ] ) ) {
-					$data[ $key ] = time();
-				}
-
+	protected static function date_validation( $date ){
+		if( empty( $date ) ) {
+			$date = current_time( 'mysql' );
+		}elseif( is_numeric( $date ) ) {
+			$date = date("Y-m-d H:i:s", $date );
+		}elseif( is_string( $date ) ) {
+			$_date = strtotime( $date );
+			if( 0 == $_date ){
+				$date = current_time( 'mysql' );
+			}else{
+				$date = $_date;
 			}
 		}
 
-		if( 'sequence' == static::what() ) {
-			$data[ 'created' ] = date("Y-m-d H:i:s", $data[ 'created' ] );
-			$data[ 'modified' ] = date("Y-m-d H:i:s", $data[ 'modified' ] );
-		}
-
-		if( 'tracking' == static::what() ) {
-
-			if ( ! empty( $data[ 'meta' ] ) ) {
-				if ( ! is_array( maybe_unserialize( $data['meta'] ) ) ) {
-					$data['meta'] = array();
-				}
-
-			}
-
-			if( is_numeric( $data[ 'time' ] ) ) {
-				$data[ 'time' ] = date("Y-m-d H:i:s", $data[ 'time' ] );
-			}
-
-			if( 0 == strtotime( $data[ 'time' ] ) ) {
-				$data[ 'time' ] = date("Y-m-d H:i:s" );
-			}
-
-		}
-
-
-		return $data;
+		return $date;
 
 	}
 
@@ -539,6 +649,7 @@ abstract class crud {
 	 * @return array|\WP_Error Data as array or WP_Error if invalid
 	 */
 	protected static function prepare_data( $data ) {
+		$data = static::fill_in( $data );
 		$data = static::validate_config( $data );
 		if ( ! is_array( $data ) ) {
 			if( is_wp_error( $data ) ) {
@@ -553,13 +664,16 @@ abstract class crud {
 
 		}
 
-		$allowed = array_merge( static::required(), static::needed() );
+		$allowed = self::get_all_fields();
 		foreach ( $data as $k => $v ) {
 			if ( is_numeric( $k ) || ! in_array( $k, $allowed ) ) {
 				unset( $data[ $k ] );
 			}
 		}
 
+		if( isset( $data[ 'modified' ] ) ){
+			$data[ 'modified' ] = current_time( 'mysql' );
+		}
 
 		return $data;
 
@@ -604,16 +718,18 @@ abstract class crud {
 	}
 
 	/**
-	 * Get total number of items
+	 * @param $results
 	 *
-	 * @since 0.2.0
-	 *
-	 * @return int
+	 * @return mixed
 	 */
-	public static function total(){
-		_doing_it_wrong( __FUNCTION__, __( 'Must ovveride', 'ingot' ), '0.2.0' );
-		return 0;
+	private static function unseralize( $results ) {
+		foreach ( [ 'variants', 'meta', 'UTM' ] as $field ) {
+			if ( isset( $results[ $field  ] ) ) {
+				$results[ $field ] = maybe_unserialize( $results[ $field ] );
+			}
+		}
 
+		return $results;
 	}
 
 }

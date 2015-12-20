@@ -110,7 +110,7 @@ class ingot_bootstrap {
 	public static function maybe_add_group_table( $drop_first = false ) {
 		global $wpdb;
 
-		$table_name = \ingot\testing\crud\variant::get_table_name();
+		$table_name = \ingot\testing\crud\group::get_table_name();
 
 		if( $drop_first  ) {
 			if( self::table_exists( $table_name )  ) {
@@ -127,11 +127,12 @@ class ingot_bootstrap {
 
 		$sql = "CREATE TABLE $table_name (
 				ID bigint(9) NOT NULL AUTO_INCREMENT,
+				name VARCHAR(255) NOT NULL,
 				type VARCHAR(255) NOT NULL,
 				sub_type VARCHAR(255) NOT NULL,
 				variants LONGTEXT NOT NULL,
 				meta LONGTEXT NOT NULL,
-				modifed datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				modified datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				UNIQUE KEY ID (ID)
 		) $charset_collate;";
@@ -385,8 +386,10 @@ class ingot_bootstrap {
 	 * @access protected
 	 */
 	protected static function add_tables() {
-		self::maybe_add_tracking_table();
-		self::maybe_add_session_table();
+		self::maybe_add_tracking_table(true);
+		self::maybe_add_session_table(true);
+		self::maybe_add_group_table(true);
+		self::maybe_add_variant_table(true);
 		self::check_if_tables_exist();
 	}
 
@@ -400,7 +403,11 @@ class ingot_bootstrap {
 	 * @return bool
 	 */
 	protected static function check_if_tables_exist() {
-		if ( ! self::table_exists( \ingot\testing\crud\sequence::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\session::get_table_name() ) ) {
+		if ( ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() )
+		     || ! self::table_exists( \ingot\testing\crud\group::get_table_name() )
+		     || ! self::table_exists( \ingot\testing\crud\session::get_table_name() )
+		     || ! self::table_exists( \ingot\testing\crud\variant::get_table_name() )
+		) {
 			return false;
 
 

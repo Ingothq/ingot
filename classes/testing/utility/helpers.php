@@ -507,10 +507,37 @@ class helpers {
 		}
 	}
 
+	/**
+	 * Utility function to make all keys of an array integers (recursively)
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param $array
+	 *
+	 * @return array
+	 */
+	public static function make_array_values_numeric( $array ) {
+		if ( ! empty( $array ) ) {
+			foreach( $array as $k => $v ) {
+				if ( ! is_array( $v ) ) {
+					if ( ! is_numeric( $v ) ) {
+						$array[ $k ] = 0;
+					} else {
+						$array[ $k ] = (int) $v;
+					}
+				}else{
+					$array[ $k ] = self::make_array_values_numeric( $v );
+				}
 
+			}
 
+		}
 
+		if ( empty( $array ) ) {
+			$array = array();
+		}
 
-
+		return $array;
+	}
 
 }

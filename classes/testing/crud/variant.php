@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * CRUD for variants
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -12,6 +12,18 @@
 namespace ingot\testing\crud;
 
 
-class variant extends table_crud {
+class variant extends crud {
+
+	public static $what = 'variant';
+
+	public static function get_items( $param ){}
+
+	public static function needed(){}
+
+	public static function required(){}
+
+	public static function validate_config( $data ){}
+
+	protected static function fill_in( $data ){}
 
 }

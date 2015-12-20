@@ -5,7 +5,7 @@
  *
  * Test group CRUD
  */
-class test_group_crud extends \WP_UnitTestCase {
+class group_crud extends \WP_UnitTestCase {
 
 
 	public function setUp() {
@@ -18,15 +18,37 @@ class test_group_crud extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that table name is right
+	 *
+	 * @since 0.0.7
+	 *
+	 * @group crud
+	 * @group group_crud
+	 *
+	 * @covers \ingot\testing\crud\tracking::get_table_name()
+	 */
+	public function testTableName() {
+		$tablename = \ingot\testing\crud\group::get_table_name();
+		global $wpdb;
+		$this->assertEquals( $wpdb->prefix . 'ingot_group', $tablename );
+	}
+
+
+	/**
 	 * Test create
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group crud
+	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::create()
 	 */
 	public function testCreateMinimal() {
 		$params = array(
 			'type' => 'click',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
@@ -42,17 +64,18 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::create()
 	 * @covers \ingot\testing\crud\read::create()
 	 */
 	public function testRead() {
 		$params = array(
 			'type' => 'click',
-			'click_type' => 'link',
-			'name' => 'hats',
-			'selector' => '.hats',
-			'link' => 'https://hats.com',
-			'current_sequence' => 42
+			'sub_type' => 'button_color',
+			'meta' => [ 'link' => 'https://bats.com' ],
+
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
@@ -64,21 +87,22 @@ class test_group_crud extends \WP_UnitTestCase {
 		$params = array(
 			'type' => 'click',
 			'name' => 'bats',
-			'selector' => '.bats',
-			'link' => 'https://bats.com',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'http://faces.com' ],
 
 		);
 
 		$created_2 = \ingot\testing\crud\group::create( $params );
 		$group = \ingot\testing\crud\group::read( $created_2 );
 		$this->assertTrue( is_array( $group ) );
-		$this->assertEquals( $group[ 'selector' ], '.bats' );
-		$this->assertEquals( $group[ 'link' ], 'https://bats.com' );
+		$this->assertEquals( $group[ 'meta' ][ 'link' ], 'http://faces.com' );
+		$this->assertEquals( $group[ 'type' ], 'click' );
+		$this->assertEquals( $group[ 'sub_type' ], 'button' );
 
 		$group = \ingot\testing\crud\group::read( $created );
 		$this->assertTrue( is_array( $group ) );
-		$this->assertEquals( $group[ 'selector' ], '.hats' );
-		$this->assertEquals( $group[ 'link' ], 'https://hats.com' );
+		$this->assertEquals( $group[ 'type' ], 'click' );
+		$this->assertEquals( $group[ 'sub_type' ], 'button_color' );
 
 	}
 
@@ -87,21 +111,25 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::create()
-	 * @covers \ingot\testing\crud\crud::fill_in()
-	 * @covers \ingot\testing\crud\crud::validate_config()
+	 * @covers \ingot\testing\crud\group::fill_in()
+	 * @covers \ingot\testing\crud\group::validate_config()
 	 */
 	public function testCreateFillIn() {
 		$params = array(
 			'type' => 'click',
-			'name' => 'bats'
+			'name' => 'bats',
+			'sub_type' => 'link',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
 
 		$group = \ingot\testing\crud\group::read( $created );
 
-		$this->assertEquals( 'link', $group[ 'click_type' ] );
 		foreach( \ingot\testing\crud\group::get_required_fields() as $field ) {
 			$this->assertArrayHasKey( $field, $group );
 		}
@@ -116,8 +144,11 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::create()
-	 * @covers \ingot\testing\crud\crud::validate_config()
+	 * @covers \ingot\testing\crud\group::validate_config()
 	 */
 	public function testCreateRequired() {
 		$params = array(
@@ -126,7 +157,15 @@ class test_group_crud extends \WP_UnitTestCase {
 
 		$created = \ingot\testing\crud\group::create( $params );
 
-		$this->assertInstanceOf( "\WP_Error", $created );
+		$this->assertWPError( $created );
+
+		$params = array(
+			'name' => rand()
+		);
+
+		$created = \ingot\testing\crud\group::create( $params );
+
+		$this->assertWPError( $created );
 
 	}
 
@@ -135,14 +174,19 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::create()
-	 * @covers \ingot\testing\crud\crud::validate_config()
-	 * @covers \ingot\testing\crud\crud::validate_type
+	 * @covers \ingot\testing\crud\group::validate_config()
+	 * @covers \ingot\testing\crud\group::validate_type()
 	 */
 	public function testValidType() {
 		$params = array(
 			'type' => 'click',
-			'name' => 'bats'
+			'name' => 'bats',
+			'sub_type' => 'link',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
@@ -151,8 +195,22 @@ class test_group_crud extends \WP_UnitTestCase {
 		$this->assertTrue( is_numeric( $created ) );
 
 		$params = array(
-			'type' => 'price',
-			'name' => 'bats'
+			'type' => 'click',
+			'name' => 'bats',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
+		);
+
+		$created = \ingot\testing\crud\group::create( $params );
+
+		$this->assertFalse(  is_wp_error( $created ) );
+		$this->assertTrue( is_numeric( $created ) );
+
+		$params = array(
+			'type' => 'click',
+			'name' => 'bats',
+			'sub_type' => 'button_color',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
@@ -166,91 +224,67 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::create()
-	 * @covers \ingot\testing\crud\crud::validate_config()
-	 * @covers \ingot\testing\crud\crud::validate_type
+	 * @covers \ingot\testing\crud\group::validate_config()
+	 * @covers \ingot\testing\crud\group::validate_type()
 	 */
 	public function testInvalidType() {
 		$params = array(
 			'type' => 'josh',
-			'name' => 'bats'
+			'name' => 'bats',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
-		$this->assertInstanceOf( "\WP_Error", $created );
+		$this->assertWPError( $created );
 	}
 
 	/**
-	 * Test that a click group of the right type does not false trip click type check
+	 * Test that invalid  sub_type groups return an error
 	 *
-	 * @since 0.0.7
+	 * @since 0.4.0
 	 *
-	 * @covers \ingot\testing\crud\group::create()
-	 * @covers \ingot\testing\crud\crud::validate_config()
-	 * @covers \ingot\testing\crud\crud::validate_type
-	 */
-	public function testValidClickType() {
-		$params = array(
-			'type' => 'click',
-			'click_type' => 'link'
-		);
-
-		$created = \ingot\testing\crud\group::create( $params );
-
-		$this->assertFalse(  is_wp_error( $created ) );
-		$this->assertTrue( is_numeric( $created ) );
-
-		$params = array(
-			'type' => 'click',
-			'click_type' => 'button'
-		);
-
-		$created = \ingot\testing\crud\group::create( $params );
-
-		$this->assertFalse(  is_wp_error( $created ) );
-		$this->assertTrue( is_numeric( $created ) );
-
-		$params = array(
-			'type' => 'click',
-			'click_type' => 'button'
-		);
-
-		$created = \ingot\testing\crud\group::create( $params );
-
-		$this->assertFalse(  is_wp_error( $created ) );
-		$this->assertTrue( is_numeric( $created ) );
-	}
-
-	/**
-	 * Test that a group with the wrong click type is not allowed
+	 * @group crud
+	 * @group group_crud
 	 *
-	 * @since 0.0.7
 	 *
 	 * @covers \ingot\testing\crud\group::create()
 	 * @covers \ingot\testing\crud\crud::validate_config()
-	 * @covers \ingot\testing\crud\crud::validate_type
+	 * @covers \ingot\testing\crud\crud::validate_sub_type()
 	 */
-	public function testInvalidClickType() {
+	public function testInvalidSubType() {
 		$params = array(
 			'type' => 'click',
-			'click_type' => 'josh'
+			'name' => 'bats',
+			'sub_type' => 'hats',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
-		$this->assertInstanceOf( "\WP_Error", $created );
+		$this->assertWPError( $created );
 	}
+
 
 	/**
 	 * Test that we can delete a group
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::delete()
 	 */
 	public function testDelete() {
 		$params = array(
 			'type' => 'click',
-			'name' => 'bats'
+			'name' => 'bats',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
@@ -264,19 +298,22 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::update()
 	 */
 	public function testUpdate() {
 		$params = array(
 			'type' => 'click',
-			'name' => 'hats',
-			'selector' => '.hats',
-			'link' => 'https://hats.com'
+			'name' => 'bats',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
 		);
 
 		$created = \ingot\testing\crud\group::create( $params );
 		$group = \ingot\testing\crud\group::read( $created );
-		$group[ 'selector' ] = '.changed';
+		$group[ 'name' ] = 'changed';
 		\ingot\testing\crud\group::update( $group, $created );
 		$group = \ingot\testing\crud\group::read( $created );
 
@@ -288,8 +325,7 @@ class test_group_crud extends \WP_UnitTestCase {
 			$this->assertArrayHasKey( $field, $group );
 		}
 
-		$this->assertEquals( $group[ 'selector'], '.changed' );
-		$this->assertEquals( $group[ 'name' ],  'hats' );
+		$this->assertEquals( $group[ 'name' ],  'changed' );
 	}
 
 	/**
@@ -297,14 +333,18 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::delete()
-	 * @covers \ingot\testing\crud|options_crud::delete_all()
 	 */
 	public function testDeleteAll() {
 		for ( $i=0; $i <= 7; $i++ ) {
 			$params = array(
-				'name' => $i,
 				'type' => 'click',
+				'name' => $i,
+				'sub_type' => 'button',
+				'meta' => [ 'link' => 'https://bats.com' ],
 			);
 			$created[ $i ] = \ingot\testing\crud\group::create( $params );
 		}
@@ -322,8 +362,10 @@ class test_group_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::get_items()
-	 * @covers \ingot\testing\crud|options_crud::get_all()
 	 */
 	public function testGetItemsLimit() {
 		\ingot\testing\crud\group::delete( 'all' );
@@ -331,6 +373,8 @@ class test_group_crud extends \WP_UnitTestCase {
 			$params = array(
 				'name' => $i,
 				'type' => 'click',
+				'sub_type' => 'button',
+				'meta' => [ 'link' => 'https://bats.com' ],
 			);
 
 			$created[ $i ] = \ingot\testing\crud\group::create( $params );
@@ -347,51 +391,16 @@ class test_group_crud extends \WP_UnitTestCase {
 
 	}
 
-	/**
-	 * Test pagination of get_all() query
-	 *
-	 * @since 0.0.7
-	 *
-	 * @covers \ingot\testing\crud\group::get_items()
-	 * @covers \ingot\testing\crud|options_crud::get_all()
-	 */
-	public function testGetItemsPagination() {
-		\ingot\testing\crud\group::delete( 'all' );
-		for ( $i=1; $i <= 11; $i++ ) {
-			$params = array(
-				'name' => $i,
-				'type' => 'click',
-			);
-
-			$created[ $i ] = \ingot\testing\crud\group::create( $params );
-		}
-
-		$params = array(
-			'limit' => 5,
-			'page' => 2,
-		);
-
-		$items = \ingot\testing\crud\group::get_items( $params );
-		$this->assertEquals( count( $items ), 5 );
-
-		$params = array(
-			'limit' => 5,
-			'page' => 3,
-		);
-
-		$items = \ingot\testing\crud\group::get_items( $params );
-		$this->assertEquals( count( $items ), 2 );
-
-
-	}
 
 	/**
 	 * Test that when we ask for too high of a page, we get nothing back
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group group_crud
+	 *
 	 * @covers \ingot\testing\crud\group::get_items()
-	 * @covers \ingot\testing\crud|options_crud::get_all()
 	 */
 	public function testGetItemsPaginationTooHigh() {
 		\ingot\testing\crud\group::delete( 'all' );
@@ -399,6 +408,8 @@ class test_group_crud extends \WP_UnitTestCase {
 			$params = array(
 				'name' => $i,
 				'type' => 'click',
+				'sub_type' => 'button',
+				'meta' => [ 'link' => 'https://bats.com' ],
 			);
 
 			$created[ $i ] = \ingot\testing\crud\group::create( $params );
@@ -415,108 +426,6 @@ class test_group_crud extends \WP_UnitTestCase {
 
 
 	}
-
-	/**
-	 * Test a get_all() query done by ID
-	 *
-	 * @since 0.0.7
-	 *
-	 * @covers \ingot\testing\crud\group::get_items()
-	 * @covers \ingot\testing\crud|options_crud::select_by_ids()
-	 * @covers \ingot\testing\crud|options_crud::format_results_from_sql_query()
-	 */
-	public function testGetItemsByID() {
-		\ingot\testing\crud\group::delete( 'all' );
-		for ( $i=1; $i <= 11; $i++ ) {
-			$params = array(
-				'name' => $i,
-				'type' => 'click',
-			);
-
-			$c[ $i ] = \ingot\testing\crud\group::create( $params );
-		}
-
-		$params = array(
-			'ids' => array( $c[ 1 ], $c[3], $c[7] ),
-		);
-
-		$items = \ingot\testing\crud\group::get_items( $params );
-		$this->assertEquals( count( $items ), 3 );
-		$this->assertEquals( $items[0][ 'ID'], $c[1] );
-		$this->assertEquals( $items[1][ 'ID'], $c[3] );
-		$this->assertEquals( $items[2][ 'ID'], $c[7] );
-
-
-	}
-
-	/**
-	 * Test that the option name is correct
-	 *
-	 * @since 0.0.7
-	 *
-	 * @covers \ingot\testing\crud|options_crud::key_name()
-	 */
-	public function testKeyName() {
-		$params = array(
-			'type' => 'click',
-			'name' => 'hats',
-			'selector' => '.hats',
-			'link' => 'https://hats.com'
-		);
-
-		$created = \ingot\testing\crud\group::create( $params );
-		$key = 'ingot_group_' . $created;
-		$this->assertEquals( get_option( $key ), \ingot\testing\crud\group::read( $created ) );
-	}
-
-	/**
-	 * Test that meta works
-	 *
-	 * @since 0.1.1
-	 */
-	public function testMeta() {
-		$params = array(
-			'type' => 'click',
-			'click_type' => 'button',
-			'meta' => array( 'hats' => 'cats')
-		);
-
-		$created = \ingot\testing\crud\group::create( $params );
-
-		$this->assertTrue( is_int( $created ) );
-		$group = \ingot\testing\crud\group::read( $created );
-		$this->assertTrue( is_array( $group ) );
-		$this->assertArrayHasKey( 'meta', $group );
-		$this->assertArrayHasKey( 'hats', $group[ 'meta'] );
-
-	}
-
-	/**
-	 * Test that meta can take default color
-	 *
-	 * @since 0.1.1
-	 */
-	public function testButtonDefaultColor() {
-		$params = array(
-			'type' => 'click',
-			'click_type' => 'button',
-			'meta' => array(
-				'color' => '222'
-			)
-		);
-
-		$created = \ingot\testing\crud\group::create( $params );
-
-		$this->assertTrue( is_int( $created ) );
-		$group = \ingot\testing\crud\group::read( $created );
-		$this->assertTrue( is_array( $group ) );
-		$this->assertArrayHasKey( 'meta', $group );
-		$this->assertArrayHasKey( 'color', $group[ 'meta'] );
-		$this->assertSame( '222',$group[ 'meta' ][ 'color']  );
-		$this->assertSame( '#222', \ingot\testing\utility\helpers::get_color_from_meta( $group ) );
-
-	}
-
 
 
 }

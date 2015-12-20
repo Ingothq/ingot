@@ -22,8 +22,11 @@ add_filter( 'ingot_user_can', '__return_true' );
 
 
 activate_plugin( 'ingot/ingot.php' );
-ingot_bootstrap::maybe_add_sequence_table( true );
+
 ingot_bootstrap::maybe_add_tracking_table( true );
+ingot_bootstrap::maybe_add_session_table( true );
+ingot_bootstrap::maybe_add_group_table( true );
+ingot_bootstrap::maybe_add_variant_table( true );
 
 global $current_user;
 

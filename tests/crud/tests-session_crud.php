@@ -26,7 +26,9 @@ class tests_session_crud extends \WP_UnitTestCase {
 	 *
 	 * @since 0.3.0
 	 *
-	 * @group session
+	 * @group crud
+	 * @group session_crud
+	 * 
 	 * @covers \ingot\testing\crud\session::create()
 	 * @covers \ingot\testing\crud\session::read()
 	 */
@@ -60,6 +62,8 @@ class tests_session_crud extends \WP_UnitTestCase {
 	 * @since 0.3.0
 	 *
 	 * @group session
+	 * @group crud
+	 *
 	 * @covers \ingot\testing\crud\session::get_slug()
 	 */
 	public function testPageSlug() {
@@ -76,6 +80,8 @@ class tests_session_crud extends \WP_UnitTestCase {
 	 * @since 0.3.0
 	 *
 	 * @group session
+	 * @group crud
+	 *
 	 * @covers \ingot\testing\crud\session::is_used()
 	 */
 	public function testNotUsedYet() {
@@ -94,6 +100,8 @@ class tests_session_crud extends \WP_UnitTestCase {
 	 * @since 0.3.0
 	 *
 	 * @group session
+	 * @group crud
+	 *
 	 * @covers \ingot\testing\crud\session::mark_used()
 	 */
 	public function testMarkUsed() {

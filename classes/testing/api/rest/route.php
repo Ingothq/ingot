@@ -13,6 +13,7 @@ namespace ingot\testing\api\rest;
 
 
 use ingot\permissions;
+use ingot\testing\ingot;
 
 abstract class route  {
 
@@ -271,27 +272,7 @@ abstract class route  {
 	 * @return array
 	 */
 	public function make_array_values_numeric( $array ) {
-		if ( ! empty( $array ) ) {
-			foreach( $array as $k => $v ) {
-				if ( ! is_array( $v ) ) {
-					if ( ! is_numeric( $v ) ) {
-						$array[ $k ] = 0;
-					} else {
-						$array[ $k ] = (int) $v;
-					}
-				}else{
-					$array[ $k ] = $this->make_array_values_numeric( $v );
-				}
-
-			}
-
-		}
-
-		if ( empty( $array ) ) {
-			$array = array();
-		}
-
-		return $array;
+		return \ingot\testing\utility\helpers::make_array_values_numeric( $array );
 	}
 
 	public function strip_tags( $value, $request, $field ) {

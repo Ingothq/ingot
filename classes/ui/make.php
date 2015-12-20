@@ -35,6 +35,7 @@ class make {
 		if ( is_admin() ) {
 			new load();
 		}
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
 	}
 
