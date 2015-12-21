@@ -12,12 +12,14 @@
 namespace ingot\testing;
 
 
+use ingot\testing\api\rest\groups;
 use ingot\testing\api\rest\price_test;
 use ingot\testing\api\rest\price_test_group;
 use ingot\testing\api\rest\products;
 use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
 use ingot\testing\api\rest\util;
+use ingot\testing\api\rest\variant;
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_group;
 use ingot\testing\crud\sequence;
@@ -85,7 +87,6 @@ class ingot {
 
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
 
-		add_filter( 'ingot_crud_update', array( $this, 'pre_update' ), 98, 3 );
 		add_action( 'parse_request', array( $this, 'init_session' ), 50 );
 	}
 
@@ -96,16 +97,10 @@ class ingot {
 	 */
 	public static function boot_rest_api() {
 		if ( ! did_action( 'ingot_rest_api_booted' ) ) {
-			$test_group = new test_group();
-			$test_group->register_routes();
-			$test = new test();
-			$test->register_routes();
-			$sequence = new \ingot\testing\api\rest\sequence();
-			$sequence->register_routes();
-			$price_test_group = new price_test_group();
-			$price_test_group->register_routes();
-			$price_test = new price_test();
-			$price_test->register_routes();
+			$group = new groups();
+			$group->register_routes();
+			$variant = new variant();
+			$variant->register_routes();
 			$settings = new \ingot\testing\api\rest\settings();
 			$settings->register_routes();
 			$products = new products();
@@ -176,17 +171,6 @@ class ingot {
 		do_action( 'ingot_session_initialized', $session_data );
 	}
 
-	public function pre_update( $data, $id, $what ){
-		if( 'group' == $what ) {
-			$data = self::update_levers( $data, $id );
-		}
-		return $data;
-	}
-
-	protected function update_levers( $group, $id ) {
-		return $group;
-
-	}
 
 
 }

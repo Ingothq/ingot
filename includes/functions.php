@@ -537,3 +537,46 @@ function ingot_verify_session_nonce( $nonce ) {
 	return $good;
 
 }
+
+/**
+ * Create a REST response
+ *
+ * @param array|object|\WP_Error $data Response data
+ * @param int $code Optional. Status cod. Default is 200
+ * @param int|null $total Optional. if is an integer, will be used to set X-Ingot-Total header
+ *
+ * @return \WP_REST_Response|\WP_Error
+ */
+function ingot_rest_response( $data, $code = 200, $total = null ){
+	if ( ! is_wp_error( $data )  ) {
+		if ( 404 == $code || empty( $data ) ) {
+			$response = new \WP_REST_Response( null, 404 );
+		} else {
+			$response = new \WP_REST_Response( $data, $code );
+		}
+
+		if ( 0 < absint( $total ) ) {
+			$response->header( 'X-Ingot-Total', (int) group::total() );
+		}
+
+		return $response;
+	} else {
+		return $data;
+
+	}
+
+}
+
+/**
+ * Register a conversion
+ *
+ * @since 0.4.0
+ *
+ * @param int $variant_ID ID of variant to register conversion for
+ */
+function ingot_register_conversion( $variant_ID ){
+	$variant = \ingot\testing\crud\variant::read( $variant_ID );
+	$bandit = new \ingot\testing\bandit\content( $variant[ 'group_ID' ] );
+	$bandit->record_victory( $variant_ID );
+
+}
