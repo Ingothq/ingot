@@ -108,6 +108,14 @@ class group {
 	 * @return bool|int|\WP_Error True if updated, or bool if couldn't save or WP_Error if not allowed.
 	 */
 	public function update_group( $data ) {
+		$allowed = $this->all_fields();
+		foreach( array_keys( $data ) as $key  ){
+			if( ! in_array( $key, $allowed ) ){
+				unset( $data[ $key ] );
+			}
+
+		}
+
 		$group = wp_parse_args(
 			$data,
 			$this->group

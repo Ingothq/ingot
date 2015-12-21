@@ -12,6 +12,8 @@
 namespace ingot\testing\api\rest;
 
 
+use ingot\testing\utility\helpers;
+
 class variant extends route {
 	/**
 	 * Identify object type for this route collection
@@ -57,13 +59,13 @@ class variant extends route {
 		$context = $request->get_param( 'context' );
 		$url = $request->get_url_params();
 		$id = helpers::v( 'ID', $url, 0 );
-		if( 0 == absint( $id ) || ! is_array( \ingot\testing\crud\test::read( $id ) ) ) {
+		if( 0 == absint( $id ) || ! is_array( \ingot\testing\crud\variant::read( $id ) ) ) {
 			return new \WP_Error( 'ingot-invalid-test' );
 		}elseif( 'context' != 'view' ) {
 			return new \WP_Error( 'ingot-test-context-invalid' );
 		}else{
 			if ( 'view' == $context ) {
-				$test = \ingot\testing\crud\test::read( $id );
+				$test = \ingot\testing\crud\variantP::read( $id );
 				$html = ingot_click_test( $test );
 
 				return ingot_rest_response( $html );

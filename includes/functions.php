@@ -556,7 +556,7 @@ function ingot_rest_response( $data, $code = 200, $total = null ){
 		}
 
 		if ( 0 < absint( $total ) ) {
-			$response->header( 'X-Ingot-Total', (int) group::total() );
+			$response->header( 'X-Ingot-Total', (int) \ingot\testing\crud\group::total() );
 		}
 
 		return $response;

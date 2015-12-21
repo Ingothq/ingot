@@ -259,7 +259,7 @@ abstract class route  {
 	 * @return mixed
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		return array();
+		return $item;
 	}
 
 	/**

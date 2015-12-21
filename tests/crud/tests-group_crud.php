@@ -61,6 +61,49 @@ class group_crud extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Test create with extra params to make sure they don't return/get saved
+	 *
+	 * @since 0.4.0
+	 *
+	 * @group crud
+	 * @group group
+	 * @group group_crud
+	 *
+	 * @covers \ingot\testing\crud\crud::prepare_data()
+	 */
+	public function testExtraParams() {
+		$params = array(
+			'type' => 'click',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
+			'hats' => 'bats'
+		);
+
+		$created = \ingot\testing\crud\group::create( $params );
+		$this->assertTrue( is_int( $created ) );
+		$this->assertFalse(  is_wp_error( $created ) );
+		$this->assertTrue( is_numeric( $created ) );
+		$group = \ingot\testing\crud\group::read( $created );
+		$this->assertArrayNotHasKey( 'hats', $group );
+
+		$params = array(
+			'type' => 'click',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
+			'hats' => 'bats',
+			'cats' => 'dogs'
+		);
+
+		$created = \ingot\testing\crud\group::create( $params );
+		$this->assertTrue( is_int( $created ) );
+		$this->assertFalse(  is_wp_error( $created ) );
+		$this->assertTrue( is_numeric( $created ) );
+		$group = \ingot\testing\crud\group::read( $created );
+		$this->assertArrayNotHasKey( 'hats', $group );
+
+	}
+
+	/**
 	 * Test read
 	 *
 	 * @since 0.0.7

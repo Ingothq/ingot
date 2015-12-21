@@ -122,7 +122,7 @@ class group extends crud {
 	protected static function validate_config( $data ) {
 		foreach( self::required() as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {
-				return new \WP_Error( 'ingot-invalid-config', __( sprintf( 'Groups require the field %s', $key ), 'ingot'  ), $data );
+				return new \WP_Error( 'ingot-invalid-config', __( sprintf( 'Groups require the field: %s', $key ), 'ingot'  ), $data );
 			}
 
 		}

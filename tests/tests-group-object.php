@@ -34,6 +34,42 @@ class tests_groups_variants extends  \WP_UnitTestCase {
 	}
 
 	/**
+	 * Test create with extra params to make sure they don't return/get saved
+	 *
+	 * @since 0.4.0
+	 *
+	 * @group crud
+	 * @group group
+	 * @group group_crud
+	 *
+	 * @covers \ingot\testing\crud\crud::prepare_data()
+	 * @covers \ingot\testing\object\group::get_group_config()
+	 * @covers \ingot\testing\object\group::set_group()
+	 * @covers \ingot\testing\object\group::validate_group()
+	 */
+	public function testExtraParams() {
+		$params = array(
+			'type'     => 'click',
+			'sub_type' => 'button',
+			'meta'     => [ 'link' => 'https://bats.com' ],
+			'hats'     => 'bats'
+		);
+
+		$id = \ingot\testing\crud\group::create( $params );
+
+		$obj = new \ingot\testing\object\group( $id );
+
+		$this->assertArrayNotHasKey( 'hats', $obj->get_group_config() );
+
+		$obj->update_group( ['cats' => 'dogs' ] );
+
+		$this->assertArrayNotHasKey( 'cats', $obj->get_group_config() );
+		$group = \ingot\testing\crud\group::read( $id );
+		$this->assertArrayNotHasKey( 'cats', $group );
+		$this->assertArrayNotHasKey( 'hats', $group );
+	}
+
+	/**
 	 * Test that when we can create object using group config array
 	 *
 	 * @since 0.4.0

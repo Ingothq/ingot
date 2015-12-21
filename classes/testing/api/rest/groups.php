@@ -70,7 +70,7 @@ class groups extends route {
 		$groups = group::get_items( $args );
 		if( ! empty( $groups ) ) {
 			foreach( $groups as $i => $group ) {
-				$groups[ $i ] = $this->prepare_group( $group, $request->get_param()[ 'context'] );
+				$groups[ $i ] = $this->prepare_group( $group, $request->get_param( 'context' ) );
 			}
 		}
 
@@ -87,8 +87,11 @@ class groups extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function create_item( $request ) {
-		$group_args = $request->get_params();
-		$variants = helpers::v_sanitized( 'variants', $group_args  );
+
+		$group_args = $this->prepare_item_for_database( $request );
+
+		$variants = helpers::v_sanitized( 'variants', $group_args, []  );
+		$variants_ids = [];
 		if( ! empty( $variants ) ) {
 			foreach( $variants as $variant ) {
 				$_variant_id = variant::create( $variant );
@@ -100,9 +103,44 @@ class groups extends route {
 			}
 
 		}
-		$group_args = $variants_ids;
+		$group_args[ 'variants' ] = $variants_ids;
 		$id = group::create( $group_args );
-		return $this->return_group( $request, $id );
+		$item = group::read( $id );
+		if ( is_array( $item ) ) {
+			$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
+		}
+
+		return ingot_rest_response( $item, 201, 1 );
+
+	}
+
+	/**
+	 * Get a group
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_item( $request ){
+
+		$url = $request->get_url_params( );
+		$id = helpers::v( 'id', $url, 0 );
+		$group = group::read( $id );
+		if( ! is_array( $group ) ){
+			if ( is_wp_error( $group ) ) {
+				return $group;
+			}
+
+			return ingot_rest_response(
+				[ 'message' => esc_html__( 'No group found', 'ingot') ]
+			);
+		}
+
+
+		return ingot_rest_response(
+			$this->prepare_group( $group, $request->get_param( 'context') ),
+			201 );
 
 	}
 
@@ -131,8 +169,11 @@ class groups extends route {
 
 		//doing this since it runs parse_args
 		$obj = new \ingot\testing\object\group( $existing );
-		$obj->update_group( $request->get_params() );
-		return ingot_rest_response($this->prepare_item_for_response( $obj->get_group_config() ), 201 );
+		$group_args = $this->prepare_item_for_database( $request );
+
+		$obj->update_group( $group_args );
+		return ingot_rest_response(
+			$this->prepare_group( $obj->get_group_config(), $request->get_param( 'context' ) ), 201 );
 
 	}
 
@@ -262,7 +303,7 @@ class groups extends route {
 	protected function prepare_group( $group, $context = 'view' ){
 		unset( $group[ 'levers' ] );
 		if ( 'admin' == $context ) {
-			$this->prepare_group_in_admin_context( $group );
+			$group = $this->prepare_group_in_admin_context( $group );
 		}
 
 		return $group;
@@ -280,34 +321,39 @@ class groups extends route {
 	 * @return array Group config with additional data for making admin
 	 */
 	protected function prepare_group_in_admin_context( $group ) {
-
-
 		return $group;
 	}
 
-	/**
-	 * Return updated/created group
-	 *
-	 * @since 0.2.0
-	 *
-	 * @access protected
-	 *
-	 * @param \WP_REST_Request $request
-	 * @param int $id Group ID
-	 *
-	 * @return \WP_REST_Response
-	 */
-	protected function return_group( $request, $id ) {
-		$item = group::read( $id );
-		if ( is_array( $item ) ) {
-			$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
-		}
 
 
-		return ingot_rest_response( $item, 200, 1 );
-
+	protected function allowed_fields(){
+		$fields = \ingot\testing\crud\group::get_all_fields();
+		unset( $fields[ 'levers' ] );
+		return $fields;
 	}
 
+	/**
+	 * Prepare the item for create or update operation
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param \WP_REST_Request $request Request object
+	 * @return \WP_Error|object $prepared_item
+	 */
+	protected function prepare_item_for_database( $request ) {
+		$group_args = $request->get_params();
+		$allowed    = $this->allowed_fields();
+		foreach ( $group_args as $key => $value ) {
+			if ( is_numeric( $key ) || ! in_array( $key, $allowed ) ) {
+				unset( $group_args[ $key ] );
+			}
+		}
+
+		unset( $group_args[ 'levers' ] );
+
+
+		return $group_args;
+	}
 
 
 }

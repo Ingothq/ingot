@@ -210,7 +210,11 @@ abstract class crud {
 		}else{
 			$type = gettype( $id );
 			if( is_wp_error( $id ) ) {
-				$type .= ' ' . $id->get_error_messages();
+				$errors = $id->get_error_messages();
+				if( ! is_string( $errors ) ) {
+					$errors = var_export( $errors, true );
+				}
+				$type .= ' ' . $errors;
 			}
 
 			$warning = __( sprintf( 'ID must be numeric, type is %s', $type ), 'ingot' );
@@ -667,11 +671,13 @@ abstract class crud {
 		}
 
 		$allowed = self::get_all_fields();
+
 		foreach ( $data as $k => $v ) {
 			if ( is_numeric( $k ) || ! in_array( $k, $allowed ) ) {
 				unset( $data[ $k ] );
 			}
 		}
+
 
 		if( isset( $data[ 'modified' ] ) ){
 			$data[ 'modified' ] = current_time( 'mysql' );
