@@ -238,8 +238,16 @@ class group {
 
 	}
 
+	/**
+	 * Set the stats property
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access private
+	 */
 	private function set_stats() {
-
+		$obj = new group_stats( $this->levers[ $this->ID ] );
+		$this->stats = $obj->get_stats();
 	}
 
 	/**

@@ -31,7 +31,8 @@
     ],
     "require": {
         "calderawp/dismissible-notice": "dev-master",
-        "shelob9/mabandit" : "*"
+        "shelob9/mabandit" : "*",
+        "oefenweb/statistics": "dev-master"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
