@@ -23,6 +23,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\tracking::get_table_name()
@@ -40,6 +41,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::create()
@@ -64,6 +66,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::create()
@@ -111,6 +114,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::create()
@@ -144,6 +148,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::create()
@@ -174,6 +179,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::create()
@@ -224,6 +230,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::create()
@@ -248,8 +255,8 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.4.0
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
-	 *
 	 *
 	 * @covers \ingot\testing\crud\group::create()
 	 * @covers \ingot\testing\crud\crud::validate_config()
@@ -274,6 +281,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::delete()
@@ -298,6 +306,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::update()
@@ -333,6 +342,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::delete()
@@ -362,6 +372,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::get_items()
@@ -397,6 +408,7 @@ class group_crud extends \WP_UnitTestCase {
 	 * @since 0.0.7
 	 *
 	 * @group crud
+	 * @group group
 	 * @group group_crud
 	 *
 	 * @covers \ingot\testing\crud\group::get_items()
@@ -426,5 +438,79 @@ class group_crud extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test that the ingot_tests_make_groups() utility function works properly
+	 *
+	 * @since 0.4.0
+	 *
+	 * @group crud
+	 * @group group
+	 * @group group_crud
+	 *
+	 * @covers ingot_tests_make_groups()
+	 */
+	public function testTestFunction(){
+		$groups = ingot_tests_make_groups( true, 5, 3 );
+		$this->assertSame( 6, count( $groups[ 'ids' ] ) );
+		$groups = ingot_tests_make_groups( true, 2, 3 );
+		$this->assertSame( 3, count( $groups[ 'ids' ] ) );
+
+		$groups = ingot_tests_make_groups( true, 2, 3 );
+		$group_ids = $groups[ 'ids' ];
+		foreach( $group_ids as $id ){
+			$variants = $groups[ 'variants' ][ $id ];
+			$group = \ingot\testing\crud\group::read( $id );
+			$this->assertTrue( is_array( $group ) );
+			$this->assertSame( $variants, $group[ 'variants' ] );
+		}
+
+	}
+
+	/**
+	 * Test that when we can add variants to groups properly
+	 *
+	 * @since 0.4.0
+	 *
+	 * @group crud
+	 * @group group
+	 * @group group_crud
+	 *
+	 * @covers \ingot\testing\crud\group::update()
+	 */
+	public function testAddVariantsToGroup() {
+		$groups = ingot_tests_make_groups( false, 1, 3 );
+		$id = $groups[ 'ids'][0];
+		$this->assertTrue( is_numeric( $id ) );
+		$group = \ingot\testing\crud\group::read( $id );
+		$group[ 'variants' ] = $groups[ 'variants' ][ $id ];
+		$updated = \ingot\testing\crud\group::update( $group, $id  );
+		$this->assertTrue( is_numeric( $updated ) );
+		$group = \ingot\testing\crud\group::read( $id );
+		$this->assertSame( $group[ 'variants' ], $groups[ 'variants' ][ $id ] );
+
+	}
+
+
+	/**
+	 * Test that when we can add levers directly
+	 *
+	 * @since 0.4.0
+	 *
+	 * @group crud
+	 * @group group
+	 * @group group_crud
+	 *
+	 * @covers \ingot\testing\crud\group::update()
+	 */
+	public function testLevers(){
+		$groups = ingot_tests_make_groups( true, 1, 3 );
+		$group_id = $groups[ 'ids' ][0];
+		$bandit = new \ingot\testing\bandit\content( $group_id );
+		$group = \ingot\testing\crud\group::read( $group_id );
+
+		$this->assertFalse( empty( $group[ 'levers' ] ) );
+		$this->assertArrayHasKey( (int) $group_id, $group[ 'levers' ] );
+		$this->assertSame( 4, count( $group[ 'levers' ][ $group_id ] ) );
+	}
 
 }

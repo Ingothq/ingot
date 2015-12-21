@@ -223,7 +223,7 @@ class group {
 	 *
 	 * @access private
 	 *
-	 * @param array|ID $group Group config or ID of a saved group
+	 * @param array|int $group Group config or ID of a saved group
 	 *
 	 * @throws \Exception
 	 */

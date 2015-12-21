@@ -31,6 +31,11 @@ class tests_settings extends ingot_rest_test_case {
 		}
 	}
 
+	/**
+	 *
+	 * @group rest
+	 * @group settings_rest
+	 */
 	public function testReadSettings() {
 		wp_set_current_user( 1 );
 		$expected = array(
@@ -52,7 +57,9 @@ class tests_settings extends ingot_rest_test_case {
 		$data = (array) $response->get_data();
 		foreach( $expected as $setting => $value ){
 			$this->assertArrayHasKey( $setting, $data );
-			$this->assertEquals( $value, $data[ $setting ] );
+			if ( 'license_code' !== $setting ) {
+				$this->assertEquals( $value, $data[ $setting ] );
+			}
 		}
 
 
@@ -81,16 +88,17 @@ class tests_settings extends ingot_rest_test_case {
 		$response = rest_ensure_response( $response );
 		$this->assertEquals( 200, $response->get_status() );
 		$data = (array) $response->get_data();
-		$data = (array) $response->get_data();
 		foreach( $expected as $setting => $value ){
 			$this->assertArrayHasKey( $setting, $data );
 			if( 'license_code' != $setting ) {
 				$data[ $setting ] = intval( $data[ $setting ] );
+				$this->assertEquals( $value, $data[ $setting ], $setting );
 			}
-			$this->assertEquals( $value, $data[ $setting ], $setting );
+
 		}
 
 
 	}
+
 
 }
