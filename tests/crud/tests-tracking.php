@@ -132,7 +132,7 @@ class tests_tracking extends \WP_UnitTestCase {
 	 * @covers \ingot\testing\crud\tracking::read()
 	 */
 	public function testCreateWithData() {
-		$time = time();
+
 		$params = array(
 			'test_ID' => 2,
 			'group_ID' => 3,
@@ -140,7 +140,7 @@ class tests_tracking extends \WP_UnitTestCase {
 			'UTM' => array( 'a' => 'batman', 'c' => 'robin' ),
 			'browser' => 'firefox',
 			'user_agent' => 'windows and stuff',
-			'time' => $time,
+			'time' => current_time( 'mysql'),
 			'meta' => array( 'bees' => 'knees')
 		);
 
@@ -148,12 +148,7 @@ class tests_tracking extends \WP_UnitTestCase {
 		$tracking = \ingot\testing\crud\tracking::read( $created );
 		$params[ 'ID' ] = $created;
 		foreach( $params as $key => $value ) {
-			if( 'time' == $key ) {
-				$this->assertEquals( $time, strtotime( $tracking[ $key ] ),var_export( $tracking, true ) );
-			}else{
 				$this->assertEquals( $value, $tracking[ $key ] );
-			}
-
 		}
 
 	}

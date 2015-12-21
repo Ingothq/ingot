@@ -564,19 +564,15 @@ abstract class crud {
 	 * @return string
 	 */
 	protected static function date_validation( $date ){
-		if( empty( $date ) ) {
+		if( 0 == $date || empty( $date ) ) {
 			$date = current_time( 'mysql' );
 		}elseif( is_numeric( $date ) ) {
 			$date = date("Y-m-d H:i:s", $date );
-		}elseif( '0000-00-00 00:00:00' == $date ) {
+		}
+
+		$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $date );
+		if(  $date != $dt->format('Y-m-d H:i:s') ) {
 			$date = current_time( 'mysql' );
-		}elseif( is_string( $date ) ) {
-			$_date = strtotime( $date );
-			if( 0 == $_date ){
-				$date = current_time( 'mysql' );
-			}else{
-				$date = $_date;
-			}
 		}
 
 		return $date;
