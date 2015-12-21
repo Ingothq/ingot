@@ -32,7 +32,7 @@ class variant extends route {
 	 * @since 0.4.0
 	 */
 	public function register_routes() {
-		parent::register_routes();
+
 		$namespace = $this->make_namespace();
 		$base = $this->base();
 		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/conversion', array(
@@ -40,9 +40,35 @@ class variant extends route {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'conversion' ),
 					'permission_callback' => array( $this, 'check_session_nonce' ),
-					'args'                => array(),
+					'args'                => $this->win_args()
 				),
 			)
+		);
+
+		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
+			array(
+				'methods'         => \WP_REST_Server::READABLE,
+				'callback'        => array( $this, 'get_item' ),
+				'permission_callback' => array( $this, 'check_session_nonce' ),
+				'args'            => array(
+					'context'          => array(
+						'default'      => 'view',
+					),
+					'id' => array(
+						'description'       => __( 'ID of variant', 'ingot' ),
+						'type'              => 'integer',
+						'default'           => 1,
+						'sanitize_callback' => 'absint',
+						'required'          => true
+					),
+					'ingot_session_nonce' => array(
+						'type'     => 'string',
+						'required' => true,
+						'default' => '0',
+					),
+
+				),
+			),
 		);
 	}
 
@@ -94,30 +120,7 @@ class variant extends route {
 
 	}
 
-	/**
-	 * Params for most requests
-	 *
-	 *
-	 * @since 0.4.0
-	 *
-	 * @param bool|true $require_id
-	 *
-	 * @return array
-	 */
-	public function args( $require_id = true ) {
-		$args = array(
-			'id' => array(
-				'description'       => __( 'ID of variant', 'ingot' ),
-				'type'              => 'integer',
-				'default'           => 1,
-				'sanitize_callback' => 'absint',
-				'required'          => $require_id
-			),
-		);
 
-		return $args;
-
-	}
 
 	/**
 	 * Params for the /click endpoint
@@ -134,21 +137,14 @@ class variant extends route {
 				'required'            => true,
 				'sanitize_callback'  => 'absint',
 			),
-			'click_nonce'              => array(
-				'description'        => __( 'Nonce for verifying click', 'ingot' ),
-				'type'               => 'string',
-				'default'            => rand(),
-				'sanitize_callback'  => array( $this, 'strip_tags' ),
-				'required'           => true,
-			),
 			'ingot_session_nonce' => array(
 				'type'     => 'string',
-				'required' => false,
+				'required' => true,
 				'default' => '0'
 			),
 			'ingot_session_ID' => array(
 				'type' => 'string',
-				'required' => false,
+				'required' => true,
 				'default' => '0'
 			)
 
