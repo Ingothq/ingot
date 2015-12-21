@@ -233,7 +233,7 @@ abstract class crud {
 	 * @param int $id Item ID.
 	 * @param bool|false $bypass_cap
 	 *
-	 * @return array|bool||WP_Error Item config array,or false if not found, or error if not allowed.
+	 * @return int|bool||WP_Error Item ID if created, or false if not updated, or error if not allowed to create.
 	 */
 	public static function update( $data, $id , $bypass_cap = false ) {
 
@@ -358,7 +358,7 @@ abstract class crud {
 	 * @param int $id Optional. Item ID. Not used or needed if using to create.
 	 * @param bool|false $bypass_cap
 	 *
-	 * @return int|bool||WP_Error Item ID if created,or false if not created, or error if not allowed to create.
+	 * @return int|bool||WP_Error Item ID if created, or false if not created, or error if not allowed to create.
 	 */
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 
@@ -693,7 +693,7 @@ abstract class crud {
 	 * @access protected
 	 *
 	 * @param int $id Item ID
-	 * @param bool $bypass_cap Whether to bypass check
+	 * @param bool $bypass_cap Whether to bypass capabilities check.
 	 *
 	 * @return bool True if user can, false if not
 	 */
@@ -733,9 +733,46 @@ abstract class crud {
 			if ( isset( $results[ $field  ] ) ) {
 				$results[ $field ] = maybe_unserialize( $results[ $field ] );
 			}
+
+			if ( 'levers' == $field && isset( $results[ 'levers' ] ) ) {
+				$results = self::maybe_rekey_levers( $results, $field );
+			}
+
 		}
 
 		return $results;
+
+	}
+
+	/**
+	 * If needed re-key levers by lever ID
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @param array $results
+	 *
+	 * @return array
+	 */
+	protected static function maybe_rekey_levers( $results ) {
+
+		if ( is_array( $results[ 'levers' ] ) && ! empty( $results[ 'levers' ] ) && isset( $results[ 'levers' ][ $results[ 'ID' ] ][ 0 ] ) ) {
+			$_levers = $results[ 'levers' ][ $results[ 'ID' ] ];
+			$levers  = [ ];
+			foreach ( $_levers as $lever ) {
+				$levers[ $results[ 'ID' ] ][ $lever->getValue() ] = $lever;
+			}
+
+			$results[ 'levers' ] = $levers;
+
+			return $results;
+
+
+		}
+
+		return $results;
+
 	}
 
 }

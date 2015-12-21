@@ -26,7 +26,7 @@ abstract class bandit {
 	 *
 	 * @var \MaBandit\Experiment
 	 */
-	private $experiment;
+	protected $experiment;
 
 	/**
 	 *
@@ -69,15 +69,19 @@ abstract class bandit {
 	 *
 	 * @since 0.4.0
 	 *
-	 * @param int $val ID of variant to record victory for
+	 * @param int|\MaBandit\Lever $val Lever or ID of lever to record conversion for.
 	 */
 	public function record_victory( $val ){
-		$l = $this->bandit->getLeverByExperimentAndValue( $this->ID, $val);
-		$this->bandit->registerConversion($l);
+
+		if ( ! is_a( $val, '\MaBandit\Lever') ) {
+			$val = $this->bandit->getLeverByExperimentAndValue( $this->ID, $val );
+		}
+		$this->bandit->registerConversion($val);
 	}
 
+
 	/**
-	 * Choose a victory for a variant
+	 * Choose a variant
 	 *
 	 * @since 0.4.0
 	 *
@@ -86,6 +90,7 @@ abstract class bandit {
 	public function choose() {
 		$val = $this->bandit->chooseLever($this->experiment)->getValue();
 		return $val;
+
 	}
 
 	/**
@@ -117,15 +122,10 @@ abstract class bandit {
 		$persistor = $this->create_persistor();
 		$this->bandit = \MaBandit\MaBandit::withStrategy($strategy)->withPersistor($persistor);
 
-		//@todo remove this. Should never be used to create? Or move creation to seperate object
 		try {
 			$this->experiment = $this->bandit->getExperiment( (string) $this->ID );
 		} catch( \MaBandit\Exception\ExperimentNotFoundException $e ) {
-			$group = group::read( $this->ID );
-			if( ! empty( $group[ 'variants' ] ) )  {
-				$variants = helpers::make_array_values_numeric( $group[ 'variants' ], true );
-				$this->experiment = $this->bandit->createExperiment( (string) $this->ID, $variants  );
-			}
+			$this->create_experiment();
 
 		}
 
@@ -144,4 +144,12 @@ abstract class bandit {
 	 * @return \ingot\testing\bandit\persistor
 	 */
 	 abstract protected function create_persistor();
+
+	protected function create_experiment() {
+		$group = group::read( $this->ID );
+		if ( ! empty( $group[ 'variants' ] ) ) {
+			$variants         = helpers::make_array_values_numeric( $group[ 'variants' ], true );
+			$this->experiment = $this->bandit->createExperiment( (string) $this->ID, $variants );
+		}
+	}
 }

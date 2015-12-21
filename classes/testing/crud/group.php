@@ -43,6 +43,13 @@ class group extends crud {
 	 * @return bool|int
 	 */
 	public static function save_levers( $id, $levers ) {
+
+		foreach( $levers[ $id ] as $i => $lever ) {
+			if( ! is_object( $lever ) || ! is_a( $lever, '\MaBandit\Lever' ) ) {
+				unset( $levers[ $i ] );
+			}
+		}
+
 		$table_name = static::get_table_name();
 		if( self::can( $id, true ) ) {
 			global $wpdb;
@@ -78,8 +85,10 @@ class group extends crud {
 	 */
 	public static function get_levers( $group ) {
 		if( is_numeric( $group ) ) {
-			return self::get_levers_by_id( $group );
-		}elseif( is_array( $group ) && ! empty( $group[ 'levers' ] ) ) {
+			$group = self::read( $group );
+		}
+
+		if( is_array( $group ) && ! empty( $group[ 'levers' ] ) ) {
 			return  $group[ 'levers' ];
 
 		}
@@ -91,32 +100,12 @@ class group extends crud {
 	 *
 	 * @since 0.4.0
 	 *
-	 * @param int $group Group ID
+	 * @param int $id Group ID
 	 *
 	 * @return array
 	 */
 	protected static function get_levers_by_id( $id ) {
-		$table_name = static::get_table_name();
-		global $wpdb;
-		$sql = sprintf( 'SELECT `levers` FROM %s WHERE `ID` = %d', $table_name, $id );
-		$results = $wpdb->get_results( $sql, ARRAY_N );
-		if ( ! empty( $results ) ) {
-			foreach( $results as $i => $result ) {
-				$result = maybe_unserialize( $result );
-				if ( ! empty( $result ) ) {
-					$result = helpers::make_array_values_numeric( $result, true );
-				}
-
-				$results[ $i ] = $result;
-
-			}
-
-			return $results;
-
-		}
-
-		return array();
-
+		return $group = self::read( $id)[ 'levers' ];
 	}
 
 	/**
@@ -168,16 +157,6 @@ class group extends crud {
 		if( is_wp_error( $data ) ) {
 			return $data;
 
-		}
-
-		if ( ! empty( 'levers' ) ) {
-			foreach ( $data[ 'levers' ] as $i => $lever ) {
-				if( ! self::is_lever( $lever ) ) {
-					unset( $data[ 'levers' ][ $i ] );
-				}
-
-			}
-			
 		}
 
 		$data[ 'variants' ] == helpers::make_array_values_numeric( $data[ 'variants' ], true );
@@ -246,7 +225,7 @@ class group extends crud {
 					$data[  $field  ] = self::date_validation( $data[ $field ] );
 				}
 
-			}elseif( in_array( $field, ['variants', 'meta', 'levers' ] ) && ( ! isset( $data[  $field ] ) || ! is_array( $data[ $field ] ) ) ) {
+			}elseif( in_array( $field, [ 'variants', 'meta', 'levers' ] ) && ( ! isset( $data[  $field ] ) || ! is_array( $data[ $field ] ) ) ) {
 				$data[ $field ] = [];
 			}else{
 				if ( ! isset( $data[ $field ] ) ) {
@@ -258,23 +237,6 @@ class group extends crud {
 		return $data;
 	}
 
-	/**
-	 * Ensure the that an object of the \MaBandit\Lever class
-	 *
-	 * @since 0.4.0
-	 *
-	 * @access protected
-	 *
-	 * @param object $maybe_lever
-	 *
-	 * @return bool
-	 */
-	protected function is_lever( $maybe_lever ) {
-		if( is_object( $maybe_lever ) && is_a( $maybe_lever, '\MaBandit\Lever' ) ) {
-			return true;
-		}
-
-	}
 
 	/**
 	 * Required fields of this object

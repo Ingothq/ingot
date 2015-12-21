@@ -72,7 +72,7 @@ class persistor implements \MaBandit\Persistence\Persistor {
 	 */
 	public function saveLever(\MaBandit\Lever $lever) {
 		$this->get_levers();
-		if (!array_key_exists($lever->experiment, $this->_levers) || !is_array($this->_levers[$lever->experiment])) {
+		if ( ! is_array( $this->_levers ) || !array_key_exists($lever->experiment, $this->_levers) || !is_array($this->_levers[$lever->experiment])) {
 			$this->_levers[ $lever->experiment ] = array();
 		}
 

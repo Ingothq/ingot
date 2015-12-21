@@ -9,9 +9,10 @@
  * @copyright 2015 Josh Pollock
  */
 
-namespace ingot\bandit\content;
+namespace ingot\testing\bandit;
 
 
-class button {
+class read_group {
+
 
 }
