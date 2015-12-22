@@ -88,6 +88,10 @@ class ingot_tests_data {
 		return $groups;
 	}
 
+	public static function click_link_group($add_variants = true, $total_groups = 5, $variants_per_group = 3 ){
+		return self::make_groups( $add_variants, $total_groups, $variants_per_group );
+	}
+
 	public static function click_button_group( $add_variants = true, $total_groups = 5, $variants_per_group = 3 ) {
 		$args = [
 			'group_args'   => [

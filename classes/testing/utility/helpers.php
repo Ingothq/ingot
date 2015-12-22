@@ -204,6 +204,33 @@ class helpers {
 	}
 
 	/**
+	 * Get link from click group config
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param array $config Group config
+	 * @param bool $validate Optional. By default, link is validated. Set to false to skip.
+	 *
+	 * @return string
+	 */
+	public static function get_link_from_meta( $config, $validate = true ) {
+		$link = '';
+		if( isset( $config[ 'meta' ], $config[ 'meta' ][ 'link' ] ) ){
+			$link = $config[ 'meta' ][ 'link' ];
+			if( $validate ){
+				if( ! filter_var( $link, FILTER_VALIDATE_URL ) ) {
+					$link = '';
+				}
+
+			}
+
+		}
+
+		return $link;
+
+	}
+
+	/**
 	 * Prepare a color hex
 	 *
 	 * @since 0.1.1

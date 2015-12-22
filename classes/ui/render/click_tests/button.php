@@ -28,22 +28,17 @@ class button extends \ingot\ui\render\click_tests\click {
 	 * @access protected
 	 */
 	protected function make_html() {
-		$test_id = $this->get_test()[ 'ID' ];
-		$text = $this->get_test()[ 'text' ];
-		$link = $this->get_group()[ 'link' ];
-		$group_id = $this->get_sequence()[ 'ID' ];
-		$sequence_id = $this->get_sequence()[ 'ID' ];
-		$click_nonce = util::click_nonce( $test_id, $sequence_id, $group_id );
+		$test_id = $this->get_variant()[ 'ID' ];
+		$text = $this->get_variant()[ 'content' ];
+		$link = $this->link();
 		$style = $this->make_style( $this->get_group() );
 
 		$this->html = sprintf(
-			'<button id="%s" class="ingot-button" %s><a href="%s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%d" data-ingot-sequence-id="%d" data-ingot-test-nonce="%s" %s>%s</a></button>',
-			esc_attr( $this->attr_id() ),
+			'<button id="%0s" class="ingot-button" %1s><a href="%2s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%3d" %4s>%5s</a></button>',
 			$style,
+			esc_attr( $this->attr_id() ),
 			esc_url( $link ),
 			esc_attr( $test_id ),
-			esc_attr( $sequence_id ),
-			esc_attr( $click_nonce ),
 			$style,
 			esc_html( $text )
 		);
@@ -66,7 +61,7 @@ class button extends \ingot\ui\render\click_tests\click {
 	protected function make_style( $config ) {
 		$color = helpers::get_color_from_meta( $config );
 		$background_color = helpers::get_background_color_from_meta( $config );
-		return sprintf( 'style="background-color:%s;color:%s"', $background_color, $color );
+		return sprintf( 'style="background-color:%s;color:%s;"', $background_color, $color );
 
 	}
 }

@@ -28,22 +28,17 @@ class button_color extends \ingot\ui\render\click_tests\button {
 	 * @access protected
 	 */
 	protected function make_html() {
-		$test_id = $this->get_test()[ 'ID' ];
-		$text = $color_test_text = helpers::v( 'color_test_text', $this->get_group()[ 'meta' ], '' );
-		$link = $this->get_group()[ 'link' ];
-		$group_id = $this->get_sequence()[ 'ID' ];
-		$sequence_id = $this->get_sequence()[ 'ID' ];
-		$click_nonce = util::click_nonce( $test_id, $sequence_id, $group_id );
-		$style = $this->make_style( $this->get_test() );
+		$test_id = $this->get_variant()[ 'ID' ];
+		$text = $this->get_variant()[ 'content' ];
+		$link = $this->link();
+		$style = $this->make_style( $this->get_group() );
 
 		$this->html = sprintf(
-			'<button id="%s" class="ingot-button" %s><a href="%s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%d" data-ingot-sequence-id="%d" data-ingot-test-nonce="%s" %s>%s</a></button>',
+			'<button id="%1s" class="ingot-button" %2s><a href="%3s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%4d"  %4s>%6s</a></button>',
 			esc_attr( $this->attr_id() ),
 			$style,
 			esc_url( $link ),
 			esc_attr( $test_id ),
-			esc_attr( $sequence_id ),
-			esc_attr( $click_nonce ),
 			$style,
 			esc_html( $text )
 		);

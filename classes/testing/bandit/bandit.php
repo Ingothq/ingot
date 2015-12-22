@@ -24,18 +24,18 @@ abstract class bandit {
 	 *
 	 * @access private
 	 *
-	 * @var \MaBandit\Experiment
+	 * @var \MaBandit\Experiment|object
 	 */
 	protected $experiment;
 
 	/**
-	 *
+	 * Mabandit object
 	 *
 	 * @since 0.4.0
 	 *
 	 * @access private
 	 *
-	 * @var
+	 * @var \MaBandit\MaBandit|object
 	 */
 	private $bandit;
 
@@ -98,11 +98,9 @@ abstract class bandit {
 	 *
 	 * @since 0.4.0
 	 *
-	 * @access protected
-	 *
 	 * @return int
 	 */
-	protected function get_ID(){
+	public function get_ID(){
 		return $this->ID;
 	}
 

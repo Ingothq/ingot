@@ -94,7 +94,6 @@ class session extends route {
 
 			return rest_ensure_response( $data );
 
-
 		}
 
 	}
