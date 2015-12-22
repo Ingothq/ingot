@@ -82,7 +82,7 @@ class ingot {
 			}
 
 			wp_enqueue_script( 'ingot', INGOT_URL . '/assets/front-end/js/ingot-click-test.js', array( 'jquery'), $version, true );
-			wp_localize_script( 'ingot', 'INGOT_VARS', ingot::js_vars() );
+			wp_localize_script( 'ingot', 'INGOT_UI', ingot::js_vars() );
 		});
 
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
@@ -138,7 +138,7 @@ class ingot {
 	}
 
 	/**
-	 * Data to be localize as INGOT_VARS
+	 * Data to be localize as INGOT_UI
 	 *
 	 * @return array
 	 */

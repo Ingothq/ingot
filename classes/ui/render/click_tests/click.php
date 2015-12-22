@@ -163,7 +163,6 @@ abstract class click {
 		if( is_array( $variant ) ) {
 			$this->variant = $variant;
 		}else{
-			$x = 1;
 			//@todo
 
 		}

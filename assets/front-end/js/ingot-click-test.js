@@ -1,8 +1,10 @@
-/* globals INGOT_VARS */
+/* globals INGOT_UI */
 jQuery( document ).ready( function ( $ ) {
 
-    var session_id = INGOT_VARS.session.ID;
-    var ingot_id = INGOT_VARS.session.ingot_ID;
+    var session_id = INGOT_UI.session.ID;
+    var ingot_id = INGOT_UI.session.ingot_ID;
+    var session_nonce = INGOT_UI.session_nonce;
+    var nonce = INGOT_UI.nonce;
 
     /**
      * Track click tests
@@ -10,39 +12,43 @@ jQuery( document ).ready( function ( $ ) {
      * @since 0.0.x
      */
     $( document ).on( 'click', '.ingot-click-test', function(e) {
-        e.preventDefault();
-
         var href = $( this ).attr( 'href' );
-        var test = $( this ).data( 'ingot-test-id' );
-        if( 'undefined' == test) {
-            window.location = href;
-            return;
+        var id = $( this ).data( 'ingot-test-id' );
+        console.log( href );
+        console.log( id );
+        if( 'undefined' !== href && 'undefined' != id ) {
+            e.preventDefault();
+
+            var data = {
+                id: id,
+                ingot_session_nonce: session_nonce,
+                ingot_session_ID: session_id
+            };
+
+            var url = INGOT_UI.api_url + 'variants/' + id + '/conversion?_wpnonce=' + nonce + '&ingot_session_nonce=' + session_nonce + '&ingot_session_ID=' + session_id;
+
+            $.when(
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data: data,
+                    beforeSend: function ( xhr ) {
+                        xhr.setRequestHeader( 'X-WP-Nonce', nonce );
+                    },
+                }).success(function( data, textStatus, jqXHR ) {
+                    window.location = href;
+                } ).error( function(){
+                    window.location = href;
+                } ).fail( function()  {
+                    window.location = href;
+                })
+            );
+
         }
 
-        var data = {
-            test: test,
-            sequence: $( this ).data( 'ingot-sequence-id' ),
-            click_nonce: $( this ).data( 'ingot-test-nonce' )
-        };
 
-        var url = INGOT_VARS.api_url + 'test/' + test + '/click?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&ingot_session_ID=' + session_id;
 
-        $.when(
-            $.ajax({
-                url: url,
-                method: "POST",
-                data: data,
-                beforeSend: function ( xhr ) {
-                    xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
-                },
-            }).success(function( data, textStatus, jqXHR ) {
-                window.location = href;
-            } ).error( function(){
-                window.location = href;
-            } ).fail( function()  {
-                window.location = href;
-            })
-        );
+
     });
 
     /**
@@ -51,6 +57,7 @@ jQuery( document ).ready( function ( $ ) {
      * @since 0.3.0
      */
     $( window ).load( function () {
+        return;
         if( null == INGOT_VARS.session.ID ) {
             return;
         }
@@ -61,9 +68,11 @@ jQuery( document ).ready( function ( $ ) {
         $.each( tests, function( i, test ) {
             the_tests.push( $( test ).attr( 'data-ingot-test-id' ) );
         });
+
+        console.log( the_tests );
         if( tests.length > 0 ) {
             test_list =  the_tests.join(",");
-            url = INGOT_VARS.api_url + 'sessions/' + INGOT_VARS.session.ID + '/session?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list + '&ingot_session_ID=' + INGOT_VARS.session.ID;
+            url = INGOT_VARS.api_url + 'sessions/' + session_id + '/session?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list + '&ingot_session_ID=' + session_id;
             $.when(
                 $.ajax({
                     url: url,
@@ -98,6 +107,7 @@ jQuery( document ).ready( function ( $ ) {
      * @since 0.3.0
      */
     $(document).click(function(e) {
+        return;
         e.preventDefault();
 
         if( 'undefined' != e.target.href && ! $( e.target ).hasClass( '.ingot-click-test' ) ) {

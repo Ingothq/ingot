@@ -37,7 +37,7 @@ class variant extends route {
 		$base      = $this->base();
 		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/conversion', array(
 				array(
-					'methods'             => \WP_REST_Server::READABLE,
+					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'conversion' ),
 					'permission_callback' => array( $this, 'check_session_nonce' ),
 					'args'                => $this->win_args()
@@ -183,7 +183,8 @@ class variant extends route {
 	 * @return bool
 	 */
 	public function check_session_nonce( $request ){
-		return ingot_verify_session_nonce( $request->get_param('ingot_session_nonce' ) );
+		$verified = ingot_verify_session_nonce( $request->get_param('ingot_session_nonce' ) );
+		return $verified;
 	}
 
 
