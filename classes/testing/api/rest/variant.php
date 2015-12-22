@@ -34,7 +34,7 @@ class variant extends route {
 	public function register_routes() {
 
 		$namespace = $this->make_namespace();
-		$base = $this->base();
+		$base      = $this->base();
 		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/conversion', array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -46,29 +46,30 @@ class variant extends route {
 		);
 
 		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => \WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_item' ),
-				'permission_callback' => array( $this, 'check_session_nonce' ),
-				'args'            => array(
-					'context'          => array(
-						'default'      => 'view',
-					),
-					'id' => array(
-						'description'       => __( 'ID of variant', 'ingot' ),
-						'type'              => 'integer',
-						'default'           => 1,
-						'sanitize_callback' => 'absint',
-						'required'          => true
-					),
-					'ingot_session_nonce' => array(
-						'type'     => 'string',
-						'required' => true,
-						'default' => '0',
-					),
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item' ),
+					'permission_callback' => array( $this, 'check_session_nonce' ),
+					'args'                => array(
+						'context'             => array(
+							'default' => 'view',
+						),
+						'id'                  => array(
+							'description'       => __( 'ID of variant', 'ingot' ),
+							'type'              => 'integer',
+							'default'           => 1,
+							'sanitize_callback' => 'absint',
+							'required'          => true
+						),
+						'ingot_session_nonce' => array(
+							'type'     => 'string',
+							'required' => true,
+							'default'  => '0',
+						),
 
+					),
 				),
-			),
+			)
 		);
 	}
 
