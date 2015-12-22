@@ -28,7 +28,7 @@ class button extends \ingot\ui\render\click_tests\click {
 	 * @access protected
 	 */
 	protected function make_html() {
-		$test_id = $this->get_variant()[ 'ID' ];
+		$test_id = (int) $this->get_variant()[ 'ID' ];
 		$text = $this->get_variant()[ 'content' ];
 		$link = $this->link();
 		$style = $this->make_style( $this->get_group() );

@@ -28,13 +28,13 @@ class button_color extends \ingot\ui\render\click_tests\button {
 	 * @access protected
 	 */
 	protected function make_html() {
-		$test_id = $this->get_variant()[ 'ID' ];
+		$test_id = (int) $this->get_variant()[ 'ID' ];
 		$text = $this->get_variant()[ 'content' ];
 		$link = $this->link();
 		$style = $this->make_style( $this->get_group() );
 
 		$this->html = sprintf(
-			'<button id="%1s" class="ingot-button" %2s><a href="%3s" class="ingot-test ingot-click-test ingot-click-test-button button" data-ingot-test-id="%4d"  %4s>%6s</a></button>',
+			'<button id="%s" class="ingot-button" %s><a href="%s" class="ingot-test ingot-click-test ingot-click-test-button-color button" data-ingot-test-id="%d"  %s>%s</a></button>',
 			esc_attr( $this->attr_id() ),
 			$style,
 			esc_url( $link ),

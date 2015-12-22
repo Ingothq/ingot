@@ -36,12 +36,33 @@ class session extends route {
 	protected function register_more_routes() {
 		$namespace = $this->make_namespace();
 		$base      = $this->base();
-		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/session', array(
+		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'session' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => $this->args()
+				),
+			)
+
+		);
+
+		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/track', array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'update' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'args'                => array(
+						'ingot_session_nonce' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+						'click_url' => array(
+							'type' => 'string',
+							'required' => true,
+							'sanitize_callback' => 'esc_url_raw'
+						)
+					)
 				),
 			)
 
@@ -116,7 +137,7 @@ class session extends route {
 	}
 
 	/**
-	 * Update session details
+	 * Track session results -- used for failed conversions.
 	 *
 	 * @since 0.3.0
 	 *
@@ -124,7 +145,7 @@ class session extends route {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
-	public function update_item( $request ) {
+	public function update( $request ) {
 		$session = $this->get_session_by_url_params( $request );
 		if ( is_wp_error( $session ) ) {
 			return $this->response( $session );
@@ -132,6 +153,11 @@ class session extends route {
 
 		if ( ! empty( $request->get_param( 'click_url' ) ) && 'undefined' != $request->get_param( 'click_url' ) ) {
 			$session[ 'click_url' ] = $request->get_param( 'click_url' );
+			$session[ 'click_url' ] = true;
+			if( 0 !== ( $userID = get_current_user_id() ) ) {
+				$session[ 'click_url' ] = $userID;
+			}
+
 			\ingot\testing\crud\session::update( $session, $session[ 'ID' ], true );
 		}
 
@@ -169,17 +195,6 @@ class session extends route {
 		];
 	}
 
-	/**
-	 * Check if a given request has access to update a specific item
-	 *
-	 * @since 0.3.0
-	 *
-	 * @param \WP_REST_Request $request Full data about the request.
-	 * @return \WP_Error|bool
-	 */
-	public function update_item_permissions_check( $request ) {
-		return $this->verify_session_nonce( $request );
-	}
 
 	/**
 	 * Check if a given request has access to get a specific item
@@ -216,8 +231,8 @@ class session extends route {
 	protected function get_session_by_url_params( $request ) {
 		$url = $request->get_url_params();
 		$id  = helpers::v( 'id', $url, 0 );
-		if ( absint( $id ) && is_array( \ingot\testing\crud\session::read( $id ) ) ) {
-			return \ingot\testing\crud\session::read( $id );
+		if ( 0 != absint( $id ) && is_array( $session = \ingot\testing\crud\session::read( $id ) ) ) {
+			return $session;
 		} else {
 			return new \WP_Error( 'ingot-invalid-session' );
 		}
@@ -262,10 +277,10 @@ class session extends route {
 	 */
 	protected function response( $session ) {
 		if ( is_wp_error( $session ) ) {
-			return rest_ensure_response( new \WP_REST_Response( $session, 500 ) );
+			return ingot_rest_response( $session, 500 );
 
 		} else {
-			return rest_ensure_response( $session );
+			return ingot_rest_response( $session, 200 );
 		}
 	}
 }
