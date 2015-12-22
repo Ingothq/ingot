@@ -11,7 +11,12 @@
  */
 function ingot_click_test( $id ) {
 	$html = '';
-	$group = \ingot\testing\crud\group::read( $id );
+	if ( ! is_array( $id ) ) {
+		$group = \ingot\testing\crud\group::read( $id );
+	}else{
+		$group = $id;
+	}
+
 	if( ! is_array( $group ) || 'click' !== $group[ 'type'] ){
 		return $html;
 	}

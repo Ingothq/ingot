@@ -237,6 +237,28 @@ class group extends crud {
 		return $data;
 	}
 
+	/**
+	 * Get a group by variant ID
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param int $variant_id
+	 *
+	 * @return array|bool Group config if found or false if not found
+	 */
+	public static function get_by_variant_id( $variant_id ) {
+		if( is_array( $variant = variant::read( $variant_id ) ) ){
+			$group_id = helpers::v( 'group_ID', $variant, 0 );
+			if( is_array( $group = self::read( $group_id ) ) ){
+				return $group;
+			}
+
+		}
+
+		return false;
+
+	}
+
 
 	/**
 	 * Required fields of this object
