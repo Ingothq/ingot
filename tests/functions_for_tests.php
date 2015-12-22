@@ -79,8 +79,14 @@ class ingot_tests_data {
 			$groups[ 'variants' ][ $group_id ] = $variants;
 
 			if ( $add_variants ) {
-				$obj = new \ingot\testing\object\group( $group_id );
-				$obj->update_group( [ 'variants' => $variants ] );
+				if ( is_user_logged_in() ) {
+					$obj = new \ingot\testing\object\group( $group_id );
+					$obj->update_group( [ 'variants' => $variants ] );
+				}else{
+					$_group = \ingot\testing\crud\group::read( $group_id );
+					$_group[ 'variants' ] = $variants;
+					$saved = \ingot\testing\crud\group::update( $_group, $group_id, true );
+				}
 			}
 
 		}
