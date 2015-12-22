@@ -62,16 +62,16 @@ class ingot_tests_data {
 		$variant_args = $args[ 'variant_args' ];
 		for ( $g = 0; $g <= $total_groups; $g++  ) {
 			$variants = [];
-			$group_args[ 'name' ] = $g;
+			$group_args[ 'name' ] = (string) $g . rand();
 
 
-			$group_id = \ingot\testing\crud\group::create( $group_args );
+			$group_id = \ingot\testing\crud\group::create( $group_args, true );
 
 			$groups[ 'ids' ][] =  $group_id;
 
 			$variant_args[ 'group_ID' ] = $group_id;
 			for( $v = 0; $v <= $variants_per_group; $v++ ) {
-				$variant_id = \ingot\testing\crud\variant::create( $variant_args );
+				$variant_id = \ingot\testing\crud\variant::create( $variant_args, true );
 				$variants[] = $variant_id;
 
 			}
