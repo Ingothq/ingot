@@ -71,7 +71,7 @@ abstract class click {
 	 *
 	 * @since 0.0.5
 	 *
-	 * @param int|object $group ID of group to render, or gorup object
+	 * @param int|array $group ID of group to render, or group array
 	 */
 	public function __construct( $group ){
 

@@ -10,10 +10,15 @@
  * @return string
  */
 function ingot_click_test( $id ) {
+	$html = '';
 	$group = \ingot\testing\crud\group::read( $id );
-	$type = $group[ 'click_type' ];
+	if( ! is_array( $group ) || 'click' !== $group[ 'type'] ){
+		return $html;
+	}
+
+	$type = $group[ 'sub_type' ];
 	switch( $type ) {
-		case in_array( $type, array( 'link', 'button', 'text' ) ) :
+		case in_array( $type, \ingot\testing\types::allowed_click_types() ) :
 			$html = ingot_click_html_link( $type, $group );
 			break;
 		case is_callable( $type ) :
@@ -39,6 +44,7 @@ add_shortcode( 'ingot', 'ingot_shortcode' );
  * @return string
  */
 function ingot_shortcode( $atts ) {
+	$html = '';
 	$atts = shortcode_atts( array(
 		'id' => 0,
 	), $atts, 'ingot' );
