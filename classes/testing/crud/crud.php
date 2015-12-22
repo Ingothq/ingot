@@ -670,7 +670,7 @@ abstract class crud {
 
 		}
 
-		$allowed = self::get_all_fields();
+		$allowed = static::get_all_fields();
 
 		foreach ( $data as $k => $v ) {
 			if ( is_numeric( $k ) || ! in_array( $k, $allowed ) ) {
