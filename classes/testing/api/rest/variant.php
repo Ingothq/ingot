@@ -113,7 +113,7 @@ class variant extends route {
 	 */
 	public function conversion( $request ){
 		$id = $request->get_param( 'id' );
-		ingot_register_conversion( $id );
+		ingot_register_conversion( $id, $request->get_param( 'ingot_session_ID' ) );
 		return ingot_rest_response(
 			[ 'message' => ':)' ],
 		    200
