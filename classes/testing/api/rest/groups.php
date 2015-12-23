@@ -235,7 +235,7 @@ class groups extends route {
 		//doing this since it runs parse_args
 		$obj = new \ingot\testing\object\group( $existing );
 		$obj->update_group( $request->get_params() );
-		return ingot_rest_response($this->prepare_item_for_response( $obj->get_stats() ), 200 );
+		return ingot_rest_response( $obj->get_stats(), 200 );
 
 	}
 
