@@ -701,7 +701,7 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
  */
 ingotApp.factory( 'clickGroups', function( $resource ) {
 
-	return $resource( INGOT_ADMIN.api + 'test-group/:id', {
+	return $resource( INGOT_ADMIN.api + 'groups/:id', {
 		id: '@id',
         _wpnonce: INGOT_ADMIN.nonce,
         context: 'admin'
