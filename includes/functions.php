@@ -522,13 +522,25 @@ function ingot_enable_price_testing() {
  * @since 0.2.0
  */
 function ingot_destroy(){
-	ingot_bootstrap::maybe_add_tracking_table();
-	ingot_bootstrap::maybe_add_session_table();
-	ingot_bootstrap::maybe_add_group_table();
-	ingot_bootstrap::maybe_add_variant_table();
-
+	ingot_bootstrap::maybe_add_tracking_table( true );
+	ingot_bootstrap::maybe_add_session_table( true );
+	ingot_bootstrap::maybe_add_group_table( true );
+	ingot_bootstrap::maybe_add_variant_table( true );
 
 }
+
+/**
+ * Get a photo of Roy
+ *
+ * @since 0.4.0
+ *
+ * @return string
+ */
+function ingot_roy(){
+	return 'http://videos.videopress.com/Ie8AvTuy/video-a83b381a23_dvd.original.jpg';
+
+}
+
 
 /**
  * Verify the Ingot session nonce
