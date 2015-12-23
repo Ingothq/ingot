@@ -50,8 +50,14 @@ class ingot_bootstrap {
 
 				if( self::check_if_tables_exist() ) {
 					ingot\testing\ingot::instance();
-					new ingot\ui\make();
+
+					//make admin go in admin
+					if ( is_admin() ) {
+						new \ingot\ui\admin\app\load();
+					}
+
 					self::maybe_load_api();
+
 
 					add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
 					add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
