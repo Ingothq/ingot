@@ -231,10 +231,8 @@ class groups extends route {
 				[ 'message' => esc_html__( 'No group found', 'ingot') ]
 			);
 		}
-
-		//doing this since it runs parse_args
+		
 		$obj = new \ingot\testing\object\group( $existing );
-		$obj->update_group( $request->get_params() );
 		return ingot_rest_response( $obj->get_stats(), 200 );
 
 	}
