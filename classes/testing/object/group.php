@@ -254,6 +254,7 @@ class group {
 	 * @access private
 	 */
 	private function set_stats() {
+		$this->set_levers();
 		$obj = new group_stats( $this->levers[ $this->ID ] );
 		$this->stats = $obj->get_stats();
 	}
