@@ -230,17 +230,15 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         $scope.new_group = true;
         $scope.group = {
             click_type_options : INGOT_ADMIN.click_type_options,
-            tests: {}
+            variants: {}
         };
     } else {
         var groupID = $stateParams.groupID;
-
-
 		clickGroups.get({id: groupID}, function(res){
 	       $scope.group = res;
 	        
-		    if( $scope.group.tests.hasOwnProperty('errors') )
-		    	$scope.group.tests = {};
+		    if( $scope.group.variants.hasOwnProperty('errors') )
+		    	$scope.group.variants = {};
 	       
 		}, function(data, status, headers, config) {
             console.log( data );
@@ -253,26 +251,34 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         })
 
     }
-    
-    $scope.buttonStyle = function( id, type ) {
 
+
+    $scope.buttonStyle = function( id, type ) {
+        var css = {};
 	    if( type == 'button_color' ) {
-		    var css = {};
-		    if( $scope.group.tests[id] && $scope.group.tests[id].meta && $scope.group.tests[id].meta.background_color )
-			    css['background-color'] = $scope.group.tests[id].meta.background_color;
-			if( $scope.group.tests[id] && $scope.group.tests[id].meta && $scope.group.tests[id].meta.color )
-			    css['color'] = $scope.group.tests[id].meta.color;
+		     css = {};
+		    if( $scope.group.variants[id] && $scope.group.variants[id].meta && $scope.group.variants[id].meta.background_color ) {
+                css[ 'background-color' ] = $scope.group.variants[ id ].meta.background_color;
+            }
+
+			if( $scope.group.variants[id] && $scope.group.variants[id].meta && $scope.group.variants[id].meta.color ) {
+                css[ 'color' ] = $scope.group.variants[ id ].meta.color;
+            }
+
 		    return css;
 	    } else {
-            var css = {};
-            if( $scope.group.meta && $scope.group.meta.background_color )
-                css['background-color'] = $scope.group.meta.background_color;
-            if( $scope.group.meta && $scope.group.meta.color )
-                css['color'] = $scope.group.meta.color;
+            css = {};
+            if( $scope.group.meta && $scope.group.meta.background_color ) {
+                css[ 'background-color' ] = $scope.group.meta.background_color;
+            }
+
+            if( $scope.group.meta && $scope.group.meta.color ) {
+                css[ 'color' ] = $scope.group.meta.color;
+            }
             return css;
         }
 	    
-    }
+    };
     
     $scope.removeTest = function( index ) {
 	    delete $scope.group.variants[index];
@@ -571,8 +577,10 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
         var id = Math.random().toString(36).substring(7);
-        if( !$scope.group.variants )
-        	$scope.group.variants = [];
+        if( !$scope.group.variants ) {
+            $scope.group.variants = [];
+        }
+
         $scope.group.variants.push({ 'ID': id, default: 0 });
 
 		setTimeout( function() {

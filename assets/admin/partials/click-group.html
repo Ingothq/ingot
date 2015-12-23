@@ -44,10 +44,12 @@
                 </p>
                 <div class="row group-type-select">
                     <div class="col-sm-6" ng-repeat="type in group.click_type_options track by $index">
-                        <div class="group-wrapper" ng-class="{'active': type.value == group.click_type}">
+                        <div class="group-wrapper" ng-class="{'active': type.value == group.sub_type}">
                             <h3>{{type.label | translate}}</h3>
                             <p ng-if="type.description">{{type.description | translate}}</p>
-                            <span class="btn btn-primary btn-block" ng-click="choose_group_type(type.value)">{{ type.label | translate}}</span>
+                            <span class="btn btn-primary btn-block" ng-click="choose_group_type(type.value)" ng-class="{'btn-success': type.value == group.sub_type}">
+                                {{ type.label | translate}}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -56,7 +58,7 @@
             <span class="btn btn-primary pull-right" ng-click="change_step(3)">{{ 'Edit Group Tests' | translate }}</span>
         </div>
         <div class="row group-type-select" ng-show="group_step == 3">
-            <div ng-include="partials_url + '/content-test-partials/' + group.click_type + '.html'"></div>
+            <div ng-include="partials_url + '/content-test-partials/' + group.sub_type + '.html'"></div>
             <span class="btn btn-primary pull-left" ng-click="change_step(2)">{{ 'Edit Group Type' | translate }}</span>
             <button type="submit" class="btn btn-primary pull-right">{{ 'Save Group' | translate }}</button>
         </div>
