@@ -275,16 +275,16 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     }
     
     $scope.removeTest = function( index ) {
-	    delete $scope.group.tests[index];
+	    delete $scope.group.variants[index];
 	    return false;
     };
 
     $scope.submit = function( data ){
         var url;
         if( 'clickTests.new' == $state.current.name ) {
-            url =INGOT_ADMIN.api + 'test-group/?context=admin';
+            url =INGOT_ADMIN.api + 'groups/?context=admin';
         }else{
-            url = INGOT_ADMIN.api + 'test-group/' + groupID + '?context=admin';
+            url = INGOT_ADMIN.api + 'groups/' + groupID + '?context=admin';
         }
 
         url +='&_wpnonce=' + INGOT_ADMIN.nonce;
@@ -320,17 +320,17 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
         var id = Math.random().toString(36).substring(7);
-        $scope.group.tests[ id ] = {'ID':id};
+        $scope.group.variants[ id ] = {'ID':id};
     };
 
     $scope.change_step = function( step ) {
         $scope.group_step = step;
-    }
+    };
+
     $scope.partials_url = INGOT_ADMIN.partials;
 
     $scope.choose_group_type = function( type ) {
-        $scope.group.click_type = type;
-
+        $scope.group.sub_type = type;
     }
 
 }]);
@@ -571,9 +571,9 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
         var id = Math.random().toString(36).substring(7);
-        if( !$scope.group.tests )
-        	$scope.group.tests = [];
-        $scope.group.tests.push({ 'ID': id, default: 0 });
+        if( !$scope.group.variants )
+        	$scope.group.variants = [];
+        $scope.group.variants.push({ 'ID': id, default: 0 });
 
 		setTimeout( function() {
 			jQuery(".slider-" + id).slider({
@@ -581,7 +581,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 				min: -99,
 				max: 99,
 				slide: function( event, ui ) {
-					$scope.group.tests[jQuery(event.target).data('index')].default = ui.value;
+					$scope.group.variants[jQuery(event.target).data('index')].default = ui.value;
 					jQuery(".slider-" + id + "-val").html( ui.value + '%' );
 				}
 			});
