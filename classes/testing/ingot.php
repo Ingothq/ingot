@@ -75,19 +75,26 @@ class ingot {
 	 */
 	public function hooks(){
 		add_action( 'rest_api_init', array( __CLASS__ , 'boot_rest_api' ) );
-		add_action( 'wp_enqueue_scripts', function() {
-			$version = INGOT_VER;
-			if( WP_DEBUG ) {
-				$version = rand();
-			}
-
-			wp_enqueue_script( 'ingot', INGOT_URL . '/assets/front-end/js/ingot-click-test.js', array( 'jquery'), $version, true );
-			wp_localize_script( 'ingot', 'INGOT_UI', ingot::js_vars() );
-		});
-
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
 
-		add_action( 'parse_request', array( $this, 'init_session' ), 50 );
+		if ( ! ingot_is_bot() ) {
+			add_action( 'wp_enqueue_scripts', function () {
+				$version = INGOT_VER;
+				if ( WP_DEBUG ) {
+					$version = rand();
+				}
+				wp_enqueue_script( 'ingot', INGOT_URL . '/assets/front-end/js/ingot-click-test.js', array( 'jquery' ), $version, true );
+				wp_localize_script( 'ingot', 'INGOT_UI', ingot::js_vars() );
+
+			} );
+
+
+			add_action( 'parse_request', array( $this, 'init_session' ), 50 );
+		}
+
+
+
+
 	}
 
 	/**

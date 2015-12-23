@@ -89,7 +89,8 @@ abstract class bandit {
 	 * @return mixed
 	 */
 	public function choose() {
-		$val = $this->bandit->chooseLever($this->experiment)->getValue();
+		$record = ! ingot_is_bot();
+		$val = $this->bandit->chooseLever($this->experiment, $record )->getValue();
 		return $val;
 
 	}
@@ -111,10 +112,8 @@ abstract class bandit {
 	 * @since 0.4.0
 	 *
 	 * @access protected
-	 *
-	 * @param array $variants Optional. Variants to add. Required if $id is not an existing group.
-	 */
 
+	 */
 	protected function go() {
 
 		$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery(3);
@@ -127,9 +126,6 @@ abstract class bandit {
 			$this->create_experiment();
 
 		}
-
-
-
 
 	}
 

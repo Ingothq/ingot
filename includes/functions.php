@@ -602,3 +602,56 @@ function ingot_register_conversion( $variant_ID, $session_ID = 0 ){
 	}
 
 }
+
+/**
+ * Detect if current visitor is likely a bot
+ *
+ * @since 0.4.0
+ *
+ * @return bool
+ */
+function ingot_is_bot(){
+	$is_bot = false;
+	$detect = new \Jaybizzle\CrawlerDetect\CrawlerDetect();
+	if( $detect->isCrawler() ) {
+		$is_bot = true;
+	}
+
+	/**
+	 * Override bot detection
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param bool $is_bot Whether to treat current visitor as bot or not
+	 */
+	return (bool) apply_filters( 'ingot_is_bot', $is_bot );
+
+}
+
+/**
+ * Detect if current visitor is likely batman
+ *
+ * @since 0.4.0
+ *
+ * @return bool
+ */
+function ingot_is_batman(){
+	$is_batman = false;
+	$id = get_current_user_id();
+	if( 0 != $id && is_object( $user = get_user_by( 'id', $id ) ) ) {
+		if( 'Bruce Wayne' == $user->display_name ) {
+			$is_batman = true;
+		}
+	}
+
+	/**
+	 * Override Batman detection
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param bool $is_bot Whether to treat current visitor as bot or not
+	 */
+	return (bool) apply_filters( 'ingot_is_batman', $is_batman );
+
+}
+

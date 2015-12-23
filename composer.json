@@ -32,7 +32,8 @@
     "require": {
         "calderawp/dismissible-notice": "dev-master",
         "ingot/mabandit" : "*",
-        "oefenweb/statistics": "dev-master"
+        "oefenweb/statistics": "dev-master",
+        "jaybizzle/crawler-detect": "1.*"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
