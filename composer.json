@@ -1,6 +1,6 @@
 {
     "name": "ingot/ingot",
-    "description": "I am a desciption",
+    "description": "Conversion optimization for WordPress made easy",
     "type": "wordpress-plugin",
     "keywords": [
         "wordpress"
@@ -26,12 +26,12 @@
       },
       {
         "type":"git",
-        "url":"https://github.com/Shelob9/multiarmedbandit"
+        "url":"https://github.com/ingothq/multiarmedbandit"
       }
     ],
     "require": {
         "calderawp/dismissible-notice": "dev-master",
-        "shelob9/mabandit" : "*",
+        "ingot/mabandit" : "*",
         "oefenweb/statistics": "dev-master"
     },
     "require-dev": {
