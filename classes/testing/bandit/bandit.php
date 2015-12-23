@@ -14,6 +14,7 @@ namespace ingot\testing\bandit;
 
 use ingot\testing\crud\group;
 use ingot\testing\utility\helpers;
+use MaBandit\CreateExperiment;
 
 abstract class bandit {
 
@@ -147,7 +148,8 @@ abstract class bandit {
 		$group = group::read( $this->ID );
 		if ( ! empty( $group[ 'variants' ] ) ) {
 			$variants         = helpers::make_array_values_numeric( $group[ 'variants' ], true );
-			$this->experiment = $this->bandit->createExperiment( (string) $this->ID, $variants );
+			$creator = new CreateExperiment( $variants, $this->ID, $this->bandit );
+			$this->experiment = $creator->get_experiment();
 		}
 	}
 }
