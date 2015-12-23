@@ -386,25 +386,27 @@ abstract class crud {
 		}
 
 		if( self::can( $id, $bypass_cap ) ) {
-			unset( $data[ 'ID' ] );
+
 
 			global $wpdb;
 			if( $id ) {
+				$data[ 'ID' ] = $id;
 				$wpdb->update(
 					$table_name,
 					$data,
-					array( 'ID' => $id )
-
+					array( 'ID' => (int) $id )
 				);
 			}else{
+				unset( $data[ 'ID' ] );
 				$wpdb->insert(
 					$table_name,
 					$data
 				);
+				$id =  $wpdb->insert_id;
 
 			}
 
-			$id =  $wpdb->insert_id;
+
 
 			return $id;
 
