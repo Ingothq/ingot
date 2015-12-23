@@ -178,7 +178,7 @@ class session extends route {
 
 		if ( ! empty( $request->get_param( 'click_url' ) ) && 'undefined' != $request->get_param( 'click_url' ) ) {
 			$session[ 'click_url' ] = $request->get_param( 'click_url' );
-			$session[ 'click_url' ] = true;
+			$session[ 'used' ] = true;
 			if( 0 !== ( $userID = get_current_user_id() ) ) {
 				$session[ 'click_url' ] = $userID;
 			}
