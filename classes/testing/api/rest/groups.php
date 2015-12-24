@@ -92,25 +92,48 @@ class groups extends route {
 
 		$variants = helpers::v_sanitized( 'variants', $group_args, []  );
 		$variants_ids = [];
-		if( ! empty( $variants ) ) {
-			foreach( $variants as $variant ) {
-				$_variant_id = variant::create( $variant );
-				if( is_wp_error( $_variant_id ) ) {
-					return $_variant_id;
+		$group_args[ 'variants' ] = $variants_ids;
+		$id = group::create( $group_args );
+		$item = new \WP_Error( 'ingot-unknown-error' );
+		if ( is_numeric( $id ) ) {
+			$item = group::read( $id );
+
+			if ( is_array( $item ) ) {
+				if ( ! empty( $variants ) ) {
+					foreach ( $variants as $variant ) {
+						$variant[ 'group_ID' ] = $item[ 'ID' ];
+						$variant[ 'type' ]     = $item[ 'type' ];
+						if( ( ! isset( $variant[ 'content' ] ) || empty( $variant[ 'content'] ) ) && 'button_color' == $item[ 'sub_type'] )  {
+							$variant[ 'content' ] = '  ';
+						}
+
+						$_variant_id           = variant::create( $variant );
+						if ( is_wp_error( $_variant_id ) ) {
+							return $_variant_id;
+						}
+
+						$variants_ids[] = $_variant_id;
+					}
+
 				}
 
-				$variants_ids[] = $_variant_id;
+				$item[ 'variants' ] = $variants_ids;
+				group::update( $item, $item[ 'ID' ] );
+				$item = group::read( $item[ 'ID' ] );
+				if ( is_array( $item ) ) {
+					if ( is_array( $item ) ) {
+						$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
+					}
+
+					return ingot_rest_response( $item, 201, 1 );
+
+				}
+
 			}
 
 		}
-		$group_args[ 'variants' ] = $variants_ids;
-		$id = group::create( $group_args );
-		$item = group::read( $id );
-		if ( is_array( $item ) ) {
-			$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
-		}
 
-		return ingot_rest_response( $item, 201, 1 );
+		return ingot_rest_response( $item, 500 );
 
 	}
 
@@ -319,6 +342,13 @@ class groups extends route {
 	 * @return array Group config with additional data for making admin
 	 */
 	protected function prepare_group_in_admin_context( $group ) {
+		if( ! empty( $group[ 'variants' ] ) ){
+			foreach( $group[ 'variants' ] as $i => $variant_id ) {
+				$group[ 'variants' ][ $i ] = variant::read( $variant_id );
+			}
+			
+		}
+
 		return $group;
 	}
 
