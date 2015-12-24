@@ -400,12 +400,55 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
         var ctx = document.getElementById("ingotChart").getContext("2d");
         setTimeout(function(){
-            var ingot_chart = new Chart(ctx).Bar( $scope.chart_data, {
+            //var ingot_chart = new Chart(ctx).Bar( $scope.chart_data, {
+            //    scaleLabel: "          <%=value%>%",
+            //    responsive: false,
+            //    barValueSpacing: 10
+            //} );
+            //jQuery('#chartWrapper').append( ingot_chart.generateLegend() );
+
+
+            Chart.types.Bar.extend({
+                name: 'BarOverlay',
+                draw: function (ease) {
+                    console.log( this.datasets.length );
+
+                    // First draw the main chart
+                    Chart.types.Bar.prototype.draw.apply(this);
+
+                    var ctx = this.chart.ctx;
+                    var barWidth = this.scale.calculateBarWidth(this.datasets.length);
+
+                    for (var i = 0; i < this.options.verticalOverlayAtBar.length; ++i) {
+
+                        var overlayBar = this.options.verticalOverlayAtBar[i];
+
+                        // I'm hard-coding this to only work with the first dataset, and using a Y value that I know is maximum
+                        var x = this.scale.calculateBarX(this.datasets.length, 0, overlayBar);
+                        var y = this.scale.calculateY(2000);
+
+                        var bar_base = this.scale.endPoint
+
+                        ctx.beginPath();
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = 'rgba(255, 0, 0, 1.0)';
+                        ctx.moveTo(x, bar_base);
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                    }
+                    ctx.closePath();
+                }
+            });
+
+            var ingot_chart = new Chart(ctx).BarOverlay( $scope.chart_data, {
                 scaleLabel: "          <%=value%>%",
                 responsive: false,
-                barValueSpacing: 10
+                barValueSpacing: 10,
+                verticalOverlayAtBar: [ 0, 2 ]
             } );
-            jQuery('#chartWrapper').append( ingot_chart.generateLegend() );
+
+
+
         }, 100);
 
     }
