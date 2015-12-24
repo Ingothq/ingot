@@ -228,6 +228,8 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     var is_new = false;
     $scope.group_step = 1;
     $scope.new_group = false;
+    $scope.click_type_options = INGOT_ADMIN.click_type_options;
+
     if( 'clickTests.new' == $state.current.name ) {
         is_new = true;
         $scope.new_group = true;
@@ -237,14 +239,12 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             variants: {}
         };
     } else {
+        $scope.group_step = 3;
         var groupID = $stateParams.groupID;
 		clickGroups.get({id: groupID}, function(res){
 	        $scope.group = res;
             $scope.choose_group_type($scope.group.sub_type);
-	        
-		    if( $scope.group.variants.hasOwnProperty('errors') )
-		    	$scope.group.variants = {};
-	       
+
 		}, function(data, status, headers, config) {
             console.log( data );
             swal({
@@ -285,7 +285,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     };
     
     $scope.removeTest = function( index ) {
-	    delete $scope.group.variants[index];
+	    $scope.group.variants.splice( index, 1 );
 	    return false;
     };
 
@@ -311,7 +311,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
             if( true === is_new ) {
                 is_new = false;
-                $state.go( 'clickTests.edit', {groupID: 9} );
+                $state.go( 'clickTests.edit', {groupID: $scope.group.ID} );
             }
             swal({
                 title: INGOT_TRANSLATION.group_saved,
@@ -332,7 +332,10 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
         var id = Math.random().toString(36).substring(7);
-        $scope.group.variants[ id ] = {'ID':id};
+        if( !Array.isArray($scope.group.variants) ) {
+            $scope.group.variants = [];
+        }
+        $scope.group.variants.push({'ID':id});
     };
 
     $scope.change_step = function( step ) {
@@ -346,6 +349,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     }
 
     $scope.has_type = function() {
+        if( !$scope.group ) { return; }
         if( 'undefined' == $scope.group.sub_type || null == $scope.group.sub_type ){
             return false;
         }
@@ -404,13 +408,13 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                 $scope.chart_data.datasets[0].data.push( Math.round( variant.conversion_rate * 100 ) / 100 );
             });
 
-            $scope.setChart();
+            $scope.setChart( res.group.average_conversion_rate );
 
         } );
 
     }
 
-    $scope.setChart = function( id, key ) {
+    $scope.setChart = function( avg ) {
         console.log( 'setting chart..' );
 
         var ctx = document.getElementById("ingotChart").getContext("2d");
@@ -426,7 +430,6 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
             Chart.types.Bar.extend({
                 name: 'BarOverlay',
                 draw: function (ease) {
-                    console.log( this.datasets.length );
 
                     // First draw the main chart
                     Chart.types.Bar.prototype.draw.apply(this);
@@ -440,15 +443,15 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
                         // I'm hard-coding this to only work with the first dataset, and using a Y value that I know is maximum
                         var x = this.scale.calculateBarX(this.datasets.length, 0, overlayBar);
-                        var y = this.scale.calculateY(2000);
+                        var y = this.scale.calculateY(overlayBar);
 
-                        var bar_base = this.scale.endPoint
+                        var bar_base = this.scale.endPoint;
 
                         ctx.beginPath();
                         ctx.lineWidth = 2;
                         ctx.strokeStyle = 'rgba(255, 0, 0, 1.0)';
-                        ctx.moveTo(x, bar_base);
-                        ctx.lineTo(x, y);
+                        ctx.moveTo(100, y);
+                        ctx.lineTo(jQuery('#ingotChart').outerWidth(), y);
                         ctx.stroke();
                     }
                     ctx.closePath();
@@ -457,9 +460,9 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
             var ingot_chart = new Chart(ctx).BarOverlay( $scope.chart_data, {
                 scaleLabel: "          <%=value%>%",
-                responsive: false,
+                responsive: true,
                 barValueSpacing: 10,
-                verticalOverlayAtBar: [ 0, 2 ]
+                verticalOverlayAtBar: [ avg ]
             } );
 
 

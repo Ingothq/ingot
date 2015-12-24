@@ -35,9 +35,9 @@
                         </label>
                         <input name="text" type="text" id="text-{{variant.ID}}" ng-model="variant.content" class="col-sm-7" ng-required="true" />
                         <div class="col-sm-2 text-right">
-                            <a ng-click="removeTest( variant.ID )" class="delete" ng-href="#" title="{{ 'group.delete' | translate }}">
+                            <span ng-click="removeTest( $index )" class="delete" title="{{ 'group.delete' | translate }}">
                                 <i class="fa fa-minus-circle"></i>
-                            </a>
+                            </span>
                         </div>
                     </div>
                 </ng-form>
