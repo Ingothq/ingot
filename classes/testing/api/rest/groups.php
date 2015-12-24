@@ -378,11 +378,20 @@ class groups extends route {
 	}
 
 
-
+	/**
+	 * Get fields allowed to be saved in this route
+	 *
+	 * @since 0.4.0
+	 *
+	 * @return array
+	 */
 	protected function allowed_fields(){
 		$fields = \ingot\testing\crud\group::get_all_fields();
+		$fields = array_flip( $fields );
 		unset( $fields[ 'levers' ] );
+		$fields = array_flip( $fields );
 		return $fields;
+
 	}
 
 	/**
@@ -408,10 +417,8 @@ class groups extends route {
 			}
 		}
 
-		unset( $group_args[ 'levers' ] );
-
-
 		return $group_args;
+
 	}
 
 	/**
