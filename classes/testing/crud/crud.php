@@ -217,12 +217,9 @@ abstract class crud {
 				$type .= ' ' . $errors;
 			}
 
-			$warning = __( sprintf( 'ID must be numeric, type is %s', $type ), 'ingot' );
-			if( WP_DEBUG ) {
-				trigger_error( $warning );
-			}
+			$warning = __( sprintf( 'ID must be numeric for %s, type is %s', static::what(), $type ), 'ingot' );
 
-			return new \WP_Error( 'ingot-crud-id-not-numeric', $warning, var_export( $id, true ) );
+			return new \WP_Error( 'ingot-crud-id-not-numeric', $warning, var_export( [ 'id' => $id, 'what' => static::what() ], true ) );
 
 		}
 
