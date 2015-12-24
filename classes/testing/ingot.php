@@ -80,10 +80,12 @@ class ingot {
 		if ( ! ingot_is_bot() ) {
 			add_action( 'wp_enqueue_scripts', function () {
 				$version = INGOT_VER;
-				if ( WP_DEBUG ) {
+				$min = '.min';
+				if ( SCRIPT_DEBUG ) {
+					$min = '';
 					$version = rand();
 				}
-				wp_enqueue_script( 'ingot', INGOT_URL . '/assets/front-end/js/ingot-click-test.js', array( 'jquery' ), $version, true );
+				wp_enqueue_script( 'ingot', INGOT_URL . "/assets/front-end/js/ingot-click-test{$min}.js", array( 'jquery' ), $version, true );
 				wp_localize_script( 'ingot', 'INGOT_UI', ingot::js_vars() );
 
 			} );

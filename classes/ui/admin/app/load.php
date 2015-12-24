@@ -76,7 +76,7 @@ class load {
 			$version = rand();
 			$min = '';
 		}
-		$bower = INGOT_URL . '/bower_components/';
+		$bower = INGOT_URL . 'bower_components/';
 		
 		//jquery ui
 		wp_enqueue_script('jquery-ui-core');
@@ -110,7 +110,7 @@ class load {
 		wp_enqueue_style( 'sweet-alert', $bower . 'sweetalert/dist/sweetalert.css' );
 
 		//ingot
-		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . 'assets/admin/js/admin-app.js', array( 'angular', 'jquery', 'sweet-alert' ), rand() );
+		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . "assets/admin/js/admin-app{$min}.js", array( 'angular', 'jquery', 'sweet-alert' ), rand() );
 		wp_enqueue_style( 'ingot-admin-app', INGOT_URL . 'assets/admin/css/admin-app.css' );
 
 		//data to use in admin app

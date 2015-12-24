@@ -156,5 +156,5 @@ jQuery( document ).ready( function ( $ ) {
         }
     } ());
 
-} );
+});
 

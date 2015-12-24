@@ -121,6 +121,29 @@ module.exports = function (grunt) {
                     to: "define( 'INGOT_VER', '<%= pkg.version %>' );"
                 }]
             }
+        },
+        uglify: {
+            frontend: {
+
+                files: {
+                    'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ]
+                }
+            },
+            admin:{
+                options: {
+                    mangle: false
+                },
+                files: {
+                    'assets/admin/js/admin-app.min.js': [ 'assets/admin/js/admin-app.js' ]
+                }
+            },
+        },
+        watch: {
+            files: [
+                'assets/admin/js/admin-app.js',
+                'assets/front-end/js/ingot-click-test.js'
+            ],
+            tasks: ['default']
         }
 
     });
@@ -132,10 +155,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-git' );
     grunt.loadNpmTasks( 'grunt-text-replace' );
     grunt.loadNpmTasks( 'grunt-shell');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
 
 
     //register default task
+    grunt.registerTask( 'default', [ 'uglify' ]);
 
     //release tasks
     grunt.registerTask( 'version_number', [ 'replace:core_file' ] );
