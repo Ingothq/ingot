@@ -28,11 +28,13 @@ class link extends \ingot\ui\render\click_tests\click {
 		$test_id = $this->get_variant()[ 'ID' ];
 		$text = $this->get_variant()[ 'content' ];
 		$link = $this->link();
+		$group_id = $this->get_group()[ 'ID' ];
 
 		$this->html = sprintf(
-			'<a id="%s" href="%s" class="ingot-test ingot-click-test ingot-click-test-link" data-ingot-test-id="%d" >%s</a>',
+			'<a id="%s" href="%s" class="ingot-test ingot-click-test ingot-click-test-link ingot-group-%d" data-ingot-test-id="%d" >%s</a>',
 			esc_attr( $this->attr_id() ),
 			esc_url( $link ),
+			esc_attr( $group_id )
 			esc_attr( $test_id ),
 			esc_html( $text )
 		);
