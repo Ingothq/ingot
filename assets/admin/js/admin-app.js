@@ -331,7 +331,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
-        var id = Math.random().toString(36).substring(7);
+        var id = 'ingot_' + Math.random().toString(36).substring(7);
         if( !Array.isArray($scope.group.variants) ) {
             $scope.group.variants = [];
         }
@@ -599,7 +599,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
-        var id = Math.random().toString(36).substring(7);
+        var id = 'ingot_' + Math.random().toString(36).substring(7);
         if( !$scope.group.variants ) {
             $scope.group.variants = [];
         }
