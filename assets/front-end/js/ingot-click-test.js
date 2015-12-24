@@ -1,127 +1,160 @@
-/* globals INGOT_VARS */
+/* globals INGOT_UI */
 jQuery( document ).ready( function ( $ ) {
+    /**
+     * Setup our variables
+     */
+    var session_id = INGOT_UI.session.ID;
+    var ingot_id = INGOT_UI.session.ingot_ID;
+    var session_nonce = INGOT_UI.session_nonce;
+    var nonce = INGOT_UI.nonce;
+    var api_url = INGOT_UI.api_url;
 
-    var session_id = INGOT_VARS.session.ID;
-    var ingot_id = INGOT_VARS.session.ingot_ID;
 
     /**
-     * Track click tests
-     *
-     * @since 0.0.x
+     * Track all the clicks
      */
-    $( document ).on( 'click', '.ingot-click-test', function(e) {
-        e.preventDefault();
+    (function () {
+        //bind to all clicks
+        $( document).on('click', null, $, clickHandler);
 
-        var href = $( this ).attr( 'href' );
-        var test = $( this ).data( 'ingot-test-id' );
-        if( 'undefined' == test) {
-            window.location = href;
-            return;
+        //the one click handler to rule them all
+        function clickHandler(e) {
+            var el = e.target;
+            var href = el.getAttribute( 'href' );
+            var id = el.getAttribute( 'data-ingot-test-id' );
+            if( 'undefined' != href ) {
+                e.preventDefault();
+                if( null != id ) {
+                    console.log( 'convert' );
+                    trackConversionClick( id, href );
+                }else{
+                    console.log( 'notconvert' );
+                    trackOtherClick( href );
+                }
+            }
+
         }
 
-        var data = {
-            test: test,
-            sequence: $( this ).data( 'ingot-sequence-id' ),
-            click_nonce: $( this ).data( 'ingot-test-nonce' )
-        };
+        //track a conversion
+        function trackConversionClick( id, href ){
+            var data = {
+                id: id,
+                ingot_session_nonce: session_nonce,
+                ingot_session_ID: session_id
+            };
 
-        var url = INGOT_VARS.api_url + 'test/' + test + '/click?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&ingot_session_ID=' + session_id;
+            var url = api_url + 'variants/' + id + '/conversion?_wpnonce=' + nonce + '&ingot_session_nonce=' + session_nonce + '&ingot_session_ID=' + session_id;
 
-        $.when(
-            $.ajax({
-                url: url,
-                method: "POST",
-                data: data,
-                beforeSend: function ( xhr ) {
-                    xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
-                },
-            }).success(function( data, textStatus, jqXHR ) {
-                window.location = href;
-            } ).error( function(){
-                window.location = href;
-            } ).fail( function()  {
-                window.location = href;
-            })
-        );
-    });
-
-    /**
-     * Double check our tests are correct -- IE not cached versions
-     *
-     * @since 0.3.0
-     */
-    $( window ).load( function () {
-        if( null == INGOT_VARS.session.ID ) {
-            return;
-        }
-
-        var tests, test_list, url;
-        var the_tests = [];
-        tests = $( '.ingot-click-test' );
-        $.each( tests, function( i, test ) {
-            the_tests.push( $( test ).attr( 'data-ingot-test-id' ) );
-        });
-        if( tests.length > 0 ) {
-            test_list =  the_tests.join(",");
-            url = INGOT_VARS.api_url + 'sessions/' + INGOT_VARS.session.ID + '/session?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&test_ids=' + test_list + '&ingot_session_ID=' + INGOT_VARS.session.ID;
             $.when(
                 $.ajax({
                     url: url,
-                    method: "GET",
+                    method: "POST",
+                    data: data,
                     beforeSend: function ( xhr ) {
-                        xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
-                    },
-                }).success(function( data, textStatus, jqXHR ) {
-                    ingot_id = data.ingot_ID;
-                    session_id = data.session_ID;
-                    if( 'undefined' != data.tests && 'object' == typeof  data.tests && ! $.isEmptyObject( data.tests ) ) {
-                        $.each( data.tests, function( i, test ){
-                            var id = test.ID;
-                            var html = test.html;
-                            var html_id = 'ingot-test-' + id;
-                            var el = document.getElementById( html_id );
-                            if( null != el ) {
-                                el.innerHTML = html;
-                            }
-
-                        });
+                        xhr.setRequestHeader( 'X-WP-Nonce', nonce );
                     }
-                } )
+                }).success(function( data, textStatus, jqXHR ) {
+                    window.location = href;
+                } ).error( function(){
+                    window.location = href;
+                } ).fail( function()  {
+                    window.location = href;
+                })
+            );
+
+        }
+
+        //track a failed conversion
+        function trackOtherClick( href ) {
+            var url = api_url + 'sessions/' + session_id + '/track?_wpnonce=' + nonce + '&ingot_session_nonce=' + session_nonce + '&ingot_session_ID=' + session_id;
+            var data = {
+                ingot_session_nonce: session_nonce,
+                click_url: href
+            };
+            $.when(
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data: data,
+                    beforeSend: function ( xhr ) {
+                        xhr.setRequestHeader( 'X-WP-Nonce', nonce );
+                    }
+                }).success(function( data, textStatus, jqXHR ) {
+                    window.location = href;
+                } ).error( function(){
+                    window.location = href;
+                } ).fail( function()  {
+                    window.location = href;
+                })
             );
         }
-
-    } );
+    } ());
 
     /**
-     * Track all clicks by session
-     *
-     * @since 0.3.0
+     * Ensure session is valid and update HTML if dealing with cache
      */
-    $(document).click(function(e) {
-        e.preventDefault();
-
-        if( 'undefined' != e.target.href && ! $( e.target ).hasClass( '.ingot-click-test' ) ) {
-            var url = INGOT_VARS.api_url + 'sessions/' + session_id + '?_wpnonce=' + INGOT_VARS.nonce + '&ingot_session_nonce=' + INGOT_VARS.session_nonce + '&click_url=' + encodeURIComponent( e.target.href );
-
-            $.ajax({
-                url: url,
-                method: "POST",
-                beforeSend: function ( xhr ) {
-                    xhr.setRequestHeader( 'X-WP-Nonce', INGOT_VARS.nonce );
-                },
-            }).success(function( data, textStatus, jqXHR ) {
-                window.location = e.target.href;
-            } ).error( function(){
-                window.location = e.target.href;
-            } ).fail( function()  {
-                window.location = e.target.href;
-            })
-        }else{
-            alert( 0);
-            if( 'undefined' != e.target.href ){
-                window.location = e.target.href;
+    (function () {
+        var test_ids = [];
+        var test_els = $( '.ingot-test' );
+        var l = test_els.length;
+        var id, el, i;
+        if( 0 != l ){
+            for( i = 0; i <= l; i++ ) {
+                el = test_els[i];
+                if ( 'undefined' != el && null != el ) {
+                    id = el.getAttribute( 'data-ingot-test-id' );
+                    if ( null != id ) {
+                        test_ids.push( id );
+                    }
+                }
             }
         }
-    });
-} );
+
+
+        if( 0 != test_ids.length ) {
+            var url = api_url + 'sessions/' + session_id + '/tests/?ingot_session_nonce=' + session_nonce + '&ingot_session_ID=' + session_id;
+
+            var data = {
+                ingot_session_nonce: session_nonce,
+                test_ids :test_ids,
+                ingot_id: ingot_id
+            };
+
+            $.when(
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data: data,
+                    beforeSend: function ( xhr ) {
+                        xhr.setRequestHeader( 'X-WP-Nonce', nonce );
+                    }
+                }).success(function( data, textStatus, jqXHR ) {
+
+                    var new_test_data = data.tests;
+
+                    if ( 'undefined' != new_test_data && 0 < new_test_data.length ) {
+                        var test_id, test_html, existing_el;
+                        $.each( new_test_data, function ( i, test ) {
+                            test_id = test.ID;
+                            test_html = test.html;
+                            existing_el = document.getElementById( 'ingot-test-' + test_id );
+                            if ( null != existing_el && '' != test_html ) {
+                                existing_el.parentNode.innerHTML = test_html;
+                            }
+                        } );
+                    }
+
+                    ingot_id = data.ingot_ID;
+                    session_id = data.session_ID;
+
+                } ).error( function(){
+
+                } ).fail( function()  {
+
+                })
+            );
+        }
+    } ());
+
+});
 

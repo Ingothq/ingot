@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Get complete click type HTML
  *
@@ -10,10 +11,20 @@
  * @return string
  */
 function ingot_click_test( $id ) {
-	$group = \ingot\testing\crud\group::read( $id );
-	$type = $group[ 'click_type' ];
+	$html = '';
+	if ( ! is_array( $id ) ) {
+		$group = \ingot\testing\crud\group::read( $id );
+	}else{
+		$group = $id;
+	}
+
+	if( ! is_array( $group ) || 'click' !== $group[ 'type'] ){
+		return $html;
+	}
+
+	$type = $group[ 'sub_type' ];
 	switch( $type ) {
-		case in_array( $type, array( 'link', 'button', 'text' ) ) :
+		case in_array( $type, \ingot\testing\types::allowed_click_types() ) :
 			$html = ingot_click_html_link( $type, $group );
 			break;
 		case is_callable( $type ) :
@@ -39,6 +50,7 @@ add_shortcode( 'ingot', 'ingot_shortcode' );
  * @return string
  */
 function ingot_shortcode( $atts ) {
+	$html = '';
 	$atts = shortcode_atts( array(
 		'id' => 0,
 	), $atts, 'ingot' );
@@ -511,17 +523,25 @@ function ingot_enable_price_testing() {
  * @since 0.2.0
  */
 function ingot_destroy(){
-	\ingot\testing\crud\price_test::delete( 'all' );
-	\ingot\testing\crud\price_group::delete( 'all' );
-	\ingot\testing\crud\sequence::delete( 'all' );
-	\ingot\testing\crud\test::delete( 'all' );
-	\ingot\testing\crud\group::delete( 'all' );
-	$cookies = new ingot\testing\cookies\init( array(), false );
-	$cookie_name = $cookies->get_cookie_name();
-	setcookie( $cookie_name, '', time() + -3600 , COOKIEPATH, COOKIE_DOMAIN, false );
-
+	ingot_bootstrap::maybe_add_tracking_table( true );
+	ingot_bootstrap::maybe_add_session_table( true );
+	ingot_bootstrap::maybe_add_group_table( true );
+	ingot_bootstrap::maybe_add_variant_table( true );
 
 }
+
+/**
+ * Get a photo of Roy
+ *
+ * @since 0.4.0
+ *
+ * @return string
+ */
+function ingot_roy(){
+	return 'http://videos.videopress.com/Ie8AvTuy/video-a83b381a23_dvd.original.jpg';
+
+}
+
 
 /**
  * Verify the Ingot session nonce
@@ -537,3 +557,114 @@ function ingot_verify_session_nonce( $nonce ) {
 	return $good;
 
 }
+
+/**
+ * Create a REST response
+ *
+ * @param array|object|\WP_Error $data Response data
+ * @param int $code Optional. Status cod. Default is 200
+ * @param int|null $total Optional. if is an integer, will be used to set X-Ingot-Total header
+ *
+ * @return \WP_REST_Response|\WP_Error
+ */
+function ingot_rest_response( $data, $code = 200, $total = null ){
+	if ( ! is_wp_error( $data )  ) {
+		if ( 404 == $code || empty( $data ) ) {
+			$response = new \WP_REST_Response( null, 404 );
+		} else {
+			$response = new \WP_REST_Response( $data, $code );
+		}
+
+		if ( 0 < absint( $total ) ) {
+			$response->header( 'X-Ingot-Total', (int) \ingot\testing\crud\group::total() );
+		}
+
+		return $response;
+	} else {
+		return $data;
+
+	}
+
+}
+
+/**
+ * Register a conversion
+ *
+ * @since 0.4.0
+ *
+ * @param int $variant_ID ID of variant to register conversion for
+ * @param int $session_ID Optional. Session ID. If a valid session ID is passed, that session will be marked as having converted with this vartiant ID.
+ */
+function ingot_register_conversion( $variant_ID, $session_ID = 0 ){
+	$variant = \ingot\testing\crud\variant::read( $variant_ID );
+	if ( is_array( $variant ) ) {
+		$bandit = new \ingot\testing\bandit\content( $variant[ 'group_ID' ] );
+		$bandit->record_victory( $variant_ID );
+
+		if ( 0 < absint( $session_ID ) && is_array( $session = \ingot\testing\crud\session::read( $session_ID ) ) ) {
+			$session[ 'click_ID' ] = $variant_ID;
+			$session[ 'used' ] = true;
+			if ( 0 !== ( $userID = get_current_user_id() ) ) {
+				$session[ 'click_url' ] = $userID;
+			}
+
+			\ingot\testing\crud\session::update( $session, $session[ 'ID' ], true );
+
+		}
+
+	}
+
+}
+
+/**
+ * Detect if current visitor is likely a bot
+ *
+ * @since 0.4.0
+ *
+ * @return bool
+ */
+function ingot_is_bot(){
+	$is_bot = false;
+	$detect = new \Jaybizzle\CrawlerDetect\CrawlerDetect();
+	if( $detect->isCrawler() ) {
+		$is_bot = true;
+	}
+
+	/**
+	 * Override bot detection
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param bool $is_bot Whether to treat current visitor as bot or not
+	 */
+	return (bool) apply_filters( 'ingot_is_bot', $is_bot );
+
+}
+
+/**
+ * Detect if current visitor is likely batman
+ *
+ * @since 0.4.0
+ *
+ * @return bool
+ */
+function ingot_is_batman(){
+	$is_batman = false;
+	$id = get_current_user_id();
+	if( 0 != $id && is_object( $user = get_user_by( 'id', $id ) ) ) {
+		if( 'Bruce Wayne' == $user->display_name ) {
+			$is_batman = true;
+		}
+	}
+
+	/**
+	 * Override Batman detection
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param bool $is_bot Whether to treat current visitor as bot or not
+	 */
+	return (bool) apply_filters( 'ingot_is_batman', $is_batman );
+
+}
+

@@ -10,6 +10,24 @@ define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
 
+add_action( 'init', function(){
+//	include_once( dirname( __FILE__ ) . '/tests/functions_for_tests.php' );
+//	include_once( dirname( __FILE__ ) . '/includes/functions.php' );
+//	ingot_destroy();
+//	$groups = ingot_tests_data::click_link_group(true, 1, 4 );
+//	$id = $groups[ 'ids' ][0];
+//	for ( $i = 0; $i <= 100; $i++  ) {
+//		$render = new \ingot\ui\render\click_tests\button( $id );
+//		$chosen = $render->get_chosen_variant_id();
+//		if ( in_array( $i, [ 2, 3, 5, 8, 13, 21, 34, 55, 89 ] ) ) {
+//			ingot_register_conversion( $chosen );
+//
+//		}
+//
+//	}
+});
+
+
 add_action( 'plugins_loaded', 'ingot_maybe_load', 0 );
 function ingot_maybe_load() {
 	$fail = false;

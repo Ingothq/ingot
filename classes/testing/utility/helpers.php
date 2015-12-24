@@ -204,6 +204,33 @@ class helpers {
 	}
 
 	/**
+	 * Get link from click group config
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param array $config Group config
+	 * @param bool $validate Optional. By default, link is validated. Set to false to skip.
+	 *
+	 * @return string
+	 */
+	public static function get_link_from_meta( $config, $validate = true ) {
+		$link = '';
+		if( isset( $config[ 'meta' ], $config[ 'meta' ][ 'link' ] ) ){
+			$link = $config[ 'meta' ][ 'link' ];
+			if( $validate ){
+				if( ! filter_var( $link, FILTER_VALIDATE_URL ) ) {
+					$link = '';
+				}
+
+			}
+
+		}
+
+		return $link;
+
+	}
+
+	/**
 	 * Prepare a color hex
 	 *
 	 * @since 0.1.1
@@ -507,10 +534,42 @@ class helpers {
 		}
 	}
 
+	/**
+	 * Utility function to make all keys of an array integers (recursively)
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param $array
+	 *
+	 * @return array
+	 */
+	public static function make_array_values_numeric( $array, $make_numeric_strings = false ) {
+		if ( ! empty( $array ) ) {
+			foreach( $array as $k => $v ) {
+				if ( ! is_array( $v ) ) {
+					if ( ! is_numeric( $v ) ) {
+						$v = 0;
+					} else {
+						$v = (int) $v;
+					}
+					if( $make_numeric_strings ) {
+						$array[ $k ] = (string) $v;
+					}else {
+						$array[ $k ] = (int) $v;
+					}
+				}else{
+					$array[ $k ] = self::make_array_values_numeric( $v );
+				}
 
+			}
 
+		}
 
+		if ( empty( $array ) ) {
+			$array = array();
+		}
 
-
+		return $array;
+	}
 
 }

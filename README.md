@@ -9,8 +9,7 @@ This is a beta of what will be a paid product. We appreciate your feedback, if y
 
 
 ### READ BEFORE CLONING THIS REPO OR DOWNLOADING
-If you clone this repo or download the zip file from Github, you must run `composer update` to make it work. This IS NOT OPTIONAL.
-
+This repo uses Composer and Bower for dependency management. Grunt is used for task management, but its fairly optional. If you clone this repo or download the zip file from Github, you must run `composer update` and `bower install`. The grunt command `grunt activate` is also available. If you are not downloading this repo for development reasons -- IE you just want to try Ingot without paying for it, you you should use a zip file from the releases directory.
 
 ### Copyright/ License
-Copyright 2015 Josh Pollock. Licensed under the terms of the GNU GPL v2 or later.
+Copyright 2015 Josh Pollock & Ingot LLC. Licensed under the terms of the GNU GPL v2 or later.

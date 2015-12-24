@@ -13,8 +13,10 @@ namespace ingot\ui\render\click_tests;
 
 
 use ingot\testing\api\rest\test;
+use ingot\testing\bandit\content;
 use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
+use ingot\testing\crud\variant;
 use ingot\testing\tests\chance;
 use ingot\testing\utility\helpers;
 
@@ -32,29 +34,6 @@ abstract class click {
 	private $group;
 
 	/**
-	 * Sequence config
-	 *
-	 * @since 0.0.5
-	 *
-	 * @access private
-	 *
-	 * @var array
-	 */
-	private $sequence;
-
-	/**
-	 * Test config
-	 *
-	 * @since 0.0.5
-	 *
-	 * @access private
-	 *
-	 * @var array
-	 */
-	private $test;
-
-
-	/**
 	 * Rendered HTML
 	 *
 	 * @since 0.0.5
@@ -66,25 +45,42 @@ abstract class click {
 	protected $html;
 
 	/**
+	 * MaBandit object
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @var \ingot\testing\bandit\content|object
+	 */
+	protected $bandit;
+
+	/**
+	 * Chosen variant array
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @var array
+	 */
+	private $variant;
+
+	/**
 	 * Constructor for class
 	 *
 	 * @since 0.0.5
 	 *
-	 * @param int|object $group ID of group to render, or gorup object
+	 * @param int|array $group ID of group to render, or group array
 	 */
 	public function __construct( $group ){
-		if ( $group ) {
-			$this->set_group( $group );
-			if ( ! empty( $this->group ) ) {
-				$this->set_sequence();
-				if ( ! empty( $this->sequence ) ) {
-					$this->set_test();
-					if ( ! empty( $this->test ) ) {
-						$this->make_html();
-					}
 
-				}
-
+		$this->set_group( $group );
+		if( $this->group ) {
+			$this->set_bandit();
+			if( $this->bandit ){
+				$this->choose();
+				$this->make_html();
 			}
 
 		}
@@ -101,12 +97,7 @@ abstract class click {
 	 * @return string
 	 */
 	public function get_html(){
-		if ( is_array( $this->test ) ) {
-			\ingot\testing\tests\flow::increase_total( $this->test['ID'], $this->sequence['ID'] );
-
-			return $this->html;
-		}
-
+		return $this->html;
 	}
 
 	/**
@@ -124,6 +115,60 @@ abstract class click {
 	}
 
 	/**
+	 * Get the ID of test the chosen variant
+	 *
+	 * @since 0.4.0
+	 *
+	 * @return int
+	 */
+	public function get_chosen_variant_id(){
+		return (int) $this->variant[ 'ID' ];
+	}
+
+	/**
+	 * Get variant property
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function get_variant() {
+		return $this->variant;
+
+	}
+
+	/**
+	 * Get group property
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function get_group(){
+		return $this->group;
+	}
+
+	/**
+	 * Choose a variant and set in the variant property
+	 *
+	 * @since 0.4.0
+	 */
+	protected function choose(){
+		$variant_id =  $this->bandit->choose();
+		$variant = variant::read( $variant_id );
+		if( is_array( $variant ) ) {
+			$this->variant = $variant;
+		}else{
+			//@todo
+
+		}
+	}
+
+	/**
 	 * Make HTML for to output and set in the html property of this class
 	 *
 	 * Should ovveride in final class to avoid outputting nothing, which is bad.
@@ -132,45 +177,19 @@ abstract class click {
 	 *
 	 * @access protected
 	 */
-	protected function make_html() {
-		$this->html = '';
-
-	}
+	abstract protected function make_html();
 
 	/**
-	 * Set the sequence property of this class
-	 *
-	 * @since 0.0.7
-	 *
-	 * @access private
-	 */
-	private function set_sequence() {
-		$_sequence = $this->get_current_sequence();
-		if( $_sequence ) {
-			$this->sequence = $_sequence;
-		}
-	}
-
-	/**
-	 * Get current sequence for this group and make sure its current
+	 * Set group property
 	 *
 	 * @since 0.0.5
 	 *
 	 * @access private
+	 *
+	 * @param int|array $group
 	 */
-	private function get_current_sequence(){
-		$_sequence = helpers::v( 'current_sequence', $this->group, null );
-		if( $_sequence ) {
-			$_sequence = sequence::read( $_sequence );
-			if( $_sequence && 0 == $_sequence[ 'completed' ] ) {
-				return $_sequence;
-			}
-
-		}
-
-	}
-
-	protected function set_group( $group ) {
+	private function set_group( $group ) {
+		// @todo maybe use group object here since it will validate
 		if( is_array( $group ) ) {
 			$this->group = $group;
 		}else{
@@ -178,50 +197,16 @@ abstract class click {
 		}
 	}
 
+
 	/**
-	 * Set the test property of this class
+	 * Set bandit property
 	 *
-	 * @since 0.0.5
+	 * @since 0.4.0
 	 *
 	 * @access private
 	 */
-	private function set_test() {
-		$chance = $this->calculate_chance();
-		$use_a = \ingot\testing\tests\flow::choose_a( $chance );
-		if ( $use_a ){
-			$test_id = $this->sequence[ 'a_id' ];
-		}else{
-			$test_id = $this->sequence[ 'b_id' ];
-		}
-
-		$this->test = \ingot\testing\crud\test::read( $test_id );
-	}
-
-
-	/**
-	 * Get chance of using A
-	 *
-	 * @since 0.0.5
-	 *
-	 * @access protected
-	 */
-	protected function calculate_chance(){
-		$chance = new chance( $this->sequence );
-
-		return $chance->get_chance();
-
-	}
-
-	protected function get_group() {
-		return $this->group;
-	}
-
-	protected function get_test(){
-		return $this->test;
-	}
-
-	protected function get_sequence() {
-		return $this->sequence;
+	private function set_bandit(){
+		$this->bandit = new content( (int) $this->group[ 'ID'] );
 	}
 
 	/**
@@ -234,7 +219,18 @@ abstract class click {
 	 * @return string
 	 */
 	protected function attr_id() {
-		return sprintf( 'ingot-test-%s', $this->test[ 'ID' ] );
+		return sprintf( 'ingot-test-%s', $this->variant[ 'ID' ] );
+	}
+
+	/**
+	 * Get link from click group config
+	 *
+	 * @since 0.4.0
+	 *
+	 * @return string
+	 */
+	protected function link(){
+		return helpers::get_link_from_meta( $this->group );
 	}
 
 }

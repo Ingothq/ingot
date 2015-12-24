@@ -6,7 +6,13 @@ module.exports = function (grunt) {
         pkg     : grunt.file.readJSON( 'package.json' ),
         shell: {
             composer: {
-                command: 'composer update --no-dev; cd wp-api; git submodule update --recursive;'
+                command: 'composer update --no-dev'
+            },
+            bower: {
+                command: 'bower update'
+            },
+            activate : {
+                command: 'composer update --no-dev; bower update'
             }
         },
         clean: {
@@ -115,6 +121,29 @@ module.exports = function (grunt) {
                     to: "define( 'INGOT_VER', '<%= pkg.version %>' );"
                 }]
             }
+        },
+        uglify: {
+            frontend: {
+
+                files: {
+                    'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ]
+                }
+            },
+            admin:{
+                options: {
+                    mangle: false
+                },
+                files: {
+                    'assets/admin/js/admin-app.min.js': [ 'assets/admin/js/admin-app.js' ]
+                }
+            },
+        },
+        watch: {
+            files: [
+                'assets/admin/js/admin-app.js',
+                'assets/front-end/js/ingot-click-test.js'
+            ],
+            tasks: ['default']
         }
 
     });
@@ -126,15 +155,20 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-git' );
     grunt.loadNpmTasks( 'grunt-text-replace' );
     grunt.loadNpmTasks( 'grunt-shell');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+
 
 
     //register default task
+    grunt.registerTask( 'default', [ 'uglify' ]);
 
     //release tasks
     grunt.registerTask( 'version_number', [ 'replace:core_file' ] );
-    grunt.registerTask( 'pre_vcs', [ 'shell:composer', 'version_number', 'copy', 'compress' ] );
+    grunt.registerTask( 'pre_vcs', [ 'shell:composer', 'shell:bower', 'version_number', 'copy', 'compress' ] );
     grunt.registerTask( 'do_git', [ 'gitadd', 'gitcommit', 'gittag', 'gitpush' ] );
     grunt.registerTask( 'just_build', [  'shell:composer', 'copy', 'compress' ] );
+    grunt.registerTask( 'install', [ 'shell:activate' ] );
 
     grunt.registerTask( 'release', [ 'pre_vcs', 'do_git', 'clean:post_build' ] );
 

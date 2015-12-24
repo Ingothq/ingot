@@ -1,8 +1,8 @@
 <?php
 /**
- * Create a simple object for returning stats to REST API with
+ * @TODO What this does.
  *
- * @package   ingot
+ * @package   @TODO
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -12,75 +12,32 @@
 namespace ingot\testing\object;
 
 
-class stats extends sequence {
+class stats {
 
-	/**
-	 * An array of stats for this sequence
-	 *
-	 * @since 0.3.0
-	 *
-	 * @access private
-	 *
-	 * @var array
-	 */
-	private $stats;
+	public $total;
 
-	/**
-	 * Array of properties used to make stats and key stats array
-	 *
-	 * @since 0.3.0
-	 *
-	 * @access private
-	 *
-	 * @var array
-	 */
-	protected $stats_keys = [
-		'a_id',
-		'b_id',
-		'a_total',
-		'b_total',
-		'a_win',
-		'b_win',
-		'a_win_percentage',
-		'b_win_percentage',
-		'a_total_percentage',
-		'b_total_percentage',
-		'total',
-		'win_total'
-	];
+	public $conversions;
 
-	/**
-	 * Get the stats for this sequence
-	 *
-	 * @since 0.3.0
-	 *
-	 * @access protected
-	 *
-	 * @return array
-	 */
-	public function get_stats() {
-		if( is_null( $this->stats ) ) {
-			$this->make_stats();
+	public $conversion_rate;
+
+	public $average_conversion_rate;
+
+	public function __construct( $total, $conversions, $conversion_rate = null, $average_conversion_rate = null ){
+		$this->total = $total;
+		$this->conversions = $conversions;
+		if( is_null( $conversion_rate ) ) {
+			if(0 == $total ) {
+				$conversion_rate = 0;
+			}else{
+				$conversion_rate = $conversions / $total;
+			}
+
 		}
 
-		return $this->stats;
-	}
+		$this->conversion_rate = $conversion_rate;
 
-	/**
-	 * Make the stats for this sequence
-	 *
-	 * @since 0.3.0
-	 *
-	 * @access private
-	 *
-	 * @return array
-	 */
-	private function make_stats() {
-		foreach( $this->stats_keys as $key ) {
-			$this->stats[ $key ] = $this->$key;
-		}
+		$this->average_conversion_rate = $average_conversion_rate;
+
 	}
 
 }
-
-
