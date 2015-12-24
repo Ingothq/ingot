@@ -223,12 +223,14 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
 
 //controller for creating/editing a click group
 ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'clickGroups', function( $scope, $http, $stateParams, $rootScope, $state, clickGroups ) {
-
+    var is_new = false;
     $scope.group_step = 1;
     $scope.new_group = false;
     if( 'clickTests.new' == $state.current.name ) {
+        is_new = true;
         $scope.new_group = true;
         $scope.group = {
+            type: 'click',
             click_type_options : INGOT_ADMIN.click_type_options,
             variants: {}
         };
@@ -251,7 +253,6 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         })
 
     }
-
 
     $scope.buttonStyle = function( id, type ) {
         var css = {};
@@ -304,8 +305,10 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             data: $scope.group
         } ).success(function(data) {
             $scope.group = data;
-            if( 'clickTests.new' == $state.current.name ) {
-                $state.go('clickTests.list');
+
+            if( true === is_new ) {
+                is_new = false;
+                $state.go( 'clickTests.edit', {groupID: 9} );
             }
             swal({
                 title: INGOT_TRANSLATION.group_saved,
@@ -352,6 +355,7 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
     clickGroups.get({id: groupID }, function(res){
         $scope.group = res;
     })
+
 
     $scope.group_id = groupID;
     if ( 'undefined' == groupID ) {

@@ -107,7 +107,7 @@
                     <label for="link" class="col-md-4 col-sm-12">
                         {{ 'group.link_label_group_setting' | translate }}
                     </label>
-                    <input id="link" type="text" ng-model="group.link" class="col-md-8 col-sm-12" ng-required="true" />
+                    <input id="link" type="text" ng-model="group.meta.link" class="col-md-8 col-sm-12" ng-required="true" />
                 </div>
                 <div class="form-group row" ng-show="'button_color' == group.click_type">
                     <label for="color_test_text" class="col-md-4 col-sm-12">
@@ -149,7 +149,7 @@
 	                            <label for="text-{{variant.ID}}" class="col-md-5 col-sm-12">
 	                                {{ 'group.text_label_test_setting' | translate }}
 	                            </label>
-	                            <input name="text" type="text" id="text-{{variant.ID}}" ng-model="variant.text" ng-required="'button' == group.sub_type" class="col-md-7 col-sm-12"/>
+	                            <input name="text" type="text" id="text-{{variant.ID}}" ng-model="variant.content" ng-required="'button' == group.sub_type" class="col-md-7 col-sm-12"/>
 	                        </div>
 	                        <div class="form-group row"  ng-show="'button_color' == group.click_type">
 	                            <label for="button-color-{{variant.ID}}" class="col-md-5 col-sm-12">

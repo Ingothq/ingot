@@ -95,6 +95,10 @@ class groups extends route {
 		$group_args[ 'variants' ] = $variants_ids;
 		$id = group::create( $group_args );
 		$item = new \WP_Error( 'ingot-unknown-error' );
+		if( is_wp_error( $id ) ) {
+			$item = $id;
+		}
+
 		if ( is_numeric( $id ) ) {
 			$item = group::read( $id );
 
@@ -346,7 +350,7 @@ class groups extends route {
 			foreach( $group[ 'variants' ] as $i => $variant_id ) {
 				$group[ 'variants' ][ $i ] = variant::read( $variant_id );
 			}
-			
+
 		}
 
 		return $group;

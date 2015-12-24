@@ -4,7 +4,7 @@
             <label for="link" class="col-md-4 col-sm-12">
                 {{ 'group.link_label_group_setting' | translate }}
             </label>
-            <input id="link" type="text" ng-model="group.link" class="col-md-8 col-sm-12" ng-required="true" />
+            <input id="link" type="text" ng-model="group.meta.link" class="col-md-8 col-sm-12" ng-required="true" />
         </div>
         <div class="form-group row">
             <label for="color_test_text" class="col-md-4 col-sm-12">
@@ -40,6 +40,7 @@
                         </label>
                         <input colorpicker="hex" name="button-background_color" id="button-background_color-{{variant.ID}}" type="text" ng-model="variant.meta.background_color" class="col-md-7 col-sm-12" ng-required="'button_color' == group.sub_type" />
                     </div>
+                    <input name="content" type="hidden" id="text-{{variant.ID}}" ng-model="variant.content" class="col-sm-7" ng-required="true" value="  " />
                 </ng-form>
             </div>
         </div>

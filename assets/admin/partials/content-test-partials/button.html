@@ -4,7 +4,7 @@
             <label for="link" class="col-md-4 col-sm-12">
                 {{ 'group.link_label_group_setting' | translate }}
             </label>
-            <input id="link" type="text" ng-model="group.link" class="col-md-8 col-sm-12" ng-required="true" />
+            <input id="link" type="text" ng-model="group.meta.link" class="col-md-8 col-sm-12" ng-required="true" />
         </div>
         <hr />
         <div class="form-group row">
@@ -33,9 +33,9 @@
                         <label for="text-{{variant.ID}}" class="col-sm-3">
                             {{ 'group.text_label_test_setting' | translate }}
                         </label>
-                        <input name="text" type="text" id="text-{{variant.ID}}" ng-model="variant.text" class="col-sm-7"/>
+                        <input name="text" type="text" id="text-{{variant.ID}}" ng-model="variant.content" class="col-sm-7" ng-required="true" />
                         <div class="col-sm-2 text-right">
-                            <a ng-click="removeTest( variant.ID )" class="delete" ng-href="" title="{{ 'group.delete' | translate }}">
+                            <a ng-click="removeTest( variant.ID )" class="delete" ng-href="#" title="{{ 'group.delete' | translate }}">
                                 <i class="fa fa-minus-circle"></i>
                             </a>
                         </div>
