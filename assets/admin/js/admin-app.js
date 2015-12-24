@@ -389,6 +389,11 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                 'X-WP-Nonce': INGOT_ADMIN.nonce
             }
         } ).success( function( res ){
+            $scope.stats_exist = true;
+            if( !Object.keys(res.variants).length ) {
+                $scope.stats_exist = false;
+                return;
+            }
             $scope.stats = res;
             $scope.chart_data = {
                 labels: [],
