@@ -445,6 +445,9 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                 ctx.moveTo(100, y);
                 ctx.lineTo(jQuery('#ingotChart').outerWidth(), y);
                 ctx.stroke();
+                ctx.font = "14px Arial";
+                ctx.fillStyle = 'black';
+                ctx.fillText('Group Average Conversion Rate (' + Math.round( overlayBar * 100  ) / 100 + ')', jQuery('#ingotChart').outerWidth(), y - 10 )
             }
             ctx.closePath();
         }
