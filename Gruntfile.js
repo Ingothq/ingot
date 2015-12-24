@@ -6,7 +6,13 @@ module.exports = function (grunt) {
         pkg     : grunt.file.readJSON( 'package.json' ),
         shell: {
             composer: {
-                command: 'composer update --no-dev; cd wp-api; git submodule update --recursive;'
+                command: 'composer update --no-dev'
+            },
+            bower: {
+                command: 'bower update'
+            },
+            activate : {
+                command: 'composer update --no-dev; bower update'
             }
         },
         clean: {
@@ -128,13 +134,15 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-shell');
 
 
+
     //register default task
 
     //release tasks
     grunt.registerTask( 'version_number', [ 'replace:core_file' ] );
-    grunt.registerTask( 'pre_vcs', [ 'shell:composer', 'version_number', 'copy', 'compress' ] );
+    grunt.registerTask( 'pre_vcs', [ 'shell:composer', 'shell:bower', 'version_number', 'copy', 'compress' ] );
     grunt.registerTask( 'do_git', [ 'gitadd', 'gitcommit', 'gittag', 'gitpush' ] );
     grunt.registerTask( 'just_build', [  'shell:composer', 'copy', 'compress' ] );
+    grunt.registerTask( 'install', [ 'shell:activate' ] );
 
     grunt.registerTask( 'release', [ 'pre_vcs', 'do_git', 'clean:post_build' ] );
 
