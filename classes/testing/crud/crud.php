@@ -129,6 +129,7 @@ abstract class crud {
 	 * @return ID|bool||WP_Error Item ID,or false if not created, or error if not allowed.
 	 */
 	public static function create( $data, $bypass_cap = false ){
+		unset( $data[ 'ID'] );
 		/**
 		 * Runs before an object is created
 		 *

@@ -105,24 +105,9 @@ class groups extends route {
 			$item = group::read( $id );
 
 			if ( is_array( $item ) ) {
-				if ( ! empty( $variants ) ) {
-					foreach ( $variants as $variant ) {
-						$variant[ 'group_ID' ] = $item[ 'ID' ];
-						$variant[ 'type' ]     = $item[ 'type' ];
-						if( ( ! isset( $variant[ 'content' ] ) || empty( $variant[ 'content'] ) ) && 'button_color' == $item[ 'sub_type'] )  {
-							$variant[ 'content' ] = '  ';
-						}
-
-						unset( $variant[ 'ID' ] );
-
-						$_variant_id           = variant::create( $variant );
-						if ( is_wp_error( $_variant_id ) ) {
-							return $_variant_id;
-						}
-
-						$variants_ids[] = $_variant_id;
-					}
-
+				$variants_ids = $this->save_variants( $item );
+				if( is_wp_error( $variants_ids ) ) {
+					return ingot_rest_response( $variants_ids, 500 );
 				}
 
 				$item[ 'variants' ] = $variants_ids;
@@ -198,7 +183,7 @@ class groups extends route {
 			);
 		}
 
-		//doing this since it runs parse_args
+
 		$obj = new \ingot\testing\object\group( $existing );
 		$group_args = $this->prepare_item_for_database( $request );
 
@@ -352,6 +337,7 @@ class groups extends route {
 	protected function prepare_group_in_admin_context( $group ) {
 		if( ! empty( $group[ 'variants' ] ) ){
 			foreach( $group[ 'variants' ] as $i => $variant_id ) {
+				unset( $group[ 'variants' ][ $i ] );
 				if( ! is_numeric( $variant_id ) ) {
 					if( is_array( $variant_id ) && isset( $variant_id[ 'ID' ] ) ){
 						$variant_id = $variant_id[ 'ID' ];
@@ -392,6 +378,12 @@ class groups extends route {
 	protected function prepare_item_for_database( $request ) {
 		$group_args = $request->get_params();
 		$allowed    = $this->allowed_fields();
+		$group_args[ 'variants' ] = $this->save_variants( $group_args );
+		if( is_wp_error( $group_args[ 'variants' ] ) ){
+			return $group_args[ 'variants' ];
+			
+		}
+
 		foreach ( $group_args as $key => $value ) {
 			if ( is_numeric( $key ) || ! in_array( $key, $allowed ) ) {
 				unset( $group_args[ $key ] );
@@ -402,6 +394,58 @@ class groups extends route {
 
 
 		return $group_args;
+	}
+
+	/**
+	 * Save variants and return IDs
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param array $group Group config -- variants key should be an arry of variant configs to save
+	 *
+	 * @return array||WP_Error
+	 */
+	protected function save_variants( $group ){
+		$variants_ids = [];
+		$variants = helpers::v( 'variants', $group, [] );
+		if( isset( $group[ 'ID' ] ) ){
+			$group_id = $group[ 'ID' ];
+		} elseif( isset( $group[ 'id'] ) ){
+			$group_id = $group[ 'id' ];
+		}else{
+			return new \WP_Error( 'ingot-generalized-failure' );
+		}
+		if ( ! empty( $variants ) ) {
+			foreach ( $variants as $variant ) {
+				if( is_numeric( $variant ) ) {
+					continue;
+				}
+
+				$variant[ 'group_ID' ] = $group_id;
+				$variant[ 'type' ]     = $group[ 'type' ];
+				if( ( ! isset( $variant[ 'content' ] ) || empty( $variant[ 'content'] ) ) && 'button_color' == $group[ 'sub_type'] )  {
+					$variant[ 'content' ] = '  ';
+				}
+
+				if( ! isset( $variant[ 'ID' ] ) || 0 == abs( $variant[ 'ID' ] ) ) {
+					unset( $variant[ 'ID' ] );
+					$_variant_id           = variant::create( $variant );
+				}else{
+					$_variant_id           = variant::update( $variant, $variant[ 'ID' ] );
+				}
+
+
+				if ( is_wp_error( $_variant_id ) ) {
+					return $_variant_id;
+				}
+
+				$variants_ids[] = $_variant_id;
+			}
+
+		}
+
+		return $variants_ids;
+
 	}
 
 
