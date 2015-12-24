@@ -480,7 +480,6 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                 barValueSpacing: 10,
                 verticalOverlayAtBar: [ avg ]
             } );
-            jQuery('#chartWrapper').append( ingot_chart.generateLegend() );
         }, 100);
 
     }
