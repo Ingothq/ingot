@@ -113,7 +113,7 @@ class group_stats  {
 		}
 		//$std_deviation = Statistics::standardDeviation( $rates );
 
-		$this->stats[ 'group' ] = new stats( $total, $conversions,  $conversion_rate. $avg_conversion_rate );
+		$this->stats[ 'group' ] = new stats( $total, $conversions,  $conversion_rate, $avg_conversion_rate );
 	}
 
 }
