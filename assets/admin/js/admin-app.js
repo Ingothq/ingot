@@ -367,9 +367,7 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
     var groupID = $stateParams.groupID;
 
-    clickGroups.get({id: groupID }, function(res){
-        $scope.group = res;
-    })
+
 
 
     $scope.no_stats = INGOT_TRANSLATION.no_stats;
@@ -385,7 +383,7 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
         $state.go( 'clickTests.list' );
     } else {
         $http({
-            url: INGOT_ADMIN.api + 'groups/' + groupID + '/stats?_wpnonce=' + INGOT_ADMIN.nonce,
+            url: INGOT_ADMIN.api + 'groups/' + groupID + '/stats?_wpnonce=' + INGOT_ADMIN.nonce + '&context=admin',
             method:'GET',
             headers: {
                 'X-WP-Nonce': INGOT_ADMIN.nonce
@@ -423,7 +421,13 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                     ]
                 }
                 angular.forEach( $scope.stats.variants, function( variant, i ) {
-                    $scope.chart_data.labels.push( 'Variant ' + i );
+                    var name;
+                    if( 'undefined' != variant.name ) {
+                        name = variant.name;
+                    }else{
+                        name = 'Variant ' + i;
+                    }
+                    $scope.chart_data.labels.push( name );
                     var rate = Math.round( variant.conversion_rate * 100 ) / 100;
                     $scope.chart_data.datasets[0].data.push( rate );
                 });

@@ -11,6 +11,8 @@
 
 namespace ingot\testing\object;
 
+use ingot\testing\crud\variant;
+
 class group {
 
 	/**
@@ -293,6 +295,38 @@ class group {
 		$fields[] = 'ID';
 		return $fields;
 
+	}
+
+	/**
+	 * Get names of group and variants
+	 *
+	 * @since 0.4.0
+	 *
+	 * @return array
+	 */
+	public function names(){
+		$data = [
+			'variants' => [],
+			'group' => $this->group[ 'name' ]
+		];
+
+		if( ! empty( $this->group[ 'variants' ] ) ){
+			//this loop is dumb -- https://github.com/Ingothq/ingot/issues/101
+			foreach( $this->group[ 'variants' ] as $i => $variant_id ) {
+				$variant = variant::read( $variant_id );
+				if( is_array( $variant ) ) {
+					$name = $variant[ 'content' ];
+				}else{
+					$name = $variant_id;
+				}
+
+				$data[ 'variants' ][ $variant_id ] = $name;
+
+			}
+
+		}
+
+		return $data;
 	}
 
 }

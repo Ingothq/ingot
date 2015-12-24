@@ -237,10 +237,10 @@ class groups extends route {
 	public function get_stats( $request ){
 		$url = $request->get_url_params( );
 		$id = helpers::v( 'id', $url, 0 );
-		$existing = group::read( $id );
-		if( ! is_array( $existing ) ){
-			if ( is_wp_error( $existing ) ) {
-				return $existing;
+		$group = group::read( $id );
+		if( ! is_array( $group ) ){
+			if ( is_wp_error( $group ) ) {
+				return $group;
 			}
 
 			return ingot_rest_response(
@@ -248,8 +248,26 @@ class groups extends route {
 			);
 		}
 
-		$obj = new \ingot\testing\object\group( $existing );
-		return ingot_rest_response( $obj->get_stats(), 200 );
+		$obj = new \ingot\testing\object\group( $group );
+		$stats = $obj->get_stats();
+		if( 'admin' == $request->get_param( 'context' )  ) {
+			$names = $obj->names();
+			if( ! empty( $stats[ 'variants' ] ) && ! empty( $names[ 'variants' ] ) ){
+				foreach( $names[ 'variants' ] as $v_id => $name ) {
+					if( isset( $stats[ 'variants' ][ $v_id ] ) ){
+						$stats[ 'variants' ][ $v_id ] = (array) $stats[ 'variants' ][ $v_id ];
+						$stats[ 'variants' ][ $v_id ][ 'name' ] = $name;
+						$stats[ 'variants' ][ $v_id ] = (object) $stats[ 'variants' ][ $v_id ];
+					}
+
+				}
+
+			}
+
+			$stats[ 'names' ] = $names;
+		}
+
+		return ingot_rest_response( $stats, 200 );
 
 	}
 
@@ -381,7 +399,7 @@ class groups extends route {
 		$group_args[ 'variants' ] = $this->save_variants( $group_args );
 		if( is_wp_error( $group_args[ 'variants' ] ) ){
 			return $group_args[ 'variants' ];
-			
+
 		}
 
 		foreach ( $group_args as $key => $value ) {
