@@ -113,6 +113,8 @@ class groups extends route {
 							$variant[ 'content' ] = '  ';
 						}
 
+						unset( $variant[ 'ID' ] );
+
 						$_variant_id           = variant::create( $variant );
 						if ( is_wp_error( $_variant_id ) ) {
 							return $_variant_id;
@@ -357,7 +359,7 @@ class groups extends route {
 						continue;
 
 					}
-					
+
 				}
 
 				$group[ 'variants' ][ $i ] = variant::read( $variant_id );
