@@ -362,7 +362,7 @@ class groups extends route {
 
 				}
 
-				$group[ 'variants' ][ $i ] = variant::read( $variant_id );
+				$group[ 'variants' ][ $variant_id ] = variant::read( $variant_id );
 			}
 
 		}
