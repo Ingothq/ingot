@@ -70,43 +70,47 @@ class load {
 	 * @since 0.2.0
 	 */
 	public function scripts() {
+		$version = INGOT_VER;
+		$min = '.min';
+		if( SCRIPT_DEBUG ) {
+			$version = rand();
+			$min = '';
+		}
+		$bower = INGOT_URL . '/bower_components/';
 		
 		//jquery ui
 		wp_enqueue_script('jquery-ui-core');
-		wp_enqueue_script('jquery-ui-slider');
-		wp_enqueue_style('jquery-ui-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css' );
-		
+		//wp_enqueue_script('jquery-ui-slider');
+		//wp_enqueue_style('jquery-ui-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css' );
+
 		//angular
-		wp_enqueue_script( 'angular', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js', array( 'jquery' ) );
-		wp_enqueue_script( 'angular-ui-route', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js', array( 'angular' ) );
-		wp_enqueue_script( 'angular-aria', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-aria.js');
-		wp_enqueue_script( 'angular-resource', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-resource.js', array( 'angular' ) );
+		wp_enqueue_script( "angular", $bower . "angular/angular{$min}.js", array(), true, $version  );
+		wp_enqueue_script( "angular-ui-route", $bower . "angular-ui-router/release/angular-ui-router{$min}.js", array( "angular" ), true, $version );
+		wp_enqueue_script( "angular-aria",  $bower . "angular-aria/angular-aria{$min}.js", array( "angular" ), true, $version );
+		wp_enqueue_script( "angular-resource", $bower . "angular-resource/angular-resource{$min}.js", array( "angular" ) );
+		wp_enqueue_script( "messageformat", $bower . "messageformat/messageformat.js", array( "angular" ) );
+		wp_enqueue_script( "angular-sanitize", $bower . "angular-sanitize/angular-sanitize{$min}.js", array( "angular" ) );
+		wp_enqueue_script( "angular-translate", $bower . "angular-translate/angular-translate{$min}.js", array( "angular" ) );
+		wp_enqueue_script( "angular-translate-interpolation-messageformat", $bower . "angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat{$min}.js", array( "angular" ) );
+		wp_enqueue_script( "angular-translate-storage-local", $bower . "angular-translate-storage-local/angular-translate-storage-local{$min}.js", array( "angular" ) );
+		wp_enqueue_style( "angular-bootstrap-colorpicker", $bower . "angular-bootstrap-colorpicker/css/colorpicker{$min}.css" );
+		wp_enqueue_script( "angular-bootstrap-colorpicker", $bower . "angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module{$min}.js" );
 
 		//bootstrap
-		wp_enqueue_script( 'angular-ui-bootstrap', '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap.min.js' );
-		wp_enqueue_style( 'bootstrap', '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css' );
-		wp_enqueue_style( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/css/colorpicker.min.css' );
-		wp_enqueue_script( 'bootstrap-colorpicker-module', '//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.19/js/bootstrap-colorpicker-module.js' );
-		wp_enqueue_script( 'bootstrap', '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js', array( 'jquery' ) );
-
-		//angular translation etx
-		wp_enqueue_script( 'messageformat', "//cdn.rawgit.com/SlexAxton/messageformat.js/0.2.2/messageformat.js", array( 'angular' ) );
-
-		wp_enqueue_script( 'angular-sanitize', "//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-sanitize.js", array( 'angular' ) );
-		wp_enqueue_script( 'angular-translate', "//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.7.2/angular-translate.js", array( 'angular' ) );
-		wp_enqueue_script( 'angular-translate-interpolation-messageformat', "//cdnjs.cloudflare.com/ajax/libs/angular-translate-interpolation-messageformat/2.7.2/angular-translate-interpolation-messageformat.js", array( 'angular' ) );
-		wp_enqueue_script( 'angular-translate-storage-local', "//cdnjs.cloudflare.com/ajax/libs/angular-translate-storage-local/2.7.2/angular-translate-storage-local.js", array( 'angular' ) );
+		wp_enqueue_script( "angular-ui-bootstrap", $bower . "angular-bootstrap/ui-bootstrap{$min}.js" );
+		wp_enqueue_style( "bootstrap", $bower ."bootstrap/dist/css/bootstrap{$min}.css" );
+		//wp_enqueue_script( "bootstrap", "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js", array( "jquery" ) );
 
 
 		// ChartJS
-		wp_enqueue_script( 'ingot-d3', INGOT_URL . 'assets/admin/js/chartjs.min.js', array( 'angular', 'jquery' ), rand() );
+		wp_enqueue_script( "chart-js", $bower . "Chart.js/Chart{$min}.js", array( "angular", "jquery" ), rand() );
 
-		//sweet alert
-		wp_enqueue_script( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.js', array( 'jquery' ) );
-		wp_enqueue_style( 'swal', '//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css' );
+		//sweet alert --Josh: Don't unmin.
+		wp_enqueue_script( 'sweet-alert', $bower . 'sweetalert/dist/sweetalert.min.js', array( 'jquery' ) );
+		wp_enqueue_style( 'sweet-alert', $bower . 'sweetalert/dist/sweetalert.css' );
 
 		//ingot
-		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . 'assets/admin/js/admin-app.js', array( 'angular', 'jquery', 'swal' ), rand() );
+		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . 'assets/admin/js/admin-app.js', array( 'angular', 'jquery', 'sweet-alert' ), rand() );
 		wp_enqueue_style( 'ingot-admin-app', INGOT_URL . 'assets/admin/css/admin-app.css' );
 
 		//data to use in admin app
