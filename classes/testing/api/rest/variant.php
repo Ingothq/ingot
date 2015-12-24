@@ -83,6 +83,7 @@ class variant extends route {
 	 * @return \WP_Error|\WP_REST_Request
 	 */
 	public function get_item( $request ) {
+		return $this->not_yet_response();
 		$context = $request->get_param( 'context' );
 		$url = $request->get_url_params();
 		$id = helpers::v( 'ID', $url, 0 );

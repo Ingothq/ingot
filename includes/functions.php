@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Get complete click type HTML
  *

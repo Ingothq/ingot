@@ -154,7 +154,7 @@ class load {
 						<ul class="nav navbar-nav">
 							<li ng-class="isActiveNav('clickTests');">
 								<a ui-sref="clickTests">
-									<?php _e( 'Click Tests', 'ingot' ); ?>
+									<?php _e( 'Content Tests', 'ingot' ); ?>
 								</a>
 							</li>
 							<li ng-class="isActiveNav('price');">
