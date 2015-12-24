@@ -350,6 +350,16 @@ class groups extends route {
 	protected function prepare_group_in_admin_context( $group ) {
 		if( ! empty( $group[ 'variants' ] ) ){
 			foreach( $group[ 'variants' ] as $i => $variant_id ) {
+				if( ! is_numeric( $variant_id ) ) {
+					if( is_array( $variant_id ) && isset( $variant_id[ 'ID' ] ) ){
+						$variant_id = $variant_id[ 'ID' ];
+					}else{
+						continue;
+
+					}
+					
+				}
+
 				$group[ 'variants' ][ $i ] = variant::read( $variant_id );
 			}
 
