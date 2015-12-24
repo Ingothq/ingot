@@ -58,7 +58,7 @@
             <span class="btn btn-primary pull-right" ng-click="change_step(3)">{{ 'Edit Group Tests' | translate }}</span>
         </div>
         <div class="row group-type-select" ng-show="group_step == 3">
-            <div ng-include="partials_url + '/content-test-partials/' + group.sub_type + '.html'"></div>
+            <div ng-if="has_type()" ng-include="partials_url + '/content-test-partials/' + group.sub_type + '.html'"></div>
             <span class="btn btn-primary pull-left" ng-click="change_step(2)">{{ 'Edit Group Type' | translate }}</span>
             <button type="submit" class="btn btn-primary pull-right">{{ 'Save Group' | translate }}</button>
         </div>

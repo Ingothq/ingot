@@ -237,7 +237,8 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     } else {
         var groupID = $stateParams.groupID;
 		clickGroups.get({id: groupID}, function(res){
-	       $scope.group = res;
+	        $scope.group = res;
+            $scope.choose_group_type($scope.group.sub_type);
 	        
 		    if( $scope.group.variants.hasOwnProperty('errors') )
 		    	$scope.group.variants = {};
@@ -340,6 +341,14 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     $scope.choose_group_type = function( type ) {
         $scope.group.sub_type = type;
+    }
+
+    $scope.has_type = function() {
+        if( 'undefined' == $scope.group.sub_type || null == $scope.group.sub_type ){
+            return false;
+        }
+
+        return true;
     }
 
 }]);
