@@ -70,7 +70,9 @@ class groups extends route {
 		$groups = group::get_items( $args );
 		if( ! empty( $groups ) ) {
 			foreach( $groups as $i => $group ) {
-				$groups[ $i ] = $this->prepare_group( $group, $request->get_param( 'context' ) );
+				if ( is_array( $group ) ) {
+					$groups[ $i ] = $this->prepare_group( $group, $request->get_param( 'context' ) );
+				}
 			}
 		}
 
