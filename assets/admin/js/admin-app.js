@@ -236,12 +236,23 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         $scope.group = {
             type: 'click',
             click_type_options : INGOT_ADMIN.click_type_options,
-            variants: {}
+            variants: {},
+            meta: {}
         };
     } else {
         $scope.group_step = 3;
         var groupID = $stateParams.groupID;
 		clickGroups.get({id: groupID}, function(res){
+            if( 'array' == typeof res.meta ) {
+                function toObject(arr) {
+                    var rv = {};
+                    for (var i = 0; i < arr.length; ++i){
+                        if (arr[i] !== undefined) rv[i] = arr[i];
+                    }
+                    return rv;
+                }
+                res.meta = toObject( res.meta );
+            }
 	        $scope.group = res;
             $scope.choose_group_type($scope.group.sub_type);
 
