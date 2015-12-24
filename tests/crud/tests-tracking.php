@@ -19,15 +19,16 @@ class tests_tracking extends \WP_UnitTestCase {
 
 	public function tearDown() {
 		parent::tearDown();
-
 		\ingot\testing\crud\tracking::delete( 'all' );
-		\ingot\testing\crud\sequence::delete( 'all' );
 	}
 
 	/**
 	 * Test that table name is right
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group crud
+	 * @group tracking_crud
 	 *
 	 * @covers \ingot\testing\crud\tracking::get_table_name()
 	 */
@@ -38,9 +39,12 @@ class tests_tracking extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * Test that ceaating with only the required field works
+	 * Test that ceating with only the required field works
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group crud
+	 * @group tracking_crud
 	 *
 	 * @covers \ingot\testing\crud\tracking::create()
 	 * @covers \ingot\testing\crud\tracking::fill_in()
@@ -60,6 +64,9 @@ class tests_tracking extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group tracking_crud
+	 *
 	 * @covers \ingot\testing\crud\tracking::create()
 	 * @covers \ingot\testing\crud\tracking::read()
 	 */
@@ -69,7 +76,7 @@ class tests_tracking extends \WP_UnitTestCase {
 		$params = array(
 			'test_ID' => $t_id
 		);
-		$id =\ingot\testing\crud\tracking::create( $params );
+		$id = \ingot\testing\crud\tracking::create( $params );
 		$this->assertTrue( is_numeric( $id ) );
 
 		$tracking = \ingot\testing\crud\tracking::read( $id );
@@ -83,6 +90,9 @@ class tests_tracking extends \WP_UnitTestCase {
 	 * Test that optional fields are filled in.
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group crud
+	 * @group tracking_crud
 	 *
 	 * @covers \ingot\testing\crud\tracking::create()
 	 * @covers \ingot\testing\crud\crud::fill_in()
@@ -115,19 +125,22 @@ class tests_tracking extends \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group crud
+	 * @group tracking_crud
+	 *
 	 * @covers \ingot\testing\crud\tracking::create()
 	 * @covers \ingot\testing\crud\tracking::read()
 	 */
 	public function testCreateWithData() {
+
 		$params = array(
 			'test_ID' => 2,
 			'group_ID' => 3,
-			'sequence_ID' => 7,
 			'IP' => '2.3.5.8.13',
 			'UTM' => array( 'a' => 'batman', 'c' => 'robin' ),
 			'browser' => 'firefox',
 			'user_agent' => 'windows and stuff',
-			'time' => time(),
+			'time' => current_time( 'mysql'),
 			'meta' => array( 'bees' => 'knees')
 		);
 
@@ -135,17 +148,9 @@ class tests_tracking extends \WP_UnitTestCase {
 		$tracking = \ingot\testing\crud\tracking::read( $created );
 		$params[ 'ID' ] = $created;
 		foreach( $params as $key => $value ) {
-			if( 'time' == $key ) {
-				$this->assertEquals( date("Y-m-d H:i:s", $value ), $tracking[ $key ] );
-			}else{
 				$this->assertEquals( $value, $tracking[ $key ] );
-			}
-
 		}
 
 	}
-
-
-
 
 }

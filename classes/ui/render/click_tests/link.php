@@ -25,19 +25,17 @@ class link extends \ingot\ui\render\click_tests\click {
 	 * @access protected
 	 */
 	protected function make_html() {
-		$test_id = $this->get_test()[ 'ID' ];
-		$text = $this->get_test()[ 'text' ];
-		$link = $this->get_group()[ 'link' ];
+		$test_id = $this->get_variant()[ 'ID' ];
+		$text = $this->get_variant()[ 'content' ];
+		$link = $this->link();
 		$group_id = $this->get_group()[ 'ID' ];
-		$sequence_id = $this->get_sequence()[ 'ID' ];
-		$click_nonce = util::click_nonce( $test_id, $sequence_id, $group_id );
+
 		$this->html = sprintf(
-			'<a id="%s" href="%s" class="ingot-test ingot-click-test ingot-click-test-link" data-ingot-test-id="%d" data-ingot-sequence-id="%d" data-ingot-test-nonce="%s">%s</a>',
+			'<a id="%s" href="%s" class="ingot-test ingot-click-test ingot-click-test-link ingot-group-%d" data-ingot-test-id="%d" >%s</a>',
 			esc_attr( $this->attr_id() ),
 			esc_url( $link ),
+			esc_attr( $group_id )
 			esc_attr( $test_id ),
-			esc_attr( $sequence_id ),
-			esc_attr( $click_nonce ),
 			esc_html( $text )
 		);
 

@@ -1,0 +1,42 @@
+{
+  "name": "ingot",
+  "description": "Conversion optimization made easy for WordPress",
+  "main": "/assets/admin/js",
+  "authors": [
+    "Josh Pollock"
+  ],
+  "license": "GPLv2+",
+  "keywords": [
+    "wordpress-plugin"
+  ],
+  "homepage": "http://IngotHQ.com",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.3.0",
+    "angular-ui-router": "~0.2.15",
+    "angular-aria": "~1.4.8",
+    "angular-resource": "~1.4.8",
+    "angular-bootstrap": "~0.14.3",
+    "angular-bootstrap-colorpicker": "~3.0.22",
+    "angular-sanitize": "~1.3.15",
+    "angular-translate": "~2.7.2",
+    "angular-translate-interpolation-messageformat": "~2.7.2",
+    "messageformat": "~0.2.2",
+    "angular-translate-storage-local": "~2.7.2",
+    "bootstrap": "~3.3.1",
+    "Chart.js": "~1.0.2",
+    "sweetalert": "~1.1.0"
+  },
+  "resolutions": {
+    "angular": "1.3.0",
+    "messageformat": "~0.2.2"
+  }
+}

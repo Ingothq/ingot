@@ -13,6 +13,8 @@ namespace ingot\testing\api\rest;
 
 
 use ingot\permissions;
+use ingot\testing\ingot;
+use ingot\testing\types;
 
 abstract class route  {
 
@@ -24,7 +26,6 @@ abstract class route  {
 	 * @var string
 	 */
 	protected $what;
-
 
 
 	/**
@@ -258,7 +259,7 @@ abstract class route  {
 	 * @return mixed
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		return array();
+		return $item;
 	}
 
 	/**
@@ -271,27 +272,7 @@ abstract class route  {
 	 * @return array
 	 */
 	public function make_array_values_numeric( $array ) {
-		if ( ! empty( $array ) ) {
-			foreach( $array as $k => $v ) {
-				if ( ! is_array( $v ) ) {
-					if ( ! is_numeric( $v ) ) {
-						$array[ $k ] = 0;
-					} else {
-						$array[ $k ] = (int) $v;
-					}
-				}else{
-					$array[ $k ] = $this->make_array_values_numeric( $v );
-				}
-
-			}
-
-		}
-
-		if ( empty( $array ) ) {
-			$array = array();
-		}
-
-		return $array;
+		return \ingot\testing\utility\helpers::make_array_values_numeric( $array );
 	}
 
 	public function strip_tags( $value, $request, $field ) {
@@ -429,4 +410,37 @@ abstract class route  {
 
 		return $base;
 	}
+
+	/**
+	 * Validate test type
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
+	public function allowed_type( $value ) {
+		return in_array( $value, types::allowed_types() );
+	}
+
+	/**
+	 * Validate sub_type click type
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param $value
+	 *
+	 * @return bool
+	 */
+	public function allowed_sub_tupe( $value, $request ) {
+		$type = $request->get_param( 'type' );
+		if( 'click' == $type ) {
+			return in_array( $value, types::allowed_click_types() );
+		}else{
+			return in_array( $value, types::allowed_price_types() );
+		}
+
+	}
+
 }

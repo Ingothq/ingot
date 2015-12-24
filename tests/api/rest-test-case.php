@@ -75,9 +75,15 @@ abstract class ingot_rest_test_case extends \WP_UnitTestCase {
 	 *
 	 * @since 0.2.0
 	 *
-	 *
+	 * @group rest
+	 * @group settings_rest
+	 * @group group_rest
+	 * @group tracking_rest
+	 * @group session_rest
+	 * @group variant_rest
 	 */
 	public function test_register_route() {
+
 		$routes = $this->server->get_routes();
 
 		$this->assertArrayHasKey( '/' . \ingot\testing\api\rest\util::get_namespace() . '/' . $this->route_name, $routes, get_class( $this ) );
@@ -85,8 +91,20 @@ abstract class ingot_rest_test_case extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test endpoint registration
+	 *
+	 * @since 0.2.0
+	 *
+	 * @group rest
+	 * @group settings_rest
+	 * @group group_rest
+	 * @group tracking_rest
+	 * @group session_rest
+	 * @group variant_rest
+	 */
 	public function test_endpoints() {
-		$the_route = '/' . \ingot\testing\api\rest\util::get_namespace() . '/' . $this->route_name;
+		$the_route = $this->namespaced_route;
 		$routes = $this->server->get_routes();
 		foreach( $routes as $route => $route_config ) {
 			if( 0 === strpos( $the_route, $route ) ) {
@@ -103,6 +121,7 @@ abstract class ingot_rest_test_case extends \WP_UnitTestCase {
 		}
 
 	}
+
 
 
 }

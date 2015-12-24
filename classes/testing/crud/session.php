@@ -12,7 +12,7 @@
 namespace ingot\testing\crud;
 
 
-class session extends table_crud {
+class session extends crud {
 	/**
 	 * Name of this object
 	 *
@@ -38,6 +38,7 @@ class session extends table_crud {
 
 	}
 
+
 	/**
 	 * Validate item config
 	 *
@@ -53,6 +54,7 @@ class session extends table_crud {
 		if( ! isset( $data[ 'created' ] ) ) {
 			$data[ 'created' ] = current_time( 'mysql' );
 		}
+
 		if( ! isset( $data[ 'IP' ] ) )  {
 			$data[ 'IP' ] = ingot_get_ip();
 		}

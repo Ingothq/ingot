@@ -1,114 +1,66 @@
 <div ng-controller="clickGroup">
+    <h2>
+        <span ng-show="!new_group">{{ 'Content Test: ' + group.name | translate }}</span>
+        <span ng-show="new_group">{{ 'New Content Test' | translate }}</span>
+    </h2>
+    <ul class="progress-indicator">
+        <li ng-click="change_step(1)" ng-class="{'active': group_step == 1, 'completed': group_step > 1 || !new_group }">
+            <span class="bubble"></span>
+            {{ 'Name' | translate }}
+        </li>
+        <li ng-click="change_step(2)" ng-class="{'active': group_step == 2, 'completed': group_step > 2 || !new_group  }">
+            <span class="bubble"></span>
+            {{ 'Type' | translate }}
+        </li>
+        <li ng-click="change_step(3)" ng-class="{'active': group_step == 3, 'completed': group_step > 3 || !new_group }">
+            <span class="bubble"></span>
+            {{ 'Data and Tests' | translate }}
+        </li>
+    </ul>
+    <h3 class="text-center">
+        <span ng-show="group_step == 1">{{ 'Group Name' | translate }}</span>
+        <span ng-show="group_step == 2">{{ 'Group Type' | translate }}</span>
+        <span ng-show="group_step == 3">{{ 'Group Data and Tests' | translate }}</span>
+    </h3>
     <form ng-submit="submit()" class="simple-form">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <ul class="list-inline">
-                    <li>
-                        <input type="submit" value="Save Group" id="save-group" class="btn btn-primary" />
-                    </li>
-                    <li>
-                        {{ group.name }}
-                    </li>
-                    <li>
-                        {{ 'group.type' | translate }} : {{group.click_type}}
-                    </li>
-                </ul>
+        <div ng-show="group_step == 1">
+            <p class="text-center">
+                {{ 'Name of your new test, be specific for easy reference later.' | translate }}
+            </p>
+            <div class="row group-type-select">
+                <div class="col-sm-3">
+                    <label for="test_name" class="control_label">
+                        {{ 'Test Name' | translate }}
+                    </label>
+                </div>
+                <input id="test_name" ng-model="group.name" class="col-sm-9"/>
             </div>
+            <span class="btn btn-primary pull-right" ng-click="change_step(2)">{{ 'Edit Group Type' | translate }}</span>
         </div>
-
-
-        <div class="row">
-            <div class="col-md-6 col-sm-12">
-                <h4 translate>
-                    {{ 'group.group_settings_header' | translate }}
-                </h4>
-                <div class="form-group row">
-                    <label for="name" class="col-md-4 col-sm-12">
-                        {{ 'group.name' | translate }}
-                    </label>
-                    <input id="name" type="text" ng-model="group.name" class="col-md-8 col-sm-12" ng-required="true" />
-                </div>
-                <div class="form-group row">
-                    <label for="click-type-select" class="col-md-4 col-sm-12">
-                        {{ 'group.type' | translate }}
-                    </label>
-                    <select name="click-type-select" id="click-type-select" class="col-md-8 col-sm-12" ng-model="group.click_type" ng-value="group.click_type">
-                        <option ng-repeat="option in group.click_type_options" ng-selected="group.click_type == option.value" value="{{option.value}}">
-                            {{option.label}}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group row">
-                    <label for="link" class="col-md-4 col-sm-12">
-                        {{ 'group.link_label_group_setting' | translate }}
-                    </label>
-                    <input id="link" type="text" ng-model="group.link" class="col-md-8 col-sm-12" ng-required="true" />
-                </div>
-                <div class="form-group row" ng-show="'button_color' == group.click_type">
-                    <label for="color_test_text" class="col-md-4 col-sm-12">
-                        {{ 'group.text_label_group_setting' | translate }}
-                    </label>
-                    <input id="color_test_text" type="text" ng-model="group.meta.color_test_text" class="col-md-8 col-sm-12" ng-required="'button_color' == group.click_type" />
-                </div>
-                <div class="form-group row" ng-show="'button' == group.click_type">
-                    <label for="button_test_color" class="col-md-4 col-sm-12">
-                        {{ 'group.color_label_group_setting' | translate }}
-                    </label>
-                    <input colorpicker="hex" id="button_test_color" type="text" ng-model="group.meta.color" class="col-md-8 col-sm-12" ng-required="'button' == group.click_type" />
-                </div>
-                <div class="form-group row" ng-show="'button' == group.click_type">
-                    <label for="button_test_background_color" class="col-md-4 col-sm-12">
-                        {{ 'group.background_color_label_group_setting' | translate }}
-                    </label>
-                    <input colorpicker="hex" id="button_test_background_color" type="text" ng-model="group.meta.background_color" class="col-md-8 col-sm-12" ng-required="'button' == group.click_type" />
-                </div>
-            </div>
-            <div class="col-md-5 col-md-offset-1 col-sm-12">
-                <h4>{{ 'group.tests_header' | translate }}</h4>
-
-                <div id="tests" ng-repeat="test in group.tests track by $index">
-                    <div id="test-{{test.ID}}">
-	                    <ng-form name="innerForm">
-	                        <div class="form-group row">
-                                <div class="col-md-5 col-sm-12">
-                                    <a ng-click="removeTest( test.ID )" ng-href="" class="btn btn-danger">
-                                        {{ 'group.delete' | translate }}
-                                    </a>
-                                </div>
-			                    <div class="col-md-7 col-sm-12" ng-show="'button_color' == group.click_type">
-				                    <label>Sample:</label><br />
-				                    <span class="btn" ng-style="buttonStyle(test.ID, group.click_type)">{{group.meta.color_test_text}}</span>
-			                    </div>
-	                        </div>
-	                        <div class="form-group row" ng-hide="'button_color' == group.click_type">
-	                            <label for="text-{{test.ID}}" class="col-md-5 col-sm-12">
-	                                {{ 'group.text_label_test_setting' | translate }}
-	                            </label>
-	                            <input name="text" type="text" id="text-{{test.ID}}" ng-model="test.text" ng-required="'button' == group.click_type" class="col-md-7 col-sm-12"/>
-	                        </div>
-	                        <div class="form-group row"  ng-show="'button_color' == group.click_type">
-	                            <label for="button-color-{{test.ID}}" class="col-md-5 col-sm-12">
-	                                {{ 'group.color_label_test_setting' | translate }}
-	                            </label>
-	                            <input colorpicker="hex" name="button-color" id="button-color-{{test.ID}}" type="text" ng-model="test.meta.color" class="col-md-7 col-sm-12" ng-required="'button_color' == group.click_type" />
-	                        </div>
-	                        <div class="form-group row" ng-show="'button_color' == group.click_type">
-	                            <label for="button-background_color-{{test.ID}}" class="col-md-5 col-sm-12">
-	                                {{ 'group.background_color_label_test_setting' | translate }}
-	                            </label>
-	                            <input colorpicker="hex" name="button-background_color" id="button-background_color-{{test.ID}}" type="text" ng-model="test.meta.background_color" class="col-md-7 col-sm-12" ng-required="'button_color' == group.click_type" />
-	                        </div>
-	                    </ng-form>
+        <div class="row" ng-show="group_step == 2">
+            <div class="col-sm-12">
+                <p class="text-center">
+                    {{ 'Type of test you want to perform' | translate }}
+                </p>
+                <div class="row group-type-select">
+                    <div class="col-sm-6" ng-repeat="type in click_type_options track by $index">
+                        <div class="group-wrapper" ng-class="{'active': type.value == group.sub_type}">
+                            <h3>{{type.label | translate}}</h3>
+                            <p ng-if="type.description">{{type.description | translate}}</p>
+                            <span class="btn btn-primary btn-block" ng-click="choose_group_type(type.value)" ng-class="{'btn-success': type.value == group.sub_type}">
+                                {{ type.label | translate}}
+                            </span>
+                        </div>
                     </div>
                 </div>
-
-                <a class="btn btn-default btn-block" ng-click="addNewTest()" href="">
-                    {{ 'group.add_test' | translate }}
-                </a>
-
+            </div>
+            <span class="btn btn-primary pull-left" ng-click="change_step(1)">{{ 'Edit Group Name' | translate }}</span>
+            <span class="btn btn-primary pull-right" ng-click="change_step(3)">{{ 'Edit Group Tests' | translate }}</span>
+        </div>
+        <div class="row group-type-select" ng-show="group_step == 3">
+            <div ng-if="has_type()" ng-include="partials_url + '/content-test-partials/' + group.sub_type + '.html'"></div>
+            <span class="btn btn-primary pull-left" ng-click="change_step(2)">{{ 'Edit Group Type' | translate }}</span>
+            <button type="submit" class="btn btn-primary pull-right">{{ 'Save Group' | translate }}</button>
         </div>
     </form>
-
-
-
 </div>

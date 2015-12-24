@@ -1,6 +1,6 @@
 {
     "name": "ingot/ingot",
-    "description": "I am a desciption",
+    "description": "Conversion optimization for WordPress made easy",
     "type": "wordpress-plugin",
     "keywords": [
         "wordpress"
@@ -12,17 +12,28 @@
             "name": "Josh Pollock",
             "homepage": "http://JoshPress.net",
             "role": "Developer"
+        },
+        {
+          "name": "Roy Sivan",
+          "homepage": "http://roysivan.com",
+          "role": "Developer"
         }
     ],
     "repositories": [
       {
         "type":"composer",
         "url":"http://wpackagist.org"
+      },
+      {
+        "type":"git",
+        "url":"https://github.com/ingothq/multiarmedbandit"
       }
     ],
     "require": {
-        "wpackagist-plugin/rest-api" : "*",
-        "calderawp/dismissible-notice": "dev-master"
+        "calderawp/dismissible-notice": "dev-master",
+        "ingot/mabandit" : "*",
+        "oefenweb/statistics": "dev-master",
+        "jaybizzle/crawler-detect": "1.*"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",

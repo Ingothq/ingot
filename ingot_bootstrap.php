@@ -50,8 +50,14 @@ class ingot_bootstrap {
 
 				if( self::check_if_tables_exist() ) {
 					ingot\testing\ingot::instance();
-					new ingot\ui\make();
+
+					//make admin go in admin
+					if ( is_admin() ) {
+						new \ingot\ui\admin\app\load();
+					}
+
 					self::maybe_load_api();
+
 
 					add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
 					add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
@@ -101,14 +107,16 @@ class ingot_bootstrap {
 	}
 
 	/**
-	 * If needed, add the custom table for sequences
-	 *
-	 * @since 0.0.7
-	 */
-	public static function maybe_add_sequence_table( $drop_first = false ) {
+	* If needed, add the custom table for groups
+	*
+	* @since 0.0.7
+	*
+	* @param bool $drop_first Optional. If true, DROP TABLE statement is made first. Default is false
+	*/
+	public static function maybe_add_group_table( $drop_first = false ) {
 		global $wpdb;
 
-		$table_name = \ingot\testing\crud\sequence::get_table_name();
+		$table_name = \ingot\testing\crud\group::get_table_name();
 
 		if( $drop_first  ) {
 			if( self::table_exists( $table_name )  ) {
@@ -124,24 +132,17 @@ class ingot_bootstrap {
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (
-		  ID mediumint(9) NOT NULL AUTO_INCREMENT,
-		  a_id mediumint(9) NOT NULL,
-		  b_id mediumint(9) NOT NULL,
-	   	  test_type VARCHAR( 255 ) NOT NULL,
-		  a_win mediumint(9) NOT NULL,
-		  b_win mediumint(9) NOT NULL,
-		  a_total mediumint(9) NOT NULL,
-		  b_total mediumint(9) NOT NULL,
-		  initial mediumint(9) NOT NULL,
-		  threshold mediumint(9) NOT NULL,
-		  created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		  modified  datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		  completed  tinyint(1) NOT NULL,
-		  group_ID mediumint(9) NOT NULL,
-		  UNIQUE KEY id (id)
+				ID bigint(9) NOT NULL AUTO_INCREMENT,
+				name VARCHAR(255) NOT NULL,
+				type VARCHAR(255) NOT NULL,
+				sub_type VARCHAR(255) NOT NULL,
+				variants LONGTEXT NOT NULL,
+				levers LONGTEXT NOT NULL,
+				meta LONGTEXT NOT NULL,
+				modified datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				UNIQUE KEY ID (ID)
 		) $charset_collate;";
-
-
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
@@ -149,7 +150,48 @@ class ingot_bootstrap {
 	}
 
 	/**
-	 * If needed, add the custom table for sequences
+	 * If needed, add the custom table for variants
+	 *
+	 * @since 0.0.7
+	 *
+	 * @param bool $drop_first Optional. If true, DROP TABLE statement is made first. Default is false
+	 */
+	public static function maybe_add_variant_table( $drop_first = false ) {
+		global $wpdb;
+
+		$table_name = \ingot\testing\crud\variant::get_table_name();
+
+		if( $drop_first  ) {
+			if( self::table_exists( $table_name )  ) {
+				$wpdb->query( "DROP TABLE $table_name" );
+			}
+
+		}
+
+		if(  self::table_exists( $table_name ) ) {
+			return;
+		}
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE $table_name (
+				ID bigint(9) NOT NULL AUTO_INCREMENT,
+				type VARCHAR(255) NOT NULL,
+				group_ID mediumint(9) NOT NULL,
+				content LONGTEXT NOT NULL,
+				meta LONGTEXT NOT NULL,
+				modified datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				UNIQUE KEY ID (ID)
+		) $charset_collate;";
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
+
+	}
+
+	/**
+	 * If needed, add the custom table for tracking
 	 *
 	 * @since 0.0.7
 	 *
@@ -176,7 +218,7 @@ class ingot_bootstrap {
 		$sql = "CREATE TABLE $table_name (
 		  ID bigint(9) NOT NULL AUTO_INCREMENT,
 		  group_ID mediumint(9) NOT NULL,
-		  sequence_ID mediumint(9) NOT NULL,
+		  ingot_ID mediumint(9) NOT NULL,
 		  test_ID mediumint(9) NOT NULL,
 		  IP VARCHAR(255) NOT NULL,
 		  UTM LONGTEXT NOT NULL,
@@ -193,51 +235,6 @@ class ingot_bootstrap {
 
 	}
 
-	/**
-	 * If needed, add the custom table for price groups
-	 *
-	 * @since 0.0.9
-	 *
-	 * @param bool $drop_first Optional. If true, DROP TABLE statemnt is made first. Default is false
-	 */
-	public static function maybe_add_price_group_table( $drop_first = false ) {
-		global $wpdb;
-
-		$table_name = \ingot\testing\crud\price_group::get_table_name();
-
-		if( $drop_first  ) {
-			if( self::table_exists( $table_name )  ) {
-				$wpdb->query( "DROP TABLE $table_name" );
-			}
-
-		}
-
-		if(  self::table_exists( $table_name ) ) {
-			return;
-		}
-
-		$charset_collate = $wpdb->get_charset_collate();
-
-		$sql = "CREATE TABLE $table_name (
-		  ID bigint(9) NOT NULL AUTO_INCREMENT,
-		  plugin VARCHAR(255) NOT NULL,
-		  group_name VARCHAR(255) NOT NULL,
-		  sequences LONGTEXT NOT NULL,
-		  test_order LONGTEXT NOT NULL,
-		  initial mediumint(9) NOT NULL,
-		  threshold mediumint(9) NOT NULL,
-		  product_ID BIGINT NOT NULL,
-		  type VARCHAR(255) NOT NULL,
-		  current_sequence mediumint(9) NOT NULL,
-		  created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		  modified  datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		  UNIQUE KEY ID (ID)
-		) $charset_collate;";
-
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta( $sql );
-
-	}
 
 	/**
 	 * If needed, add the custom table for session
@@ -396,10 +393,10 @@ class ingot_bootstrap {
 	 * @access protected
 	 */
 	protected static function add_tables() {
-		self::maybe_add_sequence_table();
 		self::maybe_add_tracking_table();
-		self::maybe_add_price_group_table();
 		self::maybe_add_session_table();
+		self::maybe_add_group_table();
+		self::maybe_add_variant_table();
 		self::check_if_tables_exist();
 	}
 
@@ -413,7 +410,11 @@ class ingot_bootstrap {
 	 * @return bool
 	 */
 	protected static function check_if_tables_exist() {
-		if ( ! self::table_exists( \ingot\testing\crud\sequence::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() ) || ! self::table_exists( \ingot\testing\crud\session::get_table_name() ) ) {
+		if ( ! self::table_exists( \ingot\testing\crud\tracking::get_table_name() )
+		     || ! self::table_exists( \ingot\testing\crud\group::get_table_name() )
+		     || ! self::table_exists( \ingot\testing\crud\session::get_table_name() )
+		     || ! self::table_exists( \ingot\testing\crud\variant::get_table_name() )
+		) {
 			return false;
 
 

@@ -12,12 +12,14 @@
 namespace ingot\testing;
 
 
+use ingot\testing\api\rest\groups;
 use ingot\testing\api\rest\price_test;
 use ingot\testing\api\rest\price_test_group;
 use ingot\testing\api\rest\products;
 use ingot\testing\api\rest\test;
 use ingot\testing\api\rest\test_group;
 use ingot\testing\api\rest\util;
+use ingot\testing\api\rest\variant;
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_group;
 use ingot\testing\crud\sequence;
@@ -73,23 +75,28 @@ class ingot {
 	 */
 	public function hooks(){
 		add_action( 'rest_api_init', array( __CLASS__ , 'boot_rest_api' ) );
-		add_action( 'wp_enqueue_scripts', function() {
-			$version = INGOT_VER;
-			if( WP_DEBUG ) {
-				$version = rand();
-			}
-
-			wp_enqueue_script( 'ingot', INGOT_URL . '/assets/front-end/js/ingot-click-test.js', array( 'jquery'), $version, true );
-			wp_localize_script( 'ingot', 'INGOT_VARS', ingot::js_vars() );
-		});
-
-		add_action( 'ingot_crud_created', array( $this, 'create_hook' ), 10, 2 );
-		add_action( 'ingot_crud_updated', array( $this, 'update_hook'), 10, 2 );
-		add_filter( 'ingot_crud_read', array( $this, 'read_hook' ), 10, 2 );
-
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
 
-		add_action( 'parse_request', array( $this, 'init_session' ), 50 );
+		if ( ! ingot_is_bot() ) {
+			add_action( 'wp_enqueue_scripts', function () {
+				$version = INGOT_VER;
+				$min = '.min';
+				if ( SCRIPT_DEBUG ) {
+					$min = '';
+					$version = rand();
+				}
+				wp_enqueue_script( 'ingot', INGOT_URL . "/assets/front-end/js/ingot-click-test{$min}.js", array( 'jquery' ), $version, true );
+				wp_localize_script( 'ingot', 'INGOT_UI', ingot::js_vars() );
+
+			} );
+
+
+			add_action( 'parse_request', array( $this, 'init_session' ), 50 );
+		}
+
+
+
+
 	}
 
 	/**
@@ -99,16 +106,10 @@ class ingot {
 	 */
 	public static function boot_rest_api() {
 		if ( ! did_action( 'ingot_rest_api_booted' ) ) {
-			$test_group = new test_group();
-			$test_group->register_routes();
-			$test = new test();
-			$test->register_routes();
-			$sequence = new \ingot\testing\api\rest\sequence();
-			$sequence->register_routes();
-			$price_test_group = new price_test_group();
-			$price_test_group->register_routes();
-			$price_test = new price_test();
-			$price_test->register_routes();
+			$group = new groups();
+			$group->register_routes();
+			$variant = new variant();
+			$variant->register_routes();
 			$settings = new \ingot\testing\api\rest\settings();
 			$settings->register_routes();
 			$products = new products();
@@ -146,7 +147,7 @@ class ingot {
 	}
 
 	/**
-	 * Data to be localize as INGOT_VARS
+	 * Data to be localize as INGOT_UI
 	 *
 	 * @return array
 	 */
@@ -159,77 +160,6 @@ class ingot {
 		);
 
 		return $vars;
-	}
-
-	public  function read_hook( $item, $what ) {
-		if ( 'group' == $what ){
-			if( empty( $item[ 'sequences'] ) ){
-				remove_filter( 'ingot_crud_read', array( $this, 'read_hook' ) );
-				\ingot\testing\tests\sequence_progression::make_initial_sequence( $item[ 'ID' ] );
-				$group = group::read( $item[ 'ID' ] );
-				return $group;
-
-
-			}
-		}elseif( 'tracking' == $what ) {
-			foreach( array(
-				'meta',
-				'UTM'
-			) as $key ) {
-				$item[ $key ] = maybe_unserialize( $item[ $key ] );
-			}
-
-			return $item;
-		}elseif( 'price_group' == $what ) {
-			foreach( array(
-				'sequences',
-				'test_order'
-			) as $key ) {
-				$item[ $key ] = maybe_unserialize( $item[ $key ] );
-			}
-			return $item;
-		}
-
-
-		return $item;
-	}
-	/**
-	 * Routes post create hook
-	 *
-	 * @uses "ingot_crud_created"
-	 *
-	 * @since 0.0.5
-	 *
-	 * @param int $id Item ID
-	 * @param string $what Item type
-	 */
-	public  function create_hook( $id, $what){
-		if( 'group' == $what || 'price_group' == $what ){
-			$price = false;
-			if( 'price_group' == $what ){
-				$price = true;
-			}
-
-			\ingot\testing\tests\sequence_progression::make_initial_sequence( $id, $price );
-
-		}
-	}
-
-	/**
-	 * Routes post update hook
-	 *
-	 * @uses "ingot_crud_updated"
-	 *
-	 * @since 0.0.5
-	 *
-	 * @param int $id Item ID
-	 * @param string $what Item type
-	 */
-	public  function update_hook( $id, $what){
-		if( 'test' == $what ) {
-
-		}
-
 	}
 
 	/**
@@ -251,4 +181,7 @@ class ingot {
 	}
 
 
+
 }
+
+
