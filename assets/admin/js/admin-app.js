@@ -372,6 +372,8 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
     })
 
 
+    $scope.no_stats = INGOT_TRANSLATION.no_stats;
+
     $scope.group_id = groupID;
     if ( 'undefined' == groupID ) {
         swal( {
