@@ -217,6 +217,9 @@ class load {
 			'no_tests'                 => __( 'This group has no tests', 'ingot' ),
 			'invalid_price_test_range' => __( 'Please enter a number between -.99 and .99', 'ingot' ),
 			'settings_saved'           => __( 'Settings Saved', 'ingot' ),
+			'stats' => array(
+				'no_stats' => __( 'No Stats for this group yet', 'ingot'),
+			),
 			'groups' => array(
 				'click_group_page_title' => __( 'Content Test Groups', 'ingot' ),
 				'price_group_page_title' => __( 'Price Test Groups', 'ingot' ),

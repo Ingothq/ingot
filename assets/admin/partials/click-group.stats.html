@@ -1,7 +1,9 @@
 <h2>Stats for Group: {{group.name}}</h2>
 
 <div ng-show="!stats_exist">
-    <h3 class="error">No Stats for this group yet</h3>
+    <h3 class="error">
+        {{no_stats}}
+    </h3>
 </div>
 <div id="chartWrapper" ng-show="stats_exist">
     <canvas id="ingotChart" width="600" height="400"></canvas>
