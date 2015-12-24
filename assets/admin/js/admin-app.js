@@ -389,7 +389,7 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                 'X-WP-Nonce': INGOT_ADMIN.nonce
             }
         } ).success( function( res ){
-
+            $scope.stats = res;
             $scope.chart_data = {
                 labels: [],
                 datasets: [
@@ -414,59 +414,49 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
     }
 
+    Chart.types.Bar.extend({
+        name: 'BarOverlay',
+        draw: function (ease) {
+
+            // First draw the main chart
+            Chart.types.Bar.prototype.draw.apply(this);
+
+            var ctx = this.chart.ctx;
+            var barWidth = this.scale.calculateBarWidth(this.datasets.length);
+
+            for (var i = 0; i < this.options.verticalOverlayAtBar.length; ++i) {
+
+                var overlayBar = this.options.verticalOverlayAtBar[i];
+
+                // I'm hard-coding this to only work with the first dataset, and using a Y value that I know is maximum
+                var x = this.scale.calculateBarX(this.datasets.length, 0, overlayBar);
+                var y = this.scale.calculateY(overlayBar);
+
+                var bar_base = this.scale.endPoint;
+
+                ctx.beginPath();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'rgba(255, 0, 0, 1.0)';
+                ctx.moveTo(100, y);
+                ctx.lineTo(jQuery('#ingotChart').outerWidth(), y);
+                ctx.stroke();
+            }
+            ctx.closePath();
+        }
+    });
+
     $scope.setChart = function( avg ) {
         console.log( 'setting chart..' );
 
         var ctx = document.getElementById("ingotChart").getContext("2d");
         setTimeout(function(){
-            //var ingot_chart = new Chart(ctx).Bar( $scope.chart_data, {
-            //    scaleLabel: "          <%=value%>%",
-            //    responsive: false,
-            //    barValueSpacing: 10
-            //} );
-            //jQuery('#chartWrapper').append( ingot_chart.generateLegend() );
-
-
-            Chart.types.Bar.extend({
-                name: 'BarOverlay',
-                draw: function (ease) {
-
-                    // First draw the main chart
-                    Chart.types.Bar.prototype.draw.apply(this);
-
-                    var ctx = this.chart.ctx;
-                    var barWidth = this.scale.calculateBarWidth(this.datasets.length);
-
-                    for (var i = 0; i < this.options.verticalOverlayAtBar.length; ++i) {
-
-                        var overlayBar = this.options.verticalOverlayAtBar[i];
-
-                        // I'm hard-coding this to only work with the first dataset, and using a Y value that I know is maximum
-                        var x = this.scale.calculateBarX(this.datasets.length, 0, overlayBar);
-                        var y = this.scale.calculateY(overlayBar);
-
-                        var bar_base = this.scale.endPoint;
-
-                        ctx.beginPath();
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = 'rgba(255, 0, 0, 1.0)';
-                        ctx.moveTo(100, y);
-                        ctx.lineTo(jQuery('#ingotChart').outerWidth(), y);
-                        ctx.stroke();
-                    }
-                    ctx.closePath();
-                }
-            });
-
             var ingot_chart = new Chart(ctx).BarOverlay( $scope.chart_data, {
                 scaleLabel: "          <%=value%>%",
                 responsive: true,
                 barValueSpacing: 10,
                 verticalOverlayAtBar: [ avg ]
             } );
-
-
-
+            jQuery('#chartWrapper').append( ingot_chart.generateLegend() );
         }, 100);
 
     }
