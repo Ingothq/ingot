@@ -3,7 +3,7 @@
         <label for="link" class="col-md-4 col-sm-12">
             {{ 'group.link_label_group_setting' | translate }}
         </label>
-        <input id="link" type="text" ng-model="group.meta.link" class="col-md-8 col-sm-12" ng-required="true" />
+        <input id="link" type="url" ng-model="group.meta.link" class="col-md-8 col-sm-12" ng-required="true" />
     </div>
     <div class="col-sm-6">
         <div id="tests" ng-repeat="variant in group.variants track by $index">
