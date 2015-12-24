@@ -34,7 +34,7 @@ class link extends \ingot\ui\render\click_tests\click {
 			'<a id="%s" href="%s" class="ingot-test ingot-click-test ingot-click-test-link ingot-group-%d" data-ingot-test-id="%d" >%s</a>',
 			esc_attr( $this->attr_id() ),
 			esc_url( $link ),
-			esc_attr( $group_id )
+			esc_attr( $group_id ),
 			esc_attr( $test_id ),
 			esc_html( $text )
 		);
