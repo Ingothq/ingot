@@ -375,16 +375,12 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
 
     console.log( 'starting stats..' );
 
-
     var groupID = $stateParams.groupID;
-
-
-
-
     $scope.no_stats = INGOT_TRANSLATION.no_stats;
-
     $scope.group_id = groupID;
+
     if ( 'undefined' == groupID ) {
+
         swal( {
             title: INGOT_TRANSLATION.fail,
             text: INGOT_TRANSLATION.sorry,
@@ -392,7 +388,9 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
             confirmButtonText: INGOT_TRANSLATION.close
         } );
         $state.go( 'clickTests.list' );
+
     } else {
+
         $http({
             url: INGOT_ADMIN.api + 'groups/' + groupID + '/stats?_wpnonce=' + INGOT_ADMIN.nonce + '&context=admin',
             method:'GET',
@@ -407,45 +405,34 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
             }
 
             $scope.stats = res;
-
-            $http({
-                url: INGOT_ADMIN.api + 'groups/' + groupID + '?_wpnonce=' + INGOT_ADMIN.nonce,
-                method:'GET',
-                headers: {
-                    'X-WP-Nonce': INGOT_ADMIN.nonce
-                }
-            } ).success( function( res ){
-
-                console.log( res );
-
-                $scope.chart_data = {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: ['Conversion Rate'],
-                            fillColor: "rgba(220,220,220,0.5)",
-                            strokeColor: "rgba(220,220,220,0.8)",
-                            highlightFill: "rgba(220,220,220,0.75)",
-                            highlightStroke: "rgba(220,220,220,1)",
-                            data: []
-                        }
-                    ]
-                }
-                angular.forEach( $scope.stats.variants, function( variant, i ) {
-                    var name;
-                    if( 'undefined' != variant.name ) {
-                        name = variant.name;
-                    }else{
-                        name = 'Variant ' + i;
+            $scope.chart_data = {
+                labels: [],
+                datasets: [
+                    {
+                        label: ['Conversion Rate'],
+                        fillColor: "rgba(220,220,220,0.5)",
+                        strokeColor: "rgba(220,220,220,0.8)",
+                        highlightFill: "rgba(220,220,220,0.75)",
+                        highlightStroke: "rgba(220,220,220,1)",
+                        data: []
                     }
-                    $scope.chart_data.labels.push( name );
-                    var rate = Math.round( variant.conversion_rate * 100 ) / 100;
-                    $scope.chart_data.datasets[0].data.push( rate );
-                });
+                ]
+            }
+            angular.forEach( $scope.stats.variants, function( variant, i ) {
+                var name;
 
-                $scope.setChart( $scope.stats.group.average_conversion_rate );
-
+                if( 'undefined' !== variant.name ) {
+                    name = variant.name;
+                }else{
+                    name = 'Variant ' + i;
+                }
+                $scope.chart_data.labels.push( name );
+                var rate = Math.round( variant.conversion_rate * 100 ) / 100;
+                $scope.chart_data.datasets[0].data.push( rate );
             });
+
+            $scope.setChart( $scope.stats.group.average_conversion_rate );
+
         });
 
     }

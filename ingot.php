@@ -10,6 +10,7 @@ define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
 
+
 add_action( 'init', function(){
 //	include_once( dirname( __FILE__ ) . '/tests/functions_for_tests.php' );
 //	include_once( dirname( __FILE__ ) . '/includes/functions.php' );
