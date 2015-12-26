@@ -6,3 +6,5 @@ build/*
 wp-api
 .idea/
 bower_components
+assets/vendor
+index

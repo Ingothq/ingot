@@ -125,14 +125,15 @@ module.exports = function (grunt) {
         uglify: {
             frontend: {
                 files: {
-                    'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ]
+                    'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ],
+                    'assets/admin/js/ingot-admin-dependencies.min.js' : ['assets/admin/js/ingot-admin-dependencies.js' ]
                 }
             },
             admin:{
                 files: {
                     'assets/admin/js/admin-app.min.js': [ 'assets/admin/js/admin-app.js' ]
                 }
-            },
+            }
         },
         watch: {
             files: [
@@ -140,7 +141,20 @@ module.exports = function (grunt) {
                 'assets/front-end/js/ingot-click-test.js'
             ],
             tasks: ['default']
-        }
+        },
+        concat: {
+            options: {
+
+            },
+            admin_js: {
+                src: [ 'assets/vendor/js/**/*.js' ],
+                dest: 'assets/admin/js/ingot-admin-dependencies.js'
+            },
+            admin_css:{
+                src: [ 'assets/vendor/css/**/*.css' ],
+                dest: 'assets/admin/css/ingot-admin-dependencies.css'
+            }
+        },
 
     });
 
@@ -153,6 +167,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks( 'grunt-contrib-concat' );
 
 
 
