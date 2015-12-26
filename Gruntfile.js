@@ -50,7 +50,8 @@ module.exports = function (grunt) {
                     '!.travis.yml',
                     '!.scrutinizer.yml',
                     '!phpunit.xml',
-                    '!tests/**'
+                    '!tests/**',
+                    '!bower_components'
                 ],
                 dest: 'build/<%= pkg.name %>/'
             }
