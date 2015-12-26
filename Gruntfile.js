@@ -124,15 +124,11 @@ module.exports = function (grunt) {
         },
         uglify: {
             frontend: {
-
                 files: {
                     'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ]
                 }
             },
             admin:{
-                options: {
-                    mangle: false
-                },
                 files: {
                     'assets/admin/js/admin-app.min.js': [ 'assets/admin/js/admin-app.js' ]
                 }

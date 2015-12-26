@@ -313,14 +313,20 @@ class group {
 		if( ! empty( $this->group[ 'variants' ] ) ){
 			//this loop is dumb -- https://github.com/Ingothq/ingot/issues/101
 			foreach( $this->group[ 'variants' ] as $i => $variant_id ) {
-				$variant = variant::read( $variant_id );
-				if( is_array( $variant ) ) {
-					$name = $variant[ 'content' ];
+
+				if( is_array( $variant_id ) && isset( $variant_id[ 'content' ] ) ) {
+					$name = $variant_id[ 'content' ];
+					$variant_id = $variant_id[ 'ID' ];
 				}else{
-					$name = $variant_id;
+					$variant = variant::read( $variant_id );
+					if ( is_array( $variant ) ) {
+						$name = $variant[ 'content' ];
+					}
 				}
 
-				$data[ 'variants' ][ $variant_id ] = $name;
+				if ( is_numeric( $variant_id ) ) {
+					$data[ 'variants' ][ $variant_id ] = $name;
+				}
 
 			}
 

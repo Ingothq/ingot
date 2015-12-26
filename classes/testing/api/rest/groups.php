@@ -89,12 +89,11 @@ class groups extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function create_item( $request ) {
+		$variants = helpers::sanitize( $request->get_param( 'variants' ) );
 
-		$group_args = $this->prepare_item_for_database( $request );
+		$group_args = $this->prepare_item_for_database( $request, true );
+		$group_args[ 'variants' ] = [];
 
-		$variants = helpers::v_sanitized( 'variants', $group_args, []  );
-		$variants_ids = [];
-		$group_args[ 'variants' ] = $variants_ids;
 		$id = group::create( $group_args );
 		$item = new \WP_Error( 'ingot-unknown-error' );
 		if( is_wp_error( $id ) ) {
@@ -103,7 +102,7 @@ class groups extends route {
 
 		if ( is_numeric( $id ) ) {
 			$item = group::read( $id );
-
+			$item[ 'variants' ] = $variants;
 			if ( is_array( $item ) ) {
 				$variants_ids = $this->save_variants( $item );
 				if( is_wp_error( $variants_ids ) ) {
@@ -402,13 +401,15 @@ class groups extends route {
 	 * @param \WP_REST_Request $request Request object
 	 * @return \WP_Error|object $prepared_item
 	 */
-	protected function prepare_item_for_database( $request ) {
+	protected function prepare_item_for_database( $request, $new_group = false ) {
 		$group_args = $request->get_params();
 		$allowed    = $this->allowed_fields();
-		$group_args[ 'variants' ] = $this->save_variants( $group_args );
-		if( is_wp_error( $group_args[ 'variants' ] ) ){
-			return $group_args[ 'variants' ];
+		if ( false == $new_group  ) {
+			$group_args[ 'variants' ] = $this->save_variants( $group_args );
+			if ( is_wp_error( $group_args[ 'variants' ] ) ) {
+				return $group_args[ 'variants' ];
 
+			}
 		}
 
 		foreach ( $group_args as $key => $value ) {
@@ -426,7 +427,7 @@ class groups extends route {
 	 *
 	 * @since 0.4.0
 	 *
-	 * @param array $group Group config -- variants key should be an arry of variant configs to save
+	 * @param array $group Group config -- variants key should be an array of variant configs to save
 	 *
 	 * @return array||WP_Error
 	 */

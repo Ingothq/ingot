@@ -1,14 +1,15 @@
 <?php
 /**
  Plugin Name: Ingot
-Version: 0.4.0
+Version: 1.0.0-b-1
  */
 
 
-define( 'INGOT_VER', '0.4.0' );
+define( 'INGOT_VER', '1.0.0-b-1' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
+
 
 add_action( 'init', function(){
 //	include_once( dirname( __FILE__ ) . '/tests/functions_for_tests.php' );
