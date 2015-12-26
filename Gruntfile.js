@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         pkg     : grunt.file.readJSON( 'package.json' ),
         shell: {
             composer: {
-                command: 'composer update --no-dev'
+                command: 'composer update --no-dev --optimize-autoloader --prefer-dist'
             },
             bower: {
                 command: 'bower update'
