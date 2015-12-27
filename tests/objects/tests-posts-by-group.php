@@ -95,4 +95,73 @@ class tests_posts_by_group extends \WP_UnitTestCase {
 		$this->assertEquals( array_values( $expected ), array_values( $obj->get_groups() ) );
 	}
 
+	/**
+	 * Test that we can overwrite assoiation
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group objects
+	 * @group posts_object
+	 *
+	 * @covers \ingot\testing\object\posts::add()
+	 */
+	public function testOverwrite(){
+		$groups = [5,3,7];
+		$groups_2 = [9,4,7,12];
+		$obj = new \ingot\testing\object\posts( $this->the_post );
+		$obj->add( $groups );
+		$obj->add( $groups_2, true );
+		$this->assertEquals( array_values( $groups_2 ), array_values( $obj->get_groups() ) );
+
+		$this->assertEquals( array_values( $groups_2 ), array_values( get_post_meta( $this->the_post->ID, 'ingot_groups', true ) ) );
+	}
+
+	/**
+	 * Test that we can find the IDs from the shortcodes in post content
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group objects
+	 * @group posts_object
+	 *
+	 * @covers ingot\testing\utility\posts::find_ids()
+	 */
+	public function testFindShortcodes() {
+		$str = 'fdsjklsdfajkl [ingot id="7"] asdfghj  sdfghjj xfsd [ingot id="3"] sdf ';
+
+		$found = \ingot\testing\utility\posts::find_ids( $str  );
+
+		$this->assertSame( [7,3], $found );
+	}
+
+	/**
+	 * Test that we can find the IDs from the shortcodes in post content
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group objects
+	 * @group posts_object
+	 *
+	 * @covers ingot\testing\utility\posts::update_groups_in_post()
+	 */
+	public function testUpdatePost(){
+		$id = $this->factory->post->create( [
+			'post_title' => 'good',
+			'post_content' => 'sfdjlakjsdf [ingot id="9"] sfdj fsdkdfs SDF657R542 ingot id="7" fsd [ingot id="42"][ingot id="11"]'
+		]);
+		$post = get_post( $id );
+		\ingot\testing\utility\posts::update_groups_in_post( $post );
+		$obj = new \ingot\testing\object\posts( get_post( $id ) );
+		$expected = [9,42,11];
+		$this->assertSame( $expected, $obj->get_groups() );
+		$post->post_content = 'sfdjlakjsdf [ingot id="9"]';
+		\ingot\testing\utility\posts::update_groups_in_post( $post );
+		$obj = new \ingot\testing\object\posts( get_post( $id ) );
+		$this->assertSame( [9], $obj->get_groups() );
+
+	}
+
 }

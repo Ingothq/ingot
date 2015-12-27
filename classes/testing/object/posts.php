@@ -81,14 +81,17 @@ class posts {
 	 * @since 1.1.0
 	 *
 	 * @param int|array $id Group ID or array of IDs to add.
+	 * @param bool $overwrite Optional. If true, overwrite saved with new values. Default is false.
 	 */
-	public function add( $id ){
+	public function add( $id, $overwrite = false ){
+		if( true == $overwrite && is_numeric( $id ) || is_array( $id ) ){
+			$this->groups = [];
+		}
+
 		if( is_numeric( $id ) ) {
 			$this->groups[] = $id;
 			$this->update();
-		}
-
-		if( is_array( $id ) ) {
+		}elseif( is_array( $id ) ) {
 			if( empty( $this->groups ) ) {
 				$this->groups = helpers::make_array_values_numeric( $id );
 			}else{
