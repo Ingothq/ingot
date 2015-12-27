@@ -166,8 +166,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-git' );
     grunt.loadNpmTasks( 'grunt-text-replace' );
     grunt.loadNpmTasks( 'grunt-shell');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks( 'grunt-contrib-uglify');
+    grunt.loadNpmTasks( 'grunt-contrib-watch');
     grunt.loadNpmTasks( 'grunt-contrib-concat' );
 
 
