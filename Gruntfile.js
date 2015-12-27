@@ -12,7 +12,7 @@ module.exports = function (grunt) {
                 command: 'bower update'
             },
             activate : {
-                command: 'composer update --no-dev; bower update'
+                command: 'composer update --no-dev; bower update; bower-installer'
             }
         },
         clean: {
