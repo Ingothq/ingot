@@ -51,7 +51,8 @@ module.exports = function (grunt) {
                     '!.scrutinizer.yml',
                     '!phpunit.xml',
                     '!tests/**',
-                    '!bower_components'
+                    '!bower_components/**',
+                    '!bin/**'
                 ],
                 dest: 'build/<%= pkg.name %>/'
             }
