@@ -86,6 +86,41 @@ class posts {
 
 	}
 
+	/**
+	 * @param $group_ids
+	 *
+	 * @return \WP_Query
+	 */
+	public static function posts_by_group( $group_ids ){
+		if( is_numeric( $group_ids ) ){
+			$group_ids = [ $group_ids ];
+		}
+
+		$args = [
+			'post_type' => 'any',
+			'posts_per_page' => 50,
+			'meta_query' => array(
+				array(
+					'key'     => self::meta_key(),
+					'value'   => $group_ids,
+					'compare' => 'IN',
+					'type' => 'NUMERIC'
+				),
+			),
+		];
+
+		/**
+		 * Filter args for WP_Query used to query by group IDs
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array $args WP_Query args
+		 */
+		$args = apply_filters( 'ingot_query_by_groups_args', $args );
+
+		return new \WP_Query( $args );
+
+	}
 
 	/**
 	 * Find group ID in shortcode
@@ -103,4 +138,16 @@ class posts {
 		}
 
 	}
+
+	/**
+	 * Get name of meta key used to store group/post association
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
+	public static function meta_key(){
+		return 'ingot_groups';
+	}
+
 }

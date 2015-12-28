@@ -25,7 +25,7 @@ class posts {
 	 *
 	 * @var string
 	 */
-	private $meta_key = 'ingot_groups';
+	private $meta_key;
 
 	/**
 	 * Groups associated with this post
@@ -47,7 +47,7 @@ class posts {
 	 *
 	 * @var \WP_Post
 	 */
-	private $post;
+	public $post;
 
 	/**
 	 * Construct object
@@ -57,6 +57,7 @@ class posts {
 	 * @param |WP_Post|integer $post
 	 */
 	public function __construct( $post ){
+		$this->meta_key = \ingot\testing\utility\posts::meta_key();
 		$this->set_post( $post );
 		if( $this->post ) {
 			$this->set_groups();
@@ -80,22 +81,23 @@ class posts {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int|array $id Group ID or array of IDs to add.
+	 * @param int|array $ids Group ID or array of IDs to add.
 	 * @param bool $overwrite Optional. If true, overwrite saved with new values. Default is false.
 	 */
-	public function add( $id, $overwrite = false ){
-		if( true == $overwrite && is_numeric( $id ) || is_array( $id ) ){
+	public function add( $ids, $overwrite = false ){
+		if( true == $overwrite && ( is_numeric( $ids ) || is_array( $ids ) ) ){
 			$this->groups = [];
 		}
 
-		if( is_numeric( $id ) ) {
-			$this->groups[] = $id;
-			$this->update();
-		}elseif( is_array( $id ) ) {
+		if( is_numeric( $ids ) ) {
+			$ids = [$ids];
+		}
+
+		if( is_array( $ids ) ) {
 			if( empty( $this->groups ) ) {
-				$this->groups = helpers::make_array_values_numeric( $id );
+				$this->groups = helpers::make_array_values_numeric( $ids );
 			}else{
-				foreach( $id as $i ){
+				foreach( $ids as $i ){
 					if ( is_numeric( $i ) ) {
 						$this->groups[] = (int) $i;
 					}
@@ -135,10 +137,18 @@ class posts {
 	 * @access protected
 	 */
 	protected function update( ) {
-		update_post_meta( $this->post->ID, $this->meta_key, $this->groups );
-		if (! empty( $this->groups ) ) {
-			$this->groups = array_values( $this->groups );
+		$this->clean_groups_var();
+
+		if( ! empty( $current =  $this->current_meta() ) ) {
+			foreach( $current as $value ) {
+				delete_post_meta( $this->post->ID, $this->meta_key, $value );
+			}
 		}
+
+		foreach( $this->groups as $group ){
+			add_post_meta( $this->post->ID, $this->meta_key, (int) $group );
+		}
+
 	}
 
 	/**
@@ -149,7 +159,7 @@ class posts {
 	 * @access private
 	 */
 	private function set_groups(){
-		$this->groups = helpers::make_array_values_numeric( get_post_meta( $this->post->ID, $this->meta_key, true ) );
+		$this->groups = $this->current_meta();
 	}
 
 	/**
@@ -170,6 +180,21 @@ class posts {
 			$this->post = $post;
 		}
 
+	}
+
+	protected function clean_groups_var() {
+		if ( ! empty( $this->groups ) ) {
+			$this->groups = array_unique( $this->groups );
+			$this->groups = array_values( $this->groups );
+		}
+
+	}
+
+	/**
+	 * @return array
+	 */
+	private function current_meta() {
+		return helpers::make_array_values_numeric( get_post_meta( $this->post->ID, $this->meta_key, false ) );
 	}
 
 
