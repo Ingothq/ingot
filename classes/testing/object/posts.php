@@ -47,7 +47,7 @@ class posts {
 	 *
 	 * @var \WP_Post
 	 */
-	public $post;
+	private $post;
 
 	/**
 	 * Construct object

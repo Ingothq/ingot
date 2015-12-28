@@ -243,8 +243,6 @@ class tests_posts_by_group extends \WP_UnitTestCase {
 			}
 		}
 
-
-
 	}
 
 }
