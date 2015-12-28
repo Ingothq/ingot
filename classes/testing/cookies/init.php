@@ -164,8 +164,8 @@ class init {
 	 */
 	protected function setup_price_cookie() {
 
-		$price = new \ingot\testing\cookies\price( [], $this->cookie[ 'price' ] );
-		$this->cookie[ 'price' ] = $price->get_price_cookie();
+		$price = new \ingot\testing\cookies\price( $this->cookie[ 'price' ] );
+		$this->cookie[ 'price' ] = $price->get_cookie();
 	}
 
 
@@ -191,7 +191,8 @@ class init {
 	 * @access protected
 	 */
 	protected function setup_user_cookie(){
-
+		$user = new user();
+		return $user->get_cookie();
 	}
 
 }

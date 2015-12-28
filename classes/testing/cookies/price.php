@@ -15,18 +15,9 @@ use ingot\testing\crud\group;
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
 
-class price {
+class price extends cookie {
 
-	/**
-	 * The price cookie
-	 *
-	 * @since 0.2.0
-	 *
-	 * @access protected
-	 *
-	 * @var array
-	 */
-	private $price_cookie;
+
 
 	/**
 	 * @var array
@@ -37,26 +28,18 @@ class price {
 	/**
 	 * Construct object
 	 *
-	 * @since 0.0.9
+	 * @since 1.1.0
 	 *
-	 * @param array $current_sequences Current sequences
-	 * @param array $price_cookie Price cookie portion of our cookie
+	 * @param array $cookie Current contents of this part of cookie
 	 * @param bool $reset Optional. Whether to rest or not, default is false
 	 */
-	public function __construct( $current_sequences, $price_cookie, $reset = true ){
-		$this->set_price_cookie( $price_cookie, $reset );
+	public function __construct(  $cookie, $reset = true ){
+		parent::__construct( $cookie, $reset );
+		$this->get_tests();
+		if( ! empty( $this->tests ) ){
+			$this->setup_cookie();
+		}
 
-	}
-
-	/**
-	 * Get price cookie
-	 *
-	 * @since 0.0.9
-	 *
-	 * @return array Price cookie portion of our cookie
-	 */
-	public function get_price_cookie() {
-		return $this->price_cookie;
 	}
 
 
@@ -74,7 +57,7 @@ class price {
 
 	}
 
-	protected function setup_price_cookie(){
+	protected function setup_cookie(){
 		foreach( $this->tests as $test ) {
 			if( $this->needed_to_add( $test ) ){
 				$this->add_test( $test );
@@ -83,12 +66,12 @@ class price {
 	}
 
 	protected function needed_to_add( $test ){
-		if( ! empty( $this->price_cookie )  ) {
-			if( ! isset( $this->price_cookie[ $test[ 'sub_type' ] ], $this->price_cookie[ $test[ 'sub_type' ] ][ $test[ 'ID' ] ] ) ){
+		if( ! empty( $this->cookie )  ) {
+			if( ! isset( $this->cookie[ $test[ 'sub_type' ] ], $this->cookie[ $test[ 'sub_type' ] ][ $test[ 'ID' ] ] ) ){
 				return true;
 
 			}else{
-				$expires = $this->price_cookie[ $test[ 'sub_type' ] ][ $test[ 'ID' ] ][ 'expires' ];
+				$expires = $this->cookie[ $test[ 'sub_type' ] ][ $test[ 'ID' ] ][ 'expires' ];
 				if( $expires < $this->expires() ) {
 					return true;
 
@@ -109,36 +92,28 @@ class price {
 
 		];
 	}
+
+
 	/**
-	 * Get expiration time for tests
-	 *
-	 * @todo filter/option/etc?
+	 * Set cookie property for class
 	 *
 	 * @since 0.0.9
 	 *
 	 * @access protected
 	 *
-	 * @return int
+	 * @param array $cookie Current contents of this part of cookie
+	 * @param bool $reset Optional. Whether to rest or not, default is false
 	 */
-	protected function expires() {
-		return time() + ( 10 * DAY_IN_SECONDS );
-
-	}
-
-	/**
-	 * @param $price_cookie
-	 * @param $reset
-	 */
-	private function set_price_cookie( $price_cookie, $reset ) {
+	protected function set_cookie( $cookie, $reset ) {
 		if ( false == $reset ) {
-			$this->price_cookie = $price_cookie;
+			$this->cookie = $cookie;
 		} else {
-			$this->price_cookie = [ ];
+			$this->cookie = [ ];
 		}
 
 		foreach ( types::allowed_price_types() as $type ) {
-			if ( ! isset( $this->price_cookie[ $type ] ) ) {
-				$this->price_cookie[ $type ] = [ ];
+			if ( ! isset( $this->cookie[ $type ] ) ) {
+				$this->cookie[ $type ] = [ ];
 			}
 		}
 	}
