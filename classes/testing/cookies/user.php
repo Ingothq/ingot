@@ -28,6 +28,8 @@ class user extends cookie {
 	 * @param bool $reset Optional. Whether to rest or not, default is false
 	 */
 	 protected function set_cookie( $cookie, $reset ){
+		 //TRACK INGOT IDs CROSS device/IPs
+		 
 		 $this->check_ingot_id();
 
 	 }

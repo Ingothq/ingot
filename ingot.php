@@ -1,7 +1,8 @@
 <?php
 /**
  Plugin Name: Ingot
-Version: 1.1.0-b-1
+ Version: 1.1.0-b-1
+ Text Domain: ingot
  */
 
 
@@ -63,3 +64,15 @@ if( is_admin() && ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 	include( dirname( __FILE__ ) . '/includes/EDD_SL_Plugin_Updater.php' );
 }
 
+/**
+ * Load translations
+ */
+add_action( 'plugins_loaded', 'ingot_load_textdomain' );
+/**
+ * Load plugin textdomain.
+ *
+ * @since 1.0.0
+ */
+function ingot_load_textdomain() {
+	load_plugin_textdomain( 'my-plugin', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+}
