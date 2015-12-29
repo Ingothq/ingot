@@ -11,7 +11,7 @@ var ingotApp = angular.module('ingotApp', [
     'ngResource'
 ] )
     .run( function( $rootScope, $state ) {
-        $rootScope.translations =  INGOT_TRANSLATION;
+        $rootScope.translation =  INGOT_TRANSLATION;
 		
 		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
 			

@@ -71,7 +71,16 @@ class translations {
 				'plugin'                               => esc_html__( 'eCommerce Plugin', 'ingot' ),
 				'product'                              => esc_html__( 'Product', 'ingot' ),
 				'price_variation'                      => esc_html__( 'Price Variation (percentage)', 'ingot ' ),
-				'delete'                               => esc_html__( 'Delete', 'ingot' )
+				'delete'                               => esc_html__( 'Delete', 'ingot' ),
+				'content_test'                          => esc_html__( 'Content Test', 'ingot'),
+				'data_and_tests' => esc_html__( 'Data and Tests', 'ingot' ),
+				'group_name' => esc_html__( 'Group Name', 'ingot' ),
+				'group_type' => esc_html__( 'Group Type', 'ingot' ),
+				'group_data_and_tests' => esc_html__( 'Group Data and Tests', 'ingot' ),
+				'test_name_instructions' => esc_html__( 'Name of your new test, be specific for easy reference later.', 'ingot'),
+				'test_name' => esc_html__( 'Test Name', 'ingot' ),
+				'edit_group_type' => esc_html__( 'Edit Group Type', 'ingot'),
+				'type_instructions' => esc_html__( 'Type of test you want to perform', 'ingot')
 			),
 			'settings'                 => array(
 				'page_header'          => esc_html__( 'Settings', 'ingot' ),
@@ -83,7 +92,10 @@ class translations {
 				'anon_tracking_desc'   => esc_html__( 'When enabled, your test data is shared with Ingot to help us improve the service.', 'ingot' ),
 				'license_code_label'   => esc_html__( 'License Code', 'ingot' ),
 				'license_code_desc'    => esc_html__( 'Enter your license code to enable support and updates.', 'ingot' ),
-				'save'                 => esc_html__( 'Save Settings', 'ingot' )
+				'save'                 => esc_html__( 'Save Settings', 'ingot' ),
+				'edit_name' => esc_html__( 'Edit Group Name', 'ingot' ),
+				'edit_group_tests' => esc_html__( 'Edit Group Tests', 'ingot' ),
+
 
 			),
 			'welcome'                  => array(
