@@ -45,6 +45,8 @@ class translations {
 			'stats'                    => array(
 				'stats_for' => esc_html__( 'Stats For Group', 'ingot'),
 				'no_stats' => esc_html__( 'No Stats for this group yet', 'ingot' ),
+				'c_rate' => esc_html__( 'Conversion Rate', 'ingot'),
+				'variant' => esc_html__( 'Varaint', 'ingot' ),
 			),
 			'groups'                   => array(
 				'click_group_page_title' => esc_html__( 'Content Test Groups', 'ingot' ),
