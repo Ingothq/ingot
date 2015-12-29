@@ -42,13 +42,13 @@ class translations {
 			'no_tests'                 => esc_html__( 'This group has no tests', 'ingot' ),
 			'invalid_price_test_range' => esc_html__( 'Please enter a number between -.99 and .99', 'ingot' ),
 			'settings_saved'           => esc_html__( 'Settings Saved', 'ingot' ),
-			'stats'                    => array(
-				'stats_for' => esc_html__( 'Stats For Group', 'ingot'),
-				'no_stats' => esc_html__( 'No Stats for this group yet', 'ingot' ),
-				'c_rate' => esc_html__( 'Conversion Rate', 'ingot'),
-				'variant' => esc_html__( 'Varaint', 'ingot' ),
-			),
-			'groups'                   => array(
+			'stats'                    => [
+				'stats_for' => esc_html__( 'Stats For Group', 'ingot' ),
+				'no_stats'  => esc_html__( 'No Stats for this group yet', 'ingot' ),
+				'c_rate'    => esc_html__( 'Conversion Rate', 'ingot' ),
+				'variant'   => esc_html__( 'Varaint', 'ingot' ),
+			],
+			'groups'                   => [
 				'click_group_page_title' => esc_html__( 'Content Test Groups', 'ingot' ),
 				'price_group_page_title' => esc_html__( 'Price Test Groups', 'ingot' ),
 				'show_all'               => esc_html__( 'Show All', 'ingot' ),
@@ -56,9 +56,9 @@ class translations {
 				'edit'                   => esc_html__( 'Edit Group', 'ingot' ),
 				'stats'                  => esc_html__( 'Group Stats', 'ingot' ),
 				'delete'                 => esc_html__( 'Delete Group', 'ingot' ),
-				'no_groups' => esc_html__( 'There are no groups, create one.', 'ingot')
-			),
-			'group'                    => array(
+				'no_groups'              => esc_html__( 'There are no groups, create one.', 'ingot' )
+			],
+			'group'                    => [
 				'save_group'                           => esc_html__( 'Save Group', 'ingot' ),
 				'type'                                 => esc_html__( 'Type', 'ingot' ),
 				'name'                                 => esc_html__( 'Name', 'ingot' ),
@@ -76,20 +76,20 @@ class translations {
 				'product'                              => esc_html__( 'Product', 'ingot' ),
 				'price_variation'                      => esc_html__( 'Price Variation (percentage)', 'ingot ' ),
 				'delete'                               => esc_html__( 'Delete', 'ingot' ),
-				'content_test'                          => esc_html__( 'Content Test', 'ingot'),
-				'data_and_tests' => esc_html__( 'Data and Tests', 'ingot' ),
-				'group_name' => esc_html__( 'Group Name', 'ingot' ),
-				'group_type' => esc_html__( 'Group Type', 'ingot' ),
-				'group_data_and_tests' => esc_html__( 'Group Data and Tests', 'ingot' ),
-				'test_name_instructions' => esc_html__( 'Name of your new test, be specific for easy reference later.', 'ingot'),
-				'test_name' => esc_html__( 'Test Name', 'ingot' ),
-				'edit_group_type' => esc_html__( 'Edit Group Type', 'ingot'),
-				'type_instructions' => esc_html__( 'Type of test you want to perform', 'ingot'),
-				'sample_button' => esc_html__( 'Sample Button', 'ingot'),
-				'new_content_test' => esc_html__( 'New Content Test', 'ingot')
+				'content_test'                         => esc_html__( 'Content Test', 'ingot' ),
+				'data_and_tests'                       => esc_html__( 'Data and Tests', 'ingot' ),
+				'group_name'                           => esc_html__( 'Group Name', 'ingot' ),
+				'group_type'                           => esc_html__( 'Group Type', 'ingot' ),
+				'group_data_and_tests'                 => esc_html__( 'Group Data and Tests', 'ingot' ),
+				'test_name_instructions'               => esc_html__( 'Name of your new test, be specific for easy reference later.', 'ingot' ),
+				'test_name'                            => esc_html__( 'Test Name', 'ingot' ),
+				'edit_group_type'                      => esc_html__( 'Edit Group Type', 'ingot' ),
+				'type_instructions'                    => esc_html__( 'Type of test you want to perform', 'ingot' ),
+				'sample_button'                        => esc_html__( 'Sample Button', 'ingot' ),
+				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' )
 
-			),
-			'settings'                 => array(
+			],
+			'settings'                 => [
 				'page_header'          => esc_html__( 'Settings', 'ingot' ),
 				'cache_mode_label'     => esc_html__( 'Work around caching', 'ingot' ),
 				'cache_mode_desc'      => esc_html__( 'If you are using a static HTML cache testing will not work properly, since the same version of your site is shown to all visitors. Use this mode to work around this issue.', 'ingot' ),
@@ -100,14 +100,14 @@ class translations {
 				'license_code_label'   => esc_html__( 'License Code', 'ingot' ),
 				'license_code_desc'    => esc_html__( 'Enter your license code to enable support and updates.', 'ingot' ),
 				'save'                 => esc_html__( 'Save Settings', 'ingot' ),
-				'edit_name' => esc_html__( 'Edit Group Name', 'ingot' ),
-				'edit_group_tests' => esc_html__( 'Edit Group Tests', 'ingot' ),
-				'license_notice' => esc_html__( 'License not active or not valid', 'ingot')
+				'edit_name'            => esc_html__( 'Edit Group Name', 'ingot' ),
+				'edit_group_tests'     => esc_html__( 'Edit Group Tests', 'ingot' ),
+				'license_notice'       => esc_html__( 'License not active or not valid', 'ingot' )
 
 
-			),
-			'welcome'                  => array(
-				'banner'       => esc_url( INGOT_URL . 'assets/img/Ingot-logo-dark.png' ),
+			],
+			'welcome'                  => [
+				//'banner'       => esc_url( INGOT_URL . 'assets/img/Ingot-logo-dark.png' ),
 				'banner_alt'   => esc_html__( 'Ingot Banner Logo', 'ingot' ),
 				'header'       => esc_html__( 'Ingot: Do Less, Convert More', 'ingot' ),
 				'links_header' => esc_html__( 'Helpful Links', 'ingot' ),
@@ -117,12 +117,11 @@ class translations {
 				'learn_more'   => esc_html__( 'Learn more about Ingot', 'ingot' ),
 				'docs'         => esc_html__( 'Documentation', 'ingot' ),
 				'support'      => esc_html__( 'Support', 'ingot' )
-			),
-			'support' => [
-				'for_support' => esc_html__( 'For support please use:', 'ingot')
+			],
+			'support'                  => [
+				'for_support' => esc_html__( 'For support please use:', 'ingot' )
 			]
 		];
 	}
-
 
 }
