@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ingot 1.1.0-b-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ingot\n"
-"POT-Creation-Date: 2015-12-29 02:18:28+00:00\n"
+"POT-Creation-Date: 2015-12-29 03:03:20+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,11 +115,11 @@ msgstr ""
 msgid "Must override in subclass"
 msgstr ""
 
-#: classes/testing/types.php:52 classes/ui/admin/app/load.php:231
+#: classes/testing/types.php:52 classes/ui/admin/app/translations.php:66
 msgid "Link"
 msgstr ""
 
-#: classes/testing/types.php:53 classes/ui/admin/app/load.php:236
+#: classes/testing/types.php:53 classes/ui/admin/app/translations.php:71
 msgid "Text"
 msgstr ""
 
@@ -143,254 +143,331 @@ msgstr ""
 msgid "Content Tests"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:156 classes/ui/admin/app/load.php:264
+#: classes/ui/admin/app/load.php:156 classes/ui/admin/app/translations.php:115
 msgid "Price Tests"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:163 classes/ui/admin/app/load.php:246
+#: classes/ui/admin/app/load.php:163 classes/ui/admin/app/translations.php:93
 msgid "Settings"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:168 classes/ui/admin/app/load.php:268
+#: classes/ui/admin/app/load.php:168 classes/ui/admin/app/translations.php:119
 msgid "Support"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:195
+#: classes/ui/admin/app/translations.php:26
 msgid "Group Saved"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:196
+#: classes/ui/admin/app/translations.php:27
 msgid "Could Not Save"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:197
+#: classes/ui/admin/app/translations.php:28
 msgid "Please try again and/or contact support"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:198
+#: classes/ui/admin/app/translations.php:29
 msgid "Close"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:199
+#: classes/ui/admin/app/translations.php:30
 msgid "Saved Group: "
 msgstr ""
 
-#: classes/ui/admin/app/load.php:200
+#: classes/ui/admin/app/translations.php:31
 msgid "At this time, you can not remove a test from a group."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:201
+#: classes/ui/admin/app/translations.php:32
 msgid "Beta Limitation Encountered"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:202
+#: classes/ui/admin/app/translations.php:33
 msgid ""
 "Sorry about that but Ingot is still in beta. We will be adding this feature "
 "soon."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:203
+#: classes/ui/admin/app/translations.php:34
 msgid "We do not have a functional stats viewer yet."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:204
+#: classes/ui/admin/app/translations.php:35
 msgid "Test Group Deleted"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:205
+#: classes/ui/admin/app/translations.php:36
 msgid "Are You Sure About That?"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:206
+#: classes/ui/admin/app/translations.php:37
 msgid "Deleting all groups is not reversible or undoable."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:207 classes/ui/admin/app/load.php:243
+#: classes/ui/admin/app/translations.php:38
+#: classes/ui/admin/app/translations.php:78
 msgid "Delete"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:208
+#: classes/ui/admin/app/translations.php:39
 msgid "Cancel"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:209
+#: classes/ui/admin/app/translations.php:40
 msgid "Canceled"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:210
+#: classes/ui/admin/app/translations.php:41
 msgid "Loading Spinner"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:211
+#: classes/ui/admin/app/translations.php:42
 msgid "This group has no tests"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:212
+#: classes/ui/admin/app/translations.php:43
 msgid "Please enter a number between -.99 and .99"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:213
+#: classes/ui/admin/app/translations.php:44
 msgid "Settings Saved"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:215
+#: classes/ui/admin/app/translations.php:46
+msgid "Stats For Group"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:47
 msgid "No Stats for this group yet"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:218
+#: classes/ui/admin/app/translations.php:48
+msgid "Conversion Rate"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:49
+msgid "Varaint"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:52
 msgid "Content Test Groups"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:219
+#: classes/ui/admin/app/translations.php:53
 msgid "Price Test Groups"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:220
+#: classes/ui/admin/app/translations.php:54
 msgid "Show All"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:221
+#: classes/ui/admin/app/translations.php:55
 msgid "Create New"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:222
+#: classes/ui/admin/app/translations.php:56
 msgid "Edit Group"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:223
+#: classes/ui/admin/app/translations.php:57
 msgid "Group Stats"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:224
+#: classes/ui/admin/app/translations.php:58
 msgid "Delete Group"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:227
+#: classes/ui/admin/app/translations.php:59
+msgid "There are no groups, create one."
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:62
 msgid "Save Group"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:228
+#: classes/ui/admin/app/translations.php:63
 msgid "Type"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:229
+#: classes/ui/admin/app/translations.php:64
 msgid "Name"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:230
+#: classes/ui/admin/app/translations.php:65
 msgid "Group Settings"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:232
+#: classes/ui/admin/app/translations.php:67
 msgid "Text (Used For All Buttons)"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:233
+#: classes/ui/admin/app/translations.php:68
 msgid "Color (Used For All Buttons)"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:234
+#: classes/ui/admin/app/translations.php:69
 msgid "Background (Used For All Buttons)"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:235
+#: classes/ui/admin/app/translations.php:70
 msgid "Tests"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:237
+#: classes/ui/admin/app/translations.php:72
 msgid "Button Text Color"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:238
+#: classes/ui/admin/app/translations.php:73
 msgid "Button Background Color"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:239
+#: classes/ui/admin/app/translations.php:74
 msgid "Add Test"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:240
+#: classes/ui/admin/app/translations.php:75
 msgid "eCommerce Plugin"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:241
+#: classes/ui/admin/app/translations.php:76
 msgid "Product"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:242
+#: classes/ui/admin/app/translations.php:77
 msgid "Price Variation (percentage)"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:247
+#: classes/ui/admin/app/translations.php:79
+msgid "Content Test"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:80
+msgid "Data and Tests"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:81
+msgid "Group Name"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:82
+msgid "Group Type"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:83
+msgid "Group Data and Tests"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:84
+msgid "Name of your new test, be specific for easy reference later."
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:85
+msgid "Test Name"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:86
+msgid "Edit Group Type"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:87
+msgid "Type of test you want to perform"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:88
+msgid "Sample Button"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:89
+msgid "New Content Test"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:94
 msgid "Work around caching"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:248
+#: classes/ui/admin/app/translations.php:95
 msgid ""
 "If you are using a static HTML cache testing will not work properly, since "
 "the same version of your site is shown to all visitors. Use this mode to "
 "work around this issue."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:249
+#: classes/ui/admin/app/translations.php:96
 msgid "Advanced Click Tracking"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:250
+#: classes/ui/admin/app/translations.php:97
 msgid ""
 "Ingot always tracks clicks, in advanced mode, more details are tracked. "
 "This takes up more space in the database, but enables Ingot to be more "
 "powerful."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:251
+#: classes/ui/admin/app/translations.php:98
 msgid "Share Your Data Anonymously"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:252
+#: classes/ui/admin/app/translations.php:99
 msgid ""
 "When enabled, your test data is shared with Ingot to help us improve the "
 "service."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:253
+#: classes/ui/admin/app/translations.php:100
 msgid "License Code"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:254
+#: classes/ui/admin/app/translations.php:101
 msgid "Enter your license code to enable support and updates."
 msgstr ""
 
-#: classes/ui/admin/app/load.php:255
+#: classes/ui/admin/app/translations.php:102
 msgid "Save Settings"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:260
+#: classes/ui/admin/app/translations.php:103
+msgid "Edit Group Name"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:104
+msgid "Edit Group Tests"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:105
+msgid "License not active or not valid"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:111
 msgid "Ingot Banner Logo"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:261
+#: classes/ui/admin/app/translations.php:112
 msgid "Ingot: Do Less, Convert More"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:262
+#: classes/ui/admin/app/translations.php:113
 msgid "Helpful Links"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:263
+#: classes/ui/admin/app/translations.php:114
 msgid "Watch This Short Video To Learn How To Use Ingot"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:265
+#: classes/ui/admin/app/translations.php:116
 msgid "Click Tests"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:266
+#: classes/ui/admin/app/translations.php:117
 msgid "Learn more about Ingot"
 msgstr ""
 
-#: classes/ui/admin/app/load.php:267
+#: classes/ui/admin/app/translations.php:118
 msgid "Documentation"
+msgstr ""
+
+#: classes/ui/admin/app/translations.php:122
+msgid "For support please use:"
 msgstr ""
 
 #: classes/ui/render/click_tests/text.php:50
