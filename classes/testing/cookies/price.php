@@ -1,6 +1,6 @@
 <?php
 /**
- * Setsups price cookies
+ * Sets up price cookies
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -20,9 +20,13 @@ class price extends cookie {
 
 
 	/**
+	 * Hold all tests we need to track
+	 *
+	 * @since 1.1.0
+	 *
 	 * @var array
 	 */
-	private $tests;
+	private $tests = [];
 
 
 	/**
@@ -35,7 +39,7 @@ class price extends cookie {
 	 */
 	public function __construct(  $cookie, $reset = true ){
 		parent::__construct( $cookie, $reset );
-		$this->get_tests();
+		$this->set_tests();
 		if( ! empty( $this->tests ) ){
 			$this->setup_cookie();
 		}
@@ -43,7 +47,16 @@ class price extends cookie {
 	}
 
 
-	protected function get_tests(){
+	/**
+	 * Set tests property with all test we need to track
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access private
+	 *
+	 * @return array|mixed
+	 */
+	private function set_tests(){
 		$key = md5( __FUNCTION__ );
 		if( WP_DEBUG || ! is_array( $tests = get_transient( $key ) ) && ! empty( $tests ) ){
 			$tests = group::get_items( [ 'type' => 'price' ] );
@@ -53,10 +66,15 @@ class price extends cookie {
 			}
 		}
 
-		return $tests;
-
 	}
 
+	/**
+	 * Setup the cookie contents
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 */
 	protected function setup_cookie(){
 		foreach( $this->tests as $test ) {
 			if( $this->needed_to_add( $test ) ){
@@ -65,6 +83,17 @@ class price extends cookie {
 		}
 	}
 
+	/**
+	 * Test if we need to add test to cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @param array $test
+	 *
+	 * @return bool
+	 */
 	protected function needed_to_add( $test ){
 		if( ! empty( $this->cookie )  ) {
 			if( ! isset( $this->cookie[ $test[ 'sub_type' ] ], $this->cookie[ $test[ 'sub_type' ] ][ $test[ 'ID' ] ] ) ){
@@ -81,8 +110,20 @@ class price extends cookie {
 		}
 	}
 
+	/**
+	 * Add test to cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @param array $test
+	 *
+	 * @return array
+	 */
 	protected function add_test( $test ){
-		$varinat = '';//need a price test bandit class
+		$bandit = new \ingot\testing\bandit\price( $test );
+		$variant = $bandit->choose();
 
 		return [
 			'plugin' => $test[ 'sub_type' ],
