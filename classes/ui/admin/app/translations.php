@@ -43,6 +43,7 @@ class translations {
 			'invalid_price_test_range' => esc_html__( 'Please enter a number between -.99 and .99', 'ingot' ),
 			'settings_saved'           => esc_html__( 'Settings Saved', 'ingot' ),
 			'stats'                    => array(
+				'stats_for' => esc_html__( 'Stats For Group', 'ingot'),
 				'no_stats' => esc_html__( 'No Stats for this group yet', 'ingot' ),
 			),
 			'groups'                   => array(
@@ -53,6 +54,7 @@ class translations {
 				'edit'                   => esc_html__( 'Edit Group', 'ingot' ),
 				'stats'                  => esc_html__( 'Group Stats', 'ingot' ),
 				'delete'                 => esc_html__( 'Delete Group', 'ingot' ),
+				'no_groups' => esc_html__( 'There are no groups, create one.', 'ingot')
 			),
 			'group'                    => array(
 				'save_group'                           => esc_html__( 'Save Group', 'ingot' ),
@@ -80,7 +82,10 @@ class translations {
 				'test_name_instructions' => esc_html__( 'Name of your new test, be specific for easy reference later.', 'ingot'),
 				'test_name' => esc_html__( 'Test Name', 'ingot' ),
 				'edit_group_type' => esc_html__( 'Edit Group Type', 'ingot'),
-				'type_instructions' => esc_html__( 'Type of test you want to perform', 'ingot')
+				'type_instructions' => esc_html__( 'Type of test you want to perform', 'ingot'),
+				'sample_button' => esc_html__( 'Sample Button', 'ingot'),
+				'new_content_test' => esc_html__( 'New Content Test', 'ingot')
+
 			),
 			'settings'                 => array(
 				'page_header'          => esc_html__( 'Settings', 'ingot' ),
@@ -95,6 +100,7 @@ class translations {
 				'save'                 => esc_html__( 'Save Settings', 'ingot' ),
 				'edit_name' => esc_html__( 'Edit Group Name', 'ingot' ),
 				'edit_group_tests' => esc_html__( 'Edit Group Tests', 'ingot' ),
+				'license_notice' => esc_html__( 'License not active or not valid', 'ingot')
 
 
 			),
@@ -109,7 +115,10 @@ class translations {
 				'learn_more'   => esc_html__( 'Learn more about Ingot', 'ingot' ),
 				'docs'         => esc_html__( 'Documentation', 'ingot' ),
 				'support'      => esc_html__( 'Support', 'ingot' )
-			)
+			),
+			'support' => [
+				'for_support' => esc_html__( 'For support please use:', 'ingot')
+			]
 		];
 	}
 

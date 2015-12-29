@@ -1,7 +1,11 @@
 <div ng-controller="clickGroup">
     <h2>
-        <span ng-show="!new_group">{{translate.group.content_test}}: {{group.name}}</span>
-        <span ng-show="new_group">{{ 'New Content Test' | translate }}</span>
+        <span ng-show="!new_group">
+            {{translate.group.content_test}}: {{group.name}}
+        </span>
+        <span ng-show="new_group">
+            {{translate.group.new_content_test}}
+        </span>
     </h2>
     <ul class="progress-indicator">
         <li ng-click="change_step(1)" ng-class="{'active': group_step == 1, 'completed': group_step > 1 || !new_group }">
