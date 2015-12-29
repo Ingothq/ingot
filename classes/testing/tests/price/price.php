@@ -13,6 +13,7 @@ namespace ingot\testing\tests\price;
 
 
 use ingot\testing\crud\price_test;
+use ingot\testing\crud\variant;
 use ingot\testing\utility\helpers;
 
 abstract class price {
@@ -37,10 +38,6 @@ abstract class price {
 	 */
 	protected $variable;
 
-	/**
-	 * @var string
-	 */
-	protected $a_or_b;
 
 	/**
 	 * Set up object
@@ -48,18 +45,11 @@ abstract class price {
 	 * @since 0.0.9
 	 *
 	 * @param int|array $test Test ID or config. (Currently must be ID)
-	 * @param string $a_or_b a|b A or B as string not bool.
+
 	 */
 	public function __construct( $test, $a_or_b ) {
-		$this->a_or_b = $a_or_b;
 		$this->set_test( $test );
-		if( is_array( $this->test ) ){
-			$this->product = get_post( $this->test['product_ID'] );
-			if ( is_object( $this->product ) ) {
-				$this->set_price();
-				$this->add_hooks();
-			}
-		}
+
 	}
 
 	/**
@@ -212,7 +202,7 @@ abstract class price {
 	 */
 	private function set_test( $test ) {
 		if( is_numeric( $test ) ){
-			$this->test = price_test::read( $test );
+			$this->test = variant::read( $test );
 		}elseif( is_array( $test ) ){
 			//@todo allow this once validation is in place
 			//$this->test = $test;
@@ -227,10 +217,7 @@ abstract class price {
 	 *
 	 * @access protected
 	 */
-	protected function variable_price_hooks() {
-		_doing_it_wrong( __METHOD__, __( 'Must override in subclass', 'ingot' ), '0.0.9' );
-	}
-
+	abstract protected function variable_price_hooks();
 	/**
 	 * Use in subclass to setup hooks for nonvariable products
 	 *
@@ -238,9 +225,7 @@ abstract class price {
 	 *
 	 * @access protected
 	 */
-	protected function non_variable_price_hooks() {
-		_doing_it_wrong( __METHOD__, __( 'Must override in subclass', 'ingot' ), '0.0.9' );
-	}
+	abstract protected function non_variable_price_hooks();
 
 	/**
 	 * Use in subclass to set the variable and prices properties
@@ -249,8 +234,6 @@ abstract class price {
 	 *
 	 * @access protected
 	 */
-	protected function set_price() {
-		_doing_it_wrong( __METHOD__, __( 'Must override in subclass', 'ingot' ), '0.0.9' );
-	}
+	abstract protected function set_price();
 
 }
