@@ -7,7 +7,6 @@ var ingotApp = angular.module('ingotApp', [
     'ui.router',
     'ui.bootstrap',
     'colorpicker.module',
-    'pascalprecht.translate',
     'ngAria',
     'ngResource'
 ] )
@@ -113,19 +112,6 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
 
 
 });
-
-/**
- * Translation
- *
- * @since 2.0.0
- */
-ingotApp.config(['$translateProvider', function ($translateProvider) {
-    //@todo not make always english
-    $translateProvider
-        .translations('en', INGOT_TRANSLATION)
-        .preferredLanguage('en')
-        .useSanitizeValueStrategy('escape');
-}]);
 
 
 /**
