@@ -11,7 +11,7 @@
 
 namespace ingot\ui\admin\app;
 
-
+use ingot\ui\admin\ingot_metabox;
 use ingot\testing\api\rest\util;
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
@@ -39,6 +39,11 @@ class load {
 		if( $this->menu_slug === helpers::v( 'page', $_GET, 0 ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );;
 		}
+
+		/**
+		 * Initiate Meta Box
+		 */
+		add_action( 'add_meta_boxes', array( $this, 'ingot_meta_box_init' ) );
 	}
 
 	/**
@@ -292,6 +297,34 @@ class load {
 			'click_type_options'  => types::allowed_click_types( true ),
 			'price_type_options'  => types::allowed_price_types(),
 		);
+	}
+
+	/**
+	 *
+	 * Ingot Meta Box Init
+	 * Ingot Meta Box View
+	 *
+	 */
+	function ingot_meta_box_init() {
+
+		$screens = array( 'post', 'page' );
+
+		foreach ( $screens as $screen ) {
+
+			add_meta_box(
+					'ingot_testing',
+					__( 'Ingot A/B Testing', 'ingot' ),
+					array( $this, 'ingot_meta_box_view' ),
+					$screen
+			);
+		}
+
+	}
+
+	function ingot_meta_box_view( $post ) {
+
+		ingot_metabox::box_view( $post );
+
 	}
 
 }

@@ -1,0 +1,57 @@
+/**
+* Content Test Listing
+*/
+
+.group-panel-wrapper {
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+.group-panel-wrapper * {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+#poststuff .group-panel-wrapper h2 {
+    border-bottom: 1px solid black;
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+
+
+}
+.group-panel {
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba( 0,0,0,0.1 );
+    display: inline-block;
+    padding: 20px;
+    margin: 0 2.5%;
+    white-space: normal;
+    width: 45%;
+}
+.group-panel h5 {
+    font-size: 22px;
+    margin: 0 0 10px 0;
+}
+
+.group-panel code {
+    display: inline-block;
+    padding: 5px 10px;
+}
+
+.group-icons a {
+    display: inline-block;
+    font-size: 20px;
+    text-align: center;
+    width: 30%;
+}
+.group-icons a.edit { color: black; }
+
+.paginate {
+    padding: 10px 20px;
+}
+.paginate a {
+    display: inline-block;
+    margin-left: 10px;
+}
