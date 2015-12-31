@@ -23,16 +23,18 @@ function ingot_click_test( $id ) {
 	}
 
 	$type = $group[ 'sub_type' ];
-	switch( $type ) {
-		case in_array( $type, \ingot\testing\types::allowed_click_types() ) :
-			$html = ingot_click_html_link( $type, $group );
-			break;
-		case is_callable( $type ) :
-			$html = call_user_func( $type, $group );
-			break;
-		default :
-			$html = '';
+	if ( in_array( $type, \ingot\testing\types::allowed_click_types() ) ) {
+		switch ( $type ) {
+			case in_array( $type, \ingot\testing\types::allowed_click_types() ) :
+				$html = ingot_click_html_link( $type, $group );
+				break;
+			case is_callable( $type ) :
+				$html = call_user_func( $type, $group );
+				break;
+			default :
+				$html = '';
 
+		}
 	}
 
 	return $html;
@@ -68,7 +70,7 @@ function ingot_shortcode( $atts ) {
  * @since 0.0.6
  *
  * @param string $type Test type
- * @param int $group Group ID
+ * @param int|array $group Group ID or config array
  *
  * @return string
  */

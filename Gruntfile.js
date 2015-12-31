@@ -51,7 +51,8 @@ module.exports = function (grunt) {
                     '!.scrutinizer.yml',
                     '!phpunit.xml',
                     '!tests/**',
-                    '!bower_components'
+                    '!bower_components/**',
+                    '!bin/**'
                 ],
                 dest: 'build/<%= pkg.name %>/'
             }
@@ -156,6 +157,31 @@ module.exports = function (grunt) {
                 dest: 'assets/admin/css/ingot-admin-dependencies.css'
             }
         },
+        addtextdomain: {
+            options: {
+                textdomain: 'ignot',
+            },
+            target: {
+                files: {
+                    src: [ '*.php', '**/*.php', '!node_modules/**', '!php-tests/**', '!bin/**' ]
+                }
+            }
+        },
+        makepot: {
+            target: {
+                options: {
+                    domainPath: '/languages',
+                    mainFile: 'ingot.php',
+                    potFilename: 'ingot.pot',
+                    potHeaders: {
+                        poedit: true,
+                        'x-poedit-keywordslist': true
+                    },
+                    type: 'wp-plugin',
+                    updateTimestamp: true
+                }
+            }
+        },
 
     });
 
@@ -169,6 +195,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-contrib-uglify');
     grunt.loadNpmTasks( 'grunt-contrib-watch');
     grunt.loadNpmTasks( 'grunt-contrib-concat' );
+    grunt.loadNpmTasks( 'grunt-wp-i18n' );
+    grunt.registerTask( 'i18n', ['addtextdomain', 'makepot'] );
 
 
 

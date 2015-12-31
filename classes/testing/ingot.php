@@ -30,6 +30,7 @@ use ingot\testing\crud\tracking;
 use ingot\testing\tests\click\click;
 use ingot\testing\tests\flow;
 use ingot\testing\utility\helpers;
+use ingot\testing\utility\posts;
 
 class ingot {
 
@@ -76,6 +77,8 @@ class ingot {
 	public function hooks(){
 		add_action( 'rest_api_init', array( __CLASS__ , 'boot_rest_api' ) );
 		add_action( 'pre_update_option', array( $this, 'presave_settings' ), 10, 2  );
+
+		add_action( 'save_post', array( $this, 'track_groups' ), 15, 2 );
 
 		if ( ! ingot_is_bot() ) {
 			add_action( 'wp_enqueue_scripts', function () {
@@ -180,8 +183,20 @@ class ingot {
 		do_action( 'ingot_session_initialized', $session_data );
 	}
 
+	/**
+	 * Update the post/group association when saving posts
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int $id
+	 * @param \WP_Post $post
+	 */
+	public function track_groups( $id, $post ){
+		posts::update_groups_in_post( $post );
+	}
 
 
 }
+
 
 
