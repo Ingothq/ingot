@@ -56,10 +56,6 @@ class ingot_bootstrap {
 						new \ingot\ui\admin\app\load();
 					}
 
-					self::maybe_load_api();
-
-
-
 					add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
 					add_action( 'ingot_cookies_set', array( __CLASS__, 'init_price_tests' ) );
 
@@ -92,18 +88,6 @@ class ingot_bootstrap {
 
 		}
 
-
-	}
-
-	/**
-	 * If not installed as a plugin include our bundled REST API
-	 *
-	 * @since 0.0.6
-	 */
-	protected static function maybe_load_api() {
-		if( ! defined( 'REST_API_VERSION' ) ) {
-			include_once( INGOT_DIR . '/wp-api/plugin.php' );
-		}
 
 	}
 
