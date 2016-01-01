@@ -1,6 +1,6 @@
 language: php
 
-sudo: false
+sudo: true
 
 php:
 
@@ -33,8 +33,7 @@ script:
 - if [[ $TRAVIS_PHP_VERSION = '5.5' && $WP_VERSION = 'latest' && $WP_MULTISITE = '0'
   ]]; then phpunit --coverage-clover=coverage.clover; else phpunit; fi
 - sudo composer update
-- sudo npm install -g grunt-cli
-- sudo npm install -g bower
+- sudo npm install
 - sudo npm install
 - bower update;
 - bower-installer
@@ -45,12 +44,3 @@ after_script:
 - if [[ $TRAVIS_PHP_VERSION = '5.5' && $WP_VERSION = 'latest' && $WP_MULTISITE = '0'
   ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
   fi
-
-notifications:
-  slack:
-    secure: g32q5XHgjZI7eNpNEBRpVab9f1JNoxBP6q5j+v/8qhbp9mcHGyfAjoPePCCB2IPtDByMAhRg/RmKwtj0yt1ORqftcbCFrMni6ePBSBRzjFIIsYlEZbEr2m1bRZTHpYgkVvkNCFra6y7kzL8WsnYPokiITRHw5/BKxLdePEgk1Q0=
-  irc:
-    channels:
-        - "irc.freenode.net#eddwp"
-    template:
-        - "Build %{build_number} (%{branch} - %{commit}): %{message} %{build_url}"
