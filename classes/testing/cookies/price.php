@@ -11,22 +11,25 @@
 
 namespace ingot\testing\cookies;
 
+use ingot\testing\crud\crud;
 use ingot\testing\crud\group;
+use ingot\testing\crud\price_query;
+use ingot\testing\object\price\test;
 use ingot\testing\types;
-use ingot\testing\utility\helpers;
+
 
 class price extends cookie {
 
 
 
 	/**
-	 * Hold all tests we need to track
+	 * Hold all groups we need to track
 	 *
 	 * @since 1.1.0
 	 *
 	 * @var array
 	 */
-	private $tests = [];
+	private $groups = [];
 
 
 	/**
@@ -39,13 +42,12 @@ class price extends cookie {
 	 */
 	public function __construct(  $cookie, $reset = true ){
 		parent::__construct( $cookie, $reset );
-		$this->set_tests();
-		if( ! empty( $this->tests ) ){
+		$this->set_groups();
+		if( ! empty( $this->groups ) ){
 			$this->setup_cookie();
 		}
 
 	}
-
 
 	/**
 	 * Set tests property with all test we need to track
@@ -56,14 +58,15 @@ class price extends cookie {
 	 *
 	 * @return array|mixed
 	 */
-	private function set_tests(){
+	private function set_groups(){
 		$key = md5( __FUNCTION__ );
-		if( WP_DEBUG || ! is_array( $tests = get_transient( $key ) ) && ! empty( $tests ) ){
-			$tests = group::get_items( [ 'type' => 'price' ] );
-			if ( is_array( $tests ) ) {
-				$this->tests = $tests;
-				set_transient( $key, $tests, HOUR_IN_SECONDS );
+		if( WP_DEBUG || ! is_array( $groups = get_transient( $key ) ) && ! empty( $groups ) ){
+			foreach( types::allowed_price_types() as $plugin ){
+				$this->groups[ $plugin ] = price_query::find_by_plugin( $plugin );
 			}
+
+			set_transient( $key, $this->groups, HOUR_IN_SECONDS );
+
 		}
 
 	}
@@ -76,12 +79,52 @@ class price extends cookie {
 	 * @access protected
 	 */
 	protected function setup_cookie(){
-		foreach( $this->tests as $test ) {
-			if( $this->needed_to_add( $test ) ){
-				$this->add_test( $test );
+		foreach( $this->groups as $groups_by_type ) {
+			foreach( $groups_by_type as $type => $group ){
+				if ( $this->needed_to_add( $group ) ) {
+					$this->add_test( $group );
+				}
+
 			}
+
 		}
+
+		//remove uneeded?
 	}
+
+	/**
+	 * @param $group
+	 *
+	 * @return \ingot\testing\object\price\test
+	 */
+	protected function setup_test_object( $group ) {
+		if( is_numeric( $group ) ) {
+			$group = group::read( $group );
+		}
+
+		if( ! group::valid($group ) ){
+			return false;
+		}
+
+		$bandit  = new \ingot\testing\bandit\price( $group[ 'ID' ] );
+		$variant = $bandit->choose();
+
+		$test = new test( [
+			'plugin'  => $group[ 'sub_type' ],
+			'ID'      => $group[ 'ID' ],
+			'expires' => $this->expires(),
+			'variant' => $variant,
+			'product' => get_post( $group[ 'meta' ][ 'product_ID' ] ),
+			'price_callback' => \ingot\testing\utility\price::get_price_callback( $group[ 'sub_type' ] )
+		] );
+
+		return $test;
+	}
+
+
+
+
+
 
 	/**
 	 * Test if we need to add test to cookie
@@ -90,23 +133,60 @@ class price extends cookie {
 	 *
 	 * @access protected
 	 *
-	 * @param array $test
+	 * @param array $group
 	 *
 	 * @return bool
 	 */
-	protected function needed_to_add( $test ){
-		if( ! empty( $this->cookie )  ) {
-			if( ! isset( $this->cookie[ $test[ 'sub_type' ] ], $this->cookie[ $test[ 'sub_type' ] ][ $test[ 'ID' ] ] ) ){
+	protected function needed_to_add( $group ){
+		if( ! group::valid( $group ) ) {
+			return true;
+		}else {
+			//not in cookie true
+			if( ! isset( $this->cookie[ $group[ 'sub_type' ] ][ $group[ 'ID' ] ] ) ) {
 				return true;
-
-			}else{
-				$expires = $this->cookie[ $test[ 'sub_type' ] ][ $test[ 'ID' ] ][ 'expires' ];
-				if( $expires < $this->expires() ) {
-					return true;
-
-				}
-
 			}
+
+			//in cookie and expired true
+			$obj = $this->get_test_from_cookie( $group[ 'ID' ], $group[ 'sub_type' ] );
+			if( is_object( $obj ) && $this->expired( $obj->expires ) ) {
+				return true;
+			}
+
+		}
+
+
+		//in cookie and not expired false
+		return false;
+
+
+
+	}
+
+	/**
+	 * Get test out of cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int  $group_ID
+	 * @param string $plugin
+	 *
+	 * @return bool|\ingot\testing\object\price\test
+	 */
+	protected function get_test_from_cookie( $group_ID, $plugin  ){
+		if( ! isset( $this->cookie[ $plugin ][ $group_ID ] ) ) {
+			return false;
+		}
+
+		$_test = $this->cookie[ $plugin ][ $group_ID ];
+		if( is_array( $_test ) ) {
+			$_test =  $this->setup_test_object( group::read( $group_ID ) );
+
+		}
+
+		if( is_a( $_test, '\ingot\testing\object\price\test' ) ) {
+			return $_test;
+		}else{
+			return false;
 		}
 	}
 
@@ -117,21 +197,12 @@ class price extends cookie {
 	 *
 	 * @access protected
 	 *
-	 * @param array $test
-	 *
-	 * @return array
+	 * @param array $group Group config
 	 */
-	protected function add_test( $test ){
-		$bandit = new \ingot\testing\bandit\price( $test );
-		$variant = $bandit->choose();
-
-		return [
-			'plugin' => $test[ 'sub_type' ],
-			'ID' => $test[ 'ID' ],
-			'variant' => $variant,
-			'expries' =>$this->expires(),
-
-		];
+	protected function add_test( $group ) {
+		$test = $this->setup_test_object( $group );
+var_dump( $test );
+		$this->cookie[ $group[ 'sub_type' ] ][ $group[ 'ID' ] ] = $test;
 	}
 
 
@@ -156,7 +227,9 @@ class price extends cookie {
 			if ( ! isset( $this->cookie[ $type ] ) ) {
 				$this->cookie[ $type ] = [ ];
 			}
+
 		}
+
 	}
 
 }

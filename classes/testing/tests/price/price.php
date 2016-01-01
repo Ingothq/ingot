@@ -47,7 +47,7 @@ abstract class price {
 	 * @param int|array $test Test ID or config. (Currently must be ID)
 
 	 */
-	public function __construct( $test, $a_or_b ) {
+	public function __construct( $test ) {
 		$this->set_test( $test );
 
 	}

@@ -212,6 +212,7 @@ class ingot_test_data_price {
 			'group_args'   => [
 				'type'     => 'price',
 				'sub_type' => 'edd',
+				'meta' => [ 'product_ID' => $product_id ]
 			],
 			'variant_args' => [
 				'type' => 'price',

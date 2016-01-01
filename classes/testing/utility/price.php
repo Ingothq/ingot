@@ -14,6 +14,7 @@ namespace ingot\testing\utility;
 
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_test;
+use ingot\testing\crud\variant;
 
 class price {
 
@@ -41,75 +42,117 @@ class price {
 	}
 
 	/**
-	 * Prepare price test details needed for use in cookies/tracking
+	 * Get product associated with a price group
 	 *
-	 * @since 0.2.0
+	 * @since 1.1.0
 	 *
-	 * @param array $price_test Price test config
-	 * @param string $a_or_b a|b
-	 * @param int $sequence_id Sequence ID
-	 * @param int $group_id Group ID
+	 * @param $group
 	 *
-	 * @return array
+	 * @return array|null|\WP_Post
 	 */
-	public static function price_detail( $price_test, $a_or_b, $sequence_id, $group_id ) {
-		if( is_numeric( $price_test ) ) {
-			$price_test = price_test::read( $price_test );
+	public static function get_product( $group ){
+		if( ! is_numeric( $group ) ){
+			$group = group::read( $group );
 		}
 
-		if ( is_numeric( $group_id ) ) {
-			$group = group::read( $group_id );
-		}elseif( is_array( $group_id ) ) {
-			$group = $group_id;
-			$group_id = helpers::v( 'ID', $group, 0 );
-		}else{
-			return array();
+		if( group::valid( $group ) && 'price' == $group[ 'type' ] && isset( $group[ 'meta' ][ 'product_ID' ] ) ){
+			$post = get_post( $group[ 'meta' ][ 'product_ID' ] );
+			if( is_object( $post ) ) {
+				return $post;
+			}
+
 		}
-
-		if(  ! is_array( $price_test ) || ! is_array( $group ) ) {
-			return array();
-		}
-
-		$details = array(
-			'plugin'      => $group['plugin'],
-			'product_ID'  => $price_test['product_ID'],
-			'test_ID'     => $price_test['ID'],
-			'sequence_ID' => $sequence_id,
-			'group_ID'    => $group_id,
-			'a_or_b'      => $a_or_b
-		);
-
-		return $details;
 
 	}
 
 	/**
-	 * Holds current price tests
+	 * Get price variation or variation as a float for a variant
 	 *
-	 * @since 0.2.0
+	 * @since 1.1.0
 	 *
-	 * @access private
+	 * @param int|array $variant Variation or variations ID
 	 *
-	 * @var array
+	 * @return float|void
 	 */
-	private static $current;
-
-	/**
-	 * Get and optionally set the current price tests
-	 *
-	 * @since 0.2.0
-	 *
-	 * @param null|array  $current Optional. IF an array updates current.
-	 *
-	 * @return array Current price tests
-	 */
-	public static function current( $current = null ){
-		if( is_array( $current ) ) {
-			self::$current == $current;
+	public static function get_price_variation( $variant ){
+		if( is_numeric( $variant ) ){
+			$variant = variant::read( $variant );
 		}
 
-		return self::$current;
+		if( variant::valid( $variant ) && 'price' == $variant[ 'type' ] ){
+			return $variant[ 'meta' ][ 'price' ];
+		}
 
+
+	}
+
+	/**
+	 * Get callback function for finding price of a product by plugin
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param $plugin
+	 *
+	 * @return string
+	 */
+	public static function get_price_callback( $plugin ){
+		/**
+		 * Set the function to get the price for a product.
+		 *
+		 * Function must accept product ID as first argument.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param null|string|array $callback Name of callback. Defaults to null, which uses internal logic
+		 * @param string $plugin Slug of plugin edd|woo
+		 */
+		$callback = apply_filters( 'ingot_get_price_callback', null, $plugin );
+		if ( is_null( $callback ) ) {
+			switch ( $plugin ) {
+				case 'edd' :
+					$callback = 'edd_get_download_price';
+					break;
+				default :
+					$callback = '__return_false';
+					break;
+			}
+
+		}
+
+		return $callback;
+	}
+
+	/**
+	 * Get callback function for finding a product
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $plugin Slug of plugin edd|woo
+	 */
+	public static function get_product_function( $plugin ){
+		/**
+		 * Set the function to get the product.
+		 *
+		 * Function must accept product ID as first argument.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param null|string|array $callback Name of callback. Defaults to null, which uses internal logic
+		 * * @param string $plugin Slug of plugin edd|woo
+		 */
+		$callback = apply_filters( 'ingot_get_price_callback', null, $plugin );
+		if (  is_null( $callback ) ) {
+			switch ( $plugin ) {
+				case 'edd' :
+					$callback = 'edd_get_download';
+					break;
+				default:
+					$callback = 'get_post';
+					break;
+			}
+		}
+
+		return $callback;
 	}
 
 }

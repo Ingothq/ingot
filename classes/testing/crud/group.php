@@ -32,6 +32,7 @@ class group extends crud {
 		return 'group';
 	}
 
+
 	/**
 	 * Get a collection of items
 	 *
@@ -216,6 +217,21 @@ class group extends crud {
 				}
 
 			}
+		}
+
+		if( 'price' == $data[ 'type' ] ) {
+
+			if( ! isset($data[ 'meta' ][ 'product_ID' ]  ) ){
+				return new \WP_Error( 'ingot-invalid-config-no-product-id', __( 'Ingot price tests must set product ID in meta.product_ID', 'ingot' ) );
+			}
+
+			if( isset( $data[ 'meta' ][ 'variable_prices' ] ) && is_array(  $data[ 'meta' ][ 'variable_prices' ] ) ){
+				$data[ 'meta' ][ 'variable_prices' ] = helpers::make_array_values_numeric( $data[ 'meta' ][ 'variable_prices' ] );
+			}else{
+				$data[ 'meta' ][ 'variable_prices' ] = [];
+			}
+
+
 		}
 
 		return $data;

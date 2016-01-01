@@ -515,6 +515,27 @@ abstract class crud {
 		 return $data;
 	 }
 
+	/**
+	 * Process multiple rows from a SQL query
+	 *
+	 * Should be result of `$wpdb->get_results( $sql, ARRAY_A );`
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $results
+	 *
+	 * @return array
+	 */
+	public static function bulk_results( $results ) {
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $i => $result ) {
+				$results[ $i ] = self::unseralize( $result );
+			}
+
+		}
+
+		return $results;
+	}
 
 
 	/**
@@ -795,14 +816,34 @@ abstract class crud {
 	protected static function bulk_query( $sql ) {
 		global $wpdb;
 		$results = $wpdb->get_results( $sql, ARRAY_A );
-		if ( ! empty( $results ) ) {
-			foreach ( $results as $i => $result ) {
-				$results[ $i ] = self::unseralize( $result );
+
+		return self::bulk_results( $results);
+
+	}
+
+	/**
+	 * Ensure an array has all the needed fields for a specific type
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	public static function valid( $data ){
+		if( ! is_array( $data ) ){
+			return false;
+		}
+
+		foreach( static::get_all_fields() as $field ) {
+			if( ! array_key_exists( $field, $data ) ) {
+				return false;
+
 			}
 
 		}
 
-		return $results;
+		return true;
 	}
 
 }

@@ -16,6 +16,7 @@ class variant extends crud {
 
 	public static $what = 'variant';
 
+
 	/**
 	 * Validate item config
 	 *

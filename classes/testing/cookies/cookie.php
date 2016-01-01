@@ -77,4 +77,24 @@ abstract class cookie {
 		return time() + ( 10 * DAY_IN_SECONDS );
 
 	}
+
+	/**
+	 * Check for expiration
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @param $expiration
+	 *
+	 * @return bool
+	 */
+	protected function expired( $expiration ) {
+		if( $expiration > $this->expires() ){
+			return true;
+
+		}
+		
+	}
+
 }
