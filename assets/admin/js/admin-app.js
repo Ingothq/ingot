@@ -76,7 +76,6 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: INGOT_ADMIN.partials + "/price-groups.html",
             controller: 'priceGroups'
         })
-        /**
         .state('priceTests.list', {
             url: "/price-tests/all",
             templateUrl: INGOT_ADMIN.partials + "/price-groups.list.html",
@@ -92,7 +91,6 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: INGOT_ADMIN.partials + "/price-group.html",
             controller: 'priceGroup'
         } )
-         **/
         //other
         .state('settings', {
             url: "/settings",
