@@ -34,6 +34,11 @@ install_wp() {
       git clone https://github.com/easydigitaldownloads/Easy-Digital-Downloads $WP_CORE_DIR/wp-content/easy-digital-downloads
     fi
 
+    if [ -d "$WP_CORE_DIR/wp-content/easy-digital-downloads" ]; then
+          cd $WP_CORE_DIR/wp-content/easy-digital-downloads
+          git pull origin master
+    fi
+
 }
 
 install_test_suite() {
