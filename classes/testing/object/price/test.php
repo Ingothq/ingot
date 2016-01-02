@@ -121,6 +121,10 @@ class test {
 
 	}
 
+	public function get_price(){
+		return $this->price;
+	}
+
 	/**
 	 * Get any of the declared properties
 	 *
@@ -148,10 +152,10 @@ class test {
 	 */
 	protected function set_price(){
 		if ( is_callable( $this->price_callback ) ) {
-			$variant = variant::read( $this->variant );
+			$variant = variant::read( $this->ID );
 			if ( is_array( $variant ) ) {
 				$variation = price::get_price_variation( $variant );
-				$base_price = $this->price_callback( $this->product->ID );
+				$base_price = call_user_func( $this->price_callback, $this->product->ID );
 				if ( 0 == $base_price || 0 == $variation ) {
 					return $base_price;
 				}
@@ -159,7 +163,9 @@ class test {
 				$variation   = $variation * 1;
 				$this->price = $variation * $base_price;
 			}
+
 		}
+
 	}
 
 	/**
@@ -175,7 +181,7 @@ class test {
 	 * @throws \Exception
 	 */
 	protected function verify_test( $test ){
-		$required = get_object_vars( $this );
+		$required = array_keys( get_object_vars( $this ) );
 		foreach( $required as $key ){
 			if( 'price' == $key ){
 				continue;
@@ -201,7 +207,12 @@ class test {
 	private function set_properties( $test ){
 		foreach( $test as $prop => $value ){
 			if( property_exists( $this, $prop ) ){
-				$this->$prop = $value;
+				if( 'variant' == $prop && is_numeric( $value ) ){
+					$this->variant = variant::read( $value );
+				}else{
+					$this->$prop = $value;
+				}
+
 			}
 
 		}

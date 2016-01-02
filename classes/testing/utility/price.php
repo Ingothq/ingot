@@ -53,12 +53,10 @@ class price {
 	 * @return array|null|\WP_Post
 	 */
 	public static function get_product( $group ){
-		if( ! is_numeric( $group ) ){
-			$group = group::read( $group );
-		}
+		$product_ID = self::get_product_ID( $group );
 
-		if( group::valid( $group ) && 'price' == $group[ 'type' ] && isset( $group[ 'meta' ][ 'product_ID' ] ) ){
-			$post = get_post( $group[ 'meta' ][ 'product_ID' ] );
+		if( is_numeric( $product_ID ) ){
+			$post = get_post( $product_ID );
 			if( is_object( $post ) ) {
 				return $post;
 			}
@@ -82,8 +80,10 @@ class price {
 		}
 
 		if( variant::valid( $variant ) && 'price' == $variant[ 'type' ] ){
-			return $variant[ 'meta' ][ 'price' ];
+			return $variant[ 'meta' ][ 'price' ][0];
 		}
+
+		return 1;
 
 
 	}
@@ -166,21 +166,44 @@ class price {
 	 *
 	 * @param string $plugin Slug of plugin edd|woo
 	 * @param int $id  Product ID
+	 * @param array|null $cookie
 	 *
 	 * @return \ingot\testing\object\price\test
 	 */
-	public static function get_price_test_from_cookie( $plugin, $id ){
+	public static function get_price_test_from_cookie( $plugin, $id, $cookie = null ){
 
 		if ( in_array( $plugin, types::allowed_price_types() ) ) {
-			$cookie = init::get_instance()->get_ingot_cookie( false )[ 'price' ];
+			if ( is_null( $cookie ) ) {
+				$cookie = init::get_instance()->get_ingot_cookie( false )[ 'price' ];
+			}
+
 			if ( isset( $cookie[ $plugin ][ $id ] ) ) {
+
 				return $cookie[ $plugin ][ $id ];
 			}
 
+
 		}
+
 
 	}
 
+	/**
+	 * Get product ID from a group
+	 *
+	 * @param array|int $group
+	 *
+	 * @return int|null
+	 */
+	public static function get_product_ID( $group ){
+		if( is_numeric( $group ) ) {
+			$group = group::read( $group );
+		}
+
+		if( group::valid( $group ) ){
+			return (int) helpers::v( 'product_ID', $group[ 'meta' ], null );
+		}
+	}
 
 
 }

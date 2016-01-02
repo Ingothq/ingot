@@ -179,7 +179,7 @@ class ingot {
 		}
 
 		$session = new \ingot\testing\object\session( $id );
-		$this->current_session_data = $session_data = $session->get_session_info();
+		$session_data = $session->get_session_info();
 
 		/**
 		 * Fired when Ingot session is setup at parse_request
@@ -189,6 +189,9 @@ class ingot {
 		 * @param array $session_data has ID (session ID) and ingot_ID
 		 */
 		do_action( 'ingot_session_initialized', $session_data );
+
+
+		$this->current_session_data = $session_data;
 	}
 
 	/**

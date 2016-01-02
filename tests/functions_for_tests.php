@@ -188,7 +188,6 @@ class ingot_test_data_price {
 		$data[ 'price_variations' ] = $price_variations;
 
 
-
 		if ( is_user_logged_in() ) {
 			$obj = new \ingot\testing\object\group( $group_id );
 			$obj->update_group( [ 'variants' => $variants ] );
@@ -320,6 +319,81 @@ class ingot_test_data_price {
 			update_post_meta( $post_id, $key, $value );
 		}
 		return get_post( $post_id );
+	}
+
+	/**
+	 *
+	 * Based on: https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/master/tests/helpers/class-helper-payment.php
+	 *
+	 * @param \WP_Post $download
+	 *
+	 * @return int Payment ID
+	 */
+	public static function edd_create_simple_payment( $download ) {
+		global $edd_options;
+		// Enable a few options
+		$edd_options['enable_sequential'] = '1';
+		$edd_options['sequential_prefix'] = 'EDD-';
+		update_option( 'edd_settings', $edd_options );
+		$simple_download   = $download;
+
+		/** Generate some sales */
+		$user      = get_userdata(1);
+		$user_info = array(
+			'id'            => $user->ID,
+			'email'         => $user->user_email,
+			'first_name'    => $user->first_name,
+			'last_name'     => $user->last_name,
+			'discount'      => 'none'
+		);
+		$download_details = array(
+			array(
+				'id' => $simple_download->ID,
+				'options' => array(
+					'price_id' => 0
+				)
+			),
+
+		);
+		$total                  = 0;
+		$simple_price           = get_post_meta( $simple_download->ID, 'edd_price', true );
+
+		$total =  $simple_price;
+		$cart_details = array(
+			array(
+				'name'          => 'Test Download',
+				'id'            => $simple_download->ID,
+				'item_number'   => array(
+					'id'        => $simple_download->ID,
+					'options'   => array(
+						'price_id' => 1
+					)
+				),
+				'price'         => $simple_price,
+				'item_price'    => $simple_price,
+				'tax'           => 0,
+				'quantity'      => 1
+			),
+		);
+		$purchase_data = array(
+			'price'         => number_format( (float) $total, 2 ),
+			'date'          => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+			'purchase_key'  => strtolower( md5( uniqid() ) ),
+			'user_email'    => $user_info['email'],
+			'user_info'     => $user_info,
+			'currency'      => 'USD',
+			'downloads'     => $download_details,
+			'cart_details'  => $cart_details,
+			'status'        => 'pending'
+		);
+		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+		$_SERVER['SERVER_NAME'] = 'edd_virtual';
+		$payment_id = edd_insert_payment( $purchase_data );
+		$key        = $purchase_data['purchase_key'];
+		$transaction_id = 'FIR3SID3';
+		edd_set_payment_transaction_id( $payment_id, $transaction_id );
+		edd_insert_payment_note( $payment_id, sprintf( __( 'PayPal Transaction ID: %s', 'easy-digital-downloads' ), $transaction_id ) );
+		return $payment_id;
 	}
 
 }

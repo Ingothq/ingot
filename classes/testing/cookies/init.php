@@ -235,8 +235,8 @@ class init {
 	 * @access protected
 	 */
 	protected function setup_user_cookie(){
-		$user = new user();
-		return $user->get_cookie();
+		$user = new user( $this->cookie[ 'user' ] );
+		$this->cookie[ 'user' ] = $user->get_cookie();
 	}
 
 }

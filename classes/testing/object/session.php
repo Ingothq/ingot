@@ -69,6 +69,7 @@ class session {
 		return [
 			'ID' => $this->ID,
 			'ingot_ID' => $this->ID,
+			'session' => $this->session
 		];
 	}
 

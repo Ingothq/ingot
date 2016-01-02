@@ -16,6 +16,7 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\price_query;
 use ingot\testing\object\price\test;
 use ingot\testing\types;
+use ingot\testing\utility\helpers;
 
 
 class price extends cookie {
@@ -119,6 +120,7 @@ class price extends cookie {
 		] );
 
 		return $test;
+
 	}
 
 
@@ -147,7 +149,7 @@ class price extends cookie {
 			}
 
 			//in cookie and expired true
-			$obj = $this->get_test_from_cookie( $group[ 'ID' ], $group[ 'sub_type' ] );
+			$obj = $this->get_test_from_cookie( $group );
 			if( is_object( $obj ) && $this->expired( $obj->expires ) ) {
 				return true;
 			}
@@ -167,27 +169,16 @@ class price extends cookie {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int  $group_ID
-	 * @param string $plugin
+	 * @param array  $group
 	 *
 	 * @return bool|\ingot\testing\object\price\test
 	 */
-	protected function get_test_from_cookie( $group_ID, $plugin  ){
-		if( ! isset( $this->cookie[ $plugin ][ $group_ID ] ) ) {
-			return false;
-		}
+	protected function get_test_from_cookie( $group ){
 
-		$_test = $this->cookie[ $plugin ][ $group_ID ];
-		if( is_array( $_test ) ) {
-			$_test =  $this->setup_test_object( group::read( $group_ID ) );
+		$test = \ingot\testing\utility\price::get_price_test_from_cookie( $group[ 'sub_type' ], \ingot\testing\utility\price::get_product_ID( $group ), $this->cookie );
 
-		}
+		return $test;
 
-		if( is_a( $_test, '\ingot\testing\object\price\test' ) ) {
-			return $_test;
-		}else{
-			return false;
-		}
 	}
 
 	/**
@@ -200,10 +191,16 @@ class price extends cookie {
 	 * @param array $group Group config
 	 */
 	protected function add_test( $group ) {
-		$test = $this->setup_test_object( $group );
-		$this->cookie[ $group[ 'sub_type' ] ][ $group[ 'ID' ] ] = $test;
-	}
+		if( group::valid( $group ) ){
+			$test = $this->setup_test_object( $group );
+			$product_ID = \ingot\testing\utility\price::get_product_ID(  $group );
+			if ( is_object( $test ) && is_numeric( $product_ID ) ) {
+				$this->cookie[ $group[ 'sub_type' ] ][ $product_ID ] = $test;
+			}
 
+		}
+
+	}
 
 	/**
 	 * Set cookie property for class

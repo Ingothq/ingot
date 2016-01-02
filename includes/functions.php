@@ -607,8 +607,15 @@ function ingot_register_conversion( $variant, $session_ID = 0 ){
 		$bandit->record_victory( $variant[ 'ID' ] );
 
 		if ( 0 < absint( $session_ID ) && is_array( $session = \ingot\testing\crud\session::read( $session_ID ) ) ) {
+
+		}else{
+			$session = \ingot\testing\ingot::instance()->get_current_session()[ 'session' ];
+
+		}
+
+		if ( \ingot\testing\crud\session::valid( $session ) ) {
 			$session[ 'click_ID' ] = $variant[ 'ID' ];
-			$session[ 'used' ] = true;
+			$session[ 'used' ]     = true;
 			if ( 0 !== ( $userID = get_current_user_id() ) ) {
 				$session[ 'click_url' ] = $userID;
 			}
