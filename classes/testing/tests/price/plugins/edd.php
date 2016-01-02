@@ -40,8 +40,10 @@ class edd extends price {
 	 */
 	protected function handle_variable_prices( $prices, $test, $id ){
 
-		foreach( $prices as $i => $price ){
-			$prices[ $i ][ 'amount' ] = $this->filter_price( $prices[ $i ][ 'amount' ], $id );
+		if ( is_array( $prices ) && ! empty( $prices ) ) {
+			foreach ( $prices as $i => $price ) {
+				$prices[ $i ][ 'amount' ] = $this->filter_price( $prices[ $i ][ 'amount' ], $id );
+			}
 		}
 
 		return $prices;

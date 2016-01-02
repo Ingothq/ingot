@@ -193,9 +193,11 @@ class price extends cookie {
 	protected function add_test( $group ) {
 		if( group::valid( $group ) ){
 			$test = $this->setup_test_object( $group );
-			$product_ID = \ingot\testing\utility\price::get_product_ID(  $group );
-			if ( is_object( $test ) && is_numeric( $product_ID ) ) {
-				$this->cookie[ $group[ 'sub_type' ] ][ $product_ID ] = $test;
+			if ( is_object( $test ) ) {
+				$product_ID = \ingot\testing\utility\price::get_product_ID( $group );
+				if ( is_object( $test ) && is_numeric( $product_ID ) ) {
+					$this->cookie[ $group[ 'sub_type' ] ][ $product_ID ] = $test;
+				}
 			}
 
 		}

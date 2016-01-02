@@ -32,6 +32,21 @@ class group extends crud {
 		return 'group';
 	}
 
+	/**
+	 * Ensure an array has all the needed fields for a specific type
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	public static function valid( $data ){
+		if( parent::valid( $data ) && 'price' == $data[ 'type' ] ){
+			return isset( $data[ 'meta' ][ 'product_ID' ] ) && is_numeric( $data[ 'meta' ][ 'product_ID' ] );
+		}
+
+	}
 
 	/**
 	 * Get a collection of items
