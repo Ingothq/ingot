@@ -12,9 +12,11 @@
 namespace ingot\testing\utility;
 
 
+use ingot\testing\cookies\init;
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_test;
 use ingot\testing\crud\variant;
+use ingot\testing\types;
 
 class price {
 
@@ -128,6 +130,8 @@ class price {
 	 * @since 1.1.0
 	 *
 	 * @param string $plugin Slug of plugin edd|woo
+	 *
+	 * @return string
 	 */
 	public static function get_product_function( $plugin ){
 		/**
@@ -154,5 +158,29 @@ class price {
 
 		return $callback;
 	}
+
+	/**
+	 * Get price test object from the price cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $plugin Slug of plugin edd|woo
+	 * @param int $id  Product ID
+	 *
+	 * @return \ingot\testing\object\price\test
+	 */
+	public static function get_price_test_from_cookie( $plugin, $id ){
+
+		if ( in_array( $plugin, types::allowed_price_types() ) ) {
+			$cookie = init::get_instance()->get_ingot_cookie( false )[ 'price' ];
+			if ( isset( $cookie[ $plugin ][ $id ] ) ) {
+				return $cookie[ $plugin ][ $id ];
+			}
+
+		}
+
+	}
+
+
 
 }

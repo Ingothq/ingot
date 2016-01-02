@@ -57,18 +57,62 @@ class init {
 	protected $cookie = array();
 
 	/**
+	 * @var \ingot\testing\cookies\init
+	 */
+	private static $instance;
+
+	/**
 	 * Set and check our cookies
 	 *
 	 * @since 0.0.9
 	 *
 	 * @uses "init"
 	 *
+	 * @access private
+	 *
 	 * @param array $cookies cookies super var
-	 * @param bool $rebuild Optional. Trigger a rebuild.
+	 * @param bool $rebuild If true, trigger a rebuild.
 	 */
-	public function __construct( $cookies, $rebuild = true ) {
+	private function __construct( $cookies, $rebuild = true ) {
 		if( $rebuild ) {
 			$this->rebuild( $cookies );
+		}
+
+	}
+
+	/**
+	 * Get instance of class
+	 *
+	 * IMPORTANT: Can not be used to create instance. Must use create()
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return \ingot\testing\cookies\init|\WP_Error
+	 */
+	public static function get_instance() {
+		if( ! is_null( self::$instance ) ){
+			return self::$instance;
+		}else{
+			return new \WP_Error( 'ingot-cookies-init-singleton-misuse', __( 'Ingot cookies object doe not exist. Use the create() method to create it.', 'ingot' ) );
+		}
+	}
+
+	/**
+	 * Create new class instance
+	 *
+	 * IMPORTANT: Can not be used to create instance. Must use create()
+	 *
+	 * @param array $cookies cookies super var
+	 * @param bool $rebuild Optional. Trigger a rebuild.
+	 *
+	 * @return \ingot\testing\cookies\init|\WP_Error
+	 */
+	public static function create( $cookies, $rebuild = true ) {
+		if( is_null( self::$instance ) ){
+			self::$instance = new self( $cookies, $rebuild );
+			return self::$instance;
+		}else{
+			return new \WP_Error( 'ingot-cookies-init-singleton-misuse', __( 'Ingot cookies object already exists. Use the get_instance() method to access it.', 'ingot' ) );
 		}
 
 	}

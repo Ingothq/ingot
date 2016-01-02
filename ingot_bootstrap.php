@@ -293,7 +293,7 @@ class ingot_bootstrap {
 	 * @since 0.0.9
 	 */
 	public static function init_cookies() {
-return;
+
 		if( false == ingot_is_front_end() ) {
 			return false;
 		}
@@ -303,8 +303,8 @@ return;
 			$cookies = $_COOKIE;
 		}
 
-		$cookies = new ingot\testing\cookies\init( $cookies );
-		$ingot_cookies = $cookies->get_ingot_cookie();
+		$cookies = ingot\testing\cookies\init::create( $cookies );
+		$ingot_cookies = ingot\testing\cookies\init::get_instance()->get_ingot_cookie();
 		if( ! empty( $ingot_cookies ) ){
 			$cookie_time = 15 * DAY_IN_SECONDS;
 
@@ -345,8 +345,8 @@ return;
 	 * @since 0.0.9
 	 */
 	public static function init_price_tests( $cookies ) {
-
-		new \ingot\testing\tests\price\init( $cookies->get_ingot_cookie( false )[ 'price' ] );
+		$price = \ingot\testing\cookies\init::get_instance()->get_ingot_cookie( false )[ 'price' ];
+		new \ingot\testing\tests\price\init( $price );
 
 		if ( ingot_is_edd_active() ) {
 			self::track_edd();

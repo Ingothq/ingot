@@ -12,8 +12,6 @@
 namespace ingot\testing\tests\price;
 
 
-use ingot\testing\cookies\cache;
-use ingot\testing\tests\flow;
 use ingot\testing\utility\price;
 
 class track {
@@ -29,7 +27,7 @@ class track {
 	 */
 	public static function track_edd_sale( $payment_id ) {
 		$payment_meta = edd_get_payment_meta( $payment_id );
-		$products = self::get_edd_downlaods( $payment_meta );
+		$products = self::get_edd_downloads( $payment_meta );
 		self::check_for_winners( $products, 'edd' );
 	}
 
@@ -45,37 +43,16 @@ class track {
 	 */
 	protected static function check_for_winners( $products, $plugin ) {
 
-		$winners = array();
-
-		$testing = price::current();
-
 		if ( ! empty( $testing ) && isset( $testing[ $plugin ])) {
 			foreach ( $products as $product ) {
-				if ( isset( $testing[ $plugin ][ $product ] ) ) {
-					$winners[] = $testing[ $plugin ][ $product ];
+				if ( is_object( $test = price::get_price_test_from_cookie( $plugin, $product ) ) ) {
+					ingot_register_conversion( $test->variant );
 				}
 			}
 
-			self::record_victories( $winners );
+
 		}
 
-	}
-
-	/**
-	 * Track winning tests
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param array $winners
-	 */
-	protected static function record_victories( $winners ){
-		if( ! empty( $winners ) ) {
-			foreach( $winners as $winner ){
-				flow::increase_victory( $winner[ 'test_ID' ], $winner[ 'sequence_ID' ] );
-			}
-		}
 	}
 
 	/**
@@ -89,7 +66,7 @@ class track {
 	 *
 	 * @return array
 	 */
-	protected static function get_edd_downlaods( $payment_meta ) {
+	protected static function get_edd_downloads( $payment_meta ) {
 		$downloads = array();
 		if( is_array( $payment_meta ) && isset( $payment_meta[ 'downloads' ] ) && ! empty( $payment_meta[ 'downloads' ] ) ) {
 			$downloads = wp_list_pluck( $payment_meta[ 'downloads' ], 'id' );

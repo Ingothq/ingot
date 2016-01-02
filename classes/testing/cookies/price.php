@@ -201,7 +201,6 @@ class price extends cookie {
 	 */
 	protected function add_test( $group ) {
 		$test = $this->setup_test_object( $group );
-var_dump( $test );
 		$this->cookie[ $group[ 'sub_type' ] ][ $group[ 'ID' ] ] = $test;
 	}
 
