@@ -11,6 +11,8 @@
 
 namespace ingot\testing\object;
 
+use ingot\testing\bandit\content;
+use ingot\testing\bandit\price;
 use ingot\testing\crud\variant;
 
 class group {
@@ -171,7 +173,7 @@ class group {
 	 * @return array Contains objects of \MaBandit\Lever class
 	 */
 	public function get_levers(){
-		if( is_null( $this->levers ) ){
+		if( is_null( $this->levers  || empty( $this->levers )) ){
 			$this->set_levers();
 		}
 
@@ -189,6 +191,7 @@ class group {
 	 */
 	public function get_lever( $variant_id ){
 		$levers = $this->get_levers();
+
 		if( is_array( $levers ) && isset( $levers[ $this->ID ], $levers[ $this->ID ][ $variant_id ] ) ){
 			return $levers[ $this->ID ][ $variant_id ];
 
@@ -289,8 +292,17 @@ class group {
 	 *
 	 */
 	private function set_levers(){
+		if( empty( $this->group[ 'levers' ] ) ){
+			if( 'price' == $this->group[ 'type' ] ){
+				$bandit = new price( $this->ID );
+			}else{
+				$bandit = new content( $this->ID );
+			}
+
+		}
 
 		if ( ! empty( $this->group[ 'levers' ] ) ) {
+
 			$this->levers = $this->group[ 'levers' ];
 		}else{
 			//@todo create if ! empty( $this->group[ 'variants' ]  ) ??

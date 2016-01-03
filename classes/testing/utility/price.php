@@ -16,6 +16,7 @@ use ingot\testing\cookies\init;
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_test;
 use ingot\testing\crud\variant;
+use ingot\testing\object\price\test;
 use ingot\testing\types;
 
 class price {
@@ -177,9 +178,10 @@ class price {
 				$cookie = init::get_instance()->get_ingot_cookie( false )[ 'price' ];
 			}
 
-			if ( isset( $cookie[ $plugin ][ $id ] ) ) {
+			if ( isset( $cookie[ $plugin ][ $id ], $cookie[ $plugin ][ $id ][0], $cookie[ $plugin ][ $id ][1] )&& is_numeric( $cookie[ $plugin ][ $id ][0] ) )  {
+				$obj = new test( $cookie[ $plugin ][ $id ][0], $cookie[ $plugin ][ $id ][1]  );
+				return $obj;
 
-				return $cookie[ $plugin ][ $id ];
 			}
 
 

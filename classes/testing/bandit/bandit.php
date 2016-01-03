@@ -147,5 +147,7 @@ abstract class bandit {
 			$creator = new CreateExperiment( $variants, $this->ID, $this->bandit );
 			$this->experiment = $creator->get_experiment();
 		}
+
 	}
+
 }

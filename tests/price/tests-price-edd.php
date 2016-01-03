@@ -103,6 +103,13 @@ class tests_edd_price_tests extends \WP_UnitTestCase {
 		$this->assertEquals( $price_is, $price_should_be );
 
 		$group_obj = new \ingot\testing\object\group( $group_id );
+		$this->assertTrue( \ingot\testing\crud\group::valid( $group_obj->get_group_config() ) );
+
+		$this->assertTrue( is_numeric( $test->ID  ) );
+		$this->assertEquals( \ingot\testing\crud\variant::read( $test->ID ), $test->variant );
+		$this->assertTrue( \ingot\testing\crud\variant::valid( $test->variant ) );
+
+		$this->assertFalse( empty( $group_obj->get_levers() ) );
 		$lever = $group_obj->get_lever( $test->ID );
 		$this->assertInternalType( 'object', $lever );
 		$before_wins = $lever->getNumerator();
