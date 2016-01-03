@@ -86,7 +86,8 @@ class groups extends route {
 	public function get_items( $request ) {
 		$args = array(
 			'page' => $request->get_param( 'page' ),
-			'limit' => $request->get_param( 'limit' )
+			'limit' => $request->get_param( 'limit' ),
+			'type' => $request->get_param( 'type' )
 		);
 
 		$groups = group::get_items( $args );
