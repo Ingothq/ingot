@@ -93,6 +93,40 @@ class price extends cookie {
 		//remove uneeded?
 	}
 
+	/**
+	 * @param $group
+	 *
+	 * @return \ingot\testing\object\price\test
+	 */
+	protected function setup_test_object( $group ) {
+		if( is_numeric( $group ) ) {
+			$group = group::read( $group );
+		}
+
+		if( ! group::valid($group ) ){
+			return false;
+		}
+
+		$bandit  = new \ingot\testing\bandit\price( $group[ 'ID' ] );
+		$variant = $bandit->choose();
+
+		$test = new test( [
+			'plugin'  => $group[ 'sub_type' ],
+			'ID'      => $group[ 'ID' ],
+			'expires' => $this->expires(),
+			'variant' => $variant,
+			'product' => get_post( $group[ 'meta' ][ 'product_ID' ] ),
+			'price_callback' => \ingot\testing\utility\price::get_price_callback( $group[ 'sub_type' ] )
+		] );
+
+		return $test;
+
+	}
+
+
+
+
+
 
 	/**
 	 * Test if we need to add test to cookie
@@ -158,11 +192,11 @@ class price extends cookie {
 	 */
 	protected function add_test( $group ) {
 		if( group::valid( $group ) ){
-			$test = new test( $group[ 'ID'] );
+			$test = $this->setup_test_object( $group );
 			if ( is_object( $test ) ) {
-				$product_ID = \ingot\testing\utility\price::get_product_ID( $group, $this->expires() );
+				$product_ID = \ingot\testing\utility\price::get_product_ID( $group );
 				if ( is_object( $test ) && is_numeric( $product_ID ) ) {
-					$this->cookie[ $group[ 'sub_type' ] ][ $product_ID ] = [ $test->ID, $test->expires ];
+					$this->cookie[ $group[ 'sub_type' ] ][ $product_ID ] = $test;
 				}
 			}
 

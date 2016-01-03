@@ -46,12 +46,7 @@ class tests_price_cookie extends \WP_UnitTestCase {
 		$this->assertSame( 2, count( $price_cookie[ 'edd' ] ) );
 
 		foreach ( $price_cookie[ 'edd' ] as $content ) {
-			$this->assertInternalType( 'array', $content );
-			$this->assertArrayHasKey( 0, $content );
-			$this->assertArrayHasKey( 1, $content );
-			$this->assertTrue( is_numeric( $content[0] ) );
-			$this->assertTrue( is_numeric( $content[1] ) );
-			$obj = new \ingot\testing\object\price\test( $content[0], $content[1] );
+			$this->assertInternalType( 'object', $content );
 			foreach (
 				[
 					'plugin',
@@ -62,11 +57,11 @@ class tests_price_cookie extends \WP_UnitTestCase {
 					'product'
 				] as $key
 			) {
-				$this->assertObjectHasAttribute( $key, $obj );
+				$this->assertObjectHasAttribute( $key, $content );
 
 			}
 
-			$this->assertInternalType( 'object', $obj->product );
+			$this->assertInternalType( 'object', $content->product );
 
 		}
 

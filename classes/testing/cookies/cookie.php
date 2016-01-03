@@ -65,6 +65,8 @@ abstract class cookie {
 	/**
 	 * Get expiration time for tests
 	 *
+	 * @todo filter/option/etc?
+	 *
 	 * @since 1.1.0
 	 *
 	 * @access protected
@@ -72,7 +74,7 @@ abstract class cookie {
 	 * @return int
 	 */
 	protected function expires() {
-		return time() + ingot_cookie_time();
+		return time() + ( 10 * DAY_IN_SECONDS );
 
 	}
 

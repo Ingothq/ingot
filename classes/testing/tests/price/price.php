@@ -12,8 +12,6 @@
 namespace ingot\testing\tests\price;
 
 
-use ingot\testing\object\price\test;
-
 abstract class price {
 
 	/**
@@ -60,9 +58,8 @@ abstract class price {
 
 	protected function get_test( $id ){
 		if( array_key_exists( $id, $this->products ) ){
-			return new test( $this->products[ $id ][0], $this->products[ $id ][1] );
+			return $this->products[ $id ];
 		}
-
 	}
 
 
@@ -172,14 +169,6 @@ abstract class price {
 	 */
 	protected function handle_variable_prices( $prices, $test, $id  ){
 		return $prices;
-	}
-
-	/**
-	 * @param $products
-	 */
-	protected function set_products( $products ) {
-		$this->products[ 'ids' ] = wp_list_pluck( $products, 0 );
-		$this->products[ 'expires' ] = wp_list_pluck( $products, 1 );
 	}
 
 }

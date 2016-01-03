@@ -12,7 +12,6 @@
 namespace ingot\testing\object\price;
 
 
-use ingot\testing\crud\group;
 use ingot\testing\crud\variant;
 use ingot\testing\ingot;
 use ingot\testing\utility\price;
@@ -97,51 +96,18 @@ class test {
 	private $price_callback;
 
 	/**
-	 * Test bandit object
-	 *
-	 * @since 1.1.0
-	 *
-	 * @access private
-	 *
-	 * @var \ingot\testing\bandit\price
-	 */
-	private $bandit;
-
-	/**
 	 * Create object with test details
 	 *
-	 * @param int $id Group or variant ID
-	 * @param int $expires Expiration date from now, in seconds
+	 * @param array $test Test details
 	 *
 	 * @throws \Exception If test invalid
 	 */
-	public function __construct( $id, $expires = null ) {
-		if( ! $expires ){
-			$expires = ingot_cookie_time() + time();
-		}
+	public function __construct( $test ) {
 
-		$this->expires = $expires;
-		$this->setup( $id );
+		$this->set_properties( $this->verify_test( $test ) );
 		$this->set_price();
 	}
 
-	protected function setup( $id ){
-		if( variant::valid( $this->variant = variant::read( $id ) ) ){
-			$group = group::read( $this->variant[ 'group_ID' ] );
-			$this->ID = $this->variant[ 'ID' ];
-		}elseif( group::valid( $group = group::read( $id ) ) ){
-			$this->set_bandit( $group[ 'group_ID' ] );
-			$this->ID = $this->bandit->choose();
-			if( ! variant::valid( $this->variant = variant::read( $this->ID  ) ) ){
-				return;
-			}
-
-		}
-
-		$this->product = get_post( price::get_product_ID( $group ) );
-
-
-	}
 	/**
 	 * Record a victory for this test
 	 *
@@ -149,9 +115,8 @@ class test {
 	 */
 	public function record_victory(){
 		$group_id = $this->variant[ 'group_ID' ];
-		$this->set_bandit( $group_id );
-
-		$this->bandit->record_victory( $this->ID );
+		$bandit = new \ingot\testing\bandit\price( $group_id );
+		$bandit->record_victory( $this->ID );
 		ingot::instance()->get_current_session();
 
 	}
@@ -171,12 +136,7 @@ class test {
 	 */
 	public function __get( $prop ){
 		if( property_exists( $this, $prop ) ){
-			if( 'product' == $prop ) {
-				$this->product_to_object();
-			}
-
 			return $this->$prop;
-
 		}
 
 	}
@@ -188,10 +148,9 @@ class test {
 	 *
 	 * @access protected
 	 *
-	 * @return int|void
+	 * @return mixed
 	 */
 	protected function set_price(){
-		$this->product_to_object();
 		if ( is_callable( $this->price_callback ) ) {
 			$variant = variant::read( $this->ID );
 			if ( is_array( $variant ) ) {
@@ -227,7 +186,6 @@ class test {
 			if( 'price' == $key ){
 				continue;
 			}
-
 			if( ! isset( $test[ $key ] ) ){
 				throw new \Exception( __( 'invalid-price-test', 'ingot' ) );
 			}
@@ -237,33 +195,26 @@ class test {
 		return $test;
 	}
 
-
 	/**
-	 * Set the test bandit object
+	 * Set all properties of this object
 	 *
 	 * @since 1.1.0
 	 *
-	 * @access protected
+	 * @access private
 	 *
-	 * @param $group_id
+	 * @param array $test
 	 */
-	protected function set_bandit( $group_id ) {
-		if ( is_null( $this->bandit ) ) {
-			$this->bandit = new \ingot\testing\bandit\price( $group_id );
-		}
+	private function set_properties( $test ){
+		foreach( $test as $prop => $value ){
+			if( property_exists( $this, $prop ) ){
+				if( 'variant' == $prop && is_numeric( $value ) ){
+					$this->variant = variant::read( $value );
+				}else{
+					$this->$prop = $value;
+				}
 
-	}
+			}
 
-	/**
-	 * If product property is numeric, make into an object
-	 *
-	 * @since 1.1.0
-	 *
-	 * @access protected
-	 */
-	protected function product_to_object() {
-		if ( is_numeric( $this->product ) ) {
-			$this->product = price::get_product_function( $this->plugin );
 		}
 
 	}

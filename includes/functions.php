@@ -680,22 +680,3 @@ function ingot_is_batman(){
 
 }
 
-/**
- * Get length for cookie expiration
- *
- * @since 1.1.0
- *
- * @return int Time in seconds
- */
-function ingot_cookie_time(){
-	$cookie_time = 15 * DAY_IN_SECONDS;
-
-	/**
-	 * Change cookie time
-	 *
-	 * @since 0.2.0
-	 *
-	 * @param int $cookie_time Length to keep cookie. Default is 15 days
-	 */
-	return apply_filters( 'ingot_cookie_time', $cookie_time );
-}

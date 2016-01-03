@@ -155,14 +155,11 @@ class ingot {
 	 * @return array
 	 */
 	static public function js_vars() {
-		$session = self::$instance->get_current_session();
-		unset( $session[ 'session' ] );
-
 		$vars = array(
 			'api_url' => esc_url_raw( util::get_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'session_nonce' => wp_create_nonce( 'ingot_session' ),
-			'session' =>$session
+			'session' => \ingot\testing\object\session::instance()->get_session_info()
 		);
 
 		return $vars;

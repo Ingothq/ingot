@@ -305,7 +305,16 @@ class ingot_bootstrap {
 		$cookies = ingot\testing\cookies\init::create( $cookies );
 		$ingot_cookies = ingot\testing\cookies\init::get_instance()->get_ingot_cookie();
 		if( ! empty( $ingot_cookies ) ){
-			$cookie_time = ingot_cookie_time();
+			$cookie_time = 15 * DAY_IN_SECONDS;
+
+			/**
+			 * Change cookie time
+			 *
+			 * @since 0.2.0
+			 *
+			 * @param int $cookie_time Length to keep cookie. Default is 15 days
+			 */
+			$cookie_time = apply_filters( 'ingot_cookie_time', $cookie_time );
 			$cookie_name = $cookies->get_cookie_name();
 			//setcookie( $cookie_name, $ingot_cookies, time() + $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
 			
