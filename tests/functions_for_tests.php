@@ -170,7 +170,7 @@ class ingot_test_data_price {
 		$price_variations = [];
 
 		for( $v = 0; $v <= 5; $v++ ) {
-			$variation = rand( -0.9, 0.9 );
+			$variation = rand_float();
 			$variant_args[ 'meta' ][ 'price' ] = $variation;
 			$variant_id = \ingot\testing\crud\variant::create( $variant_args, true );
 
@@ -187,16 +187,16 @@ class ingot_test_data_price {
 		$data[ 'variants' ] = $variants;
 		$data[ 'price_variations' ] = $price_variations;
 
+		$_group = \ingot\testing\crud\group::read( $group_id );
+		$_group[ 'variants' ] = $variants;
+		$saved = \ingot\testing\crud\group::update( $_group, $group_id, true );
+		if( is_wp_error( $saved ) ){
 
-		if ( is_user_logged_in() ) {
-			$obj = new \ingot\testing\object\group( $group_id );
-			$obj->update_group( [ 'variants' => $variants ] );
-		}else{
-			$_group = \ingot\testing\crud\group::read( $group_id );
-			$_group[ 'variants' ] = $variants;
-			$saved = \ingot\testing\crud\group::update( $_group, $group_id, true );
+			echo $saved->get_error_messages();
+			die();
 		}
 
+		$data[ 'group' ] = \ingot\testing\crud\group::read( $group_id );
 
 		return $data;
 	}
@@ -396,4 +396,14 @@ class ingot_test_data_price {
 		return $payment_id;
 	}
 
+}
+
+function rand_float(){
+
+	$value = lcg_value();
+
+	if( (bool) rand(0,1) ) {
+		$value = -1 * abs( $value );
+	}
+	return round( $value, 3 );
 }

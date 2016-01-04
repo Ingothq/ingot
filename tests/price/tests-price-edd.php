@@ -15,6 +15,7 @@ class tests_edd_price_tests extends \WP_UnitTestCase {
 		\ingot\testing\crud\group::delete( 'all' );
 		\ingot\testing\crud\variant::delete( 'all' );
 	}
+
 	/**
 	 * Test that EDD sample data generation is valid
 	 *
@@ -41,14 +42,14 @@ class tests_edd_price_tests extends \WP_UnitTestCase {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @group price
+	 * @group pricez
 	 * @group edd_price
 	 *
 	 * @covers \ingot\testing\tests\price\plugins\edd
 	 */
 	public function testPriceTrackingNonVariableProduct(){
-
-		$product = ingot_test_data_price::edd_create_simple_download( 10 );
+		$price_is = 10;
+		$product = ingot_test_data_price::edd_create_simple_download( $price_is );
 		$group_id = \ingot\testing\crud\group::create([
 			'type'     => 'price',
 			'sub_type' => 'edd',
@@ -96,8 +97,8 @@ class tests_edd_price_tests extends \WP_UnitTestCase {
 
 		new \ingot\testing\tests\price\plugins\edd( $price_cookie[ 'edd' ] );
 
-		$price_is = edd_get_download_price( $product->ID );
 		$test = \ingot\testing\utility\price::get_price_test_from_cookie( 'edd', $product->ID, $price_cookie );
+
 		$this->assertInternalType( 'object', $test );
 		$price_should_be = $test->get_price();
 		$this->assertEquals( $price_is, $price_should_be );

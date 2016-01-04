@@ -16,6 +16,7 @@ use ingot\testing\cookies\init;
 use ingot\testing\crud\group;
 use ingot\testing\crud\price_test;
 use ingot\testing\crud\variant;
+use ingot\testing\object\price\test;
 use ingot\testing\types;
 
 class price {
@@ -56,7 +57,7 @@ class price {
 		$product_ID = self::get_product_ID( $group );
 
 		if( is_numeric( $product_ID ) ){
-			$post = get_post( $product_ID );
+			$post = call_user_func( self::get_product_function( $group[ 'sub_type' ] ), $product_ID );
 			if( is_object( $post ) ) {
 				return $post;
 			}
@@ -177,11 +178,14 @@ class price {
 				$cookie = init::get_instance()->get_ingot_cookie( false )[ 'price' ];
 			}
 
+
 			if ( isset( $cookie[ $plugin ][ $id ] ) ) {
 
-				return $cookie[ $plugin ][ $id ];
-			}
+				$test =  $cookie[ $plugin ][ $id ];
 
+				return self::inflate_price_test( $test );
+
+			}
 
 		}
 
@@ -203,6 +207,24 @@ class price {
 		if( group::valid( $group ) ){
 			return (int) helpers::v( 'product_ID', $group[ 'meta' ], null );
 		}
+	}
+
+	/**
+	 * Turn price test when coming from cookie back into price/test object
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $test
+	 *
+	 * @return array|\ingot\testing\object\price\test
+	 */
+	public static function inflate_price_test( $test ) {
+		if ( is_array( $test ) || ( ! is_object( $test ) && is_array( $test = json_decode( $test, true  ) ) ) ) {
+			$test = new test( $test );
+		}
+
+		return $test;
+
 	}
 
 

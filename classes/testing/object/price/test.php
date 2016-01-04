@@ -12,11 +12,13 @@
 namespace ingot\testing\object\price;
 
 
+use ingot\testing\crud\group;
 use ingot\testing\crud\variant;
 use ingot\testing\ingot;
+use ingot\testing\types;
 use ingot\testing\utility\price;
 
-class test {
+class test implements \JsonSerializable {
 
 	/**
 	 * Variant ID
@@ -122,6 +124,10 @@ class test {
 	}
 
 	public function get_price(){
+		if( ! isset( $this->price ) ){
+			$this->set_price();
+		}
+
 		return $this->price;
 	}
 
@@ -136,7 +142,16 @@ class test {
 	 */
 	public function __get( $prop ){
 		if( property_exists( $this, $prop ) ){
+			if( ! isset( $this->$prop ) && method_exists( $this, 'set_' . $prop ) ){
+				call_user_func( array( $this, 'set_' . $prop ) );
+			}
+
+			if( method_exists( $this, 'get_' . $prop ) ){
+				return call_user_func( array( $this, 'get_' . $prop ) );
+			}
+
 			return $this->$prop;
+
 		}
 
 	}
@@ -151,8 +166,13 @@ class test {
 	 * @return mixed
 	 */
 	protected function set_price(){
+		$this->set_variant();
+		$this->set_price_callback();
+		$this->set_product();
+
 		if ( is_callable( $this->price_callback ) ) {
-			$variant = variant::read( $this->ID );
+
+			$variant = $this->variant;
 			if ( is_array( $variant ) ) {
 				$variation = price::get_price_variation( $variant );
 				$base_price = call_user_func( $this->price_callback, $this->product->ID );
@@ -181,12 +201,9 @@ class test {
 	 * @throws \Exception
 	 */
 	protected function verify_test( $test ){
-		$required = array_keys( get_object_vars( $this ) );
-		foreach( $required as $key ){
-			if( 'price' == $key ){
-				continue;
-			}
-			if( ! isset( $test[ $key ] ) ){
+		$vars = $this->object_vars();
+		foreach( $vars as $key ){
+			if( in_array( $key, [ 'expires', 'ID' ] ) && ! isset( $test[ $key ] ) ){
 				throw new \Exception( __( 'invalid-price-test', 'ingot' ) );
 			}
 
@@ -218,6 +235,58 @@ class test {
 		}
 
 	}
+
+	/**
+	 * @return array
+	 */
+	protected function object_vars() {
+		$vars = array_keys( get_object_vars( $this ) );
+
+		return $vars;
+	}
+
+	private function set_variant(){
+		if( ! isset( $this->variant ) ){
+			$this->variant = variant::read( $this->ID );
+		}
+	}
+
+	private function set_price_callback(){
+
+		if( ! isset( $this->price_callback ) ){
+			$this->set_plugin();
+			$this->price_callback = price::get_price_callback( $this->plugin );
+		}
+
+	}
+
+	private function set_plugin(){
+		if( ! isset( $this->plugin ) ) {
+			$this->set_variant();
+			$group        = group::read( $this->variant[ 'group_ID' ] );
+			if ( in_array( $group[ 'sub_type' ], types::allowed_price_types() ) ) {
+				$this->plugin = $group[ 'sub_type' ];
+			}
+		}
+	}
+
+	private function set_product(){
+		if ( ! is_object( $this->product ) ) {
+			$group = group::read( $this->variant[ 'group_ID' ] );
+			if ( in_array( $group[ 'sub_type' ], types::allowed_price_types() ) ) {
+				$this->product = price::get_product( $group );
+			}
+		}
+
+	}
+
+	public function jsonSerialize() {
+		return [
+			'ID'      => $this->ID,
+			'expires' => $this->expires
+		];
+	}
+
 
 
 }

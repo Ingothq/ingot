@@ -46,6 +46,7 @@ class tests_price_cookie extends \WP_UnitTestCase {
 		$this->assertSame( 2, count( $price_cookie[ 'edd' ] ) );
 
 		foreach ( $price_cookie[ 'edd' ] as $content ) {
+			$content = \ingot\testing\utility\price::inflate_price_test( $content );
 			$this->assertInternalType( 'object', $content );
 			foreach (
 				[

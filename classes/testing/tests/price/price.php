@@ -58,7 +58,8 @@ abstract class price {
 
 	protected function get_test( $id ){
 		if( array_key_exists( $id, $this->products ) ){
-			return $this->products[ $id ];
+			$test =  $this->products[ $id ];
+			return \ingot\testing\utility\price::inflate_price_test( $test );
 		}
 	}
 

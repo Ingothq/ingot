@@ -15,6 +15,7 @@ namespace ingot\testing\bandit;
 
 
 use ingot\testing\object\group;
+use MaBandit\CreateExperiment;
 
 class content extends bandit {
 
@@ -161,8 +162,12 @@ class content extends bandit {
 	protected function create_experiment() {
 		parent::create_experiment();
 
-		$levers[ $this->get_ID() ] = $this->experiment->getLevers();
-		$this->obj->update_levers( $levers );
+		if ( is_object( $this->experiment ) ) {
+			$levers[ $this->get_ID() ] = $this->experiment->getLevers();
+			$this->obj->update_levers( $levers );
+		}else{
+			//@todo
+		}
 
 	}
 

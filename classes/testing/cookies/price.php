@@ -196,7 +196,7 @@ class price extends cookie {
 			if ( is_object( $test ) ) {
 				$product_ID = \ingot\testing\utility\price::get_product_ID( $group );
 				if ( is_object( $test ) && is_numeric( $product_ID ) ) {
-					$this->cookie[ $group[ 'sub_type' ] ][ $product_ID ] = $test;
+					$this->cookie[ $group[ 'sub_type' ] ][ $product_ID ] = wp_json_encode( $test );
 				}
 			}
 
