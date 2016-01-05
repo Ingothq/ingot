@@ -21,8 +21,6 @@ use ingot\testing\utility\helpers;
 
 class price extends cookie {
 
-
-
 	/**
 	 * Hold all groups we need to track
 	 *
@@ -31,7 +29,6 @@ class price extends cookie {
 	 * @var array
 	 */
 	private $groups = [];
-
 
 	/**
 	 * Construct object
@@ -123,11 +120,6 @@ class price extends cookie {
 
 	}
 
-
-
-
-
-
 	/**
 	 * Test if we need to add test to cookie
 	 *
@@ -156,11 +148,8 @@ class price extends cookie {
 
 		}
 
-
 		//in cookie and not expired false
 		return false;
-
-
 
 	}
 

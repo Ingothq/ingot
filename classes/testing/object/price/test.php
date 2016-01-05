@@ -113,6 +113,8 @@ class test implements \JsonSerializable {
 	/**
 	 * Record a victory for this test
 	 *
+	 * @since 1.1.0
+	 *
 	 * return int
 	 */
 	public function record_victory(){
@@ -123,6 +125,27 @@ class test implements \JsonSerializable {
 
 	}
 
+	/**
+	 * Use to limit size of serialized object put into cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return [
+			'ID'      => $this->ID,
+			'expires' => $this->expires
+		];
+	}
+
+	/**
+	 * Get price, with test variation applied
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
 	public function get_price(){
 		if( ! isset( $this->price ) ){
 			$this->set_price();
@@ -201,7 +224,7 @@ class test implements \JsonSerializable {
 	 * @throws \Exception
 	 */
 	protected function verify_test( $test ){
-		$vars = $this->object_vars();
+		$vars = array_keys( get_object_vars( $this ) );
 		foreach( $vars as $key ){
 			if( in_array( $key, [ 'expires', 'ID' ] ) && ! isset( $test[ $key ] ) ){
 				throw new \Exception( __( 'invalid-price-test', 'ingot' ) );
@@ -210,6 +233,7 @@ class test implements \JsonSerializable {
 		}
 
 		return $test;
+
 	}
 
 	/**
@@ -236,23 +260,29 @@ class test implements \JsonSerializable {
 
 	}
 
+
 	/**
-	 * @return array
+	 * Set variant property
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access private
 	 */
-	protected function object_vars() {
-		$vars = array_keys( get_object_vars( $this ) );
-
-		return $vars;
-	}
-
 	private function set_variant(){
 		if( ! isset( $this->variant ) ){
 			$this->variant = variant::read( $this->ID );
 		}
+
 	}
 
+	/**
+	 * Set price callback property
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access private
+	 */
 	private function set_price_callback(){
-
 		if( ! isset( $this->price_callback ) ){
 			$this->set_plugin();
 			$this->price_callback = price::get_price_callback( $this->plugin );
@@ -260,6 +290,13 @@ class test implements \JsonSerializable {
 
 	}
 
+	/**
+	 * Set plugin property
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access private
+	 */
 	private function set_plugin(){
 		if( ! isset( $this->plugin ) ) {
 			$this->set_variant();
@@ -267,9 +304,18 @@ class test implements \JsonSerializable {
 			if ( in_array( $group[ 'sub_type' ], types::allowed_price_types() ) ) {
 				$this->plugin = $group[ 'sub_type' ];
 			}
+
 		}
+
 	}
 
+	/**
+	 * Set product property
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access private
+	 */
 	private function set_product(){
 		if ( ! is_object( $this->product ) ) {
 			$group = group::read( $this->variant[ 'group_ID' ] );
@@ -279,14 +325,5 @@ class test implements \JsonSerializable {
 		}
 
 	}
-
-	public function jsonSerialize() {
-		return [
-			'ID'      => $this->ID,
-			'expires' => $this->expires
-		];
-	}
-
-
 
 }

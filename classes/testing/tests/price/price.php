@@ -56,6 +56,17 @@ abstract class price {
 
 	}
 
+	/**
+	 * Get a test object from cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @param int $id Product ID
+	 *
+	 * @return array|\ingot\testing\object\price\test
+	 */
 	protected function get_test( $id ){
 		if( array_key_exists( $id, $this->products ) ){
 			$test =  $this->products[ $id ];
@@ -64,7 +75,17 @@ abstract class price {
 	}
 
 
-
+	/**
+	 * Get the price set in test object -- respecting price testing
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @param \ingot\testing\object\price\test $test
+	 *
+	 * @return string
+	 */
 	protected function get_price( \ingot\testing\object\price\test $test ){
 		return $test->get_price();
 	}
