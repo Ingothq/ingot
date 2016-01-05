@@ -56,7 +56,7 @@ class ingot_bootstrap {
 						new \ingot\ui\admin\app\load();
 					}
 
-					add_action( 'init', array( __CLASS__, 'init_cookies' ), 25 );
+					self::init_cookies();
 
 					/**
 					 * Runs when Ingot has loaded.

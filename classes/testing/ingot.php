@@ -16,6 +16,7 @@ use ingot\testing\api\rest\groups;
 use ingot\testing\api\rest\products;
 use ingot\testing\api\rest\util;
 use ingot\testing\api\rest\variant;
+use ingot\testing\cookies\init;
 use ingot\testing\crud\settings;
 use ingot\testing\utility\helpers;
 use ingot\testing\utility\posts;
@@ -220,6 +221,9 @@ class ingot {
 	}
 
 }
+
+
+
 
 
 

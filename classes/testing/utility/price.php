@@ -210,6 +210,17 @@ class price {
 	}
 
 	/**
+	 * Holds inflated test objects
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @var array
+	 */
+	protected static $inflated = [];
+
+	/**
 	 * Turn price test when coming from cookie back into price/test object
 	 *
 	 * @since 1.1.0
@@ -219,13 +230,21 @@ class price {
 	 * @return array|\ingot\testing\object\price\test
 	 */
 	public static function inflate_price_test( $test ) {
+
 		if ( is_array( $test ) || ( ! is_object( $test ) && is_array( $test = json_decode( $test, true  ) ) ) ) {
+			if( isset( self::$inflated[ $test[ 'ID' ] ] ) ){
+				return self::$inflated[ $test[ 'ID' ] ];
+			}
+
 			$test = new test( $test );
+			self::$inflated[ $test->ID ] = $test ;
 		}
 
 		return $test;
 
 	}
+
+
 
 
 }

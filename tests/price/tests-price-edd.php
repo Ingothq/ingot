@@ -101,7 +101,8 @@ class tests_edd_price_tests extends \WP_UnitTestCase {
 
 		$this->assertInternalType( 'object', $test );
 		$price_should_be = $test->get_price();
-		$this->assertEquals( $price_is, $price_should_be );
+		//NOTE: USING edd_get_download_price here is to ensure we don't have recursion
+		$this->assertEquals( edd_get_download_price( $product->ID ), $price_should_be );
 
 		$group_obj = new \ingot\testing\object\group( $group_id );
 		$lever = $group_obj->get_lever( $test->ID );
