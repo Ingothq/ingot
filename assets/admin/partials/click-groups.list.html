@@ -1,17 +1,20 @@
 <div ng-repeat="group in groups track by $index" class="col-md-6 group-panel-wrapper">
     <div class="group-panel">
         <div class="row">
-            <div class="col-sm-9">
-                <h5>{{translate.group.name }}</h5>
+            <div class="col-sm-9" ng-if="group.name">
+                <h5>{{group.name}}</h5>
+            </div>
+            <div class="col-sm-9" ng-if="!group.name">
+                <h5>{{group.ID}}</h5>
             </div>
             <div class="col-sm-3 group-icons">
-                <a ui-sref="clickTests.edit({groupID:group.ID})" title="{{ 'groups.edit' | translate }}" class="edit">
+                <a ui-sref="clickTests.edit({groupID:group.ID})" title="{{translate.groups.edit}}" class="edit">
                     <i class="fa fa-cog"></i>
                 </a>
-                <a ui-sref="clickTests.stats({groupID:group.ID})" title="{{ 'groups.stats' | translate }}" class="stats">
+                <a ui-sref="clickTests.stats({groupID:group.ID})" title="{{translate.groups.stats}}" class="stats">
                     <i class="fa fa-bar-chart"></i>
                 </a>
-                <a ui-sref="clickTests.delete({groupID:group.ID})" title="{{ 'groups.delete' | translate }}" class="delete">
+                <a ui-sref="clickTests.delete({groupID:group.ID})" title="{{translate.groups.delete}}" class="delete">
                     <i class="fa fa-minus-circle"></i>
                 </a>
             </div>
@@ -21,13 +24,17 @@
                 [ingot id="{{group.ID}}"]
             </pre>
             <button class="btn btn-info" ngclipboard data-clipboard-text="[ingot id=&quot;{{group.ID}}&quot;]" id="shortcode-copy-{{group.ID}}" style="width: 100%; display: none;visibility: hidden;" aria-hidden="true">
-                Click To Copy
+                {{translate.groups.click_copy}}
             </button>
         </div>
     </div>
 </div>
 
 <div class="paginate text-right" ng-show="total_pages.length > 1">
-    <i>page:</i>
-	<a ng-click="paginate( $index, $event )" ng-repeat="page in total_pages track by $index" class="btn btn-default" ng-class="{true: 'active'}[$index == 0]">{{$index + 1}}</a>
+    <i>
+        {{translate.groups.page}}:
+    </i>
+	<a ng-click="paginate( $index, $event )" ng-repeat="page in total_pages track by $index" class="btn btn-default" ng-class="{true: 'active'}[$index == 0]">
+        {{$index + 1}}
+    </a>
 </div>

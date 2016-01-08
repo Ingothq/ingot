@@ -369,7 +369,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 }]);
 
 //controller for group stats
-ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state', 'groupsFactory', function( $scope, $http, $stateParams, $state,  groupsFactory ) {
+ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$stateParams', '$state', 'groupsFactory', function( $scope, $rootScope, $http, $stateParams, $state,  groupsFactory ) {
 
     var groupID = $stateParams.groupID;
     $scope.no_stats = INGOT_TRANSLATION.no_stats;
@@ -395,7 +395,7 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
             }
         } ).success( function( res ){
             $scope.stats_exist = true;
-            if( !Object.keys(res.variants).length ) {
+            if( ! Object.keys(res.variants).length ) {
                 $scope.stats_exist = false;
                 return;
             }
@@ -413,7 +413,8 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                         data: []
                     }
                 ]
-            }
+            };
+
             angular.forEach( $scope.stats.variants, function( variant, i ) {
                 var name;
 
@@ -461,15 +462,13 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                 ctx.stroke();
                 ctx.font = "14px Arial";
                 ctx.fillStyle = 'black';
-                ctx.fillText('Group Average Conversion Rate (' + Math.round( overlayBar * 100  ) / 100 + '%)', jQuery('#ingotChart').outerWidth(), y - 10 )
+                ctx.fillText( $rootScope.translate.stats.g_c_rate + '(' + Math.round( overlayBar * 100  ) / 100 + '%)', jQuery('#ingotChart').outerWidth(), y - 10 )
             }
             ctx.closePath();
         }
     });
 
     $scope.setChart = function( avg ) {
-        console.log( 'setting chart..' );
-
         var ctx = document.getElementById("ingotChart").getContext("2d");
         setTimeout(function(){
             var ingot_chart = new Chart(ctx).BarOverlay( $scope.chart_data, {

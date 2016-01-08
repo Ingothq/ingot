@@ -46,7 +46,8 @@ class translations {
 				'stats_for' => esc_html__( 'Stats For Group', 'ingot' ),
 				'no_stats'  => esc_html__( 'No Stats for this group yet', 'ingot' ),
 				'c_rate'    => esc_html__( 'Conversion Rate', 'ingot' ),
-				'variant'   => esc_html__( 'Varaint', 'ingot' ),
+				'variant'   => esc_html__( 'Variant', 'ingot' ),
+				'g_c_rate' => esc_html__( 'Group Average Conversion Rate', 'ingot' )
 			],
 			'groups'                   => [
 				'click_group_page_title' => esc_html__( 'Content Test Groups', 'ingot' ),
@@ -56,7 +57,9 @@ class translations {
 				'edit'                   => esc_html__( 'Edit Group', 'ingot' ),
 				'stats'                  => esc_html__( 'Group Stats', 'ingot' ),
 				'delete'                 => esc_html__( 'Delete Group', 'ingot' ),
-				'no_groups'              => esc_html__( 'There are no groups, create one.', 'ingot' )
+				'no_groups'              => esc_html__( 'There are no groups, create one.', 'ingot' ),
+				'click_copy'             => esc_html__( 'Click To Copy', 'ingot' ),
+				'page'                   => esc_html__( 'Page', 'ingot' ),
 			],
 			'group'                    => [
 				'save_group'                           => esc_html__( 'Save Group', 'ingot' ),
