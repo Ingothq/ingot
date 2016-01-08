@@ -36,7 +36,7 @@ function ingot_maybe_load() {
 
 		if ( is_admin() ) {
 			include_once( dirname( __FILE__ ) . '/vendor/calderawp/dismissible-notice/src/functions.php' );
-			$message = __( sprintf( 'Ingot requires PHP version %1s or later. Current version is %2s.', '5.5.0', PHP_VERSION ), 'ingot' );
+			$message = esc_html__( sprintf( 'Ingot requires PHP version %1s or later. Current version is %2s.', '5.5.0', PHP_VERSION ), 'ingot' );
 
 			echo caldera_warnings_dismissible_notice( $message, true, 'activate_plugins' );
 			$fail = true;
@@ -49,8 +49,8 @@ function ingot_maybe_load() {
 
 
 		if ( is_admin() ) {
-			include_once( dirname( __FILE__ ) . 'vendor/calderawp/dismissible-notice/src/functions.php' );
-			$message = __( sprintf( 'Ingot requires WordPress version %1s or later. Current version is %2s.', '4.0', $wp_version ), 'ingot' );
+			include_once( dirname( __FILE__ ) . '/vendor/calderawp/dismissible-notice/src/functions.php' );
+			$message = esc_html__( sprintf( 'Ingot requires WordPress version %1s or later. Current version is %2s.', '4.0', $wp_version ), 'ingot' );
 
 			echo caldera_warnings_dismissible_notice( $message, true, 'activate_plugins' );
 			$fail = true;
