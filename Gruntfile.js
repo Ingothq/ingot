@@ -144,19 +144,6 @@ module.exports = function (grunt) {
             ],
             tasks: ['default']
         },
-        concat: {
-            options: {
-
-            },
-            admin_js: {
-                src: [ 'assets/vendor/js/**/*.js' ],
-                dest: 'assets/admin/js/ingot-admin-dependencies.js'
-            },
-            admin_css:{
-                src: [ 'assets/vendor/css/**/*.css' ],
-                dest: 'assets/admin/css/ingot-admin-dependencies.css'
-            }
-        },
         addtextdomain: {
             options: {
                 textdomain: 'ignot',
@@ -194,7 +181,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-shell');
     grunt.loadNpmTasks( 'grunt-contrib-uglify');
     grunt.loadNpmTasks( 'grunt-contrib-watch');
-    grunt.loadNpmTasks( 'grunt-contrib-concat' );
     grunt.loadNpmTasks( 'grunt-wp-i18n' );
     grunt.registerTask( 'i18n', ['addtextdomain', 'makepot'] );
 

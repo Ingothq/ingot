@@ -8,7 +8,8 @@ var ingotApp = angular.module('ingotApp', [
     'ui.bootstrap',
     'colorpicker.module',
     'ngAria',
-    'ngResource'
+    'ngResource',
+    'ngclipboard'
 ] )
     .run( function( $rootScope, $state ) {
         $rootScope.translate =  INGOT_TRANSLATION;
@@ -124,7 +125,7 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', functio
     var page_limit = 10;
     
      groupsFactory.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
-	    
+
 	    if( res.data.indexOf('No matching') > -1 ){
 		    $scope.groups = {};
 		    return;
@@ -135,6 +136,8 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', functio
 	    var total_groups = parseInt( res.headers['x-ingot-total'] );
 	    total_pages = total_groups / page_limit;
 	    $scope.total_pages = new Array( Math.round( total_pages ) );
+        $scope.groups.shortcode = [];
+
 
     });
     
@@ -151,7 +154,17 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', functio
 			if( res.data.indexOf('No matching groups found.') >= 0 ) { return; }
 		    $scope.groups = JSON.parse( res.data );
 	    });   
-    }
+    };
+
+    $scope.enter = function( id ){
+        jQuery( '#shortcode-pre-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
+        jQuery( '#shortcode-copy-' + id ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+    };
+
+    $scope.exit = function( id ){
+        jQuery( '#shortcode-copy-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
+        jQuery('#shortcode-pre-' + id  ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+    };
     
 }]);
 
@@ -410,11 +423,11 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                     name = INGOT_TRANSLATION.stats.variant + ' ' + i;
                 }
                 $scope.chart_data.labels.push( name );
-                var rate = Math.round( variant.conversion_rate * 100 ) / 100;
+                var rate = Math.round( variant.conversion_rate * 100 );
                 $scope.chart_data.datasets[0].data.push( rate );
             });
 
-            $scope.setChart( $scope.stats.group.average_conversion_rate );
+            $scope.setChart( $scope.stats.group.average_conversion_rate * 100 );
 
         });
 
@@ -759,4 +772,3 @@ ingotApp.factory( 'groupsFactory', function( $resource ) {
     })
 	
 });
-

@@ -16,8 +16,13 @@
                 </a>
             </div>
         </div>
-        <div>
-            <pre>[ingot id="{{group.ID}}"]</pre>
+        <div ng-mouseenter="enter(group.ID)" ng-mouseleave="exit(group.ID)">
+            <pre id="shortcode-pre-{{group.ID}}">
+                [ingot id="{{group.ID}}"]
+            </pre>
+            <button class="btn btn-info" ngclipboard data-clipboard-text="[ingot id=&quot;{{group.ID}}&quot;]" id="shortcode-copy-{{group.ID}}" style="width: 100%; display: none;visibility: hidden;" aria-hidden="true">
+                Click To Copy
+            </button>
         </div>
     </div>
 </div>
@@ -26,4 +31,3 @@
     <i>page:</i>
 	<a ng-click="paginate( $index, $event )" ng-repeat="page in total_pages track by $index" class="btn btn-default" ng-class="{true: 'active'}[$index == 0]">{{$index + 1}}</a>
 </div>
-
