@@ -1,3 +1,8 @@
+# 1.0.2
+* Copy to clipboard for shortcode
+* Display conversion rates properly
+* Minor bug fixes
+
 # 1.0.1
 * Dump old tables if upgrading from beta
 * Don't assume path for dependencies
