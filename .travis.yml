@@ -1,12 +1,10 @@
 language: php
 
-sudo: true
-
 php:
 
-  - '5.5'
-  - '5.6'
-  - '7.0'
+  - 5.5
+  - 5.6
+  - 7.0
   - hhvm
   - nightly
 
@@ -28,9 +26,9 @@ matrix:
 
 before_script:
 - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-- sudo composer update
-- sudo npm install
-- sudo npm install
+- composer update
+- npm install
+- npm install
 - bower update;
 - bower-installer
 
