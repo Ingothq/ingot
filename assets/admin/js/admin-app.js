@@ -9,7 +9,8 @@ var ingotApp = angular.module('ingotApp', [
     'colorpicker.module',
     'pascalprecht.translate',
     'ngAria',
-    'ngResource'
+    'ngResource',
+    'ngclipboard'
 ] )
     .run( function( $rootScope, $state ) {
 		
@@ -137,7 +138,8 @@ ingotApp.config(['$translateProvider', function ($translateProvider) {
 ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function( $scope, $http, clickGroups ) {
     
     var page_limit = 10;
-    
+
+
     clickGroups.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
 	    
 	    if( res.data.indexOf('No matching') > -1 ){
@@ -150,6 +152,8 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
 	    var total_groups = parseInt( res.headers['x-ingot-total'] );
 	    total_pages = total_groups / page_limit;
 	    $scope.total_pages = new Array( Math.round( total_pages ) );
+        $scope.groups.shortcode = [];
+
 
     });
     
@@ -166,7 +170,17 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'clickGroups', function(
 			if( res.data.indexOf('No matching groups found.') >= 0 ) { return; }
 		    $scope.groups = JSON.parse( res.data );
 	    });   
-    }
+    };
+
+    $scope.enter = function( id ){
+        jQuery( '#shortcode-pre-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
+        jQuery( '#shortcode-copy-' + id ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+    };
+
+    $scope.exit = function( id ){
+        jQuery( '#shortcode-copy-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
+        jQuery('#shortcode-pre-' + id  ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+    };
     
 }]);
 
@@ -825,4 +839,3 @@ ingotApp.factory( 'priceGroups', function( $resource ) {
     })
 
 });
-
