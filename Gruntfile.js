@@ -143,20 +143,7 @@ module.exports = function (grunt) {
                 'assets/front-end/js/ingot-click-test.js'
             ],
             tasks: ['default']
-        },
-        concat: {
-            options: {
-
-            },
-            admin_js: {
-                src: [ 'assets/vendor/js/**/*.js' ],
-                dest: 'assets/admin/js/ingot-admin-dependencies.js'
-            },
-            admin_css:{
-                src: [ 'assets/vendor/css/**/*.css' ],
-                dest: 'assets/admin/css/ingot-admin-dependencies.css'
-            }
-        },
+        }
 
     });
 

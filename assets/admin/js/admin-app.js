@@ -373,7 +373,6 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 //controller for group stats
 ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state', 'clickGroups', function( $scope, $http, $stateParams, $state, clickGroups ) {
 
-    console.log( 'starting stats..' );
 
     var groupID = $stateParams.groupID;
     $scope.no_stats = INGOT_TRANSLATION.no_stats;
@@ -427,11 +426,11 @@ ingotApp.controller( 'clickStats', ['$scope', '$http', '$stateParams', '$state',
                     name = 'Variant ' + i;
                 }
                 $scope.chart_data.labels.push( name );
-                var rate = Math.round( variant.conversion_rate * 100 ) / 100;
+                var rate = Math.round( variant.conversion_rate * 100 );
                 $scope.chart_data.datasets[0].data.push( rate );
             });
 
-            $scope.setChart( $scope.stats.group.average_conversion_rate );
+            $scope.setChart( $scope.stats.group.average_conversion_rate * 100 );
 
         });
 
