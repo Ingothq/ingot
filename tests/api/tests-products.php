@@ -28,14 +28,14 @@ class products_api extends ingot_rest_test_case {
 	 *
 	 * @covers ingot\testing\api\rest/products::get_items()
 	 */
-	public function testGetEDDItems(){
+	public function testGetEDDItems() {
 		wp_set_current_user( 1 );
-		$product_1 = ingot_test_data_price::edd_create_simple_download(10);
-		$product_2 = ingot_test_data_price::edd_create_simple_download(10);
-		$not_edd = get_post( wp_insert_post( [
-			'post_type' => 'page',
+		$product_1 = ingot_test_data_price::edd_create_simple_download( 10 );
+		$product_2 = ingot_test_data_price::edd_create_simple_download( 10 );
+		$not_edd   = get_post( wp_insert_post( [
+			'post_type'  => 'page',
 			'post_title' => 'hats'
-		]));
+		] ) );
 
 		$request = new \WP_REST_Request( 'GET', $this->namespaced_route );
 		$request->set_query_params( array(
@@ -47,11 +47,11 @@ class products_api extends ingot_rest_test_case {
 		$data = (array) $response->get_data();
 		$this->assertSame( 2, count( $data ) );
 
-		$ids = [ $product_1->ID, $product_2->ID ];
+		$ids    = [ $product_1->ID, $product_2->ID ];
 		$titles = [ $product_1->post_title, $product_2->post_title ];
-		foreach( $data as $product ){
+		foreach ( $data as $product ) {
 			$this->assertArrayHasKey( 'value', $product );
-			$this->assertArrayHasKey(  'label', $product );
+			$this->assertArrayHasKey( 'label', $product );
 			$this->assertTrue( in_array( $product[ 'value' ], $ids ) );
 			$this->assertTrue( in_array( $product[ 'label' ], $titles ) );
 		}
@@ -70,10 +70,10 @@ class products_api extends ingot_rest_test_case {
 	 *
 	 * @covers ingot\testing\api\rest/products::get_plugins()
 	 */
-	public function testGetPlugins(){
+	public function testGetPlugins() {
 		wp_set_current_user( 1 );
 
-		$request = new \WP_REST_Request( 'GET', $this->namespaced_route  . '/plugins' );
+		$request = new \WP_REST_Request( 'GET', $this->namespaced_route . '/plugins' );
 		$request->set_query_params( array(
 			'plugin' => 'edd'
 		) );
@@ -82,10 +82,41 @@ class products_api extends ingot_rest_test_case {
 		$this->assertEquals( 200, $response->get_status() );
 		$data = (array) $response->get_data();
 		$this->assertSame( 1, count( $data ) );
-		foreach( $data as $plugin ) {
+		foreach ( $data as $plugin ) {
 			$this->assertArrayHasKey( 'value', $plugin );
 			$this->assertArrayHasKey( 'label', $plugin );
 		}
 
 	}
+
+	/**
+	 * Test GET /products for EDD
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group products_api
+	 * @group edd
+	 * @group price
+	 *
+	 * @covers ingot\testing\api\rest/products::get_price()
+	 */
+	public function testGetEDDPrice() {
+		wp_set_current_user( 1 );
+		ingot_test_data_price::edd_create_simple_download( 72 );
+		$product = ingot_test_data_price::edd_create_simple_download( 7 );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespaced_route . '/price/' . $product->ID );
+		$request->set_query_params( array(
+			'plugin' => 'edd'
+		) );
+
+		$response = $this->server->dispatch( $request );
+		$response = rest_ensure_response( $response );
+		$this->assertEquals( 200, $response->get_status() );
+		$data = (array) $response->get_data();
+		$this->assertArrayHasKey( 'price', $data );
+		$this->assertSame( ingot_sanitize_amount( 7 ), $data[ 'price' ] );
+
+	}
+
 }

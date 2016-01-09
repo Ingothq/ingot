@@ -12,6 +12,8 @@
 namespace ingot\testing\api\rest;
 
 
+use ingot\testing\utility\price;
+
 class products extends route {
 
 	/**
@@ -33,6 +35,17 @@ class products extends route {
 		register_rest_route( $namespace, '/products', array(
 			'methods'         => \WP_REST_Server::READABLE,
 			'callback'        => array( $this, 'get_items' ),
+			'permission_callback' => array( $this, 'get_items_permissions_check' ),
+			'args'            => array(
+				'plugin' => array(
+					'default' => 'edd',
+					'sanitize_callback'  => array( $this, 'strip_tags' ),
+				)
+			)
+		));
+		register_rest_route( $namespace, '/products/price/(?P<id>[\d]+)', array(
+			'methods'         => \WP_REST_Server::READABLE,
+			'callback'        => array( $this, 'get_price' ),
 			'permission_callback' => array( $this, 'get_items_permissions_check' ),
 			'args'            => array(
 				'plugin' => array(
@@ -99,6 +112,19 @@ class products extends route {
 		}else{
 			return rest_ensure_response( '', 404 );
 		}
+	}
+
+	/**
+	 * Get price of a product
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_price( $request ) {
+		$price = price::get_price( $request->get_param( 'plugin' ), $request->get_url_params()[ 'id' ] );
+		return ingot_rest_response( [ 'price' => $price ] );
 	}
 
 	/**

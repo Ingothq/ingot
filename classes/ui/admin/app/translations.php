@@ -89,7 +89,10 @@ class translations {
 				'edit_group_type'                      => esc_html__( 'Edit Group Type', 'ingot' ),
 				'type_instructions'                    => esc_html__( 'Type of test you want to perform', 'ingot' ),
 				'sample_button'                        => esc_html__( 'Sample Button', 'ingot' ),
-				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' )
+				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' ),
+				'result_price'                         => esc_html__( 'Resulting Price', 'ingot' ),
+				'add_price_test'                    => esc_html__( 'Add Price Variation', 'ingot' )
+
 
 			],
 			'settings'                 => [

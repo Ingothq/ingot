@@ -127,5 +127,23 @@ class tests_price_util extends \WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Test get price of EDD product
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group price
+	 * @group helper
+	 * @group edd
+	 *
+	 * @covers \ingot\testing\utility\price::get_price()
+	 */
+	public function testGetPriceEDD(){
+		$product_1 = ingot_test_data_price::edd_create_simple_download( 10.51 );
+		$product_2 = ingot_test_data_price::edd_create_simple_download( 5.21 );
+		$this->assertSame( ingot_sanitize_amount( 10.51 ), \ingot\testing\utility\price::get_price( 'edd', $product_1->ID ) );
+		$this->assertSame( ingot_sanitize_amount( 5.21 ), \ingot\testing\utility\price::get_price( 'edd', $product_2->ID ) );
+
+	}
 
 }

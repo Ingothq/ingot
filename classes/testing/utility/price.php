@@ -244,7 +244,28 @@ class price {
 
 	}
 
+	/**
+	 * Get price of a product
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $plugin Plugin slug edd|woo
+	 * @param int $id Product ID
+	 *
+	 * @return string
+	 */
+	public static function get_price( $plugin, $id ){
+		if( ingot_acceptable_plugin_for_price_test( $plugin ) ){
+			$price_callback = self::get_price_callback( $plugin );
+			if( $price_callback && is_callable( $price_callback ) ) {
+				$price = call_user_func( $price_callback, $id );
+				return ingot_sanitize_amount( $price );
+			}
 
+		}
 
+		return ingot_sanitize_amount( 0 );
+
+	}
 
 }

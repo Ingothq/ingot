@@ -541,7 +541,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     } );
 
 
-    if( 'priceGroup.new' == $state.current.name ) {
+    if( 'priceTests.new' == $state.current.name ) {
         $scope.group = {
             price_type_options : INGOT_ADMIN.price_type_options
         };
@@ -562,6 +562,24 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
             });
         })
     }
+
+    $scope.getBasePrice = function(){
+        var ID = $scope.group.product;
+
+        $http({
+            url: INGOT_ADMIN.api + 'products/price/' + $scope.group.product + '?plugin=' + $scope.group.plugin + '&_wpnonce=' + INGOT_ADMIN.nonce,
+            method: 'GET',
+            headers: {
+                'X-WP-Nonce': INGOT_ADMIN.nonce
+            }
+
+        }).success( function( data, status, headers, config ) {
+            $scope.basePrice = parseFloat( data.price );
+        } ).error( function ( data ) {
+            console.log( data );
+        } );
+
+    };
 
     $scope.submit = function( ){
         angular.forEach( $scope.group.tests, function( value, key ) {
@@ -601,7 +619,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
             $scope.group.variants = [];
         }
 
-        $scope.group.variants.push({ 'ID': id, default: 0 });
+        $scope.group.variants.push({ 'ID': id, default: 0, price: $scope.basePrice });
 
 		setTimeout( function() {
 			jQuery(".slider-" + id).slider({
@@ -609,14 +627,28 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 				min: -99,
 				max: 99,
 				slide: function( event, ui ) {
-					$scope.group.variants[jQuery(event.target).data('index')].default = ui.value;
-					jQuery(".slider-" + id + "-val").html( ui.value + '%' );
+
+                    var index = jQuery(event.target).data( 'index' );
+                    console.log( index );
+                    var value = ui.value;
+					$scope.group.variants[ index ].default = value;
+					jQuery(".slider-" + id + "-val").html( value + '%' );
+
+                    if ( 0 == parseFloat( value ) ) {
+                        $scope.group.variants[ index ].price = $scope.basePrice;
+                    }else{
+                        $scope.group.variants[ index ].price = $scope.basePrice * ( value / 100 );
+                    }
+
 				}
+
 			});
 			$scope.$apply();
 		}, 50 );
         
     };
+
+
 
 
     $scope.products = function() {
@@ -740,7 +772,7 @@ ingotApp.factory( 'groupsFactory', function( $resource ) {
 				var response = {
 					data: data,
 					headers: headers()
-				}
+				};
 				return response;
 			}
 		},
