@@ -22,13 +22,11 @@ jQuery( document ).ready( function ( $ ) {
             var el = e.target;
             var href = el.getAttribute( 'href' );
             var id = el.getAttribute( 'data-ingot-test-id' );
-            if( 'undefined' != href ) {
+            if( 'undefined' == href || null == href ) {
                 e.preventDefault();
                 if( null != id ) {
-                    console.log( 'convert' );
                     trackConversionClick( id, href );
                 }else{
-                    console.log( 'notconvert' );
                     trackOtherClick( href );
                 }
             }
