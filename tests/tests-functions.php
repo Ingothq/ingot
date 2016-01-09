@@ -73,6 +73,8 @@ class tests_functions extends  \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group functions
+	 *
 	 * @covers ingot_get_refferer()
 	 */
 	public function testReferalTrackingByServerVarValid() {
@@ -85,6 +87,8 @@ class tests_functions extends  \WP_UnitTestCase {
 	 * Test that an invalid Refferer in UTM doesn't track.
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group functions
 	 *
 	 * @covers ingot_get_refferer()
 	 */
@@ -100,6 +104,8 @@ class tests_functions extends  \WP_UnitTestCase {
 	 *
 	 * @since 0.0.7
 	 *
+	 * @group functions
+	 *
 	 * @covers ingot_get_refferer()
 	 */
 	public function testReferalTrackingByServerVarInvalid() {
@@ -112,6 +118,8 @@ class tests_functions extends  \WP_UnitTestCase {
 	 * Test that when UTM and server var reffers are valid, UTM is used.
 	 *
 	 * @since 0.0.7
+	 *
+	 * @group functions
 	 *
 	 * @covers ingot_get_refferer()
 	 */
