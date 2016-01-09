@@ -93,8 +93,6 @@ class translations {
 				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' ),
 				'result_price'                         => esc_html__( 'Resulting Price', 'ingot' ),
 				'add_price_test'                    => esc_html__( 'Add Price Variation', 'ingot' ),
-
-
 			],
 			'settings'                 => [
 				'page_header'          => esc_html__( 'Settings', 'ingot' ),
