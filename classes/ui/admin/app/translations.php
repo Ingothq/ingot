@@ -62,6 +62,7 @@ class translations {
 				'page'                   => esc_html__( 'Page', 'ingot' ),
 			],
 			'group'                    => [
+				'edit_group_tests'     => esc_html__( 'Edit Group Tests', 'ingot' ),
 				'save_group'                           => esc_html__( 'Save Group', 'ingot' ),
 				'type'                                 => esc_html__( 'Type', 'ingot' ),
 				'name'                                 => esc_html__( 'Name', 'ingot' ),
@@ -91,7 +92,7 @@ class translations {
 				'sample_button'                        => esc_html__( 'Sample Button', 'ingot' ),
 				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' ),
 				'result_price'                         => esc_html__( 'Resulting Price', 'ingot' ),
-				'add_price_test'                    => esc_html__( 'Add Price Variation', 'ingot' )
+				'add_price_test'                    => esc_html__( 'Add Price Variation', 'ingot' ),
 
 
 			],
@@ -107,7 +108,6 @@ class translations {
 				'license_code_desc'    => esc_html__( 'Enter your license code to enable support and updates.', 'ingot' ),
 				'save'                 => esc_html__( 'Save Settings', 'ingot' ),
 				'edit_name'            => esc_html__( 'Edit Group Name', 'ingot' ),
-				'edit_group_tests'     => esc_html__( 'Edit Group Tests', 'ingot' ),
 				'license_notice'       => esc_html__( 'License not active or not valid', 'ingot' )
 
 

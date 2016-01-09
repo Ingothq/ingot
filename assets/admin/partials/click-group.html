@@ -43,7 +43,7 @@
                         {{translate.group.test_name}}
                     </label>
                 </div>
-                <input id="test_name" ng-model="group.name" class="col-sm-9"/>
+                <input id="test_name" ng-model="group.name" class="col-sm-9" ng-required="true" />
             </div>
             <span class="btn btn-primary pull-right" ng-click="change_step(2)">
                 {{translate.group.edit_group_type}}
@@ -58,7 +58,9 @@
                     <div class="col-sm-6" ng-repeat="type in click_type_options track by $index">
                         <div class="group-wrapper" ng-class="{'active': type.value == group.sub_type}">
                             <h3>{{type.label}}</h3>
-                            <p ng-if="type.description">{{type.description}}</p>
+                            <p ng-if="type.description">
+                                {{type.description}}
+                            </p>
                             <span class="btn btn-primary btn-block" ng-click="choose_group_type(type.value)" ng-class="{'btn-success': type.value == group.sub_type}">
                                 {{type.label}}
                             </span>
@@ -67,10 +69,10 @@
                 </div>
             </div>
             <span class="btn btn-primary pull-left" ng-click="change_step(1)">
-                {{group.translate.edit_name}}
+                {{translate.group.test_name}}
             </span>
             <span class="btn btn-primary pull-right" ng-click="change_step(3)">
-                {{group.translate.edit_group_tests}}
+                {{translate.group.edit_group_tests}}
             </span>
         </div>
         <div class="row group-type-select" ng-show="group_step == 3">
