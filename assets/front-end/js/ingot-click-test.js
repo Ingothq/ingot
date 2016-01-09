@@ -23,12 +23,14 @@ jQuery( document ).ready( function ( $ ) {
             var href = el.getAttribute( 'href' );
             var id = el.getAttribute( 'data-ingot-test-id' );
             if( 'undefined' == href || null == href ) {
-                e.preventDefault();
-                if( null != id ) {
-                    trackConversionClick( id, href );
-                }else{
-                    trackOtherClick( href );
-                }
+                return;
+            }
+            
+            e.preventDefault();
+            if( null != id ) {
+                trackConversionClick( id, href );
+            }else{
+                trackOtherClick( href );
             }
 
         }
