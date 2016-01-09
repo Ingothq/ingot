@@ -457,6 +457,15 @@ class groups extends route {
 	protected function save_variants( $group ){
 		$variants_ids = [];
 		$variants = helpers::v( 'variants', $group, [] );
+
+		$product_id = null;
+		if ( 'price' == $group[ 'type' ] ) {
+			$product_id = helpers::v( 'product_ID', $group[ 'meta' ], null );
+			if( ! is_numeric( $product_id ) ){
+				return new \WP_Error( 'ingot-no-product-id', __( 'No product ID was set.', 'ingot') );
+			}
+		}
+
 		if( isset( $group[ 'ID' ] ) ){
 			$group_id = $group[ 'ID' ];
 		} elseif( isset( $group[ 'id'] ) ){
@@ -464,6 +473,8 @@ class groups extends route {
 		}else{
 			return new \WP_Error( 'ingot-generalized-failure' );
 		}
+
+
 		if ( ! empty( $variants ) ) {
 			foreach ( $variants as $variant ) {
 				if( is_numeric( $variant ) ) {
@@ -472,6 +483,10 @@ class groups extends route {
 
 				$variant[ 'group_ID' ] = $group_id;
 				$variant[ 'type' ]     = $group[ 'type' ];
+				if ( 'price' == $group[ 'type' ] ) {
+					$variant[ 'content' ] = $product_id;
+				}
+
 				if( ( ! isset( $variant[ 'content' ] ) || empty( $variant[ 'content'] ) ) && 'button_color' == $group[ 'sub_type'] )  {
 					$variant[ 'content' ] = '  ';
 				}

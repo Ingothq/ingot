@@ -543,6 +543,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     if( 'priceTests.new' == $state.current.name ) {
         $scope.group = {
+            type: 'price',
             price_type_options : INGOT_ADMIN.price_type_options
         };
     }else{
@@ -564,10 +565,10 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     }
 
     $scope.getBasePrice = function(){
-        var ID = $scope.group.product;
+        var ID = $scope.group.meta.product_ID;
 
         $http({
-            url: INGOT_ADMIN.api + 'products/price/' + $scope.group.product + '?plugin=' + $scope.group.plugin + '&_wpnonce=' + INGOT_ADMIN.nonce,
+            url: INGOT_ADMIN.api + 'products/price/' + ID + '?plugin=' + $scope.group.plugin + '&_wpnonce=' + INGOT_ADMIN.nonce,
             method: 'GET',
             headers: {
                 'X-WP-Nonce': INGOT_ADMIN.nonce
@@ -582,33 +583,35 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     };
 
     $scope.submit = function( ){
-        angular.forEach( $scope.group.tests, function( value, key ) {
+        angular.forEach( $scope.group.variants, function( value, key ) {
 	        value.default = parseFloat( value.default / 100 );	        
         });
-        
-         groupsFactory.save( $scope.group, function(res){
-	        console.log( res);
-	        $scope.group = res;
-            if( 'priceTests.new' == $state.current.name ) {
-                $state.go('priceTests.edit' ).toParams({
+
+        $scope.group.type = 'price';
+
+        groupsFactory.save( $scope.group, function ( res ) {
+            console.log( res );
+
+            if ( 'priceTests.new' == $state.current.name ) {
+                $state.go( 'priceTests.edit' ).toParams( {
                     groupID: res.ID
-                });
+                } );
             }
-            swal({
+            swal( {
                 title: INGOT_TRANSLATION.group_saved,
                 text: '',
                 type: "success",
                 confirmButtonText: INGOT_TRANSLATION.close
-            });
-        }, function( error ) {
-	        console.log( error );
-	        swal({
+            } );
+        }, function ( error ) {
+            console.log( error );
+            swal( {
                 title: INGOT_TRANSLATION.fail,
                 text: INGOT_TRANSLATION.sorry,
                 type: "error",
                 confirmButtonText: INGOT_TRANSLATION.close
-            });
-        })
+            } );
+        } )
 		
     };
 
@@ -627,9 +630,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 				min: -99,
 				max: 99,
 				slide: function( event, ui ) {
-
                     var index = jQuery(event.target).data( 'index' );
-                    console.log( index );
                     var value = ui.value;
 					$scope.group.variants[ index ].default = value;
 					jQuery(".slider-" + id + "-val").html( value + '%' );

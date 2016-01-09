@@ -40,8 +40,8 @@
                     <label for="product" class="col-md-4 col-sm-12">
                         {{translate.group.product}}
                     </label>
-                    <select id="product"  class="col-md-8 col-sm-12" ng-model="group.product" ng-required="true" ng-change="getBasePrice()">
-                        <option ng-repeat="option in products" ng-selected="group.product == option.value" value="{{option.value}}">
+                    <select id="product"  class="col-md-8 col-sm-12" ng-model="group.meta.product_ID" ng-required="true" ng-change="getBasePrice()">
+                        <option ng-repeat="option in products" ng-selected="group.meta.product_ID == option.value" value="{{option.value}}">
                             {{option.label}}
                         </option>
                     </select>
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                <a class="btn btn-default btn-block" ng-click="addNewTest()" href="" ng-show="group.product">
+                <a class="btn btn-default btn-block" ng-click="addNewTest()" href="" ng-show="group.meta.product_ID">
                     {{translate.group.add_price_test}}
                 </a>
             </div>
