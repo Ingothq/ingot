@@ -84,7 +84,7 @@ class products extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_plugins( $request ) {
-		
+		$plugins = [];
 		$allowed = ingot_accepted_plugins_for_price_tests( true );
 		if( ! empty( $allowed ) ) {
 			foreach( $allowed as $value => $label ) {
