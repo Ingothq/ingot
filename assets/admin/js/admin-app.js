@@ -22,6 +22,12 @@ var ingotApp = angular.module('ingotApp', [
 			} else {
 				$rootScope.main_click_tests_page = false;
 			}
+
+            if( toState.name == 'priceTests' ) {
+                $rootScope.main_price_tests_page = true;
+            } else {
+                $rootScope.main_price_tests_page = false;
+            }
 			
 		});
 		$rootScope.isActiveNav = function( page ) {
@@ -121,9 +127,11 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
  * @since 2.0.0
  */
 //Controller for click groups list
-ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', function( $scope, $http,  groupsFactory ) {
+ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', '$sce', function( $scope, $http,  groupsFactory, $sce ) {
     
     var page_limit = 10;
+
+    $scope.description = $sce.trustAsHtml( INGOT_TRANSLATION.descriptions.click );
 
     groupsFactory.query(
         {

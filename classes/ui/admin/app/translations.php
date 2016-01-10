@@ -124,8 +124,18 @@ class translations {
 			],
 			'support'                  => [
 				'for_support' => esc_html__( 'For support please use:', 'ingot' )
+	],
+			'descriptions' => [
+				'click' => self::get_partial( 'click-description.php' )
 			]
+
 		];
+	}
+
+	protected static function get_partial( $file ){
+		ob_start();
+		include( INGOT_DIR . '/classes/ui/admin/partials/' . $file );
+		return ob_get_clean();
 	}
 
 }

@@ -168,7 +168,4 @@ class settings extends route {
 		return current_user_can( 'manage_options' );
 	}
 
-
-
-
 }
