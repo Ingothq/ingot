@@ -7,17 +7,7 @@
             <div class="col-sm-9" ng-if="!group.name">
                 <h5>{{group.ID}}</h5>
             </div>
-            <div class="col-sm-3 group-icons">
-                <a ui-sref="clickTests.edit({groupID:group.ID})" title="{{translate.groups.edit}}" class="edit">
-                    <i class="fa fa-cog"></i>
-                </a>
-                <a ui-sref="clickTests.stats({groupID:group.ID})" title="{{translate.groups.stats}}" class="stats">
-                    <i class="fa fa-bar-chart"></i>
-                </a>
-                <a ui-sref="clickTests.delete({groupID:group.ID})" title="{{translate.groups.delete}}" class="delete">
-                    <i class="fa fa-minus-circle"></i>
-                </a>
-            </div>
+            <div ng-include="partials_url + '/list-partials/' + group.type + '.html'"></div>
         </div>
         <div ng-mouseenter="enter(group.ID)" ng-mouseleave="exit(group.ID)">
             <pre id="shortcode-pre-{{group.ID}}">

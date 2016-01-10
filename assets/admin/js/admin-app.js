@@ -13,6 +13,7 @@ var ingotApp = angular.module('ingotApp', [
 ] )
     .run( function( $rootScope, $state ) {
         $rootScope.translate =  INGOT_TRANSLATION;
+        $rootScope.partials_url = INGOT_ADMIN.partials;
 		
 		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
 			
@@ -51,7 +52,7 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
         })
         .state('clickTests.list', {
             url: "/click-tests/all",
-            templateUrl: INGOT_ADMIN.partials + "/click-groups.list.html",
+            templateUrl: INGOT_ADMIN.partials + "/list.html",
             controller: 'clickGroups'
         } )
         .state('clickTests.edit', {
@@ -79,7 +80,7 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
         })
         .state('priceTests.list', {
             url: "/price-tests/all",
-            templateUrl: INGOT_ADMIN.partials + "/price-groups.list.html",
+            templateUrl: INGOT_ADMIN.partials + "/list.html",
             controller: 'priceGroups'
         } )
         .state('priceTests.edit', {
@@ -123,20 +124,26 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
 ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', function( $scope, $http,  groupsFactory ) {
     
     var page_limit = 10;
-    
-     groupsFactory.query({page: 1, limit: page_limit, context: 'admin'}, function(res){
 
-	    if( res.data.indexOf('No matching') > -1 ){
-		    $scope.groups = {};
-		    return;
-	    };
-	    
-	    $scope.groups = JSON.parse( res.data );
-	    
-	    var total_groups = parseInt( res.headers['x-ingot-total'] );
-	    total_pages = total_groups / page_limit;
-	    $scope.total_pages = new Array( Math.round( total_pages ) );
-        $scope.groups.shortcode = [];
+    groupsFactory.query(
+        {
+            page: 1,
+            limit: page_limit,
+            context: 'admin',
+            type: 'click'
+        }, function ( res ) {
+            if ( res.data.indexOf( 'No matching' ) > -1 ) {
+                $scope.groups = {};
+                return;
+
+            };
+
+            $scope.groups = JSON.parse( res.data );
+
+            var total_groups = parseInt( res.headers[ 'x-ingot-total' ] );
+            total_pages = total_groups / page_limit;
+            $scope.total_pages = new Array( Math.round( total_pages ) );
+            $scope.groups.shortcode = [];
 
 
     });
@@ -351,14 +358,14 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         $scope.group_step = step;
     };
 
-    $scope.partials_url = INGOT_ADMIN.partials;
-
     $scope.choose_group_type = function( type ) {
         $scope.group.sub_type = type;
-    }
+    };
 
     $scope.has_type = function() {
-        if( !$scope.group ) { return; }
+        if( !$scope.group ) {
+            return;
+        }
         if( 'undefined' == $scope.group.sub_type || null == $scope.group.sub_type ){
             return false;
         }
