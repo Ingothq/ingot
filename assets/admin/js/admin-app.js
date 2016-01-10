@@ -335,7 +335,9 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
             if( true === is_new ) {
                 is_new = false;
-                $state.go( 'clickTests.edit', {groupID: $scope.group.ID} );
+                $state.go( 'clickTests.edit', {
+                    groupID: $scope.group.ID
+                } );
             }
             swal({
                 title: INGOT_TRANSLATION.group_saved,
@@ -562,6 +564,10 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', functio
 
 //controller for creating/editing a price group
 ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'groupsFactory', function( $scope, $http, $stateParams, $rootScope, $state, groupsFactory ) {
+    var newGroup = false;
+    if ( 'priceTests.new' == $state.current.name ) {
+        newGroup = true;
+    }
 
     $http({
         url: INGOT_ADMIN.api + 'products/plugins?_wpnonce=' + INGOT_ADMIN.nonce,
@@ -577,14 +583,16 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
     } );
 
 
-    if( 'priceTests.new' == $state.current.name ) {
+    if( newGroup ) {
         $scope.group = {
             type: 'price',
             price_type_options : INGOT_ADMIN.price_type_options
         };
     }else{
         var groupID = $stateParams.groupID;
-        groupsFactory.get({id: groupID}, function(res){
+        groupsFactory.get({
+            id: groupID,
+        }, function(res){
 	        if( res[0] != 'N' && res[1] != 'o' ) {   
 		        $scope.group = res;
 	            $scope.products();
@@ -604,7 +612,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         var ID = $scope.group.meta.product_ID;
 
         $http({
-            url: INGOT_ADMIN.api + 'products/price/' + ID + '?plugin=' + $scope.group.plugin + '&_wpnonce=' + INGOT_ADMIN.nonce,
+            url: INGOT_ADMIN.api + 'products/price/' + ID + '?plugin=' + $scope.group.sub_type + '&_wpnonce=' + INGOT_ADMIN.nonce,
             method: 'GET',
             headers: {
                 'X-WP-Nonce': INGOT_ADMIN.nonce
@@ -628,8 +636,9 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         groupsFactory.save( $scope.group, function ( res ) {
             console.log( res );
 
-            if ( 'priceTests.new' == $state.current.name ) {
-                $state.go( 'priceTests.edit' ).toParams( {
+            if ( newGroup ) {
+                alert( res.ID );
+                $state.go( 'priceTests.edit', {
                     groupID: res.ID
                 } );
             }
@@ -677,6 +686,8 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
                         $scope.group.variants[ index ].price = $scope.basePrice * ( value / 100 );
                     }
 
+                    $scope.group.variants[ index ].price.meta = value;
+
 				}
 
 			});
@@ -687,14 +698,12 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
 
 
-
     $scope.products = function() {
-	    console.log( $scope.group );
-        if( 'string' != typeof $scope.group.plugin){
+        if( 'string' != typeof $scope.group.sub_type ){
             $scope.products = {};
         }
         $http({
-            url: INGOT_ADMIN.api + 'products?plugin=' + $scope.group.plugin + '&_wpnonce=' + INGOT_ADMIN.nonce,
+            url: INGOT_ADMIN.api + 'products?plugin=' + $scope.group.sub_type + '&_wpnonce=' + INGOT_ADMIN.nonce,
             method: 'GET',
             headers: {
                 'X-WP-Nonce': INGOT_ADMIN.nonce

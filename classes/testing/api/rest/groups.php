@@ -136,9 +136,8 @@ class groups extends route {
 				group::update( $item, $item[ 'ID' ] );
 				$item = group::read( $item[ 'ID' ] );
 				if ( is_array( $item ) ) {
-					if ( is_array( $item ) ) {
-						$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
-					}
+
+					$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
 
 					return ingot_rest_response( $item, 201, 1 );
 

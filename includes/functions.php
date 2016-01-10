@@ -353,7 +353,7 @@ function ingot_sanitize_amount( $amount ) {
 	 *
 	 * @param string $thousands_separator
 	 */
-	$thousands_sep = apply_filters( 'thousands_separator', ',' );
+	$thousands_sep = apply_filters( 'ingot_thousands_separator', ',' );
 
 	/**
 	 * Chane decimal separator to use for price display
@@ -362,7 +362,7 @@ function ingot_sanitize_amount( $amount ) {
 	 *
 	 * @param string $decimal_separator
 	 */
-	$decimal_sep   = apply_filters( 'decimal_separator', '.' );
+	$decimal_sep   = apply_filters( 'ingot_decimal_separator', '.' );
 
 	// Sanitize the amount
 	if ( $decimal_sep == ',' && false !== ( $found = strpos( $amount, $decimal_sep ) ) ) {

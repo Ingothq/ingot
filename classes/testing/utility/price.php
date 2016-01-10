@@ -81,6 +81,10 @@ class price {
 		}
 
 		if( variant::valid( $variant ) && 'price' == $variant[ 'type' ] ){
+			if( is_numeric(  $variant[ 'meta' ][ 'price' ]  ) ){
+				return $variant[ 'meta' ][ 'price' ];
+			}
+
 			return $variant[ 'meta' ][ 'price' ][0];
 		}
 

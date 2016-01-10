@@ -198,13 +198,14 @@ class test implements \JsonSerializable {
 			$variant = $this->variant;
 			if ( is_array( $variant ) ) {
 				$variation = price::get_price_variation( $variant );
-				$base_price = call_user_func( $this->price_callback, $this->product->ID );
+				$base_price = (float) call_user_func( $this->price_callback, $this->product->ID );
 				if ( 0 == $base_price || 0 == $variation ) {
 					return $base_price;
 				}
 
-				$variation   = $variation * 1;
-				$this->price = $variation * $base_price;
+
+				$this->price = ingot_sanitize_amount( $variation * $base_price );
+
 			}
 
 		}

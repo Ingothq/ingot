@@ -63,7 +63,7 @@ class translations {
 				'inactive'                 => esc_html__( 'Plugin Not Active', 'ingot' ),
 			],
 			'group'                    => [
-				'edit_group_tests'     => esc_html__( 'Edit Group Tests', 'ingot' ),
+				'edit_group_tests'                     => esc_html__( 'Edit Group Tests', 'ingot' ),
 				'save_group'                           => esc_html__( 'Save Group', 'ingot' ),
 				'type'                                 => esc_html__( 'Type', 'ingot' ),
 				'name'                                 => esc_html__( 'Name', 'ingot' ),
@@ -72,7 +72,8 @@ class translations {
 				'text_label_group_setting'             => esc_html__( 'Text (Used For All Buttons)', 'ingot' ),
 				'color_label_group_setting'            => esc_html__( 'Color (Used For All Buttons)', 'ingot' ),
 				'background_color_label_group_setting' => esc_html__( 'Background (Used For All Buttons)', 'ingot' ),
-				'tests_header'                         => esc_html__( 'Tests', 'ingot' ),
+				'tests_header'                         => esc_html__( 'Variations', 'ingot' ),
+				'tests_header_price'                   => esc_html__( 'Price Variations', 'ingot' ),
 				'text_label_test_setting'              => esc_html__( 'Text', 'ingot' ),
 				'color_label_test_setting'             => esc_html__( 'Button Text Color', 'ingot' ),
 				'background_color_label_test_setting'  => esc_html__( 'Button Background Color', 'ingot' ),
@@ -93,7 +94,7 @@ class translations {
 				'sample_button'                        => esc_html__( 'Sample Button', 'ingot' ),
 				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' ),
 				'result_price'                         => esc_html__( 'Resulting Price', 'ingot' ),
-				'add_price_test'                    => esc_html__( 'Add Price Variation', 'ingot' ),
+				'add_price_test'                       => esc_html__( 'Add Price Variation', 'ingot' ),
 			],
 			'settings'                 => [
 				'page_header'          => esc_html__( 'Settings', 'ingot' ),
