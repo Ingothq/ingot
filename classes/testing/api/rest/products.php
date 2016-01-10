@@ -12,6 +12,7 @@
 namespace ingot\testing\api\rest;
 
 
+use ingot\testing\types;
 use ingot\testing\utility\price;
 
 class products extends route {
@@ -58,6 +59,11 @@ class products extends route {
 			'methods'         => \WP_REST_Server::READABLE,
 			'callback'        => array( $this, 'get_plugins' ),
 			'permission_callback' => array( $this, 'get_items_permissions_check' ),
+			'args'            => array(
+				'context' => array(
+					'default' => 'select-options'
+				)
+			)
 
 		));
 	}
@@ -97,6 +103,11 @@ class products extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_plugins( $request ) {
+		if( 'list' == $request->get_param( 'context' ) ){
+			$plugins = ingot_ecommerce_plugins_list();
+			return ingot_rest_response( $plugins );
+		}
+
 		$plugins = [];
 		$allowed = ingot_accepted_plugins_for_price_tests( true );
 		if( ! empty( $allowed ) ) {
@@ -108,9 +119,9 @@ class products extends route {
 					);
 				}
 			}
-			return rest_ensure_response( $plugins );
+			return ingot_rest_response( $plugins );
 		}else{
-			return rest_ensure_response( '', 404 );
+			return ingot_rest_response( '', 404 );
 		}
 	}
 

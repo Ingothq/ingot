@@ -1,6 +1,6 @@
 <?php
 /**
- * Partial for click testing descriptions
+ * Partial for price testing descriptions
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -10,7 +10,7 @@
  */
 ?>
 <h3>
-	<?php _e( 'Content tests change some type of content -- text, colors, images, etc. to see what leads to the most conversions.', 'ingot' ); ?>
+	<?php _e( 'Price Tests', 'ingot' ); ?>
 </h3>
 <h4>
  <?php _e( 'Currently Supported Content Test Types', 'ingot' ); ?> :</h4>

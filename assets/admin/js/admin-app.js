@@ -507,6 +507,27 @@ ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$statePara
 //Controller for price groups list
 ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', function( $scope, $http, groupsFactory ) {
     var page_limit = 10;
+    $http({
+        url: INGOT_ADMIN.api + 'products/plugins?context=list&_wpnonce=' + INGOT_ADMIN.nonce,
+        method: 'GET',
+        headers: {
+            'X-WP-Nonce': INGOT_ADMIN.nonce
+        }
+
+    }).success( function( data, status, headers, config ) {
+        $scope.plugins = data;
+        $scope.possible = false;
+        angular.forEach( data, function( value, key ) {
+            if ( false == $scope.possible ) {
+                if ( true == value.active ) {
+                    $scope.possible = true;
+                }
+            }
+        });
+    } ).error( function ( data ) {
+        console.log( data );
+    } );
+
     groupsFactory.query({page: 1, limit: page_limit, context: 'admin', type: 'price' }, function(res){
 		
 		$scope.total_pages = false;

@@ -423,8 +423,6 @@ function ingot_accepted_plugins_for_price_tests( $with_labels = false ) {
 		'woo' => __( 'WooCommerce', 'ingot' )
 	);
 
-
-
 	/**
 	 * Add or remove allowed plugins for price tests
 	 *
@@ -439,6 +437,46 @@ function ingot_accepted_plugins_for_price_tests( $with_labels = false ) {
 	}else{
 		return $plugins;
 	}
+}
+
+/**
+ * Get eCommerce plugins list with banner/active status
+ *
+ * @since 1.1.0
+ *
+ * @return array
+ */
+function ingot_ecommerce_plugins_list(){
+	$plugins = ingot_accepted_plugins_for_price_tests( true );
+	if ( ! empty( $plugins ) && is_array( $plugins ) ) {
+		foreach ( $plugins as $value => $label ){
+			$_plugins[ $value ] = [
+				'value' => $value,
+				'label' => $label
+			];
+		}
+
+		$plugins = $_plugins;
+
+		if ( isset( $plugins[ 'edd' ] ) ) {
+			$plugins[ 'edd' ][ 'logo' ] = esc_url_raw( INGOT_URL . 'assets/img/edd_logo.png' );
+		}
+		if ( isset( $plugins[ 'woo' ] ) ) {
+			$plugins[ 'woo' ][ 'logo' ] = esc_url_raw( INGOT_URL . 'assets/img/woocommerce_logo.png' );
+		}
+
+		foreach( $plugins as $plugin => $plugin_data ){
+
+			if( ingot_check_ecommerce_active( $plugin ) ){
+				$plugins[ $plugin ][ 'active' ] = true;
+			}else{
+				$plugins[ $plugin ][ 'active' ] = false;
+			}
+		}
+	}
+
+	return $plugins;
+
 }
 
 /**

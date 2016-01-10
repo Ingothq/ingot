@@ -1,4 +1,3 @@
-
 <ul class="list-inline">
 
     <li>
@@ -12,38 +11,28 @@
         </a>
     </li>
     <li>
-        <a ui-sref="priceTests.new" class="btn btn-default">
+        <a ui-sref="priceTests.new" class="btn btn-default" ng-show="possible">
             {{translate.groups.create_new}}
         </a>
     </li>
 </ul>
 
 <div ng-show="main_price_tests_page" class="row">
-    <h3>Content tests change some type of content -- text, colors, images, etc. to see what leads to the most conversions. </h3>
-    <h4>Currently Supported Content Test Types:</h4>
-    <ul>
-        <li>
-            <em>Link:</em> Test the text of a link.
-        </li>
-        <li>
-            <em>Button:</em> Test the text of a button.
-        </li>
-        <li>
-            <em>Button Color:</em> Test the color of a button.
-        </li>
-    </ul>
-    <h4>Content Test Types Coming Soon:</h4>
-    <ul>
-        <li>
-            <em>Images & Featured Images</em>
-        </li>
-        <li>
-            <em>Forms & Form Layouts</em>
-        </li>
-        <li>
-            <em>Sales Funnels</em>
-        </li>
-    </ul>
+    <div class="col-sm-12">
+        <h3>
+            {{translate.descriptions.price_testing}}
+        </h3>
+        <ul ng-repeat="plugin in plugins track by $index" ng-controller="priceGroups">
+            <li>
+                <img ng-src="{{plugin.logo}}" class="plugin-logo"/><span class="plugin-name">{{plugin.label}}</span>
+                <div ng-hide="plugin.active">
+                    {{translate.groups.inactive}}
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>
 
 <hr />
 

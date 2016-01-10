@@ -60,6 +60,7 @@ class translations {
 				'no_groups'              => esc_html__( 'There are no groups, create one.', 'ingot' ),
 				'click_copy'             => esc_html__( 'Click To Copy', 'ingot' ),
 				'page'                   => esc_html__( 'Page', 'ingot' ),
+				'inactive'                 => esc_html__( 'Plugin Not Active', 'ingot' ),
 			],
 			'group'                    => [
 				'edit_group_tests'     => esc_html__( 'Edit Group Tests', 'ingot' ),
@@ -126,12 +127,21 @@ class translations {
 				'for_support' => esc_html__( 'For support please use:', 'ingot' )
 	],
 			'descriptions' => [
-				'click' => self::get_partial( 'click-description.php' )
+				'click'         => self::get_partial( 'click-description.php' ),
+				'price_testing' => esc_html__( 'Raise or lower a product\'s price to maximize revenue', 'ingot' )
 			]
-
 		];
 	}
 
+	/**
+	 * Get a partial as a string
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $file File name
+	 *
+	 * @return string
+	 */
 	protected static function get_partial( $file ){
 		ob_start();
 		include( INGOT_DIR . '/classes/ui/admin/partials/' . $file );
