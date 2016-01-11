@@ -171,7 +171,7 @@ class init {
 	 */
 	protected function set_cookie( $cookies ){
 		if( isset( $cookies[ $this->cookie_name ] ) ) {
-			$this->cookie = json_decode( $cookies[ $this->cookie_name ] );
+			$this->cookie = json_decode( $cookies[ $this->cookie_name ], true );
 		}else{
 			$this->cookie = array();
 		}

@@ -316,7 +316,7 @@ class ingot_bootstrap {
 			 */
 			$cookie_time = apply_filters( 'ingot_cookie_time', $cookie_time );
 			$cookie_name = $cookies->get_cookie_name();
-			//setcookie( $cookie_name, $ingot_cookies, time() + $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( $cookie_name, $cookies->get_ingot_cookie(true), time() + $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
 			
 		}
 
