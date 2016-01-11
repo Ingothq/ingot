@@ -30,15 +30,26 @@ install_wp() {
 
 	wget -nv -O $WP_CORE_DIR/wp-content/db.php https://raw.github.com/markoheijnen/wp-mysqli/master/db.php
 
-    if [ ! -d "$WP_CORE_DIR/wp-content/easy-digital-downloads" ]; then
-      git clone https://github.com/easydigitaldownloads/Easy-Digital-Downloads $WP_CORE_DIR/wp-content/easy-digital-downloads
+    if [ ! -d "$WP_CORE_DIR/wp-content/plugins/easy-digital-downloads" ]; then
+      git clone https://github.com/easydigitaldownloads/Easy-Digital-Downloads $WP_CORE_DIR/wp-content/plugins/easy-digital-downloads
     fi
 
-    if [ -d "$WP_CORE_DIR/wp-content/easy-digital-downloads" ]; then
-          cd $WP_CORE_DIR/wp-content/easy-digital-downloads
+    if [ -d "$WP_CORE_DIR/wp-content/wp-content/plugins/easy-digital-downloads" ]; then
+          cd $WP_CORE_DIR/wp-content/plugins/easy-digital-downloads
           git pull origin master
     fi
 
+     if [ ! -d "$WP_CORE_DIR/wp-content/plugins/woocommerce" ]; then
+      git clone https://github.com/woothemes/woocommerce $WP_CORE_DIR/wp-content/wp-content/plugins/woocommerce
+    fi
+
+    if [ -d "$WP_CORE_DIR/wp-content/wp-content/plugins/woocommerces" ]; then
+          cd $WP_CORE_DIR/wp-content/wp-content/plugins/woocommerce
+          git pull origin master
+    fi
+
+
+#https://github.com/woothemes/woocommerce
 }
 
 install_test_suite() {
