@@ -332,8 +332,14 @@ class ingot_bootstrap {
 		 * @param \ingot\testing\cookies\init $cookies Cookies object
 		 */
 		do_action( 'ingot_cookies_set', $cookies );
+
 		if ( ingot_is_edd_active() && isset( $ingot_cookies[ 'price' ][ 'edd' ] ) && ! empty( $ingot_cookies[ 'price' ][ 'edd' ] )  ) {
-			$edd_testing = new \ingot\testing\tests\price\plugins\edd( $ingot_cookies[ 'price' ][ 'edd' ] );
+			new \ingot\testing\tests\price\plugins\edd( $ingot_cookies[ 'price' ][ 'edd' ] );
+
+		}
+
+		if ( ingot_is_woo_active() && isset( $ingot_cookies[ 'price' ][ 'woo' ] ) && ! empty( $ingot_cookies[ 'price' ][ 'woo' ] )  ) {
+			new \ingot\testing\tests\price\plugins\woo( $ingot_cookies[ 'price' ][ 'woo' ] );
 
 		}
 
