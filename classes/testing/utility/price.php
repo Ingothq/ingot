@@ -119,6 +119,9 @@ class price {
 				case 'edd' :
 					$callback = 'edd_get_download_price';
 					break;
+				case 'woo' :
+					$callback = 'ingot_get_woo_price';
+					break;
 				default :
 					$callback = '__return_false';
 					break;
@@ -147,13 +150,16 @@ class price {
 		 * @since 1.1.0
 		 *
 		 * @param null|string|array $callback Name of callback. Defaults to null, which uses internal logic
-		 * * @param string $plugin Slug of plugin edd|woo
+		 * @param string $plugin Slug of plugin edd|woo
 		 */
 		$callback = apply_filters( 'ingot_get_price_callback', null, $plugin );
 		if (  is_null( $callback ) ) {
 			switch ( $plugin ) {
 				case 'edd' :
 					$callback = 'edd_get_download';
+					break;
+				case 'woo' :
+					$callback = 'wc_get_product';
 					break;
 				default:
 					$callback = 'get_post';

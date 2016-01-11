@@ -112,7 +112,7 @@ class price extends cookie {
 			'ID'      => $group[ 'ID' ],
 			'expires' => $this->expires(),
 			'variant' => $variant,
-			'product' => get_post( $group[ 'meta' ][ 'product_ID' ] ),
+			'product' => call_user_func( \ingot\testing\utility\price::get_product_function($group[ 'sub_type' ] ), \ingot\testing\utility\price::get_product( $group ) ),
 			'price_callback' => \ingot\testing\utility\price::get_price_callback( $group[ 'sub_type' ] )
 		] );
 

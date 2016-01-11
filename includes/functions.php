@@ -712,9 +712,26 @@ function ingot_is_batman(){
 	 *
 	 * @since 0.4.0
 	 *
-	 * @param bool $is_bot Whether to treat current visitor as bot or not
+	 * @param bool $is_bot Whether to be suspicious that current site visitor might be The Batman or not.
 	 */
 	return (bool) apply_filters( 'ingot_is_batman', $is_batman );
 
 }
 
+/**
+ * Get price of a WooCommerce product
+ *
+ * @since 1.0.0
+ *
+ * @param int $id Product ID
+ *
+ * @return string
+ */
+function ingot_get_woo_price( $id ){
+	$product = wc_get_product( $id );
+	if( is_object( $product ) ) {
+		return $product->get_price();
+
+	}
+
+}

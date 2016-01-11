@@ -97,23 +97,6 @@ class edd extends price {
 		$this->check_for_winners( $products );
 	}
 
-	/**
-	 * Check products in a sale for any we are testing and if so registers conversion
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param array $products
-	 */
-	protected function check_for_winners( $products ) {
-			foreach( $products as $product ){
-				if( ! is_null( $test = $this->get_test( $product ) ) ){
-					ingot_register_conversion( $test->ID );
-
-				}
-			}
-	}
 
 	/**
 	 * Get products IDs from EDD payment meta

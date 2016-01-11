@@ -105,8 +105,8 @@ abstract class price {
 	 *
 	 * @since 0.0.9
 	 *
-	 * @param $price
-	 * @param $id
+	 * @param string $price Price
+	 * @param int $id Product ID
 	 *
 	 * @return string
 	 */
@@ -214,6 +214,25 @@ abstract class price {
 				$test = \ingot\testing\utility\price::inflate_price_test( $test );
 				$this->products[ $id ] = $test;
 			}
+		}
+	}
+
+	/**
+	 * Check products in a sale for any we are testing and if so registers conversion
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @param array $products Array of product IDs
+	 */
+	protected function check_for_winners( $products ) {
+		foreach( $products as $product ){
+			if( ! is_null( $test = $this->get_test( $product ) ) ){
+				ingot_register_conversion( $test->ID );
+
+			}
+
 		}
 	}
 
