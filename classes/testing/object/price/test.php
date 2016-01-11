@@ -135,7 +135,7 @@ class test implements \JsonSerializable {
 	public function jsonSerialize() {
 		return [
 			'ID'      => $this->ID,
-			'expires' => $this->expires
+			'expires' => $this->expires,
 		];
 	}
 
@@ -200,17 +200,24 @@ class test implements \JsonSerializable {
 				$variation = price::get_price_variation( $variant );
 				$base_price = (float) call_user_func( $this->price_callback, $this->product->ID );
 				if ( 0 == $base_price || 0 == $variation ) {
-					return $base_price;
+					$this->price = ingot_sanitize_amount( $base_price );
 				}
 
+				$price   = price::apply_variation( $variation, $base_price );
 
-				$this->price = ingot_sanitize_amount( $variation * $base_price );
+				if( $price < 0 ){
+					$this->price = ingot_sanitize_amount( $base_price );
+				}
+
+				$this->price = ingot_sanitize_amount( $price );
 
 			}
 
 		}
 
 	}
+
+
 
 	/**
 	 * Verify test is legit

@@ -35,7 +35,8 @@ abstract class price {
 	protected $products = [];
 
 	public function __construct( $products ){
-		$this->products = $products;
+		$this->set_products( $products );
+
 		$this->add_hooks();
 	}
 
@@ -70,8 +71,15 @@ abstract class price {
 	protected function get_test( $id ){
 		if( array_key_exists( $id, $this->products ) ){
 			$test =  $this->products[ $id ];
-			return \ingot\testing\utility\price::inflate_price_test( $test );
+			if ( ! is_object( $test ) ) {
+				$test = \ingot\testing\utility\price::inflate_price_test( $test );
+				$this->products[ $id ] = $test;
+			}
+
+			return $test;
+
 		}
+
 	}
 
 
@@ -191,6 +199,22 @@ abstract class price {
 	 */
 	protected function handle_variable_prices( $prices, $test, $id  ){
 		return $prices;
+	}
+
+	/**
+	 * @param $products
+	 */
+	private function set_products( $products ) {
+		foreach ( $products as $id => $test ) {
+			if ( is_string( $test ) ) {
+				$test = json_decode( $test, true );
+			}
+
+			if ( is_array( $test ) ) {
+				$test = \ingot\testing\utility\price::inflate_price_test( $test );
+				$this->products[ $id ] = $test;
+			}
+		}
 	}
 
 }

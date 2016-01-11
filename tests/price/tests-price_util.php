@@ -146,4 +146,48 @@ class tests_price_util extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test applying utility method for price variation with negative variation
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group price
+	 * @group helper
+	 *
+	 * @covers \ingot\testing\utility\price::get_price()
+	 */
+	public function testPriceVariationNegative(){
+		$base_price = 10;
+
+		$this->assertSame( ingot_sanitize_amount( 5 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( -0.5, $base_price ) ) );
+
+		$this->assertSame( ingot_sanitize_amount( 8 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( -0.2, $base_price ) ) );
+
+		$this->assertSame( ingot_sanitize_amount( 7.50 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( -0.25, $base_price ) ) );
+
+		$this->assertSame( ingot_sanitize_amount( 2.50 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( -0.75, $base_price ) ) );
+
+	}
+
+	/**
+	 *
+	 * Test applying utility method for price variation with positive variation
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group price
+	 * @group helper
+	 *
+	 * @covers \ingot\testing\utility\price::get_price()
+	 */
+	public function testPriceVarPositive(){
+		$base_price = 10;
+		$this->assertSame( ingot_sanitize_amount( 15 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( 0.5, $base_price ) ) );
+
+		$this->assertSame( ingot_sanitize_amount( 12 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( 0.2, $base_price ) ) );
+
+		$this->assertSame( ingot_sanitize_amount( 18.50 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( 0.85, $base_price ) ) );
+
+	}
+
 }

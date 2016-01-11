@@ -63,6 +63,27 @@ class variant extends crud {
 		return parent::fill_in( $data );
 	}
 
+	/**
+	 * Ensure  array has all the needed fields for a variant
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	public static function valid( $data ){
+		if( false == parent::valid( $data ) ) {
+			return false;
+		}
+
+		if( 'price' == $data[ 'type' ] ) {
+			return isset( $data[ 'meta'][ 'price' ] ) && is_numeric( $data[ 'content' ] );
+
+		}
+
+	}
+
 
 	/**
 	 * Get array of required fields

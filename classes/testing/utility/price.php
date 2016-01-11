@@ -272,4 +272,29 @@ class price {
 
 	}
 
+	/**
+	 * Apply variation to price
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param float $variation
+	 * @param float|int $base_price
+	 *
+	 * @return float
+	 */
+	public static function apply_variation(  $variation, $base_price ){
+		if( 0 > $variation ){
+			$variation = 0.01 * ( 100 - ( 100 * abs( $variation ) ) );
+			$price = $base_price * $variation;
+		}else{
+			$price = ( $base_price * $variation ) + $base_price;
+		}
+
+
+
+
+		return abs( $price );
+
+	}
+
 }

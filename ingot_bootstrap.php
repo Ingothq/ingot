@@ -303,7 +303,7 @@ class ingot_bootstrap {
 		}
 
 		$cookies = ingot\testing\cookies\init::create( $cookies );
-		$ingot_cookies = ingot\testing\cookies\init::get_instance()->get_ingot_cookie();
+		$ingot_cookies = ingot\testing\cookies\init::get_instance()->get_ingot_cookie( false );
 		if( ! empty( $ingot_cookies ) ){
 			$cookie_time = 15 * DAY_IN_SECONDS;
 
@@ -332,7 +332,8 @@ class ingot_bootstrap {
 		 */
 		do_action( 'ingot_cookies_set', $cookies );
 		if ( ingot_is_edd_active() && isset( $ingot_cookies[ 'price' ][ 'edd' ] ) && ! empty( $ingot_cookies[ 'price' ][ 'edd' ] )  ) {
-			new \ingot\testing\tests\price\plugins\edd( $ingot_cookies[ 'price' ][ 'edd' ] );
+			$edd_testing = new \ingot\testing\tests\price\plugins\edd( $ingot_cookies[ 'price' ][ 'edd' ] );
+			$x = 1;
 
 		}
 
