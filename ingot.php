@@ -31,21 +31,23 @@ add_action( 'ingot_loaded',  'ingot_edd_sl_init', 1 );
 function ingot_maybe_load() {
 	$fail = false;
 	if ( ! version_compare( PHP_VERSION, '5.5.0', '>=' ) ) {
+		$fail = true;
 		if ( is_admin() ) {
 			include_once( dirname( __FILE__ ) . '/vendor/calderawp/dismissible-notice/src/functions.php' );
 			$message = esc_html__( sprintf( 'Ingot requires PHP version 5.5.0 or later. Current version is %s.', PHP_VERSION ), 'ingot' );
 			echo caldera_warnings_dismissible_notice( $message, true, 'activate_plugins' );
-			$fail = true;
 		}
+		
 	}
 	global $wp_version;
 	if ( ! version_compare( $wp_version, '4.4', '>=' ) ) {
+		$fail = true;
 		if ( is_admin() ) {
 			include_once( dirname( __FILE__ ) . '/vendor/calderawp/dismissible-notice/src/functions.php' );
 			$message = esc_html__( sprintf( 'Ingot requires WordPress version 4.4 or later. Current version is %s.', $wp_version ), 'ingot' );
 			echo caldera_warnings_dismissible_notice( $message, true, 'activate_plugins' );
-			$fail = true;
 		}
+		
 	}
 	if( false == $fail ){
 		include_once( dirname(__FILE__ ) . '/ingot_bootstrap.php' );
