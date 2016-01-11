@@ -13,6 +13,7 @@ namespace ingot\testing\crud;
 
 
 use ingot\testing\utility\helpers;
+use ingot\testing\utility\price;
 
 class group extends crud {
 
@@ -32,6 +33,7 @@ class group extends crud {
 		return 'group';
 	}
 
+
 	/**
 	 * Ensure an array has all the needed fields for a specific type
 	 *
@@ -43,7 +45,9 @@ class group extends crud {
 	 */
 	public static function valid( $data ){
 		if( parent::valid( $data ) && 'price' == $data[ 'type' ] ){
+
 			return isset( $data[ 'meta' ][ 'product_ID' ] ) && is_numeric( $data[ 'meta' ][ 'product_ID' ] );
+
 		}
 
 	}
@@ -175,6 +179,11 @@ class group extends crud {
 
 		}
 
+		if( 'price' == $data[ 'type' ] ){
+			if( ! isset( $data[ 'wp_ID' ] ) || ! is_numeric( helpers::v( 'wp_ID', $data, null ) ) ) {
+				return new \WP_Error( 'ingot-invalid-price-group-config', __( 'Price groups must set a product ID in wp_ID field', 'ingot'  ) );
+			}
+		}
 		foreach( self::get_all_fields() as $field ){
 			if( ! in_array( $field, array( 'variants', 'meta', 'levers' ) ) ) {
 				$data[ $field ] = (string) $data[ $field ];
@@ -342,7 +351,8 @@ class group extends crud {
 			'meta',
 			'modified',
 			'created',
-			'levers'
+			'levers',
+			'wp_ID'
 		);
 
 		return $needed;

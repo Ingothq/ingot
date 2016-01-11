@@ -53,7 +53,8 @@ class tests_edd_price_tests extends \WP_UnitTestCase {
 		$group_id = \ingot\testing\crud\group::create([
 			'type'     => 'price',
 			'sub_type' => 'edd',
-			'meta' => [ 'product_ID' => $product->ID ]
+			'meta' => [ 'product_ID' => $product->ID ],
+			'wp_ID' => $product->ID
 		],
 			true
 		);

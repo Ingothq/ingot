@@ -287,4 +287,34 @@ class price {
 
 	}
 
+	/**
+	 * Check if a price test group already exists for a given product
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int $product_id Product ID
+	 *
+	 * @return bool|int False if none exist, ID of existing group if found.
+	 */
+	public static function product_test_exists( $product_id ){
+		global $wpdb;
+		$table_name = group::get_table_name();
+		$sql = sprintf( 'SELECT `ID` FROM `%s` WHERE `wp_ID` = %d AND `type` = "price"', $table_name, $product_id );
+		$result = $wpdb->query( $sql, ARRAY_A );
+		if( empty( $result ) ) {
+			return false;
+		}else{
+			if( is_numeric( $result ) ){
+				return $result;
+			}
+
+			if( is_array( $result ) && isset( $result[0] ) ){
+				$result[0];
+			}
+
+			return true;
+
+		}
+
+	}
 }

@@ -30,6 +30,7 @@ class tests_price_queries extends \WP_UnitTestCase {
 		$args =  [
 			'type'     => 'price',
 			'sub_type' => 'edd',
+			'wp_ID' => 5
 		];
 
 		$variant_args = [
@@ -51,6 +52,7 @@ class tests_price_queries extends \WP_UnitTestCase {
 				$variant_args[ 'content' ] = 9;
 			}
 
+			$args[ 'wp_ID' ] = $args[ 'wp_ID' ] + 1;
 			$group_id = \ingot\testing\crud\group::create( $args, true );
 			$this->assertTrue( is_numeric( $group_id  ) );
 
@@ -91,17 +93,21 @@ class tests_price_queries extends \WP_UnitTestCase {
 		$args =  [
 			'type'     => 'price',
 			'sub_type' => 'edd',
-			'meta' => [ 'product_ID'  => 5 ]
+			'meta' => [ 'product_ID'  => 5 ],
+			'wp_ID' => 5
 		];
 		$group_edd = \ingot\testing\crud\group::create( $args, true );
 		$this->assertTrue( is_numeric( $group_edd ) );
 		for( $i = 0; $i <= 5; $i++ ) {
+			$args[ 'wp_ID' ] = $args[ 'wp_ID' ] + 1;
 			\ingot\testing\crud\group::create( $args );
 		}
 		$args[ 'sub_type' ] = 'woo';
+		$args[ 'wp_ID' ] = $args[ 'wp_ID' ] + 1;
 		$group_woo  = \ingot\testing\crud\group::create( $args, true );
 		$this->assertTrue( is_numeric( $group_woo ) );
 		for( $i = 0; $i <= 5; $i++ ) {
+			$args[ 'wp_ID' ] = $args[ 'wp_ID' ] + 1;
 			\ingot\testing\crud\group::create( $args, true );
 		}
 
@@ -131,7 +137,8 @@ class tests_price_queries extends \WP_UnitTestCase {
 		$args =  [
 			'type'     => 'price',
 			'sub_type' => 'edd',
-			'meta' => [ 'product_ID'  => 5 ]
+			'meta' => [ 'product_ID'  => 5 ],
+			'wp_ID' => 5
 		];
 		$variant_args = [
 			'type' => 'price',
@@ -143,12 +150,16 @@ class tests_price_queries extends \WP_UnitTestCase {
 
 
 
+
 		for( $i = 0; $i <= 5; $i++ ) {
 			$group_id = \ingot\testing\crud\group::create( $args );
+			$args[ 'wp_ID' ] = $args[ 'wp_ID' ] + 1;
 			if( 3 == $i ){
 				$expected_id = $group_id;
 				$variant_args[ 'group_ID' ] = $group_id;
+				$variant_args[ 'meta' ] [ 'price' ] = rand_float();
 				$variant_id = \ingot\testing\crud\variant::create( $variant_args, true );
+				$this->assertTrue( is_numeric( $variant_id ) );
 				$group = \ingot\testing\crud\group::read( $group_id );
 				$group[ 'variants' ] = [ $variant_id ];
 				\ingot\testing\crud\group::update( $group, $group_id, true );

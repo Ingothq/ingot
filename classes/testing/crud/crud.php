@@ -14,6 +14,7 @@ namespace ingot\testing\crud;
 
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
+use ingot\testing\utility\price;
 
 abstract class crud {
 
@@ -130,7 +131,7 @@ abstract class crud {
 	 * @param array $data Item data
 	 * @param bool|false $bypass_cap
 	 *
-	 * @return ID|bool||WP_Error Item ID,or false if not created, or error if not allowed.
+	 * @return int|bool||WP_Error Item ID,or false if not created, or error if not allowed.
 	 */
 	public static function create( $data, $bypass_cap = false ){
 		unset( $data[ 'ID'] );
@@ -371,6 +372,27 @@ abstract class crud {
 		$data = static::prepare_data( $data );
 		if( is_wp_error( $data ) || ! is_array( $data ) ) {
 			return $data;
+		}
+
+		if ( 'group' === static::what() &&  is_null( $id ) ) {
+			if ( 'price' == $data[ 'type' ] ) {
+				if( ! isset( $data[ 'wp_ID' ] ) ) {
+					//shouldn't be needed.
+					return new \WP_Error();
+				}
+				if ( isset( $data[ 'wp_ID' ] ) && false !== $existing = price::product_test_exists( $data[ 'wp_ID' ] )
+				) {
+					return new \WP_Error(
+						'ingot-price-test-for-product-exists',
+						__( sprintf( 'Product ID %d is already being tested by test group ID %d', $data[ 'meta' ][ 'product_ID' ], $existing ), 'ingot' ),
+						[
+							'product_ID' => $data[ 'meta' ][ 'product_ID' ],
+							'group_ID'   => $existing,
+						] );
+				}
+
+			}
+
 		}
 
 		$table_name = static::get_table_name();

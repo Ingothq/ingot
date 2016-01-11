@@ -154,7 +154,7 @@ class tests_price_util extends \WP_UnitTestCase {
 	 * @group price
 	 * @group helper
 	 *
-	 * @covers \ingot\testing\utility\price::get_price()
+	 * @covers \ingot\testing\utility\price::apply_variation()
 	 */
 	public function testPriceVariationNegative(){
 		$base_price = 10;
@@ -178,7 +178,7 @@ class tests_price_util extends \WP_UnitTestCase {
 	 * @group price
 	 * @group helper
 	 *
-	 * @covers \ingot\testing\utility\price::get_price()
+	 * @covers \ingot\testing\utility\price::apply_variation()
 	 */
 	public function testPriceVarPositive(){
 		$base_price = 10;
@@ -187,6 +187,35 @@ class tests_price_util extends \WP_UnitTestCase {
 		$this->assertSame( ingot_sanitize_amount( 12 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( 0.2, $base_price ) ) );
 
 		$this->assertSame( ingot_sanitize_amount( 18.50 ), ingot_sanitize_amount( \ingot\testing\utility\price::apply_variation( 0.85, $base_price ) ) );
+
+	}
+
+	/**
+	 * Test that we can't create a group for a product that is already being tested
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group price
+	 * @group helper
+	 * @covers 	\ingot\testing\utility\price::product_test_exists()
+	 */
+	public function testPriceTestExists(){
+
+		$group = \ingot\testing\crud\group::create( [
+			'name'     => 'd',
+			'type'     => 'price',
+			'sub_type' => 'edd',
+			'meta'     => [
+				'product_ID' => 169,
+			],
+			'wp_ID' => 169
+		], true );
+
+		$this->assertTrue( is_numeric( $group ) );
+
+		$existing = \ingot\testing\utility\price::product_test_exists( 169 );
+
+		$this->assertEquals( $existing, $group );
 
 	}
 

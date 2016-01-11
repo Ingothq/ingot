@@ -120,6 +120,7 @@ class ingot_bootstrap {
 				name VARCHAR(255) NOT NULL,
 				type VARCHAR(255) NOT NULL,
 				sub_type VARCHAR(255) NOT NULL,
+				wp_ID VARCHAR(255) NOT NULL,
 				variants LONGTEXT NOT NULL,
 				levers LONGTEXT NOT NULL,
 				meta LONGTEXT NOT NULL,
@@ -333,7 +334,6 @@ class ingot_bootstrap {
 		do_action( 'ingot_cookies_set', $cookies );
 		if ( ingot_is_edd_active() && isset( $ingot_cookies[ 'price' ][ 'edd' ] ) && ! empty( $ingot_cookies[ 'price' ][ 'edd' ] )  ) {
 			$edd_testing = new \ingot\testing\tests\price\plugins\edd( $ingot_cookies[ 'price' ][ 'edd' ] );
-			$x = 1;
 
 		}
 
