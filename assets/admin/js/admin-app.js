@@ -314,7 +314,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     };
 
     $scope.removeTest = function( index ) {
-	    $scope.group.variants.splice( index, 1 );
+	    delete $scope.group.variants[ index ];
 	    return false;
     };
 
@@ -360,13 +360,15 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         })
     };
 
+    //add tests to click group
     $scope.addNewTest = function(e) {
         //make ID a random string so it will be treated as new by API
         var id = 'ingot_' + Math.random().toString(36).substring(7);
-        if( !Array.isArray($scope.group.variants) ) {
-            $scope.group.variants = [];
+        if( jQuery.isEmptyObject( $scope.group.variants ) ) {
+            $scope.group.variants = {};
         }
-        $scope.group.variants.push({'ID':id});
+
+        $scope.group.variants[ id ] = {};
     };
 
     $scope.change_step = function( step ) {
@@ -671,7 +673,6 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         if( !$scope.group.variants ) {
             $scope.group.variants = [];
         }
-
         $scope.group.variants.push({ 'ID': id, default: 0, price: $scope.basePrice });
 
 		setTimeout( function() {
