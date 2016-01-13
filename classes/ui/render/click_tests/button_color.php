@@ -29,9 +29,9 @@ class button_color extends \ingot\ui\render\click_tests\button {
 	 */
 	protected function make_html() {
 		$test_id = (int) $this->get_variant()[ 'ID' ];
-		$text = $this->get_variant()[ 'content' ];
+		$text = $this->get_group()[ 'meta' ][ 'color_test_text' ];
 		$link = $this->link();
-		$style = $this->make_style( $this->get_group() );
+		$style = $this->make_style( $this->get_variant() );
 		$group_id = $this->get_group()[ 'ID' ];
 
 		$this->html = sprintf(
