@@ -522,6 +522,7 @@ function ingot_is_rest_api() {
 
 	if( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 		return true;
+
 	}
 
 }
@@ -732,6 +733,24 @@ function ingot_get_woo_price( $id ){
 	if( is_object( $product ) ) {
 		return $product->get_price();
 
+	}
+
+}
+
+/**
+ * Run Ingot cookies.
+ *
+ * Sets up cookies and the price testing
+ *
+ * @uses "ingot_loaded"
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if loaded, false if not.
+ */
+function ingot_start_cookies(){
+	if ( true == apply_filters( 'ingot_run_cookies', true ) && ! did_action( 'ingot_cookies_set' ) ) {
+		return \ingot\testing\cookies\set::run();
 	}
 
 }

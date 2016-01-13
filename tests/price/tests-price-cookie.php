@@ -14,6 +14,7 @@ class tests_price_cookie extends \WP_UnitTestCase {
 		parent::setUp();
 		\ingot\testing\crud\group::delete( 'all' );
 		\ingot\testing\crud\variant::delete( 'all' );
+
 	}
 
 	/**
@@ -21,6 +22,7 @@ class tests_price_cookie extends \WP_UnitTestCase {
 	 *
 	 * @since 1.1.0
 	 *
+	 * @group cookie
 	 * @group price_cookie
 	 * @group price
 	 *
@@ -65,6 +67,37 @@ class tests_price_cookie extends \WP_UnitTestCase {
 			$this->assertInternalType( 'object', $content->product );
 
 		}
+
+	}
+
+	/**
+	 * Test that price tests in cookie makes 1 time ran only.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group cookie
+	 * @group price_cookie
+	 * @group price
+	 *
+	 *
+	 * @covers
+	 */
+	public function testEnsureRate(){
+		$data  = ingot_test_data_price::edd_tests( 10 );
+		for( $i= 0; $i <= 10; $i++ ) {
+			wp_remote_get( home_url() );
+		}
+		$obj = new \ingot\testing\object\group( $data[ 'group_ID' ] );
+		$stats_obj = new \ingot\testing\object\group_stats( $obj->get_levers() );
+
+		$stats = $stats_obj->get_stats();
+		$this->assertArrayHasKey( 'group', $stats );
+		$this->assertInternalType( 'object', $stats[ 'group' ] );
+
+		/** @var \ingot\testing\object\stats $group_stats */
+		$group_stats = $stats[ 'group' ];
+		$this->assertSame( 1, $group_stats->total );
+		$this->assertSame( 0, $group_stats->conversions );
 
 	}
 

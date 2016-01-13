@@ -41,6 +41,17 @@ abstract class price {
 	}
 
 	/**
+	 * Get the products being tested
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array
+	 */
+	public function get_products(){
+		return $this->products;
+	}
+
+	/**
 	 * Add our hooks
 	 *
 	 * @since 0.0.9

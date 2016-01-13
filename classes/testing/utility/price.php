@@ -90,7 +90,6 @@ class price {
 
 		return 1;
 
-
 	}
 
 	/**

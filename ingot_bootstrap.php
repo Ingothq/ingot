@@ -42,51 +42,48 @@ class ingot_bootstrap {
 		}
 
 		if ( $load ) {
-			add_filter( 'ingot_force_update_table', '__return_true' );
-			if (  ! did_action( 'ingot_loaded') ) {
-				include_once( $autoloader );
-				self::maybe_upgrade();
-				self::add_tables();
 
-				if( self::check_if_tables_exist() ) {
-					ingot\testing\ingot::instance();
+			include_once( $autoloader );
+			self::maybe_upgrade();
+			self::add_tables();
 
-					//make admin go in admin
-					if ( is_admin() ) {
-						new \ingot\ui\admin\app\load();
-					}
+			if( self::check_if_tables_exist() ) {
+				ingot\testing\ingot::instance();
 
-					self::init_cookies();
+				//make admin go in admin
+				if ( is_admin() ) {
+					new \ingot\ui\admin\app\load();
+				}
 
-					/**
-					 * Runs when Ingot has loaded.
-					 *
-					 * @since 0.0.5
-					 *
-					 */
-					do_action( 'ingot_loaded' );
-				}else{
-					if ( is_admin() ) {
-						printf( '<div class="error"><p>%s</p></div>', __( 'Ingot Not Loaded', 'ingot' ) );
+				//run cookies
+				add_action( 'ingot_loaded', 'ingot_start_cookies' );
 
-					}
+				/**
+				 * Runs when Ingot has loaded.
+				 *
+				 * @since 0.0.5
+				 */
+				do_action( 'ingot_loaded' );
 
-					/**
-					 * Runs if Ingot failed to load
-					 *
-					 * @since 0.3.0
-					 *
-					 */
-					do_action( 'ingot_loaded_failed' );
-
-					return;
+			}else{
+				if ( is_admin() ) {
+					printf( '<div class="error"><p>%s</p></div>', __( 'Ingot Not Loaded', 'ingot' ) );
 
 				}
+
+				/**
+				 * Runs if Ingot failed to load
+				 *
+				 * @since 0.3.0
+				 *
+				 */
+				do_action( 'ingot_loaded_failed' );
+
+				return;
 
 			}
 
 		}
-
 
 	}
 
@@ -284,70 +281,6 @@ class ingot_bootstrap {
 		}
 
 	}
-
-	/**
-	 * Setup our cookies
-	 *
-	 * @uses "init"
-	 *
-	 * @since 0.0.9
-	 */
-	public static function init_cookies() {
-
-		if( false == ingot_is_front_end() ) {
-			return false;
-		}
-
-		$cookies = array();
-		if( isset( $_COOKIE ) && is_array( $_COOKIE ) ) {
-			$cookies = $_COOKIE;
-		}
-
-		$cookies = ingot\testing\cookies\init::create( $cookies );
-		$ingot_cookies = ingot\testing\cookies\init::get_instance()->get_ingot_cookie( false );
-		if( ! empty( $ingot_cookies ) ){
-			$cookie_time = 15 * DAY_IN_SECONDS;
-
-			/**
-			 * Change cookie time
-			 *
-			 * @since 0.2.0
-			 *
-			 * @param int $cookie_time Length to keep cookie. Default is 15 days
-			 */
-			$cookie_time = apply_filters( 'ingot_cookie_time', $cookie_time );
-			$cookie_name = $cookies->get_cookie_name();
-			setcookie( $cookie_name, $cookies->get_ingot_cookie(true), time() + $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
-			
-		}
-
-		/**
-		 * Fires after Ingot Cookies Are Set
-		 *
-		 * Note: will fire if they were set empty
-		 * Should happen at init:25
-		 *
-		 * @since 0.0.9
-		 *
-		 * @param \ingot\testing\cookies\init $cookies Cookies object
-		 */
-		do_action( 'ingot_cookies_set', $cookies );
-
-		if ( ingot_is_edd_active() && isset( $ingot_cookies[ 'price' ][ 'edd' ] ) && ! empty( $ingot_cookies[ 'price' ][ 'edd' ] )  ) {
-			new \ingot\testing\tests\price\plugins\edd( $ingot_cookies[ 'price' ][ 'edd' ] );
-
-		}
-
-		if ( ingot_is_woo_active() && isset( $ingot_cookies[ 'price' ][ 'woo' ] ) && ! empty( $ingot_cookies[ 'price' ][ 'woo' ] )  ) {
-			new \ingot\testing\tests\price\plugins\woo( $ingot_cookies[ 'price' ][ 'woo' ] );
-
-		}
-
-	}
-
-
-
-
 
 	/**
 	 * Add tables if needed

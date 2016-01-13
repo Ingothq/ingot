@@ -90,7 +90,7 @@ abstract class bandit {
 	 */
 	public function choose() {
 		$record = ! ingot_is_bot();
-		$val = $this->bandit->chooseLever($this->experiment, $record )->getValue();
+		$val = $this->bandit->chooseLever( $this->experiment, $record )->getValue();
 		return $val;
 
 	}

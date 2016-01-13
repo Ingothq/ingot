@@ -155,6 +155,7 @@ class ingot_test_data_price {
 	public static function make_groups( $args ){
 
 		$group_args = $args[ 'group_args' ];
+		$data[ 'product_ID' ] = $group_args[ 'wp_ID' ];
 		$variant_args = $args[ 'variant_args' ];
 
 		$variants = [];

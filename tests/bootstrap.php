@@ -41,6 +41,8 @@ if(  ! is_object( $wp_rest_server )) {
 if( ! defined( 'INGOT_DEV_MODE' ) ) {
 	define( 'INGOT_DEV_MODE', true );
 }
+add_filter( 'ingot_run_cookies', '__return_true' );
+remove_action( 'ingot_loaded', 'ingot_start_cookies' );
 
 
 // Include helpers

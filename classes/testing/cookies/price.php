@@ -106,13 +106,15 @@ class price extends cookie {
 
 		$bandit  = new \ingot\testing\bandit\price( $group[ 'ID' ] );
 		$variant = $bandit->choose();
+		$product = \ingot\testing\utility\price::get_product( $group );
+
 
 		$test = new test( [
 			'plugin'  => $group[ 'sub_type' ],
 			'ID'      => $group[ 'ID' ],
 			'expires' => $this->expires(),
 			'variant' => $variant,
-			'product' => call_user_func( \ingot\testing\utility\price::get_product_function($group[ 'sub_type' ] ), \ingot\testing\utility\price::get_product( $group ) ),
+			'product' => $product,
 			'price_callback' => \ingot\testing\utility\price::get_price_callback( $group[ 'sub_type' ] )
 		] );
 

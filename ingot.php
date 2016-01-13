@@ -85,3 +85,4 @@ add_action( 'plugins_loaded', 'ingot_load_textdomain' );
 function ingot_load_textdomain() {
 	load_plugin_textdomain( 'ingot', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 }
+
