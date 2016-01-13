@@ -14,9 +14,9 @@ var ingotApp = angular.module('ingotApp', [
     .run( function( $rootScope, $state ) {
         $rootScope.translate =  INGOT_TRANSLATION;
         $rootScope.partials_url = INGOT_ADMIN.partials;
-		
+
 		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-			
+
 			if( toState.name == 'clickTests' ) {
 				$rootScope.main_click_tests_page = true;
 			} else {
@@ -28,17 +28,17 @@ var ingotApp = angular.module('ingotApp', [
             } else {
                 $rootScope.main_price_tests_page = false;
             }
-			
+
 		});
 		$rootScope.isActiveNav = function( page ) {
-			
-			if( !$state.current.name ) { return }			
+
+			if( !$state.current.name ) { return }
 			if( $state.current.name.indexOf( page ) >= 0 ) {
 				return 'active';
 			}
-			
+
 		}
-		
+
     }
 );
 
@@ -128,7 +128,7 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
  */
 //Controller for click groups list
 ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', '$sce', function( $scope, $http,  groupsFactory, $sce ) {
-    
+
     var page_limit = 10;
 
     $scope.description = $sce.trustAsHtml( INGOT_TRANSLATION.descriptions.click );
@@ -155,32 +155,37 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', '$sce',
 
 
     });
-    
+
     $scope.paginate = function( page, $event ) {
 
 	    if( jQuery('.paginate a.active').length ) {
             jQuery('.paginate a.active').toggleClass('active');
         }
-        
+
 	    jQuery( $event.currentTarget ).toggleClass('active');
-	    
+
 	    page = page + 1;
         groupsFactory.query({page: page, limit: page_limit, context: 'admin'}, function(res){
 			if( res.data.indexOf('No matching groups found.') >= 0 ) { return; }
 		    $scope.groups = JSON.parse( res.data );
-	    });   
+	    });
     };
 
-    $scope.enter = function( id ){
-        jQuery( '#shortcode-pre-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
-        jQuery( '#shortcode-copy-' + id ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+    $scope.enter = function( id ) {
+        setTimeout( function () {
+            jQuery( '#shortcode-pre-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
+            jQuery( '#shortcode-copy-' + id ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+        }, 350 );
     };
 
     $scope.exit = function( id ){
-        jQuery( '#shortcode-copy-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
-        jQuery('#shortcode-pre-' + id  ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+        setTimeout( function() {
+            jQuery( '#shortcode-copy-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
+            jQuery('#shortcode-pre-' + id  ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+        }, 350 );
+
     };
-    
+
 }]);
 
 //controller for deleting a group
@@ -305,9 +310,9 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             }
             return css;
         }
-	    
+
     };
-    
+
     $scope.removeTest = function( index ) {
 	    $scope.group.variants.splice( index, 1 );
 	    return false;
@@ -531,7 +536,7 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', functio
     } );
 
     groupsFactory.query({page: 1, limit: page_limit, context: 'admin', type: 'price' }, function(res){
-		
+
 		$scope.total_pages = false;
 		$scope.groups = JSON.parse( res.data );
 		if( res.headers['x-ingot-total'] ) {
@@ -559,7 +564,7 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', functio
             $scope.groups = JSON.parse( res.data );
         });
     }
-    
+
 }]);
 
 //controller for creating/editing a price group
@@ -593,7 +598,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
         groupsFactory.get({
             id: groupID,
         }, function(res){
-	        if( res[0] != 'N' && res[1] != 'o' ) {   
+	        if( res[0] != 'N' && res[1] != 'o' ) {
 		        $scope.group = res;
 	            $scope.products();
 	        }
@@ -628,7 +633,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     $scope.submit = function( ){
         angular.forEach( $scope.group.variants, function( value, key ) {
-	        value.default = parseFloat( value.default / 100 );	        
+	        value.default = parseFloat( value.default / 100 );
         });
 
         $scope.group.type = 'price';
@@ -657,7 +662,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 confirmButtonText: INGOT_TRANSLATION.close
             } );
         } )
-		
+
     };
 
     $scope.addNewTest = function(e) {
@@ -693,7 +698,7 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 			});
 			$scope.$apply();
 		}, 50 );
-        
+
     };
 
 
@@ -847,5 +852,5 @@ ingotApp.factory( 'groupsFactory', function( $resource ) {
             }
         }
     })
-	
+
 });

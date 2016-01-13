@@ -9,8 +9,8 @@
             </div>
             <div ng-include="partials_url + '/list-partials/' + group.type + '.html'"></div>
         </div>
-        <div ng-mouseenter="enter(group.ID)" ng-mouseleave="exit(group.ID)">
-            <pre id="shortcode-pre-{{group.ID}}">
+        <div ng-mouseenter="enter(group.ID)" ng-mouseleave="exit(group.ID)" style="height:24px;margin-bottom: 5px;">
+            <pre id="shortcode-pre-{{group.ID}}" style="padding:0px;">
                 [ingot id="{{group.ID}}"]
             </pre>
             <button class="btn btn-info" ngclipboard data-clipboard-text="[ingot id=&quot;{{group.ID}}&quot;]" id="shortcode-copy-{{group.ID}}" style="width: 100%; display: none;visibility: hidden;" aria-hidden="true">
