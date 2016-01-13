@@ -289,23 +289,23 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.buttonStyle = function( id, type ) {
         var css = {};
 	    if( type == 'button_color' ) {
-		     css = {};
-		    if( $scope.group.variants[id] && $scope.group.variants[id].meta && $scope.group.variants[id].meta.background_color ) {
+            if ( $scope.group.variants[ id ] && $scope.group.variants[ id ].meta && $scope.group.variants[ id ].meta.background_color ) {
                 css[ 'background-color' ] = $scope.group.variants[ id ].meta.background_color;
             }
 
-			if( $scope.group.variants[id] && $scope.group.variants[id].meta && $scope.group.variants[id].meta.color ) {
+            if ( $scope.group.variants[ id ] && $scope.group.variants[ id ].meta && $scope.group.variants[ id ].meta.color ) {
+
                 css[ 'color' ] = $scope.group.variants[ id ].meta.color;
             }
 
-		    return css;
-	    } else {
+            return css;
+        } else {
             css = {};
-            if( $scope.group.meta && $scope.group.meta.background_color ) {
+            if ( $scope.group.meta && $scope.group.meta.background_color ) {
                 css[ 'background-color' ] = $scope.group.meta.background_color;
             }
 
-            if( $scope.group.meta && $scope.group.meta.color ) {
+            if ( $scope.group.meta && $scope.group.meta.color ) {
                 css[ 'color' ] = $scope.group.meta.color;
             }
             return css;
