@@ -52,7 +52,9 @@ function ingot_maybe_load() {
 	if( false == $fail ){
 		include_once( dirname(__FILE__ ) . '/ingot_bootstrap.php' );
 		add_action( 'plugins_loaded', array( 'ingot_bootstrap', 'maybe_load' ) );
+
 	}
+
 }
 /**
  * EDD Licensing
@@ -85,4 +87,3 @@ add_action( 'plugins_loaded', 'ingot_load_textdomain' );
 function ingot_load_textdomain() {
 	load_plugin_textdomain( 'ingot', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 }
-

@@ -56,7 +56,20 @@ class ingot_bootstrap {
 				}
 
 				//run cookies
-				add_action( 'ingot_loaded', 'ingot_start_cookies' );
+				add_action( 'ingot_loaded', function(){
+					/**
+					 * Disable running cookies
+					 *
+					 * @since 1.1.0
+					 *
+					 * @param bool $run
+					 */
+					if ( true == (bool) apply_filters( 'ingot_run_cookies', true ) && ! did_action( 'ingot_cookies_set' ) ) {
+						\ingot\testing\tests\click\destination\init::setup_cookies();
+						\ingot\testing\cookies\set::run();
+					}
+
+				});
 
 				/**
 				 * Runs when Ingot has loaded.

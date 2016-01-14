@@ -30,15 +30,17 @@ class set {
 			return false;
 		}
 
-		$cookies = array();
+		$all_cookies = $cookies = array();
+
+/**
 		if( isset( $_COOKIE ) && is_array( $_COOKIE ) ) {
-			$cookies = $_COOKIE;
+			$all_cookies = $_COOKIE;
 		}
 
 
-		$cookies = init::create( $cookies );
+		$cookies = init::create( $all_cookies );
 		self::setup_cookies( $cookies );
-
+**/
 		/**
 		 * Fires after Ingot Cookies Are Set
 		 *
@@ -65,16 +67,7 @@ class set {
 	 */
 	public static function setup_cookies( $cookies ){
 		if( ! empty( $cookies->get_ingot_cookie( false ) ) ){
-			$cookie_time = 15 * DAY_IN_SECONDS;
-
-			/**
-			 * Change cookie time
-			 *
-			 * @since 0.2.0
-			 *
-			 * @param int $cookie_time Length to keep cookie. Default is 15 days
-			 */
-			$cookie_time = apply_filters( 'ingot_cookie_time', $cookie_time );
+			$cookie_time = ingot_cookie_time();
 			$cookie_name = $cookies->get_cookie_name();
 			setcookie( $cookie_name, $cookies->get_ingot_cookie(true), time() + $cookie_time, COOKIEPATH, COOKIE_DOMAIN, false );
 

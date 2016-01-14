@@ -12,6 +12,7 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\utility\destination;
 use ingot\testing\utility\helpers;
 use ingot\testing\utility\price;
 
@@ -44,9 +45,13 @@ class group extends crud {
 	 * @return bool
 	 */
 	public static function valid( $data ){
-		if( parent::valid( $data ) && 'price' == $data[ 'type' ] ){
+		if( parent::valid( $data ) ) {
+			if ( 'price' == $data[ 'type' ] ) {
 
-			return isset( $data[ 'meta' ][ 'product_ID' ] ) && is_numeric( $data[ 'meta' ][ 'product_ID' ] );
+				return isset( $data[ 'meta' ][ 'product_ID' ] ) && is_numeric( $data[ 'meta' ][ 'product_ID' ] );
+			}
+
+			return true;
 
 		}
 
@@ -218,11 +223,15 @@ class group extends crud {
 	 */
 	protected static function prepare_meta( $data ) {
 		if( ! isset( $data[ 'meta' ] ) || empty( $data[ 'meta' ] || ! is_array( $data[ 'meta']) ) ){
-			$data[ 'meta'] = [];
+			$data[ 'meta' ] = [];
 			return $data;
 		}
 
 		if ( 'click' == $data[ 'type' ] ) {
+			if( 'destination' == $data[ 'sub_type' ] ){
+				return destination::prepare_meta( $data );
+			}
+
 			foreach ( [ 'color', 'background_color', 'color_test_text', 'link' ] as $field ) {
 				if ( isset( $data[ 'meta' ][ $field ] ) && ! empty( $data[ 'meta' ][ $field ] ) && is_string( $data[ 'meta' ][ $field ] ) ) {
 

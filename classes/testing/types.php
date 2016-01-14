@@ -111,24 +111,28 @@ class types {
 	 * @return array
 	 */
 	public static function internal_click_types( $with_labels = false ) {
-		$types = array(
-			'link'         => array(
+		$types = [
+			'link'         => [
 				'name'        => __( 'Link', 'ingot' ),
-				'description' => 'Use this to test link location on a call to action'
-			),
-			'text'         => array(
+				'description' => __( 'Use this to test link location on a call to action' ),
+			],
+			'text'         => [
 				'name'        => __( 'Text', 'ingot' ),
-				'description' => 'Use this to test text on a call to action'
-			),
-			'button'       => array(
+				'description' => __( 'Use this to test text on a call to action'),
+			],
+			'button'       => [
 				'name'        => __( 'Button', 'ingot' ),
-				'description' => 'Use this to test button text call to action'
-			),
-			'button_color' => array(
+				'description' => __( 'Use this to test button text call to action'),
+			],
+			'button_color' => [
 				'name'        => __( 'Button Color', 'ingot' ),
-				'description' => 'Use this to test button coloring on a call to action'
-			),
-		);
+				'description' => __( 'Use this to test button coloring on a call to action'),
+			],
+			'destination' => [
+				'name' => __( 'Headline', 'ingot' ),
+				'description' => __( 'Change your site\'s headline, or tagline and track traffic to a page -- checkout, sign up, etc.' ),
+			],
+		];
 
 		if( false == $with_labels ) {
 			return array_keys( $types );

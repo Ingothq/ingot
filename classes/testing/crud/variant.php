@@ -82,6 +82,8 @@ class variant extends crud {
 
 		}
 
+		return true;
+
 	}
 
 

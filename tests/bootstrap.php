@@ -14,6 +14,7 @@ require_once $_tests_dir . '/includes/functions.php';
 function _manually_load_plugin() {
 	require dirname( __FILE__ ) . '/../ingot.php';
 	require dirname( __FILE__ ) . '/../../easy-digital-downloads/easy-digital-downloads.php';
+	//require dirname( __FILE__ ) . '/../../woocommerce/woocommerce.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
@@ -27,6 +28,7 @@ activate_plugin( 'ingot/ingot.php' );
 include_once( dirname( __FILE__ ) . '/functions_for_tests.php' );
 ingot_destroy();
 edd_install();
+
 
 global $current_user;
 

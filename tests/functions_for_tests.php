@@ -409,3 +409,65 @@ function rand_float(){
 	}
 	return round( $value, 3 );
 }
+
+
+class ingot_test_desitnation {
+	public static function create( $type, $is_tagline = false ){
+		$page_id = 0;
+		if( 'page' == $type ){
+			$data[ 'page_ID' ] = $page_id = rand( 1, 5 );
+		}
+
+		$args = self::group_args( $type, $page_id, $is_tagline );
+
+		$data[ 'group_ID' ] = \ingot\testing\crud\group::create( $args, true );
+		for( $i =0; $i <= rand( 3,5 ); $i++ ){
+			$data[ 'variants' ][] = \ingot\testing\crud\variant::create( self::variant_args( $data[ 'group_ID' ] ), true );
+		}
+
+		$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
+		if( is_wp_error( $group ) ){
+			var_dump( __CLASS__ . __METHOD__ . __LINE__  );
+			var_dump( $group );
+			die();
+		}
+		$group[ 'variants' ] = $data[ 'variants' ];
+		\ingot\testing\crud\group::update( $group, $data[ 'group_ID' ], true );
+		$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
+		if( is_wp_error( $group ) || empty( $group[ 'variants' ] ) ){
+			var_dump( $data );
+			var_dump( __CLASS__ . __METHOD__ . __LINE__  );
+			var_dump( $group );
+			die();
+		}
+
+		return $data;
+	}
+
+	public static function group_args( $type, $page_id = 0, $is_tagline = false ){
+		$args = [
+			'name' => rand(),
+			'type'     => 'click',
+			'sub_type' => 'destination',
+			'meta'     => [
+				'destination' => $type,
+				'page' => $page_id,
+				'is_tagline' => $is_tagline
+			],
+		];
+
+		return $args;
+
+	}
+
+	public static function variant_args( $group_id ) {
+		$args = [
+			'type'     => 'click',
+			'group_ID' => $group_id,
+			'content'  => rand()
+		];
+
+		return $args;
+
+	}
+}

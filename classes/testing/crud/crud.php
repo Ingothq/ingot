@@ -526,7 +526,7 @@ abstract class crud {
 					 $data[ 'field' ] = self::date_validation( $data[ $field ] );
 				 }
 			 }elseif(  'meta' == $field ) {
-				if(  ! isset( $data[ $field ] ) ||! is_array( $data[ $field ] ) ) {
+				if(  ! isset( $data[ $field ] ) || ! is_array( $data[ $field ] ) ) {
 					$data[ $field ] = [];
 				}
 			 }else{
@@ -866,6 +866,7 @@ abstract class crud {
 		}
 
 		return true;
+
 	}
 
 

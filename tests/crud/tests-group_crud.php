@@ -708,4 +708,31 @@ class group_crud extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test that we can create all sorts of destination tests
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group group_crud
+	 * @group destination
+	 *
+	 * @covers  \ingot\testing\crud\group::create()
+	 * @covers \ingot\testing\crud\crud::save()
+	 * @covers \ingot\testing\tests\click\destination\types::destination_types()
+	 * @covers \ingot\testing\utility\destination::prepare_meta()
+	 */
+	public function testCreateDestinationTest(){
+		foreach( \ingot\testing\tests\click\destination\types::destination_types() as $type ){
+			$args = ingot_test_desitnation::group_args( $type  );
+			$id = \ingot\testing\crud\group::create( $args );
+			$this->assertTrue( is_numeric( $id ) );
+			$group = \ingot\testing\crud\group::read( $id );
+			$this->assertInternalType( 'array', $group );
+			$this->assertTrue( \ingot\testing\crud\group::valid( $group ) );
+
+		}
+
+	}
+
 }

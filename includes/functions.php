@@ -737,20 +737,19 @@ function ingot_get_woo_price( $id ){
 
 }
 
+
 /**
- * Run Ingot cookies.
- *
- * Sets up cookies and the price testing
- *
- * @uses "ingot_loaded"
+ * Get cookie expiration time.
  *
  * @since 1.1.0
- *
- * @return bool True if loaded, false if not.
  */
-function ingot_start_cookies(){
-	if ( true == apply_filters( 'ingot_run_cookies', true ) && ! did_action( 'ingot_cookies_set' ) ) {
-		return \ingot\testing\cookies\set::run();
-	}
-
+function ingot_cookie_time(){
+	/**
+	 * Change cookie time
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param int $cookie_time Length to keep cookie. Default is 15 days
+	 */
+	return apply_filters( 'ingot_cookie_time', 15 * DAY_IN_SECONDS );
 }
