@@ -76,17 +76,20 @@ function ingot_shortcode( $atts ) {
  */
 function ingot_click_html_link( $type, $group ) {
 	switch ( $type ) {
-		case 'link' == $type :
+		case 'link' :
 			$class = new ingot\ui\render\click_tests\link( $group );
 			break;
-		case 'button' == $type :
+		case 'button' :
 			$class = new \ingot\ui\render\click_tests\button( $group );
 			break;
-		case 'button_color' == $type :
+		case 'button_color' :
 			$class = new \ingot\ui\render\click_tests\button_color( $group );
 			break;
-		case 'text' == $type :
+		case 'text' :
 			$class = new \ingot\ui\render\click_tests\text( $group );
+			break;
+		case 'destination' :
+			$class = new \ingot\ui\render\click_tests\destination( $group );
 			break;
 		default :
 			return '';
