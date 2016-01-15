@@ -206,8 +206,6 @@ class init {
 					return false;
 				}
 
-
-
 			} else {
 				$variant = cookie::get_cookie( $group_id );
 			}

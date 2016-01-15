@@ -6,6 +6,11 @@
         <span ng-show="new_group">
             {{translate.group.new_content_test}}
         </span>
+        <span ng-show="!new_group">
+            <a ui-sref="clickTests.stats({groupID:ID})" class="btn btn-warning pull-right">
+                {{translate.groups.stats}}
+            </a>
+        </span>
     </h2>
     <ul class="progress-indicator">
         <li ng-click="change_step(1)" ng-class="{'active': group_step == 1, 'completed': group_step > 1 || !new_group }">
