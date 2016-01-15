@@ -112,8 +112,8 @@ class translations {
 				'license_code_desc'    => esc_html__( 'Enter your license code to enable support and updates.', 'ingot' ),
 				'save'                 => esc_html__( 'Save Settings', 'ingot' ),
 				'edit_name'            => esc_html__( 'Edit Group Name', 'ingot' ),
-				'license_notice'       => esc_html__( 'License not active or not valid', 'ingot' )
-
+				'license_notice'       => esc_html__( 'License not active or not valid', 'ingot' ),
+				'license_active'      => esc_html__( ' License active', 'ingot' ),
 
 			],
 			'welcome'                  => [
