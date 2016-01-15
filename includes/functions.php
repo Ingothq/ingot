@@ -25,7 +25,7 @@ function ingot_click_test( $id ) {
 	$type = $group[ 'sub_type' ];
 	if ( in_array( $type, \ingot\testing\types::allowed_click_types() ) ) {
 		switch ( $type ) {
-			case in_array( $type, \ingot\testing\types::allowed_click_types() ) :
+			case in_array( $type, \ingot\testing\types::internal_click_types() ) :
 				$html = ingot_click_html_link( $type, $group );
 				break;
 			case is_callable( $type ) :
@@ -89,7 +89,12 @@ function ingot_click_html_link( $type, $group ) {
 			$class = new \ingot\ui\render\click_tests\text( $group );
 			break;
 		case 'destination' :
-			$class = new \ingot\ui\render\click_tests\destination( $group );
+			if( is_array( $group ) ){
+				$group_id = $group[ 'ID' ];
+			}else{
+				$group_id = $group;
+			}
+			$class = new \ingot\ui\render\click_tests\destination( $group, ingot\testing\tests\click\destination\init::get_test( $group_id ) );
 			break;
 		default :
 			return '';
