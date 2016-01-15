@@ -9,7 +9,8 @@ var ingotApp = angular.module('ingotApp', [
     'colorpicker.module',
     'ngAria',
     'ngResource',
-    'ngclipboard'
+    'ngclipboard',
+    'ngSanitize'
 ] )
     .run( function( $rootScope, $state ) {
         $rootScope.translate =  INGOT_TRANSLATION;
@@ -247,6 +248,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.group_step = 1;
     $scope.new_group = false;
     $scope.click_type_options = INGOT_ADMIN.click_type_options;
+    $scope.destinations = INGOT_ADMIN.destinations;
 
     if( 'clickTests.new' == $state.current.name ) {
         is_new = true;
@@ -383,12 +385,22 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         if( !$scope.group ) {
             return;
         }
+
         if( 'undefined' == $scope.group.sub_type || null == $scope.group.sub_type ){
             return false;
         }
 
         return true;
-    }
+    };
+
+    $scope.is_page = function(){
+        if ( 'undefined' != $scope.group.meta.destination ) {
+            if ( 'page' == $scope.group.meta.destination ) {
+                return true;
+            }
+        }
+    };
+
 
 }]);
 

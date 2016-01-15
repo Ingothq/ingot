@@ -21,7 +21,7 @@ class types {
 	 *
 	 * @return array
 	 */
-	public static function destination_types( $with_labels = false ){
+	public static function destination_types( $with_labels = false, $api_format = false ){
 		$types = self::get_internal_types();
 
 		if( ! ingot_is_woo_active() ) {
@@ -44,6 +44,16 @@ class types {
 		 * @param array $types The allowed click test types
 		 */
 		$types = apply_filters( 'ingot_allowed_click_types', $types );
+
+		if( $api_format ) {
+			$_types = [];
+			foreach( $types as $value => $type ){
+				$_types[] = array_merge( $type, [ 'value' => $value ] );
+
+			}
+
+			return $_types;
+		}
 
 		if( false == $with_labels ){
 			$types = array_keys( $types );

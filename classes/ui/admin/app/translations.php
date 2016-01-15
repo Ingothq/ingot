@@ -95,6 +95,10 @@ class translations {
 				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' ),
 				'result_price'                         => esc_html__( 'Resulting Price', 'ingot' ),
 				'add_price_test'                       => esc_html__( 'Add Price Variation', 'ingot' ),
+				'destination_header'                  => esc_html__( 'Destination Type', 'ingot' ),
+				'is_tagline' => esc_html__( 'Change site tagline?', 'ingot'),
+				'destination_page' => esc_html__( 'Page ID for conversions.', 'ingot' ),
+				'destination_page_desc' => esc_html__( 'Use the ID of a sign up page, contact page or sales page at the end of your sales funnel.', 'ingot' )
 			],
 			'settings'                 => [
 				'page_header'          => esc_html__( 'Settings', 'ingot' ),

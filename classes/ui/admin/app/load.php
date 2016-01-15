@@ -201,6 +201,7 @@ class load {
 			'price_tests_enabled' => esc_attr( ingot_enable_price_testing() ),
 			'click_type_options'  => types::allowed_click_types( true ),
 			'price_type_options'  => types::allowed_price_types(),
+			'destinations'        => \ingot\testing\tests\click\destination\types::destination_types( true, true )
 		);
 	}
 

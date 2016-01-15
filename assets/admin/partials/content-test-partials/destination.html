@@ -1,10 +1,30 @@
 <div class="form-group row group-type-select">
     <div class="col-sm-6">
-
-        <label for="destination" class="col-md-4 col-sm-12">
-            {{translate.group.link_label_group_setting}}
-        </label>
-        <input id="destination" type="url" ng-model="group.meta.destination" class="col-md-8 col-sm-12" ng-required="true" />
+        <div class="form-group row">
+            <label for="destination" class="col-md-4 col-sm-12">
+                {{translate.group.destination_header}}
+            </label>
+            <select id="destination" ng-model="group.meta.destination" class="col-md-8 col-sm-12" ng-required="true">
+                <option ng-repeat="destination in destinations" value="{{destination.value}}">
+                    {{destination.name}} -- {{destination.description}}
+                </option>
+            </select>
+        </div>
+        <div class="form-group row">
+            <label for="is_tagline" class="col-md-4 col-sm-12">
+                {{translate.group.is_tagline}}
+            </label>
+            <input id="is_tagline" class="col-md-8 col-sm-12" ng-model="group.meta.is_tagline" type="checkbox"/>
+        </div>
+        <div class="form-group row" ng-show="is_page()">
+            <label for="page" class="col-md-4 col-sm-12">
+                {{translate.group.destination_page}}
+            </label>
+            <input id="page" class="col-md-8 col-sm-12" ng-model="group.meta.page" type="number"/>
+            <span class="col-sm-12">
+                {{translate.group.destination_page_desc}}
+            </span>
+        </div>
     </div>
     <div class="col-sm-6">
         <div id="tests" ng-repeat="variant in group.variants track by $index">
