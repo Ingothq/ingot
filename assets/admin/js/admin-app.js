@@ -257,7 +257,8 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             type: 'click',
             click_type_options : INGOT_ADMIN.click_type_options,
             variants: {},
-            meta: {}
+            meta: {},
+            name: ''
         };
     } else {
         $scope.group_step = 3;
@@ -374,6 +375,29 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     };
 
     $scope.change_step = function( step ) {
+
+        if ( 2 == step || 3 == step){
+            if( 'undefined' == $scope.group.name || '' == $scope.group.name ) {
+                swal( {
+                    title: INGOT_TRANSLATION.group.must_name,
+                    text: '',
+                    type: "error",
+                    confirmButtonText: INGOT_TRANSLATION.close
+                } );
+            }
+        }
+
+        if( 3 == step ) {
+            if( 'undefined' == $scope.group.sub_type || '' == $scope.group.sub_type ) {
+                swal( {
+                    title: INGOT_TRANSLATION.group.must_type,
+                    text: '',
+                    type: "error",
+                    confirmButtonText: INGOT_TRANSLATION.close
+                } );
+            }
+        }
+
         $scope.group_step = step;
     };
 

@@ -572,10 +572,10 @@ function ingot_enable_price_testing() {
  * @since 0.2.0
  */
 function ingot_destroy(){
-	ingot_bootstrap::maybe_add_tracking_table( true );
-	ingot_bootstrap::maybe_add_session_table( true );
-	ingot_bootstrap::maybe_add_group_table( true );
-	ingot_bootstrap::maybe_add_variant_table( true );
+	\ingot\testing\db\delta::maybe_add_tracking_table( true );
+	\ingot\testing\db\delta::maybe_add_session_table( true );
+	\ingot\testing\db\delta::maybe_add_group_table( true );
+	\ingot\testing\db\delta::maybe_add_variant_table( true );
 
 }
 
