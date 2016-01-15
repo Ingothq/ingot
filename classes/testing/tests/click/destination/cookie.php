@@ -26,8 +26,10 @@ class cookie {
 	 */
 	public static function set_cookie( $group_id, $variant_id ){
 		if ( ! headers_sent() ) {
-			$expires = ingot_cookie_time();
-			setcookie( self::cookie_key( $group_id ), (string) $variant_id, $expires, COOKIEPATH, COOKIE_DOMAIN, false );
+			$expires = time() + ingot_cookie_time();
+			$name = self::cookie_key( $group_id );
+			$set = setcookie( $name, (string) $variant_id, $expires, COOKIEPATH, COOKIE_DOMAIN, false );
+			do_action( 'ingot_destination_cookie_set', $set, $name, $group_id, $variant_id, $expires  );
 		}
 	}
 	/**

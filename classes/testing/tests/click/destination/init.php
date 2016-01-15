@@ -59,9 +59,11 @@ class init {
 	 *
 	 * @return array Array of variant IDs put in cookies, keyed by group ID.
 	 */
-	public static function setup_cookies(){
+	public static function setup_cookies( $groups = [] ){
 		$variants = [];
-		$groups = self::get_destination_tests();
+		if ( ! empty( $groups ) ) {
+			$groups = self::get_destination_tests();
+		}
 		if( ! empty( $groups ) ){
 			foreach( $groups as $group_id  ){
 				$variants[ $group_id ] = self::get_test( $group_id );
@@ -98,7 +100,7 @@ class init {
 					if( destination::is_tagline( $group ) ){
 						if( ! self::$tagline ) {
 							$variant_id = self::get_test( $group_id );
-							$variant = $variant = variant::read( $variant_id );
+							$variant = variant::read( $variant_id );
 							if ( variant::valid( $variant ) ) {
 								self::$tagline = $variant[ 'content' ];
 							}
@@ -121,7 +123,11 @@ class init {
 				}
 			}
 
-			new \ingot\testing\tests\click\destination\hooks( $groups );
+			if ( ! empty( $groups ) ) {
+				new \ingot\testing\tests\click\destination\hooks( $groups );
+			}
+
+			return $groups;
 
 		}
 
