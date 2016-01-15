@@ -117,7 +117,7 @@ class translations {
 
 			],
 			'welcome'                  => [
-				//'banner'       => esc_url( INGOT_URL . 'assets/img/Ingot-logo-dark.png' ),
+				'banner'       => esc_url( INGOT_URL . 'assets/img/ingot-logo.png' ),
 				'banner_alt'   => esc_html__( 'Ingot Banner Logo', 'ingot' ),
 				'header'       => esc_html__( 'Ingot: Do Less, Convert More', 'ingot' ),
 				'links_header' => esc_html__( 'Helpful Links', 'ingot' ),

@@ -141,7 +141,7 @@ class load {
 						</button>
 						<a class="navbar-brand active" ui-sref="otherwise" >
 							<?php
-								_e( 'Ingot', 'ingot' );
+								printf( '<img src="%s" alt="%s" class="nav-logo" />', INGOT_URL . 'assets/img/ingot-logo-s.png', __( 'Ingot', 'ingot' ) );
 								printf( ' <small>%s</small>',  INGOT_VER );
 							?>
 						</a>
