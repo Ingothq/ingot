@@ -12,6 +12,8 @@
 namespace ingot\ui\admin\app;
 
 
+use ingot\ui\admin;
+
 class translations {
 
 	/**
@@ -134,25 +136,12 @@ class translations {
 				'for_support' => esc_html__( 'For support please use:', 'ingot' )
 	],
 			'descriptions' => [
-				'click'         => self::get_partial( 'click-description.php' ),
+				'click'         => admin::get_partial( 'click-description.php' ),
 				'price_testing' => esc_html__( 'Raise or lower a product\'s price to maximize revenue', 'ingot' )
 			]
 		];
 	}
 
-	/**
-	 * Get a partial as a string
-	 *
-	 * @since 1.1.0
-	 *
-	 * @param string $file File name
-	 *
-	 * @return string
-	 */
-	protected static function get_partial( $file ){
-		ob_start();
-		include( INGOT_DIR . '/classes/ui/admin/partials/' . $file );
-		return ob_get_clean();
-	}
+
 
 }

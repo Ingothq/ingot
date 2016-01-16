@@ -53,7 +53,7 @@ class ingot_bootstrap {
 
 				//make admin go in admin
 				if ( is_admin() ) {
-					new \ingot\ui\admin\app\load();
+					new ingot\ui\make();
 				}
 
 
