@@ -129,7 +129,7 @@ class types {
 				'description' => __( 'Use this to test button coloring on a call to action'),
 			],
 			'destination' => [
-				'name' => __( 'Headline', 'ingot' ),
+				'name'        => __( 'Destination', 'ingot' ),
 				'description' => __( 'Change your site\'s headline, or tagline and track traffic to a page -- checkout, sign up, etc.' ),
 			],
 		];
