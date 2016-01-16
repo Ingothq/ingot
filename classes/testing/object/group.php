@@ -12,6 +12,7 @@
 namespace ingot\testing\object;
 
 use ingot\testing\crud\variant;
+use prettyArray\PrettyArray;
 
 class group {
 
@@ -351,5 +352,6 @@ class group {
 
 		return $data;
 	}
+
 
 }

@@ -12,7 +12,11 @@
 namespace ingot\testing\bandit;
 
 
+use ingot\testing\bandit\strategy\initial_random_EG;
+use ingot\testing\bandit\strategy\random;
 use ingot\testing\crud\group;
+use ingot\testing\object\initial;
+use ingot\testing\object\sessions;
 use ingot\testing\utility\helpers;
 use MaBandit\CreateExperiment;
 
@@ -116,7 +120,11 @@ abstract class bandit {
 	 */
 	protected function go() {
 
-		$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery(3);
+		if ( $this->use_random() ) {
+			$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery( 1 );
+		}else{
+			$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery( 3 );
+		}
 		$persistor = $this->create_persistor();
 		$this->bandit = \MaBandit\MaBandit::withStrategy($strategy)->withPersistor($persistor);
 
@@ -127,6 +135,17 @@ abstract class bandit {
 
 		}
 
+	}
+
+	/**
+	 * Should variant selection be at random?
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool
+	 */
+	protected function use_random(){
+		return false;
 	}
 
 	/**
@@ -148,4 +167,5 @@ abstract class bandit {
 			$this->experiment = $creator->get_experiment();
 		}
 	}
+
 }

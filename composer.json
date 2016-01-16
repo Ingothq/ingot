@@ -34,7 +34,8 @@
         "ingot/mabandit" : "*",
         "oefenweb/statistics": "dev-master",
         "jaybizzle/crawler-detect": "1.*",
-        "calderawp/caldera-modals": "^1.0"
+        "calderawp/caldera-modals": "^1.0",
+        "blainesch/prettyarray": "dev-master"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",

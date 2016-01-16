@@ -15,6 +15,7 @@ namespace ingot\testing\bandit;
 
 
 use ingot\testing\object\group;
+use ingot\testing\object\initial;
 use MaBandit\CreateExperiment;
 
 class content extends bandit {
@@ -45,6 +46,22 @@ class content extends bandit {
 		 return $persistor;
 
 
+	}
+
+	/**
+	 * Decide, based on group type and average sessions if variant selection be at random
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool
+	 */
+	protected function use_random(){
+		if( ! is_object( $this->obj ) ){
+			$this->set_group_obj();
+		}
+
+		$initial_calc = new initial( $this->obj );
+		return $initial_calc->is_passed_initial();
 	}
 
 	/**
