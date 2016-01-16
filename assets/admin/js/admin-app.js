@@ -371,7 +371,9 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             $scope.group.variants = {};
         }
 
-        $scope.group.variants[ id ] = {};
+        $scope.group.variants[ id ] = {
+            ID : id,
+        };
     };
 
     $scope.change_step = function( step ) {
