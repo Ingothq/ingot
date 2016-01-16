@@ -20,7 +20,14 @@ module.exports = function (grunt) {
                 'build/'
             ],
             pre_compress: [
-                'build/releases'
+                'build/ingot/vendor/ingot/mabandit/test',
+                'build/ingot/vendor/ingot/mabandit/vendor/phpunit',
+                'build/ingot/vendor/ingot/mabandit/vendor/symfony',
+                'build/ingot/vendor/jaybizzle/crawler-detect/tests',
+                'build/ingot/vendor/blainesch/prettyarray/examples',
+                'build/ingot/vendor/bin',
+                'build/releases',
+                'build/ingot/build'
             ]
         },
         run: {
@@ -52,7 +59,9 @@ module.exports = function (grunt) {
                     '!phpunit.xml',
                     '!tests/**',
                     '!bower_components/**',
-                    '!bin/**'
+                    '!bin/**',
+                    '!vendor/ingot/mabandit/vendor/bin/**'
+
                 ],
                 dest: 'build/<%= pkg.name %>/'
             }
@@ -191,7 +200,7 @@ module.exports = function (grunt) {
 
     //release tasks
     grunt.registerTask( 'version_number', [ 'replace:core_file' ] );
-    grunt.registerTask( 'pre_vcs', [ 'shell:composer', 'shell:bower', 'version_number', 'copy', 'compress' ] );
+    grunt.registerTask( 'pre_vcs', [ 'shell:activate', 'version_number', 'copy', 'compress' ] );
     grunt.registerTask( 'do_git', [ 'gitadd', 'gitcommit', 'gittag', 'gitpush' ] );
     grunt.registerTask( 'just_build', [  'shell:composer', 'copy', 'compress' ] );
     grunt.registerTask( 'install', [ 'shell:activate' ] );
