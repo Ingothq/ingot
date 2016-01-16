@@ -1,5 +1,10 @@
 @import url('font-awesome.min.css');
 
+ul li.active, li.active a {
+    background-color: #A8CE75 !important;
+    color: #FFF !important;
+}
+
 .welcome-jumbotron{
     background-image: url('ingot-logo-m.png');
     background-position-x: 100%;
