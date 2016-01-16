@@ -425,6 +425,29 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         }
     };
 
+    //set select option for destination type
+    $scope.destinationSelected = function( destination ){
+        if( 'undefined' == $scope.group.meta.destination || 'undefined' == destination.value ){
+            return false;
+        }
+        if( destination.value == $scope.group.meta.destination ){
+            return true;
+        }
+    };
+
+    //show the right description on change of #destination
+    $scope.destinationDescription = function(){
+        if( 'undefined' == $scope.group.meta.destination || 'undefined' ==  INGOT_ADMIN.destinations[ $scope.group.meta.destination ] ){
+            return false;
+        }
+
+        var el = document.getElementById( 'destination-description' );
+        if ( null != el && 'undefined' != INGOT_ADMIN.destinations[ $scope.group.meta.destination ].description ) {
+            el.innerHTML = INGOT_ADMIN.destinations[ $scope.group.meta.destination ].description;
+        }
+
+    }
+
 
 }]);
 

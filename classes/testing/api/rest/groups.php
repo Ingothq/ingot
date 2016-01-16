@@ -434,6 +434,16 @@ class groups extends route {
 			}
 		}
 
+		if( isset( $group_args[ 'meta' ][ 'destination' ] ) ){
+			if( is_object( $group_args[ 'meta' ][ 'destination' ] ) ) {
+				$group_args[ 'meta' ][ 'destination' ] = (array) $group_args[ 'meta' ][ 'destination' ];
+			}
+
+			if( is_array( $group_args[ 'meta' ][ 'destination' ] ) ){
+				$group_args[ 'meta' ][ 'destination' ] = helpers::v( 'value', $group_args[ 'meta' ][ 'destination' ], 'page' );
+			}
+		}
+
 		foreach ( $group_args as $key => $value ) {
 			if ( is_numeric( $key ) || ! in_array( $key, $allowed ) ) {
 				unset( $group_args[ $key ] );

@@ -1,14 +1,19 @@
 <div class="form-group row group-type-select">
     <div class="col-sm-6">
-        <div class="form-group row">
+        <div class="form-group">
+            <div class="row">
             <label for="destination" class="col-md-4 col-sm-12">
                 {{translate.group.destination_header}}
             </label>
-            <select id="destination" ng-model="group.meta.destination" class="col-md-8 col-sm-12" ng-required="true">
-                <option ng-repeat="destination in destinations" value="{{destination.value}}">
-                    {{destination.name}} -- {{destination.description}}
+            <select id="destination" ng-model="group.meta.destination" class="col-md-8 col-sm-12" ng-required="true"  ng-change="destinationDescription()" data-ng-init="destinationDescription()">
+                <option ng-repeat="destination in destinations" value="{{destination.value}}" ng-selected="destinationSelected(destination)">
+                    {{destination.name}}
                 </option>
             </select>
+            </div>
+            <div class="row">
+                <div class="col-sm-10 col-push-2" id="destination-description" aria-live="assertive"></div>
+            </div>
         </div>
         <div class="form-group row">
             <label for="is_tagline" class="col-md-4 col-sm-12">

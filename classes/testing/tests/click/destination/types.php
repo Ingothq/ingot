@@ -48,7 +48,7 @@ class types {
 		if( $api_format ) {
 			$_types = [];
 			foreach( $types as $value => $type ){
-				$_types[] = array_merge( $type, [ 'value' => $value ] );
+				$_types[ $value ] = array_merge( $type, [ 'value' => $value ] );
 
 			}
 
