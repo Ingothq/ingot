@@ -35,6 +35,11 @@ class make {
 
 	}
 
+	/**
+	 * Hooks for adding the shortcode button
+	 *
+	 * @since 1.1.0
+	 */
 	public function shortcode_hooks() {
 		add_action( 'media_buttons', array( 'ingot\ui\admin\post\shortcode_inserter', 'button' ), 11 );
 		add_action( 'admin_footer', array( 'ingot\ui\admin\post\shortcode_inserter', 'modal' ) );

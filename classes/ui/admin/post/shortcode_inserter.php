@@ -1,8 +1,8 @@
 <?php
 /**
- * @TODO What this does.
+ * Functions for the shortcode inserter in post editor screen
  *
- * @package   @TODO
+ * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
  * @license   GPL-2.0+
  * @link
@@ -17,6 +17,13 @@ use ingot\ui\admin;
 
 class shortcode_inserter {
 
+	/**
+	 * Put the button in post editor
+	 *
+	 * @uses "media_buttons"
+	 *
+	 * @since 1.1.0
+	 */
 	public static function button() {
 
 		global $post;
@@ -41,6 +48,13 @@ class shortcode_inserter {
 		}
 	}
 
+	/**
+	 * Print the content for the modal
+	 *
+	 * @uses "admin_footer"
+	 *
+	 * @since 1.1.0
+	 */
 	public static function modal() {
 		$screen = get_current_screen();
 

@@ -34,19 +34,45 @@ class admin {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Load scripts for use in post editor
+	 *
+	 * @uses "admin_enqueue_scripts" hook
+	 *
+	 * @since 1.1.0
+	 */
 	public static function post_editor_scripts(){
 		wp_enqueue_script( 'ingot-post-editor', trailingslashit( INGOT_URL ) . 'assets/admin/js/ingot-post-editor.js', array( 'jquery', 'caldera-modals' ), INGOT_VER, true );
 		wp_enqueue_script( 'caldera-modals', trailingslashit( INGOT_URL ) . 'vendor/calderawp/caldera-modals/caldera-modals.js', array( 'jquery'), INGOT_VER, true );
 		wp_enqueue_style( 'caldera-modals', trailingslashit( INGOT_URL ) . 'vendor/calderawp/caldera-modals/modals.css' );
 	}
 
+	/**
+	 * Get URL for the Ingot Admin
+	 *
+	 * NOTE: Not escaped
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
 	public static function get_admin_url(){
 		return admin_url( 'admin.php?page=ingot-admin-app#/' );
 	}
 
+	/**
+	 * Get HTML for admin URL link
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $text Text for link
+	 * @param bool|string $title Optional. Text for link text attribute. Default is "Go to the Ingot admin screen"
+	 *
+	 * @return string
+	 */
 	public static function admin_url_html( $text, $title = false ) {
 		if( ! $title ){
-			$title = __( 'Go to the Ingot admin screeen', 'ingot' );
+			$title = __( 'Go to the Ingot admin screen', 'ingot' );
 		}
 
 
