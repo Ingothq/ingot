@@ -4,12 +4,12 @@
   "description": "Ingot",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shelob9/ingot"
+    "url": "https://github.com/ingothq/ingot"
   },
   "author": "Josh Pollock",
   "license": "GPLv2+",
   "bugs": {
-    "url": "https://github.com/shelob9/ingot"
+    "url": "https://github.com/ingothq/ingot"
   },
   "devDependencies": {
     "bower": "*",
