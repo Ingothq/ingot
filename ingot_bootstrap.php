@@ -57,7 +57,7 @@ class ingot_bootstrap {
 				}
 
 
-				if ( ingot_is_front_end() ) {
+				if ( ingot_is_front_end() || ingot_is_admin_ajax() ) {
 					//setup destination tests
 					$destination_tests = \ingot\testing\tests\click\destination\init::set_tracking();
 					//run cookies

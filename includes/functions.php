@@ -649,7 +649,7 @@ function ingot_register_conversion( $variant, $session_ID = 0 ){
 		$variant = \ingot\testing\crud\variant::read( $variant );
 	}
 
-	if ( is_array( $variant ) ) {
+	if ( \ingot\testing\crud\variant::valid( $variant ) ) {
 		$bandit = new \ingot\testing\bandit\content( $variant[ 'group_ID' ] );
 		$bandit->record_victory( $variant[ 'ID' ] );
 

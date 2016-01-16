@@ -57,7 +57,7 @@ class hooks {
 	 * @param array $tracking Groups/variants to track
 	 */
 	public function __construct( $tracking ){
-		$this->tracking = $tracking;
+		$this->set_tracking( $tracking );
 		if( ! empty( $this->tracking ) ){
 			$this->add_hooks();
 		}
@@ -78,6 +78,10 @@ class hooks {
 
 			if( ! is_array( $callback ) ){
 				add_action( $hook, [ $this, $callback ] );
+			}else{
+				if ( is_callable( $callback ) ) {
+					add_action( $hook, $callback );
+				}
 			}
 
 		}
@@ -219,6 +223,28 @@ class hooks {
 				ingot_register_conversion( $variant_id );
 			}
 
+		}
+
+	}
+
+	/**
+	 * Set tracking property of this class
+	 *
+	 * @access private
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $tracking Group IDs to track
+	 */
+	private function set_tracking( array $tracking ) {
+		if ( ! empty( $tracking ) ) {
+			foreach ( $tracking as $group_id ) {
+				$variant_id = init::get_test( $group_id );
+				if ( is_numeric( $variant_id ) ) {
+					$this->tracking[ $group_id ] = $variant_id;
+				}
+
+			}
 		}
 
 	}
