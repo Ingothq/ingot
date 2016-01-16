@@ -19,13 +19,16 @@
                 <ng-form name="innerForm">
                     <div class="form-group row">
                         <div class="col-sm-10 text-center" ng-show="'button_color' == group.sub_type">
-                            <label>Sample:</label><br />
-                            <span class="btn" ng-style="buttonStyle($index, group.sub_type)">
+                            <label>
+                                {{translate.group.sample_button}}
+                            </label>
+                            <br />
+                            <span class="btn" ng-style="buttonStyle(variant.ID, group.sub_type)">
                                 {{group.meta.color_test_text}}
                             </span>
                         </div>
                         <div class="col-sm-2 text-right">
-                            <a ng-click="removeTest( variant.ID )" class="delete" ng-href="" title="{{ 'group.delete' | translate }}">
+                            <a ng-click="removeTest( variant.ID )" class="delete" ng-href="" title="{{translate.group.delete}}">
                                 <i class="fa fa-minus-circle"></i>
                             </a>
                         </div>
@@ -47,7 +50,7 @@
             </div>
         </div>
         <a class="btn btn-default btn-block add-new-test" ng-click="addNewTest()" ng-href="">
-            {{group.add_test}}
+            {{translate.group.add_test}}
         </a>
     </div>
 </div>

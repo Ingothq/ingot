@@ -1,5 +1,32 @@
 @import url('font-awesome.min.css');
 
+ul li.active, li.active a {
+    background-color: #A8CE75 !important;
+    color: #FFF !important;
+}
+
+.welcome-jumbotron{
+    background-image: url('ingot-logo-m.png');
+    background-position-x: 100%;
+    background-position-y: 0%;
+    background-repeat: no-repeat;
+    background-size: 25% 25%
+
+}
+
+img.nav-logo {
+    max-width: 50px;
+    height: auto;
+}
+
+.nav ul li a {
+    color: #000;
+}
+
+.navbar-default {
+    background-color: #D3E7BA;
+}
+
 .btn-primary a {
     color: white;
 }

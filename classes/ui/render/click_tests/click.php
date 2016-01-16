@@ -72,14 +72,14 @@ abstract class click {
 	 * @since 0.0.5
 	 *
 	 * @param int|array $group ID of group to render, or group array
+	 * @Param int|null $variant_id Optional. Variant ID to render with. If null, one will be chosen
 	 */
-	public function __construct( $group ){
+	public function __construct( $group, $variant_id = null ){
 
 		$this->set_group( $group );
 		if( $this->group ) {
-			$this->set_bandit();
-			if( $this->bandit ){
-				$this->choose();
+			$this->set_variant( $variant_id );
+			if( $this->variant ){
 				$this->make_html();
 			}
 
@@ -150,6 +150,15 @@ abstract class click {
 	 */
 	protected function get_group(){
 		return $this->group;
+	}
+
+	protected function set_variant( $variant_id ){
+		if( ! is_null( $variant_id ) ){
+			$this->variant = variant::read( $variant_id );
+		}else{
+			$this->set_bandit();
+			$this->choose();
+		}
 	}
 
 	/**

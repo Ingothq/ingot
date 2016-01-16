@@ -155,6 +155,7 @@ class ingot_test_data_price {
 	public static function make_groups( $args ){
 
 		$group_args = $args[ 'group_args' ];
+		$data[ 'product_ID' ] = $group_args[ 'wp_ID' ];
 		$variant_args = $args[ 'variant_args' ];
 
 		$variants = [];
@@ -170,7 +171,7 @@ class ingot_test_data_price {
 		$price_variations = [];
 
 		for( $v = 0; $v <= 5; $v++ ) {
-			$variation = rand( -0.9, 0.9 );
+			$variation = rand_float();
 			$variant_args[ 'meta' ][ 'price' ] = $variation;
 			$variant_id = \ingot\testing\crud\variant::create( $variant_args, true );
 
@@ -187,17 +188,16 @@ class ingot_test_data_price {
 		$data[ 'variants' ] = $variants;
 		$data[ 'price_variations' ] = $price_variations;
 
+		$_group = \ingot\testing\crud\group::read( $group_id );
+		$_group[ 'variants' ] = $variants;
+		$saved = \ingot\testing\crud\group::update( $_group, $group_id, true );
+		if( is_wp_error( $saved ) ){
 
-
-		if ( is_user_logged_in() ) {
-			$obj = new \ingot\testing\object\group( $group_id );
-			$obj->update_group( [ 'variants' => $variants ] );
-		}else{
-			$_group = \ingot\testing\crud\group::read( $group_id );
-			$_group[ 'variants' ] = $variants;
-			$saved = \ingot\testing\crud\group::update( $_group, $group_id, true );
+			echo $saved->get_error_messages();
+			die();
 		}
 
+		$data[ 'group' ] = \ingot\testing\crud\group::read( $group_id );
 
 		return $data;
 	}
@@ -212,6 +212,8 @@ class ingot_test_data_price {
 			'group_args'   => [
 				'type'     => 'price',
 				'sub_type' => 'edd',
+				'meta' => [ 'product_ID' => $product_id ],
+				'wp_ID' => $product_id
 			],
 			'variant_args' => [
 				'type' => 'price',
@@ -321,4 +323,151 @@ class ingot_test_data_price {
 		return get_post( $post_id );
 	}
 
+	/**
+	 *
+	 * Based on: https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/master/tests/helpers/class-helper-payment.php
+	 *
+	 * @param \WP_Post $download
+	 *
+	 * @return int Payment ID
+	 */
+	public static function edd_create_simple_payment( $download ) {
+		global $edd_options;
+		// Enable a few options
+		$edd_options['enable_sequential'] = '1';
+		$edd_options['sequential_prefix'] = 'EDD-';
+		update_option( 'edd_settings', $edd_options );
+		$simple_download   = $download;
+
+		/** Generate some sales */
+		$user      = get_userdata(1);
+		$user_info = array(
+			'id'            => $user->ID,
+			'email'         => $user->user_email,
+			'first_name'    => $user->first_name,
+			'last_name'     => $user->last_name,
+			'discount'      => 'none'
+		);
+		$download_details = array(
+			array(
+				'id' => $simple_download->ID,
+				'options' => array(
+					'price_id' => 0
+				)
+			),
+
+		);
+		$total                  = 0;
+		$simple_price           = get_post_meta( $simple_download->ID, 'edd_price', true );
+
+		$total =  $simple_price;
+		$cart_details = array(
+			array(
+				'name'          => 'Test Download',
+				'id'            => $simple_download->ID,
+				'item_number'   => array(
+					'id'        => $simple_download->ID,
+					'options'   => array(
+						'price_id' => 1
+					)
+				),
+				'price'         => $simple_price,
+				'item_price'    => $simple_price,
+				'tax'           => 0,
+				'quantity'      => 1
+			),
+		);
+		$purchase_data = array(
+			'price'         => number_format( (float) $total, 2 ),
+			'date'          => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+			'purchase_key'  => strtolower( md5( uniqid() ) ),
+			'user_email'    => $user_info['email'],
+			'user_info'     => $user_info,
+			'currency'      => 'USD',
+			'downloads'     => $download_details,
+			'cart_details'  => $cart_details,
+			'status'        => 'pending'
+		);
+		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+		$_SERVER['SERVER_NAME'] = 'edd_virtual';
+		$payment_id = edd_insert_payment( $purchase_data );
+		$key        = $purchase_data['purchase_key'];
+		$transaction_id = 'FIR3SID3';
+		edd_set_payment_transaction_id( $payment_id, $transaction_id );
+		edd_insert_payment_note( $payment_id, sprintf( __( 'PayPal Transaction ID: %s', 'easy-digital-downloads' ), $transaction_id ) );
+		return $payment_id;
+	}
+
+}
+
+function rand_float(){
+
+	$value = lcg_value();
+
+	if( (bool) rand(0,1) ) {
+		$value = -1 * abs( $value );
+	}
+	return round( $value, 3 );
+}
+
+
+class ingot_test_desitnation {
+	public static function create( $type, $is_tagline = false ){
+		$page_id = 0;
+		if( 'page' == $type ){
+			$data[ 'page_ID' ] = $page_id = rand( 1, 5 );
+		}
+
+		$args = self::group_args( $type, $page_id, $is_tagline );
+
+		$data[ 'group_ID' ] = \ingot\testing\crud\group::create( $args, true );
+		for( $i =0; $i <= rand( 3,5 ); $i++ ){
+			$data[ 'variants' ][] = \ingot\testing\crud\variant::create( self::variant_args( $data[ 'group_ID' ] ), true );
+		}
+
+		$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
+		if( is_wp_error( $group ) ){
+			var_dump( __CLASS__ . __METHOD__ . __LINE__  );
+			var_dump( $group );
+			die();
+		}
+		$group[ 'variants' ] = $data[ 'variants' ];
+		\ingot\testing\crud\group::update( $group, $data[ 'group_ID' ], true );
+		$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
+		if( is_wp_error( $group ) || empty( $group[ 'variants' ] ) ){
+			var_dump( $data );
+			var_dump( __CLASS__ . __METHOD__ . __LINE__  );
+			var_dump( $group );
+			die();
+		}
+
+		return $data;
+	}
+
+	public static function group_args( $type, $page_id = 0, $is_tagline = false ){
+		$args = [
+			'name' => rand(),
+			'type'     => 'click',
+			'sub_type' => 'destination',
+			'meta'     => [
+				'destination' => $type,
+				'page' => $page_id,
+				'is_tagline' => $is_tagline
+			],
+		];
+
+		return $args;
+
+	}
+
+	public static function variant_args( $group_id ) {
+		$args = [
+			'type'     => 'click',
+			'group_ID' => $group_id,
+			'content'  => rand()
+		];
+
+		return $args;
+
+	}
 }

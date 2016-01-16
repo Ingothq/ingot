@@ -19,7 +19,7 @@ class tests_defaults extends \WP_UnitTestCase{
 	 * @covers \ingot\testing\utility\defaults::threshold()
 	 */
 	public function testThreshold() {
-		$this->assertEquals( 20, \ingot\testing\utility\defaults::threshold() );
+		$this->assertEquals( 500, \ingot\testing\utility\defaults::threshold() );
 	}
 
 	/**

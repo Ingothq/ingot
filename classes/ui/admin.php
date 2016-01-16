@@ -1,6 +1,6 @@
 <?php
 /**
- * Base class for admin
+ * Utility functions for admin
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -11,201 +11,72 @@
 
 namespace ingot\ui;
 
-use ingot\testing\crud\settings;
 
 
-abstract class admin {
+class admin {
 
 	/**
-	 * Verify admin ajax nonce
+	 * Get a partial as a string
 	 *
-	 * @since 0.0.7
+	 * @since 1.1.0
 	 *
-	 * @access protected
+	 * @param string $file File name
+	 * @param array $data Array of data to make availble in partial. Will be extract()ed
 	 *
-	 * @param bool|true $get
-	 *
-	 * @return bool|false|int
+	 * @return string
 	 */
-	protected function check_nonce( $get = true ) {
-		if( $get && isset( $_GET[ '_nonce' ] ) ) {
-			$nonce = $_GET[ '_nonce' ];
-		}elseif( ! $get && isset( $_POST[ '_nonce' ] ) ) {
-			$nonce = $_POST[ '_nonce' ];
-		}else{
-			return false;
+	public static function get_partial( $file, array $data = [] ){
+		if( ! empty( $data ) ){
+			extract( $data );
+		}
+		ob_start();
+		include( INGOT_DIR . '/classes/ui/admin/partials/' . $file );
+		return ob_get_clean();
+	}
+
+	/**
+	 * Load scripts for use in post editor
+	 *
+	 * @uses "admin_enqueue_scripts" hook
+	 *
+	 * @since 1.1.0
+	 */
+	public static function post_editor_scripts(){
+		wp_enqueue_script( 'ingot-post-editor', trailingslashit( INGOT_URL ) . 'assets/admin/js/ingot-post-editor.min.js', array( 'jquery', 'caldera-modals' ), INGOT_VER, true );
+		wp_enqueue_script( 'caldera-modals', trailingslashit( INGOT_URL ) . 'vendor/calderawp/caldera-modals/caldera-modals.js', array( 'jquery'), INGOT_VER, true );
+		wp_enqueue_style( 'caldera-modals', trailingslashit( INGOT_URL ) . 'vendor/calderawp/caldera-modals/modals.css' );
+	}
+
+	/**
+	 * Get URL for the Ingot Admin
+	 *
+	 * NOTE: Not escaped
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
+	public static function get_admin_url(){
+		return admin_url( 'admin.php?page=ingot-admin-app#/' );
+	}
+
+	/**
+	 * Get HTML for admin URL link
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $text Text for link
+	 * @param bool|string $title Optional. Text for link text attribute. Default is "Go to the Ingot admin screen"
+	 *
+	 * @return string
+	 */
+	public static function admin_url_html( $text, $title = false ) {
+		if( ! $title ){
+			$title = __( 'Go to the Ingot admin screen', 'ingot' );
 		}
 
-		$verify = wp_verify_nonce( $nonce );
-		return $verify;
 
-	}
-
-	/**
-	 * Get path to partials dir
-	 *
-	 * @since 0.0.7
-	 *
-	 * @access protected
-	 *
-	 * @return string
-	 */
-	protected function partials_dir_path() {
-		return INGOT_UI_PARTIALS_DIR;
-	//	return dirname( __FILE__ ) . '/admin/partials/';
-	}
-
-	/**
-	 * Edit link for CLICK groups
-	 *
-	 * @since 0.0.7
-	 *
-	 * @access protected
-	 *
-	 * @param bool|false|int $id Optional. Group ID. If false, the default, link is for creating new group.
-	 *
-	 * @return string
-	 */
-	protected function click_group_edit_link( $id = false ) {
-		return $this->group_edit_link( 'click', $id );
-	}
-
-	/**
-	 * Edit link for PRICE group
-	 *
-	 * @since 0.0.9
-	 *
-	 * @param bool|false|int $id Optional. Group ID. If false, the default, link is for creating new group.
-	 *
-	 * @return string
-	 */
-	protected function price_group_edit_link( $id = false ){
-		return $this->group_edit_link( 'price', $id );
-
-	}
-
-	/**
-	 * Link to edit  page for a group
-	 *
-	 * @since 0.0.9
-	 *
-	 * @param string $type
-	 * @param bool|false|int $id Optional. Group ID. If false, the default, link is for creating new group.
-	 *
-	 * @return string
-	 */
-	protected function group_edit_link( $type, $id = false ) {
-		if ( false === $id || 0 == absint( $id ) ){
-			$id = 0;
-		}
-
-		$page = $this->main_page_link();
-
-		$args = array(
-			'type' => $type,
-			'group_id' => $id,
-		);
-
-		$link = add_query_arg( $args, $page );
-		return $link;
-
-	}
-
-	/**
-	 * Main CLICK admin page link
-	 *
-	 * @since 0.0.7
-	 *
-	 * @access protected
-	 *
-	 * @param int $page_number
-	 *
-	 * @return string
-	 */
-	protected function click_group_admin_page_link( $page_number = 1 ) {
-		$args = array(
-			'page_number' => absint( $page_number ),
-			'group_id' => 'list',
-			'type' => 'click'
-		);
-
-		return add_query_arg( $args, $this->main_page_link() );
-
-	}
-
-	/**
-	 * Main PRICE admin page link
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param int $page_number
-	 *
-	 * @return string
-	 */
-	protected function price_group_admin_page_link( $page_number = 1 ) {
-		$args = array(
-			'page_number' => absint( $page_number ),
-			'group_id' => 'list',
-			'type' => 'price'
-		);
-
-		return add_query_arg( $args, $this->main_page_link() );
-
-	}
-
-
-
-	/**
-	 * Stats page link
-	 *
-	 * @since 0.0.7
-	 *
-	 * @access protected
-	 *
-	 * @param $group_id
-	 *
-	 * @return string
-	 */
-	protected function stats_page_link( $group_id ) {
-		$args = array(
-			'group_id' => $group_id,
-			'stats' => true
-		);
-
-		return add_query_arg( $args, $this->click_group_admin_page_link( ) );
-
-	}
-
-	/**
-	 * Link for main Ingot page
-	 *
-	 * @since 0.0.9
-	 *
-	 * @return string
-	 */
-	protected function main_page_link(){
-		$args = array(
-			'page' => 'ingot',
-			'_nonce' => wp_create_nonce(),
-		);
-
-		return add_query_arg( $args, admin_url( 'admin.php' ) );
-	}
-
-	/**
-	 * Get HTML for settings form
-	 *
-	 * @since 0.0.9
-	 *
-	 * @return string
-	 */
-	protected function get_settings_form() {
-		$settings_class = new \ingot\ui\admin\settings( settings::get_settings_keys() );
-		$settings_form  = $settings_class->get_form();
-		return $settings_form;
-
+		return sprintf( '<a href="%s" title="%s" target="_blank">%s</a>', esc_url( self::get_admin_url() ), esc_attr( $title ), esc_html( $text ) );
 	}
 
 }

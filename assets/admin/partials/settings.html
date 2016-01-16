@@ -2,35 +2,12 @@
     <form ng-submit="submit()" class="simple-form">
         <ul class="list-inline">
             <li>
-                <h3>{{ 'settings.page_header' | translate }}</h3>
+                <h3>{{translate.settings.page_header}}</h3>
             </li>
             <li>
-                <input type="submit" class="btn btn-primary" value="{{ 'settings.save' | translate }}">
+                <input type="submit" class="btn btn-primary" value="{{translate.settings.save}}">
             </li>
         </ul>
-<!--
-        <div class="form-settings">
-            <label for="click_tracking" >
-                {{ 'settings.click_tracking_label' | translate }}
-            </label>
-
-                <input id="click_tracking" type="checkbox" ng-model="settings.click_tracking" ng-true-value="'1'" ng-false-value="'0'" />
-                <p>
-                    {{ 'settings.click_tracking_desc' | translate }}
-                </p>
-        </div>
-
-        <div class="form-settings">
-            <label for="cache_mode" >
-                {{ 'settings.cache_mode_label' | translate }}
-            </label>
-
-            <input id="cache_mode" type="checkbox" ng-model="settings.cache_mode" ng-true-value="'1'" ng-false-value="'0'" />
-            <p>
-                {{ 'settings.cache_mode_desc' | translate }}
-            </p>
-        </div>
--->
 
         <div class="form-settings">
             <label for="anon_tracking">
@@ -54,12 +31,12 @@
             </p>
             <div ng-show="1 == settings.license_valid">
                 <p class="alert alert-success" style="display: inline-block;">
-                    License active
+                    {{translate.settings.license_active}}
                 </p>
             </div>
             <div ng-show="0 == settings.license_valid">
                 <p class="alert alert-danger" style="display: inline-block;">
-                    License not active or not valid
+                    {{translate.settings.license_notice}}
                 </p>
             </div>
 

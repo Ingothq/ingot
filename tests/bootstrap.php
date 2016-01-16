@@ -13,6 +13,8 @@ require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
 	require dirname( __FILE__ ) . '/../ingot.php';
+	require dirname( __FILE__ ) . '/../../easy-digital-downloads/easy-digital-downloads.php';
+	//require dirname( __FILE__ ) . '/../../woocommerce/woocommerce.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
@@ -24,10 +26,9 @@ add_filter( 'ingot_user_can', '__return_true' );
 activate_plugin( 'ingot/ingot.php' );
 
 include_once( dirname( __FILE__ ) . '/functions_for_tests.php' );
-ingot_bootstrap::maybe_add_tracking_table( true );
-ingot_bootstrap::maybe_add_session_table( true );
-ingot_bootstrap::maybe_add_group_table( true );
-ingot_bootstrap::maybe_add_variant_table( true );
+ingot_destroy();
+edd_install();
+
 
 global $current_user;
 
@@ -42,6 +43,8 @@ if(  ! is_object( $wp_rest_server )) {
 if( ! defined( 'INGOT_DEV_MODE' ) ) {
 	define( 'INGOT_DEV_MODE', true );
 }
+add_filter( 'ingot_run_cookies', '__return_true' );
+remove_action( 'ingot_loaded', 'ingot_start_cookies' );
 
 
 // Include helpers

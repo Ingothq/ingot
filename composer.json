@@ -33,12 +33,15 @@
         "calderawp/dismissible-notice": "dev-master",
         "ingot/mabandit" : "*",
         "oefenweb/statistics": "dev-master",
-        "jaybizzle/crawler-detect": "1.*"
+        "jaybizzle/crawler-detect": "1.*",
+        "calderawp/caldera-modals": "^1.0",
+        "blainesch/prettyarray": "dev-master"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
         "phpunit/phpunit": "3.7.31",
-        "phpunit/php-invoker": "1.1.3"
+        "phpunit/php-invoker": "1.1.3",
+        "10up/wp_mock": "dev-master"
     },
     "autoload": {
         "psr-4": {

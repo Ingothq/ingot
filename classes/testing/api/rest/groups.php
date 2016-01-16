@@ -86,7 +86,8 @@ class groups extends route {
 	public function get_items( $request ) {
 		$args = array(
 			'page' => $request->get_param( 'page' ),
-			'limit' => $request->get_param( 'limit' )
+			'limit' => $request->get_param( 'limit' ),
+			'type' => $request->get_param( 'type' )
 		);
 
 		$groups = group::get_items( $args );
@@ -135,9 +136,8 @@ class groups extends route {
 				group::update( $item, $item[ 'ID' ] );
 				$item = group::read( $item[ 'ID' ] );
 				if ( is_array( $item ) ) {
-					if ( is_array( $item ) ) {
-						$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
-					}
+
+					$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
 
 					return ingot_rest_response( $item, 201, 1 );
 
@@ -434,6 +434,16 @@ class groups extends route {
 			}
 		}
 
+		if( isset( $group_args[ 'meta' ][ 'destination' ] ) ){
+			if( is_object( $group_args[ 'meta' ][ 'destination' ] ) ) {
+				$group_args[ 'meta' ][ 'destination' ] = (array) $group_args[ 'meta' ][ 'destination' ];
+			}
+
+			if( is_array( $group_args[ 'meta' ][ 'destination' ] ) ){
+				$group_args[ 'meta' ][ 'destination' ] = helpers::v( 'value', $group_args[ 'meta' ][ 'destination' ], 'page' );
+			}
+		}
+
 		foreach ( $group_args as $key => $value ) {
 			if ( is_numeric( $key ) || ! in_array( $key, $allowed ) ) {
 				unset( $group_args[ $key ] );
@@ -456,6 +466,15 @@ class groups extends route {
 	protected function save_variants( $group ){
 		$variants_ids = [];
 		$variants = helpers::v( 'variants', $group, [] );
+
+		$product_id = null;
+		if ( 'price' == $group[ 'type' ] ) {
+			$product_id = helpers::v( 'product_ID', $group[ 'meta' ], null );
+			if( ! is_numeric( $product_id ) ){
+				return new \WP_Error( 'ingot-no-product-id', __( 'No product ID was set.', 'ingot') );
+			}
+		}
+
 		if( isset( $group[ 'ID' ] ) ){
 			$group_id = $group[ 'ID' ];
 		} elseif( isset( $group[ 'id'] ) ){
@@ -463,6 +482,8 @@ class groups extends route {
 		}else{
 			return new \WP_Error( 'ingot-generalized-failure' );
 		}
+
+
 		if ( ! empty( $variants ) ) {
 			foreach ( $variants as $variant ) {
 				if( is_numeric( $variant ) ) {
@@ -471,6 +492,10 @@ class groups extends route {
 
 				$variant[ 'group_ID' ] = $group_id;
 				$variant[ 'type' ]     = $group[ 'type' ];
+				if ( 'price' == $group[ 'type' ] ) {
+					$variant[ 'content' ] = $product_id;
+				}
+
 				if( ( ! isset( $variant[ 'content' ] ) || empty( $variant[ 'content'] ) ) && 'button_color' == $group[ 'sub_type'] )  {
 					$variant[ 'content' ] = '  ';
 				}

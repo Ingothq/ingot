@@ -1,6 +1,6 @@
 <?php
 /**
- * Base class for setting up a price test
+ * Base class for plugin-specific price testing
  *
  * @package   ingot
  * @author    Josh Pollock <Josh@JoshPress.net>
@@ -12,165 +12,43 @@
 namespace ingot\testing\tests\price;
 
 
-use ingot\testing\crud\price_test;
-use ingot\testing\crud\variant;
-use ingot\testing\utility\helpers;
-
 abstract class price {
 
 	/**
+	 * Slug for plugin
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @var string
+	 */
+	protected $plugin_slug;
+
+	/**
+	 * Array of products we are tracking
+	 *
+	 * Must be keyed by product ID with ingot\testing\object\price\test object as value
+	 *
 	 * @var array
 	 */
-	protected $test;
+	protected $products = [];
 
-	/**
-	 * @var \WP_Post
-	 */
-	protected $product;
+	public function __construct( $products ){
+		$this->set_products( $products );
 
-	/**
-	 * @var array
-	 */
-	protected $prices;
-
-	/**
-	 * @var bool
-	 */
-	protected $variable;
-
-
-	/**
-	 * Set up object
-	 *
-	 * @since 0.0.9
-	 *
-	 * @param int|array $test Test ID or config. (Currently must be ID)
-
-	 */
-	public function __construct( $test, $a_or_b ) {
-		$this->set_test( $test );
-
+		$this->add_hooks();
 	}
 
 	/**
-	 * Callback for the price hook for non-variable prices
+	 * Get the products being tested
 	 *
-	 * @since 0.0.9
+	 * @since 1.1.0
 	 *
-	 * @param $price
-	 * @param $id
-	 *
-	 * @return string
+	 * @return array
 	 */
-	public function filter_price( $price, $id ) {
-		if( $id == $this->product->ID ) {
-			$price = $this->apply_price( $price );
-		}
-
-		return $price;
-	}
-
-	/**
-	 * Callback for the price hook for variable price products
-	 *
-	 * @since 0.0.9
-	 *
-	 * @param $prices
-	 * @param $id
-	 *
-	 * @return mixed
-	 */
-	public function filter_variable_prices( $prices, $id ) {
-		if( $id == $this->product->ID ) {
-			$prices = $this->apply_variable_price( $prices );
-		}
-
-		return $prices;
-
-
-	}
-
-	/**
-	 * Change variable prices based on test
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param $prices
-	 *
-	 * @return mixed
-	 */
-	protected function apply_variable_price( $prices ) {
-
-		foreach( $prices as $i => $price ) {
-			if ( ! isset( $this->test[ 'test' ][ $i ]) ) {
-				$prices[ $i ][ 'amount'] = $this->apply_price( $price );
-			} else {
-				$prices[ $i ][ 'amount'] = $this->apply_price( $price, $i  );
-			}
-		}
-
-
-		return $prices;
-
-	}
-
-	/**
-	 * Change a price based on test
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param $price
-	 * @param string $index
-	 *
-	 * @return string
-	 */
-	protected function apply_price( $price, $index = 'default' ) {
-		$p = $this->test[ $index ];
-
-		$price = $this->change_price( $price, $p );
-
-		return $price;
-
-	}
-
-
-
-	/**
-	 * Change price based on percentage
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param $price
-	 * @param float $p Percentage as float
-	 *
-	 * @return string
-	 */
-	protected function change_price( $price, $p ) {
-		$price = ( (float) $price * (float) $p ) + (float ) $price;
-
-		return $this->sanatize_price( $price );
-	}
-
-
-	/**
-	 * Sanatize price for output
-	 *
-	 * @since 0.0.9
-	 *
-	 * @access protected
-	 *
-	 * @param $price
-	 *
-	 * @return string
-	 */
-	protected function sanatize_price( $price ) {
-		return ingot_sanitize_amount( $price );
+	public function get_products(){
+		return $this->products;
 	}
 
 	/**
@@ -184,29 +62,95 @@ abstract class price {
 	 *
 	 */
 	protected function add_hooks() {
-		if ( $this->variable ) {
-			$this->variable_price_hooks();
-		} else {
-			$this->non_variable_price_hooks();
-		}
+		$this->variable_price_hooks();
+		$this->non_variable_price_hooks();
+		$this->purchase_hook();
+
 	}
 
 	/**
-	 * Set the test property of this class
+	 * Get a test object from cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @param int $id Product ID
+	 *
+	 * @return array|\ingot\testing\object\price\test
+	 */
+	protected function get_test( $id ){
+		if( array_key_exists( $id, $this->products ) ){
+			$test =  $this->products[ $id ];
+			if ( ! is_object( $test ) ) {
+				$test = \ingot\testing\utility\price::inflate_price_test( $test );
+				$this->products[ $id ] = $test;
+			}
+
+			return $test;
+
+		}
+
+	}
+
+
+	/**
+	 * Get the price set in test object -- respecting price testing
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 *
+	 * @param \ingot\testing\object\price\test $test
+	 *
+	 * @return string
+	 */
+	protected function get_price( \ingot\testing\object\price\test $test ){
+		return $test->get_price();
+	}
+
+
+
+	/**
+	 * Callback for the price hook for non-variable prices
 	 *
 	 * @since 0.0.9
 	 *
-	 * @access private
+	 * @param string $price Price
+	 * @param int $id Product ID
 	 *
-	 * @param int|array $test
+	 * @return string
 	 */
-	private function set_test( $test ) {
-		if( is_numeric( $test ) ){
-			$this->test = variant::read( $test );
-		}elseif( is_array( $test ) ){
-			//@todo allow this once validation is in place
-			//$this->test = $test;
+	public function filter_price( $price, $id ) {
+
+		if( ! is_null( $test = $this->get_test( $id ) ) ){
+
+			$price = $this->get_price( $test );
+
 		}
+
+		return $price;
+
+	}
+
+	/**
+	 * Callback for the price hook for variable price products
+	 *
+	 * @since 0.0.9
+	 *
+	 * @param $prices
+	 * @param $id
+	 *
+	 * @return mixed
+	 */
+	public function filter_variable_prices( $prices, $id ) {
+		if( ! is_null( $test = $this->get_test( $id ) ) ){
+			$prices = $this->handle_variable_prices( $prices, $test, $id );
+		}
+
+		return $prices;
+
+
 	}
 
 
@@ -218,6 +162,7 @@ abstract class price {
 	 * @access protected
 	 */
 	abstract protected function variable_price_hooks();
+
 	/**
 	 * Use in subclass to setup hooks for nonvariable products
 	 *
@@ -228,12 +173,78 @@ abstract class price {
 	abstract protected function non_variable_price_hooks();
 
 	/**
-	 * Use in subclass to set the variable and prices properties
+	 * Hook for tracking purchases
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access protected
+	 */
+	abstract protected function purchase_hook();
+
+	/**
+	 * Sanatize price display
 	 *
 	 * @since 0.0.9
 	 *
 	 * @access protected
+	 *
+	 * @param float|string $price
+	 *
+	 * @return string
 	 */
-	abstract protected function set_price();
+	protected function sanatize_price( $price ) {
+		return ingot_sanitize_amount( $price );
+	}
+
+
+	/**
+	 * Filter variable prices
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $prices Variable prices
+	 * @param \ingot\testing\object\price\test| $test Test object
+	 * @param int $id Product ID
+	 *
+	 * @return array
+	 */
+	protected function handle_variable_prices( $prices, $test, $id  ){
+		return $prices;
+	}
+
+	/**
+	 * @param $products
+	 */
+	private function set_products( $products ) {
+		foreach ( $products as $id => $test ) {
+			if ( is_string( $test ) ) {
+				$test = json_decode( $test, true );
+			}
+
+			if ( is_array( $test ) ) {
+				$test = \ingot\testing\utility\price::inflate_price_test( $test );
+				$this->products[ $id ] = $test;
+			}
+		}
+	}
+
+	/**
+	 * Check products in a sale for any we are testing and if so registers conversion
+	 *
+	 * @since 0.0.9
+	 *
+	 * @access protected
+	 *
+	 * @param array $products Array of product IDs
+	 */
+	protected function check_for_winners( $products ) {
+		foreach( $products as $product ){
+			if( ! is_null( $test = $this->get_test( $product ) ) ){
+				ingot_register_conversion( $test->ID );
+
+			}
+
+		}
+	}
 
 }

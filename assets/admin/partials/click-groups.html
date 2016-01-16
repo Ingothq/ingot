@@ -16,32 +16,8 @@
 
 <hr />
 
-<div ng-show="main_click_tests_page" class="row">
-	<h3>Content tests change some type of content -- text, colors, images, etc. to see what leads to the most conversions. </h3>
-    <h4>Currently Supported Content Test Types:</h4>
-    <ul>
-        <li>
-            <em>Link:</em> Test the text of a link.
-        </li>
-        <li>
-            <em>Button:</em> Test the text of a button.
-        </li>
-        <li>
-            <em>Button Color:</em> Test the color of a button.
-        </li>
-    </ul>
-    <h4>Content Test Types Coming Soon:</h4>
-    <ul>
-        <li>
-            <em>Images & Featured Images</em>
-        </li>
-        <li>
-            <em>Forms & Form Layouts</em>
-        </li>
-        <li>
-            <em>Sales Funnels</em>
-        </li>
-    </ul>
+<div ng-show="main_click_tests_page" class="row" ng-controller="clickGroups">
+    <div class="col-sm-12" ng-bind-html="description"></div>
 </div>
 
 <div ui-view></div>

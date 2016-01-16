@@ -12,6 +12,8 @@
 namespace ingot\ui\admin\app;
 
 
+use ingot\ui\admin;
+
 class translations {
 
 	/**
@@ -46,7 +48,8 @@ class translations {
 				'stats_for' => esc_html__( 'Stats For Group', 'ingot' ),
 				'no_stats'  => esc_html__( 'No Stats for this group yet', 'ingot' ),
 				'c_rate'    => esc_html__( 'Conversion Rate', 'ingot' ),
-				'variant'   => esc_html__( 'Varaint', 'ingot' ),
+				'variant'   => esc_html__( 'Variant', 'ingot' ),
+				'g_c_rate' => esc_html__( 'Group Average Conversion Rate', 'ingot' )
 			],
 			'groups'                   => [
 				'click_group_page_title' => esc_html__( 'Content Test Groups', 'ingot' ),
@@ -56,9 +59,13 @@ class translations {
 				'edit'                   => esc_html__( 'Edit Group', 'ingot' ),
 				'stats'                  => esc_html__( 'Group Stats', 'ingot' ),
 				'delete'                 => esc_html__( 'Delete Group', 'ingot' ),
-				'no_groups'              => esc_html__( 'There are no groups, create one.', 'ingot' )
+				'no_groups'              => esc_html__( 'There are no groups, create one.', 'ingot' ),
+				'click_copy'             => esc_html__( 'Click To Copy', 'ingot' ),
+				'page'                   => esc_html__( 'Page', 'ingot' ),
+				'inactive'                 => esc_html__( 'Plugin Not Active', 'ingot' ),
 			],
 			'group'                    => [
+				'edit_group_tests'                     => esc_html__( 'Edit Group Tests', 'ingot' ),
 				'save_group'                           => esc_html__( 'Save Group', 'ingot' ),
 				'type'                                 => esc_html__( 'Type', 'ingot' ),
 				'name'                                 => esc_html__( 'Name', 'ingot' ),
@@ -67,7 +74,8 @@ class translations {
 				'text_label_group_setting'             => esc_html__( 'Text (Used For All Buttons)', 'ingot' ),
 				'color_label_group_setting'            => esc_html__( 'Color (Used For All Buttons)', 'ingot' ),
 				'background_color_label_group_setting' => esc_html__( 'Background (Used For All Buttons)', 'ingot' ),
-				'tests_header'                         => esc_html__( 'Tests', 'ingot' ),
+				'tests_header'                         => esc_html__( 'Variations', 'ingot' ),
+				'tests_header_price'                   => esc_html__( 'Price Variations', 'ingot' ),
 				'text_label_test_setting'              => esc_html__( 'Text', 'ingot' ),
 				'color_label_test_setting'             => esc_html__( 'Button Text Color', 'ingot' ),
 				'background_color_label_test_setting'  => esc_html__( 'Button Background Color', 'ingot' ),
@@ -86,8 +94,15 @@ class translations {
 				'edit_group_type'                      => esc_html__( 'Edit Group Type', 'ingot' ),
 				'type_instructions'                    => esc_html__( 'Type of test you want to perform', 'ingot' ),
 				'sample_button'                        => esc_html__( 'Sample Button', 'ingot' ),
-				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' )
-
+				'new_content_test'                     => esc_html__( 'New Content Test', 'ingot' ),
+				'result_price'                         => esc_html__( 'Resulting Price', 'ingot' ),
+				'add_price_test'                       => esc_html__( 'Add Price Variation', 'ingot' ),
+				'destination_header'                  => esc_html__( 'Destination Type', 'ingot' ),
+				'is_tagline' => esc_html__( 'Change site tagline?', 'ingot'),
+				'destination_page' => esc_html__( 'Page ID for conversions.', 'ingot' ),
+				'destination_page_desc' => esc_html__( 'Use the ID of a sign up page, contact page or sales page at the end of your sales funnel.', 'ingot' ),
+				'must_name' => esc_html__( 'Please name this group', 'ingot' ),
+				'must_type' => esc_html__( 'Please choose a group type', 'ingot')
 			],
 			'settings'                 => [
 				'page_header'          => esc_html__( 'Settings', 'ingot' ),
@@ -101,13 +116,12 @@ class translations {
 				'license_code_desc'    => esc_html__( 'Enter your license code to enable support and updates.', 'ingot' ),
 				'save'                 => esc_html__( 'Save Settings', 'ingot' ),
 				'edit_name'            => esc_html__( 'Edit Group Name', 'ingot' ),
-				'edit_group_tests'     => esc_html__( 'Edit Group Tests', 'ingot' ),
-				'license_notice'       => esc_html__( 'License not active or not valid', 'ingot' )
-
+				'license_notice'       => esc_html__( 'License not active or not valid', 'ingot' ),
+				'license_active'      => esc_html__( ' License active', 'ingot' ),
 
 			],
 			'welcome'                  => [
-				//'banner'       => esc_url( INGOT_URL . 'assets/img/Ingot-logo-dark.png' ),
+				'banner'       => esc_url( INGOT_URL . 'assets/img/ingot-logo.png' ),
 				'banner_alt'   => esc_html__( 'Ingot Banner Logo', 'ingot' ),
 				'header'       => esc_html__( 'Ingot: Do Less, Convert More', 'ingot' ),
 				'links_header' => esc_html__( 'Helpful Links', 'ingot' ),
@@ -120,8 +134,14 @@ class translations {
 			],
 			'support'                  => [
 				'for_support' => esc_html__( 'For support please use:', 'ingot' )
+	],
+			'descriptions' => [
+				'click'         => admin::get_partial( 'click-description.php' ),
+				'price_testing' => esc_html__( 'Raise or lower a product\'s price to maximize revenue', 'ingot' )
 			]
 		];
 	}
+
+
 
 }

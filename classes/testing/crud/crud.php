@@ -14,6 +14,7 @@ namespace ingot\testing\crud;
 
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
+use ingot\testing\utility\price;
 
 abstract class crud {
 
@@ -130,7 +131,7 @@ abstract class crud {
 	 * @param array $data Item data
 	 * @param bool|false $bypass_cap
 	 *
-	 * @return ID|bool||WP_Error Item ID,or false if not created, or error if not allowed.
+	 * @return int|bool||WP_Error Item ID,or false if not created, or error if not allowed.
 	 */
 	public static function create( $data, $bypass_cap = false ){
 		unset( $data[ 'ID'] );
@@ -373,6 +374,27 @@ abstract class crud {
 			return $data;
 		}
 
+		if ( 'group' === static::what() &&  is_null( $id ) ) {
+			if ( 'price' == $data[ 'type' ] ) {
+				if( ! isset( $data[ 'wp_ID' ] ) ) {
+					//shouldn't be needed.
+					return new \WP_Error();
+				}
+				if ( isset( $data[ 'wp_ID' ] ) && false !== $existing = price::product_test_exists( $data[ 'wp_ID' ] )
+				) {
+					return new \WP_Error(
+						'ingot-price-test-for-product-exists',
+						__( sprintf( 'Product ID %d is already being tested by test group ID %d', $data[ 'meta' ][ 'product_ID' ], $existing ), 'ingot' ),
+						[
+							'product_ID' => $data[ 'meta' ][ 'product_ID' ],
+							'group_ID'   => $existing,
+						] );
+				}
+
+			}
+
+		}
+
 		$table_name = static::get_table_name();
 
 		foreach( $data as $key => $datum ) {
@@ -504,7 +526,7 @@ abstract class crud {
 					 $data[ 'field' ] = self::date_validation( $data[ $field ] );
 				 }
 			 }elseif(  'meta' == $field ) {
-				if(  ! isset( $data[ $field ] ) ||! is_array( $data[ $field ] ) ) {
+				if(  ! isset( $data[ $field ] ) || ! is_array( $data[ $field ] ) ) {
 					$data[ $field ] = [];
 				}
 			 }else{
@@ -515,6 +537,27 @@ abstract class crud {
 		 return $data;
 	 }
 
+	/**
+	 * Process multiple rows from a SQL query
+	 *
+	 * Should be result of `$wpdb->get_results( $sql, ARRAY_A );`
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $results
+	 *
+	 * @return array
+	 */
+	public static function bulk_results( $results ) {
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $i => $result ) {
+				$results[ $i ] = self::unseralize( $result );
+			}
+
+		}
+
+		return $results;
+	}
 
 
 	/**
@@ -795,14 +838,36 @@ abstract class crud {
 	protected static function bulk_query( $sql ) {
 		global $wpdb;
 		$results = $wpdb->get_results( $sql, ARRAY_A );
-		if ( ! empty( $results ) ) {
-			foreach ( $results as $i => $result ) {
-				$results[ $i ] = self::unseralize( $result );
+
+		return self::bulk_results( $results);
+
+	}
+
+	/**
+	 * Ensure an array has all the needed fields for a specific type
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	public static function valid( $data ){
+		if( ! is_array( $data ) ){
+			return false;
+		}
+
+		foreach( static::get_all_fields() as $field ) {
+			if( ! array_key_exists( $field, $data ) ) {
+				return false;
+
 			}
 
 		}
 
-		return $results;
+		return true;
+
 	}
+
 
 }

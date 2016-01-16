@@ -46,11 +46,13 @@ class group_stats  {
 	 * @param \MaBandit\Lever $lever
 	 */
 	protected function lever_stats( $lever ) {
-		$this->stats[ 'variants' ][ $lever->getValue() ] = new stats(
-			$lever->getDenominator(),
-			$lever->getNumerator(),
-			$lever->getConversionRate()
-		);
+		if ( is_object( $lever ) ) {
+			$this->stats[ 'variants' ][ $lever->getValue() ] = new stats(
+				$lever->getDenominator(),
+				$lever->getNumerator(),
+				$lever->getConversionRate()
+			);
+		}
 	}
 
 	/**

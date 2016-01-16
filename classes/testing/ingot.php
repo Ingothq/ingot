@@ -13,22 +13,11 @@ namespace ingot\testing;
 
 
 use ingot\testing\api\rest\groups;
-use ingot\testing\api\rest\price_test;
-use ingot\testing\api\rest\price_test_group;
 use ingot\testing\api\rest\products;
-use ingot\testing\api\rest\test;
-use ingot\testing\api\rest\test_group;
 use ingot\testing\api\rest\util;
 use ingot\testing\api\rest\variant;
-use ingot\testing\crud\group;
-use ingot\testing\crud\price_group;
-use ingot\testing\crud\sequence;
-use ingot\testing\crud\session;
+use ingot\testing\cookies\init;
 use ingot\testing\crud\settings;
-use ingot\testing\crud\tracking;
-
-use ingot\testing\tests\click\click;
-use ingot\testing\tests\flow;
 use ingot\testing\utility\helpers;
 use ingot\testing\utility\posts;
 
@@ -42,6 +31,17 @@ class ingot {
 	 * @var ingot
 	 */
 	private static $instance;
+
+	/**
+	 * Current session data
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access private
+	 *
+	 * @var array
+	 */
+	private $current_session_data;
 
 	/**
 	 * Get class instance
@@ -95,6 +95,7 @@ class ingot {
 
 
 			add_action( 'parse_request', array( $this, 'init_session' ), 50 );
+
 		}
 
 
@@ -155,11 +156,13 @@ class ingot {
 	 * @return array
 	 */
 	static public function js_vars() {
+		$session = self::$instance->current_session_data;
+		unset( $session[ 'session' ] );
 		$vars = array(
 			'api_url' => esc_url_raw( util::get_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'session_nonce' => wp_create_nonce( 'ingot_session' ),
-			'session' => \ingot\testing\object\session::instance()->get_session_info()
+			'session' => $session
 		);
 
 		return $vars;
@@ -178,9 +181,20 @@ class ingot {
 			$id = helpers::v( 'ingot_session_ID', $_GET, null );
 		}
 
-		$session = \ingot\testing\object\session::instance( $id );
+		$session = new \ingot\testing\object\session( $id );
 		$session_data = $session->get_session_info();
+
+		/**
+		 * Fired when Ingot session is setup at parse_request
+		 *
+		 * @since 0.3.0
+		 *
+		 * @param array $session_data has ID (session ID) and ingot_ID
+		 */
 		do_action( 'ingot_session_initialized', $session_data );
+
+
+		$this->current_session_data = $session_data;
 	}
 
 	/**
@@ -195,8 +209,16 @@ class ingot {
 		posts::update_groups_in_post( $post );
 	}
 
+	/**
+	 * Get current session data
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array
+	 */
+	public function get_current_session(){
+		return $this->current_session_data;
+	}
 
 }
-
-
 

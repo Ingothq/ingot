@@ -1,23 +1,39 @@
-
 <ul class="list-inline">
-    <!--
+
     <li>
         <h2>
-            {{ 'groups.price_group_page_title' | translate }}
+            {{translate.groups.price_group_page_title}}
         </h2>
     </li>
     <li>
         <a ui-sref="priceTests.list" class="btn btn-default">
-            {{ 'groups.show_all' | translate }}
+            {{translate.groups.show_all}}
         </a>
     </li>
     <li>
-        <a ui-sref="priceTests.new" class="btn btn-default">
-            {{ 'groups.create_new' | translate }}
+        <a ui-sref="priceTests.new" class="btn btn-default" ng-show="possible">
+            {{translate.groups.create_new}}
         </a>
-    </li>-->
+    </li>
 </ul>
-<div class="alert alert-info" role="alert"><strong>Price Testing Is Coming Soon</strong></div>
+
+<div ng-show="main_price_tests_page" class="row">
+    <div class="col-sm-12">
+        <h3>
+            {{translate.descriptions.price_testing}}
+        </h3>
+        <ul ng-repeat="plugin in plugins track by $index" ng-controller="priceGroups">
+            <li>
+                <img ng-src="{{plugin.logo}}" class="plugin-logo"/><span class="plugin-name">{{plugin.label}}</span>
+                <div ng-hide="plugin.active">
+                    {{translate.groups.inactive}}
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
 <hr />
 
 <div ui-view></div>

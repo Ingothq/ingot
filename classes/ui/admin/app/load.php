@@ -82,7 +82,9 @@ class load {
 
 		
 		//other
-		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script( 'jquery-ui-core');
+		wp_enqueue_script( 'jquery-ui-slider' );
+		wp_enqueue_style( 'jquery-ui', INGOT_URL . "assets/admin/css/jquery-ui.min.css" );
 		wp_enqueue_style( 'font-awesome', INGOT_URL . "assets/admin/css/font-awesome.min.css" );
 		wp_enqueue_script( 'angular-translatejs', INGOT_URL . "assets/vendor/js/angular-translate/angular-translate.js", array( 'angularjs' ), false, $version);
 		wp_enqueue_style( 'bootstrap', INGOT_URL . 'assets/admin/css/bootstrap.min.css' );
@@ -144,7 +146,7 @@ class load {
 						</button>
 						<a class="navbar-brand active" ui-sref="otherwise" >
 							<?php
-								_e( 'Ingot', 'ingot' );
+								printf( '<img src="%s" alt="%s" class="nav-logo" />', INGOT_URL . 'assets/img/ingot-logo-s.png', __( 'Ingot', 'ingot' ) );
 								printf( ' <small>%s</small>',  INGOT_VER );
 							?>
 						</a>
@@ -204,6 +206,7 @@ class load {
 			'price_tests_enabled' => esc_attr( ingot_enable_price_testing() ),
 			'click_type_options'  => types::allowed_click_types( true ),
 			'price_type_options'  => types::allowed_price_types(),
+			'destinations'        => \ingot\testing\tests\click\destination\types::destination_types( true, true )
 		);
 	}
 

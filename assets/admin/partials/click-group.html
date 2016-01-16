@@ -6,13 +6,18 @@
         <span ng-show="new_group">
             {{translate.group.new_content_test}}
         </span>
+        <span ng-show="!new_group">
+            <a ui-sref="clickTests.stats({groupID:ID})" class="btn btn-warning pull-right">
+                {{translate.groups.stats}}
+            </a>
+        </span>
     </h2>
     <ul class="progress-indicator">
         <li ng-click="change_step(1)" ng-class="{'active': group_step == 1, 'completed': group_step > 1 || !new_group }">
             <span class="bubble"></span>
             {{translate.group.name}}
         </li>
-        <li ng-click="change_step(2)" ng-class="{'active': group_step == 2, 'completed': group_step > 2 || !new_group  }">
+        <li ng-click="change_step(2)" ng-class="{'active': group_step == 2, 'completed': group_step > 2 || !new_group  }" ng-disabl>
             <span class="bubble"></span>
             {{translate.group.type}}
         </li>
@@ -43,9 +48,9 @@
                         {{translate.group.test_name}}
                     </label>
                 </div>
-                <input id="test_name" ng-model="group.name" class="col-sm-9"/>
+                <input id="test_name" ng-model="group.name" class="col-sm-9" ng-required="true" />
             </div>
-            <span class="btn btn-primary pull-right" ng-click="change_step(2)">
+            <span class="btn btn-primary pull-right" ng-click="change_step(2)" ng-hide="!group.name">
                 {{translate.group.edit_group_type}}
             </span>
         </div>
@@ -57,8 +62,12 @@
                 <div class="row group-type-select">
                     <div class="col-sm-6" ng-repeat="type in click_type_options track by $index">
                         <div class="group-wrapper" ng-class="{'active': type.value == group.sub_type}">
-                            <h3>{{type.label}}</h3>
-                            <p ng-if="type.description">{{type.description}}</p>
+                            <h3>
+                                {{type.label}}
+                            </h3>
+                            <p ng-if="type.description">
+                                {{type.description}}
+                            </p>
                             <span class="btn btn-primary btn-block" ng-click="choose_group_type(type.value)" ng-class="{'btn-success': type.value == group.sub_type}">
                                 {{type.label}}
                             </span>
@@ -67,10 +76,10 @@
                 </div>
             </div>
             <span class="btn btn-primary pull-left" ng-click="change_step(1)">
-                {{group.translate.edit_name}}
+                {{translate.group.test_name}}
             </span>
-            <span class="btn btn-primary pull-right" ng-click="change_step(3)">
-                {{group.translate.edit_group_tests}}
+            <span class="btn btn-primary pull-right" ng-click="change_step(3)" ng-hide="!group.sub_type">
+                {{translate.group.edit_group_tests}}
             </span>
         </div>
         <div class="row group-type-select" ng-show="group_step == 3">

@@ -22,15 +22,15 @@ jQuery( document ).ready( function ( $ ) {
             var el = e.target;
             var href = el.getAttribute( 'href' );
             var id = el.getAttribute( 'data-ingot-test-id' );
-            if( 'undefined' != href ) {
-                e.preventDefault();
-                if( null != id ) {
-                    console.log( 'convert' );
-                    trackConversionClick( id, href );
-                }else{
-                    console.log( 'notconvert' );
-                    trackOtherClick( href );
-                }
+            if( 'undefined' == href || null == href ) {
+                return;
+            }
+
+            e.preventDefault();
+            if( null != id ) {
+                trackConversionClick( id, href );
+            }else{
+                trackOtherClick( href );
             }
 
         }

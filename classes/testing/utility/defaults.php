@@ -15,7 +15,7 @@ namespace ingot\testing\utility;
 class defaults {
 
 	/**
-	 * Get default for threshold
+	 * Get default for threshold to consider an average usable
 	 *
 	 * @since 0.1.1
 	 *
@@ -29,12 +29,12 @@ class defaults {
 		 *
 		 * @param int $threshold
 		 */
-		return (int) apply_filters( 'ingot_default_threshold', 20 );
+		return (int) apply_filters( 'ingot_default_threshold', 500 );
 
 	}
 
 	/**
-	 * Get default for initial
+	 * Get default number of iterations to choose a variant at random.
 	 *
 	 * @since 0.1.1
 	 *
