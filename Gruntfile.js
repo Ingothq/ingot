@@ -128,7 +128,7 @@ module.exports = function (grunt) {
             frontend: {
                 files: {
                     'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ],
-                    'assets/admin/js/ingot-admin-dependencies.min.js' : ['assets/admin/js/ingot-admin-dependencies.js' ]
+                    'assets/admin/js/ingot-post-editor.min.js' : ['assets/admin/js/ingot-post-editor.js' ]
                 }
             },
             admin:{
@@ -150,7 +150,7 @@ module.exports = function (grunt) {
             },
             target: {
                 files: {
-                    src: [ '*.php', '**/*.php', '!node_modules/**', '!php-tests/**', '!bin/**' ]
+                    src: [ '*.php', '**/*.php', '!node_modules/**', '!tests/**', '!bin/**' ]
                 }
             }
         },

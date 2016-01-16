@@ -42,7 +42,7 @@ class admin {
 	 * @since 1.1.0
 	 */
 	public static function post_editor_scripts(){
-		wp_enqueue_script( 'ingot-post-editor', trailingslashit( INGOT_URL ) . 'assets/admin/js/ingot-post-editor.js', array( 'jquery', 'caldera-modals' ), INGOT_VER, true );
+		wp_enqueue_script( 'ingot-post-editor', trailingslashit( INGOT_URL ) . 'assets/admin/js/ingot-post-editor.min.js', array( 'jquery', 'caldera-modals' ), INGOT_VER, true );
 		wp_enqueue_script( 'caldera-modals', trailingslashit( INGOT_URL ) . 'vendor/calderawp/caldera-modals/caldera-modals.js', array( 'jquery'), INGOT_VER, true );
 		wp_enqueue_style( 'caldera-modals', trailingslashit( INGOT_URL ) . 'vendor/calderawp/caldera-modals/modals.css' );
 	}
