@@ -1,6 +1,7 @@
 @import url('font-awesome.min.css');
 
-ul li.active, li.active a {
+ul.nav li.active,
+ul.nav li.active a {
     background-color: #A8CE75 !important;
     color: #FFF !important;
 }
@@ -177,7 +178,7 @@ a.add-new-test { margin: 10px 0; }
 .progress-indicator > li.completed { color: #65d074; }
 .progress-indicator > li.completed .bubble { background-color: #65d074; color: #65d074; border-color: #247830; }
 .progress-indicator > li.completed .bubble:before, .progress-indicator > li.completed .bubble:after { background-color: #65d074; border-color: #247830; }
-.progress-indicator > li.active { color: #337AB7; }
+.progress-indicator > li.active { background: none; color: #337AB7; }
 .progress-indicator > li.active .bubble { background-color: #337AB7; color: #337AB7; border-color: #122a3f; }
 .progress-indicator > li.active .bubble:before, .progress-indicator > li.active .bubble:after { background-color: #337AB7; border-color: #122a3f; }
 .progress-indicator > li a:hover .bubble { background-color: #5671d0; color: #5671d0; border-color: #1f306e; }
