@@ -333,7 +333,6 @@ class group {
 			if (  ! empty( $variants ) ) {
 				$data[ 'variants' ] = $variants;
 			}
-			
 		}
 
 		return $data;

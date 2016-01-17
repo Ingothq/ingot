@@ -164,9 +164,12 @@ class sessions {
 			$this->find_weeks( 4, $unique );
 		}
 
-		if( 1 >= count( $this->weeks[ $what ] ) ){
+		if( 1 >= count( $this->weeks[ $what ] ) && isset( $this->weeks[ $what ][0] ) ){
 			$this->average[ $what ] = $this->weeks[ $what ][0];
-		}else{
+		}elseif( 1 >= count( $this->weeks[ $what ] ) && ! isset( $this->weeks[ $what ][0] ) ){
+			$this->average[ $what ] = 0;
+		}
+		else{
 			$this->average[ $what ] = Statistics::mean( $this->weeks[ $what ] );
 		}
 
