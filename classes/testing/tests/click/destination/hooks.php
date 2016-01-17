@@ -59,6 +59,7 @@ class hooks {
 	public function __construct( $tracking ){
 		$this->set_tracking( $tracking );
 		if( ! empty( $this->tracking ) ){
+			$this->set_groups();
 			$this->add_hooks();
 		}
 
@@ -157,6 +158,7 @@ class hooks {
 	 * @return array|bool
 	 */
 	protected function get_group( $id ){
+		$id = intval( $id );
 		$this->set_groups();
 		if( ! empty( $this->groups ) && isset( $this->groups[ $id ] ) ){
 			return $this->groups[ $id ];
@@ -177,7 +179,7 @@ class hooks {
 		if( ! $this->groups_set ) {
 			$groups = init::get_destination_tests( false );
 			foreach( $groups as $group ){
-				$this->groups[ $group[ 'ID' ] ] = $group;
+				$this->groups[ (int) $group[ 'ID' ] ] = $group;
 			}
 			$this->groups_set = true;
 		}
@@ -219,8 +221,19 @@ class hooks {
 		foreach ( $this->groups as $i => $group ) {
 			$page = destination::get_page_id( $group );
 			if ( 0 != absint( $id ) && $page == $id ) {
-				$variant_id = $this->tracking[ $group[ 'ID' ] ];
-				ingot_register_conversion( $variant_id );
+				$variant_id = 0;
+				if ( isset( $this->tracking[ (int) $group[ 'ID' ] ] ) ) {
+					$variant_id = $this->tracking[ (int) $group[ 'ID' ] ];
+
+				}else{
+					$variant_id = init::get_test( $group[ 'ID' ] );
+				}
+
+				if( 0 != absint( $variant_id ) ){
+					ingot_register_conversion( $variant_id );
+				}
+
+
 			}
 
 		}
@@ -241,7 +254,7 @@ class hooks {
 			foreach ( $tracking as $group_id ) {
 				$variant_id = init::get_test( $group_id );
 				if ( is_numeric( $variant_id ) ) {
-					$this->tracking[ $group_id ] = $variant_id;
+					$this->tracking[ (int) $group_id ] = $variant_id;
 				}
 
 			}

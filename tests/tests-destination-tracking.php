@@ -119,21 +119,17 @@ class tests_destination_tracking extends \WP_UnitTestCase{
 		$this->assertTrue( is_array( $group ) );
 		$this->assertFalse( empty ($group[ 'variants' ] ) ) ;
 
-		\ingot\testing\tests\click\destination\init::set_tracking();
+		$groups = \ingot\testing\tests\click\destination\init::set_tracking();
+		new \ingot\testing\tests\click\destination\hooks( $groups );
 		$this->assertTrue( in_array( \ingot\testing\tests\click\destination\init::get_test( $group_id ), [ $variant_1, $variant_2 ]  ) );
 		$variant_id =  \ingot\testing\tests\click\destination\init::get_test( $group_id );
 
 		$tracking = new \ingot\testing\tests\click\destination\hooks(  [ $group_id => $variant_id ] );
 		$tracking->track_by_id( 11 );
 
-		$obj = new \ingot\testing\object\group( $group_id );
-		$levers = $obj->get_levers();
-		$this->assertArrayHasKey( $group_id, $levers );
-		$this->assertArrayHasKey( $variant_id, $levers[ $group_id ] );
-		$lever = $levers[ $group_id ][ $variant_id ];
-		$this->assertInternalType( 'object', $lever );
-		$this->assertEquals( 1, $lever->getNumerator() );
-		$this->assertEquals( 1, $lever->getDenominator() );
+		$totals = \ingot\testing\utility\group::get_total( $group );
+		$this->assertEquals( 1, $totals[ 'total' ] );
+		$this->assertEquals( 1, $totals[ 'conversions' ] );
 	}
 
 	/**
@@ -161,24 +157,16 @@ class tests_destination_tracking extends \WP_UnitTestCase{
 			$hooks = new \ingot\testing\tests\click\destination\hooks( [ $group_id => $variant_id ]);
 
 			$hooks->edd_post_add_to_cart();
-			$obj = new \ingot\testing\object\group( $group_id );
-			$levers = $obj->get_levers();
-			$this->assertArrayHasKey( $group_id, $levers );
-			$this->assertArrayHasKey( $variant_id, $levers[ $group_id ] );
-			$lever = $levers[ $group_id ][ $variant_id ];
-			$this->assertInternalType( 'object', $lever );
-			$this->assertEquals( 1, $lever->getNumerator() );
-			$this->assertEquals( 1, $lever->getDenominator() );
+			$group = \ingot\testing\crud\group::read( $group_id );
+			$totals = \ingot\testing\utility\group::get_total( $group );
+			$this->assertEquals( 1, $totals[ 'total' ] );
+			$this->assertEquals( 1, $totals[ 'conversions' ] );
 
 			edd_add_to_cart( $product->ID );
-			$obj = new \ingot\testing\object\group( $group_id );
-			$levers = $obj->get_levers();
-			$this->assertArrayHasKey( $group_id, $levers );
-			$this->assertArrayHasKey( $variant_id, $levers[ $group_id ] );
-			$lever = $levers[ $group_id ][ $variant_id ];
-			$this->assertInternalType( 'object', $lever );
-			$this->assertEquals( 2, $lever->getNumerator() );
-			$this->assertEquals( 3, $lever->getDenominator() );
+			$group = \ingot\testing\crud\group::read( $group_id );
+			$totals = \ingot\testing\utility\group::get_total( $group );
+			$this->assertEquals( 3, $totals[ 'total' ] );
+			$this->assertEquals( 2, $totals[ 'conversions' ] );
 
 		}
 
@@ -218,25 +206,18 @@ class tests_destination_tracking extends \WP_UnitTestCase{
 			$hooks = new \ingot\testing\tests\click\destination\hooks( [ $group_id => $variant_id ]);
 			$hooks->edd_complete_purchase();
 			$obj = new \ingot\testing\object\group( $group_id );
-			$levers = $obj->get_levers();
-			$this->assertArrayHasKey( $group_id, $levers );
-			$this->assertArrayHasKey( $variant_id, $levers[ $group_id ] );
-			$lever = $levers[ $group_id ][ $variant_id ];
-			$this->assertInternalType( 'object', $lever );
-			$this->assertEquals( 1, $lever->getNumerator() );
-			$this->assertEquals( 1, $lever->getDenominator() );
+			$group = \ingot\testing\crud\group::read( $group_id );
+			$totals = \ingot\testing\utility\group::get_total( $group );
+			$this->assertEquals( 1, $totals[ 'total' ] );
+			$this->assertEquals( 1, $totals[ 'conversions' ] );
 
 			$payment_id = ingot_test_data_price::edd_create_simple_payment( $product);
 			edd_complete_purchase( $payment_id, 'publish', 'pending' );
 
-			$obj = new \ingot\testing\object\group( $group_id );
-			$levers = $obj->get_levers();
-			$this->assertArrayHasKey( $group_id, $levers );
-			$this->assertArrayHasKey( $variant_id, $levers[ $group_id ] );
-			$lever = $levers[ $group_id ][ $variant_id ];
-			$this->assertInternalType( 'object', $lever );
-			$this->assertEquals( 2, $lever->getNumerator() );
-			$this->assertEquals( 3, $lever->getDenominator() );
+			$group = \ingot\testing\crud\group::read( $group_id );
+			$totals = \ingot\testing\utility\group::get_total( $group );
+			$this->assertEquals( 3, $totals[ 'total' ] );
+			$this->assertEquals( 2, $totals[ 'conversions' ] );
 
 		}
 

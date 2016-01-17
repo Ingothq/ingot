@@ -46,4 +46,45 @@ class group {
 
 	}
 
+	/**
+	 * Get total itterations and possible conversions for a group
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array  $group Group config array
+	 * @param bool $return_conversions Optional. To count conversions as well. Default is false
+	 *
+	 * @return array|int Total iterations as an integer or both iterations and conversions in an array
+	 */
+	public static function get_total( array $group, $return_conversions = false ){
+		$total = $conversions = 0;
+		if( \ingot\testing\crud\group::valid( $group )){
+			$levers = helpers::v( 'levers', $group, [] );
+			if ( ! empty( $levers ) ) {
+
+				foreach ( $levers[ $group[ 'ID' ] ] as $lever ) {
+					if ( is_object( $lever ) && method_exists( $lever, 'getDenominator' ) ) {
+						$total += $lever->getDenominator();
+						if( $return_conversions ){
+							$conversions += $lever->getNumerator();
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+		if( ! $return_conversions ){
+			return $total;
+		}else{
+			return [
+				'total' => $total,
+				'conversion' => $conversions,
+			];
+		}
+
+	}
+
 }

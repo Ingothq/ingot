@@ -61,7 +61,7 @@ class initial {
 	public function __construct( $group ){
 		$group = $this->set_levers( $group );
 		if ( INGOT_DEV_MODE || ! $this->set_from_cache( $group->get_ID() ) ) {
-			$this->set_total( $group->get_ID() );
+			$this->set_total( $group->get_group_config() );
 			$this->set_initial( $group );
 			$this->set_cache( $group->get_ID() );
 		}
@@ -175,13 +175,13 @@ class initial {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int $id Group ID
+	 * @param array $group Group config
 	 *
 	 */
-	private function set_total( $id ){
+	private function set_total( array $group ){
 		$this->total = 0;
 		if( ! empty( $this->levers ) ){
-			$this->calculate_total( $id );
+			$this->calculate_total( $group );
 		}
 	}
 
@@ -192,15 +192,11 @@ class initial {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int $id Group ID
+	 * @param array $group Group config
 	 *
 	 */
-	protected function calculate_total( $id ){
-		foreach( $this->levers[ $id ] as $lever ){
-			if ( is_object( $lever ) && method_exists( $lever, 'getDenominator' ) ) {
-				$this->total += $lever->getDenominator();
-			}
-		}
+	protected function calculate_total( array $group ){
+		$this->total = \ingot\testing\utility\group::get_total( $group );
 	}
 
 	/**

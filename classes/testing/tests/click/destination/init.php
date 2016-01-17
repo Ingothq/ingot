@@ -90,6 +90,8 @@ class init {
 	 * Setup tracking hooks
 	 *
 	 * @since 1.1.0
+	 *
+	 * @return array Groups being tracked
 	 */
 	public static function set_tracking(){
 		$groups = self::get_destination_tests();
