@@ -12,10 +12,34 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\utility\helpers;
+
 class variant extends crud {
 
 	public static $what = 'variant';
 
+	/**
+	 * Get variants by group ID
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array|int $params Array with the key 'group_ID' or the group ID
+	 *
+	 * @return array
+	 */
+	public static function get_items( $params ){
+		if( is_numeric( $params ) ){
+			$group_id = $params;
+		}else{
+			$group_id = helpers::v( 'group_ID', $params, 0 );
+		}
+		if( 0 != absint( $group_id ) ){
+			$table_name = self::get_table_name();
+			$sql = sprintf( 'SELECT * FROM `%s` WHERE `group_ID` = %d', $table_name, $group_id  );
+			return self::bulk_query( $sql );
+		}
+
+	}
 
 	/**
 	 * Validate item config
