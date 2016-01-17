@@ -178,9 +178,9 @@ a.add-new-test { margin: 10px 0; }
 .progress-indicator > li.completed { color: #65d074; }
 .progress-indicator > li.completed .bubble { background-color: #65d074; color: #65d074; border-color: #247830; }
 .progress-indicator > li.completed .bubble:before, .progress-indicator > li.completed .bubble:after { background-color: #65d074; border-color: #247830; }
-.progress-indicator > li.active { background: none; color: #337AB7; }
-.progress-indicator > li.active .bubble { background-color: #337AB7; color: #337AB7; border-color: #122a3f; }
-.progress-indicator > li.active .bubble:before, .progress-indicator > li.active .bubble:after { background-color: #337AB7; border-color: #122a3f; }
+.progress-indicator > li.active { background: none; color: #72386A; }
+.progress-indicator > li.active .bubble { background-color: #72386A; color: #72386A; border-color: #122a3f; }
+.progress-indicator > li.active .bubble:before, .progress-indicator > li.active .bubble:after { background-color: #72386A; border-color: #122a3f; }
 .progress-indicator > li a:hover .bubble { background-color: #5671d0; color: #5671d0; border-color: #1f306e; }
 .progress-indicator > li a:hover .bubble:before, .progress-indicator > li a:hover .bubble:after { background-color: #5671d0; border-color: #1f306e; }
 .progress-indicator > li.danger .bubble { background-color: #d3140f; color: #d3140f; border-color: #440605; }
@@ -196,4 +196,14 @@ a.add-new-test { margin: 10px 0; }
 
 @media handheld, screen and (max-width: 400px) { .progress-indicator { font-size: 60%; } }
 
-/*# sourceMappingURL=progress-wizard.min.css.map */
+.btn-primary {
+    color: #fff;
+    background-color: #72386A;
+    border-color: #a8ce75;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #A8CE75;
+    border-color: #72386A;
+}
