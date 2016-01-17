@@ -79,7 +79,7 @@ class translations {
 				'text_label_test_setting'              => esc_html__( 'Text', 'ingot' ),
 				'color_label_test_setting'             => esc_html__( 'Button Text Color', 'ingot' ),
 				'background_color_label_test_setting'  => esc_html__( 'Button Background Color', 'ingot' ),
-				'add_test'                             => esc_html__( 'Add Test', 'ingot' ),
+				'add_test'                             => esc_html__( 'Add Variant', 'ingot' ),
 				'plugin'                               => esc_html__( 'eCommerce Plugin', 'ingot' ),
 				'product'                              => esc_html__( 'Product', 'ingot' ),
 				'price_variation'                      => esc_html__( 'Price Variation (percentage)', 'ingot ' ),
