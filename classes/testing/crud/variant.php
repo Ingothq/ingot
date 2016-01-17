@@ -36,7 +36,7 @@ class variant extends crud {
 		if( 0 != absint( $group_id ) ){
 			$table_name = self::get_table_name();
 			$sql = sprintf( 'SELECT * FROM `%s` WHERE `group_ID` = %d', $table_name, $group_id  );
-			return self::bulk_query( $sql );
+			return self::bulk_query( $sql, true  );
 		}
 
 	}

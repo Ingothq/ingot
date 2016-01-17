@@ -548,10 +548,16 @@ abstract class crud {
 	 *
 	 * @return array
 	 */
-	public static function bulk_results( $results ) {
+	public static function bulk_results( $results, $key_by_id = false ) {
 		if ( ! empty( $results ) ) {
 			foreach ( $results as $i => $result ) {
-				$results[ $i ] = self::unseralize( $result );
+				$item = self::unseralize( $result );
+				if( $key_by_id ){
+					$k = helpers::v( 'ID', $item, $i  );
+				}else{
+					$k = $i;
+				}
+				$results[ $k ] = $item;
 			}
 
 		}
@@ -835,11 +841,11 @@ abstract class crud {
 	 *
 	 * @return mixed
 	 */
-	protected static function bulk_query( $sql ) {
+	protected static function bulk_query( $sql, $key_by_id = false ) {
 		global $wpdb;
 		$results = $wpdb->get_results( $sql, ARRAY_A );
 
-		return self::bulk_results( $results);
+		return self::bulk_results( $results, $key_by_id );
 
 	}
 
