@@ -735,4 +735,35 @@ class group_crud extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test item exists method
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group group_crud
+	 * @group crud
+	 *
+	 * @covers  \ingot\testing\crud\group::exists()
+	 */
+	public function testExists(){
+		$id = \ingot\testing\crud\group::create( [
+			'name'     => 'd',
+			'type'     => 'price',
+			'sub_type' => 'edd',
+			'meta'     => [
+				'product_ID' => 169,
+			],
+			'wp_ID' => 169
+		], true );
+
+		$this->assertTrue( is_numeric( $id ) );
+		$this->assertTrue( \ingot\testing\crud\group::exists( $id ) );
+
+		$this->assertFalse( \ingot\testing\crud\group::exists( 99999 )  );
+
+		\ingot\testing\crud\group::delete( $id );
+		$this->assertFalse( \ingot\testing\crud\group::exists( $id ) );
+	}
+
 }

@@ -323,6 +323,23 @@ abstract class crud {
 	}
 
 	/**
+	 * Check if item exists, by ID
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int $id Item ID
+	 *
+	 * @return bool
+	 */
+	public static function exists( $id ){
+		global $wpdb;
+
+		$rows = $wpdb->get_row( sprintf( 'SELECT `ID` FROM %s WHERE `ID` = %d LIMIT 1', static::get_table_name(), $id ), ARRAY_A );
+		return ! is_null( $rows );
+
+	}
+
+	/**
 	 * Delete all rows from table
 	 *
 	 * @since 0.0.7

@@ -115,4 +115,27 @@ class tests_session_crud extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test item exists method
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group session
+	 * @group session_crud
+	 * @group crud
+	 *
+	 * @covers  \ingot\testing\crud\group::session()
+	 */
+	public function testExists(){
+		$id = \ingot\testing\crud\session::create( [], true );
+
+		$this->assertTrue( is_numeric( $id ) );
+		$this->assertTrue( \ingot\testing\crud\session::exists( $id ) );
+
+		$this->assertFalse( \ingot\testing\crud\session::exists( 99999 )  );
+
+		\ingot\testing\crud\group::delete( $id );
+		$this->assertFalse( \ingot\testing\crud\session::exists( $id ) );
+	}
+
 }
