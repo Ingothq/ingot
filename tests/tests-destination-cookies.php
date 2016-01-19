@@ -135,4 +135,34 @@ class test_cookies extends \WP_UnitTestCase {
 		$this->assertEquals( 1, $lever->getDenominator() );
 
 	}
+
+	/**
+	 * Test getting group IDs for destination cookies
+
+	 * @since 1.1.0
+	 *
+	 * @group destination
+	 * @group cookie
+	 * @group destination_cookie
+	 * @group array_filter
+	 *
+	 * @covers \ingot\testing\utility\array_filters::filter_results()
+	 * @covers \ingot\testing\utility\array_filters::match()
+	 * @covers \ingot\testing\utility\array_filters::prepare()
+	 */
+	public function testGetCookies(){
+		$_COOKIE = [
+			'ingot_destination_9' => 12,
+			'ingot_destination_42' => 7,
+			'hi chris',
+			'ingot_97' => 94,
+			'ingot_destination' => 88,
+			'hats_8765' => [ 'batman', 'robin']
+		];
+		$results = \ingot\testing\tests\click\destination\cookie::get_all_cookies();
+		$this->assertEquals( [
+			'9',
+			'42'
+		], $results );
+	}
 }

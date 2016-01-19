@@ -14,7 +14,6 @@ namespace ingot\testing\utility;
 
 use ingot\testing\cookies\init;
 use ingot\testing\crud\group;
-use ingot\testing\crud\price_test;
 use ingot\testing\crud\variant;
 use ingot\testing\object\price\test;
 use ingot\testing\types;

@@ -117,17 +117,22 @@ class tests_destination_tracking extends \WP_UnitTestCase{
 		$this->assertEquals( $group_id, $update );
 		$group = \ingot\testing\crud\group::read( $group_id );
 		$this->assertTrue( is_array( $group ) );
-		$this->assertFalse( empty ($group[ 'variants' ] ) ) ;
+		$this->assertFalse( empty ($group[ 'variants' ] ) );
+		new \ingot\testing\bandit\content( $group_id );
+
+		$group = \ingot\testing\crud\group::read( $group_id );
+		$this->assertFalse( empty( $group[ 'levers' ] ) );
 
 		$groups = \ingot\testing\tests\click\destination\init::set_tracking();
 		new \ingot\testing\tests\click\destination\hooks( $groups );
-		$this->assertTrue( in_array( \ingot\testing\tests\click\destination\init::get_test( $group_id ), [ $variant_1, $variant_2 ]  ) );
+
 		$variant_id =  \ingot\testing\tests\click\destination\init::get_test( $group_id );
 
-		$tracking = new \ingot\testing\tests\click\destination\hooks(  [ $group_id => $variant_id ] );
+		$tracking = new \ingot\testing\tests\click\destination\hooks(  [  $group_id ] );
 		$tracking->track_by_id( 11 );
 
-		$totals = \ingot\testing\utility\group::get_total( $group );
+		$totals = \ingot\testing\utility\group::get_total( $group, true );
+
 		$this->assertEquals( 1, $totals[ 'total' ] );
 		$this->assertEquals( 1, $totals[ 'conversions' ] );
 	}
@@ -153,18 +158,18 @@ class tests_destination_tracking extends \WP_UnitTestCase{
 			$variants = $data[ 'variants' ];
 			$this->assertInternalType( 'array', $variants  );
 			$this->assertFalse( empty( $variants ) );
-			$variant_id = \ingot\testing\tests\click\destination\init::get_test( $group_id );
-			$hooks = new \ingot\testing\tests\click\destination\hooks( [ $group_id => $variant_id ]);
+			new \ingot\testing\bandit\content( $group_id );
+			$hooks = new \ingot\testing\tests\click\destination\hooks( [ $group_id ] );
 
 			$hooks->edd_post_add_to_cart();
 			$group = \ingot\testing\crud\group::read( $group_id );
-			$totals = \ingot\testing\utility\group::get_total( $group );
+			$totals = \ingot\testing\utility\group::get_total( $group, true );
 			$this->assertEquals( 1, $totals[ 'total' ] );
 			$this->assertEquals( 1, $totals[ 'conversions' ] );
 
 			edd_add_to_cart( $product->ID );
 			$group = \ingot\testing\crud\group::read( $group_id );
-			$totals = \ingot\testing\utility\group::get_total( $group );
+			$totals = \ingot\testing\utility\group::get_total( $group, true );
 			$this->assertEquals( 3, $totals[ 'total' ] );
 			$this->assertEquals( 2, $totals[ 'conversions' ] );
 
@@ -194,22 +199,19 @@ class tests_destination_tracking extends \WP_UnitTestCase{
 
 			$this->assertTrue( is_numeric( $group_id ) );
 			$variants = $data[ 'variants' ];
+			new \ingot\testing\bandit\content( $group_id );
 
 			$variant_id = \ingot\testing\tests\click\destination\init::get_test( $group_id );
 			$this->assertTrue( is_numeric( $variant_id  ) );
 
 			\ingot\testing\tests\click\destination\init::set_tracking();
 
+
 			$this->assertTrue( in_array( \ingot\testing\tests\click\destination\init::get_test( $group_id ), $variants  ) );
 			$variant_id =  \ingot\testing\tests\click\destination\init::get_test( $group_id );
 
-			$hooks = new \ingot\testing\tests\click\destination\hooks( [ $group_id => $variant_id ]);
-			$hooks->edd_complete_purchase();
-			$obj = new \ingot\testing\object\group( $group_id );
-			$group = \ingot\testing\crud\group::read( $group_id );
-			$totals = \ingot\testing\utility\group::get_total( $group );
-			$this->assertEquals( 1, $totals[ 'total' ] );
-			$this->assertEquals( 1, $totals[ 'conversions' ] );
+			$hooks = new \ingot\testing\tests\click\destination\hooks( [ $group_id ]);
+
 
 			$payment_id = ingot_test_data_price::edd_create_simple_payment( $product);
 			edd_complete_purchase( $payment_id, 'publish', 'pending' );

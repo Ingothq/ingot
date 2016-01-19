@@ -31,7 +31,28 @@ class cookie {
 			$set = setcookie( $name, (string) $variant_id, $expires, COOKIEPATH, COOKIE_DOMAIN, false );
 			do_action( 'ingot_destination_cookie_set', $set, $name, $group_id, $variant_id, $expires  );
 		}
+
 	}
+
+	/**
+	 * Clear destination test cookie
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int $group_id ID of group
+	 */
+	public static function clear_cookie( $group_id ){
+		$key = self::cookie_key( $group_id );
+		if( isset( $_COOKIE[ $key ] ) ){
+			unset( $_COOKIE[ $key ]);
+			if ( ! headers_sent() ) {
+				setcookie( $key, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
+			}
+
+		}
+
+	}
+
 	/**
 	 * Set a cookie for a destination test
 	 *
@@ -66,6 +87,23 @@ class cookie {
 	public static function cookie_key( $group_id ){
 		return 'ingot_destination_' . $group_id;
 	}
+
+	/**
+	 * Get all destination cookies
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array
+	 */
+	public static function get_all_cookies(){
+		if ( isset( $_COOKIE ) && is_array( $_COOKIE) ) {
+			return \ingot\testing\utility\array_filters::filter_results( $_COOKIE, 'ingot_destination_' );
+		} else {
+			return [];
+		}
+
+	}
+
 
 
 }

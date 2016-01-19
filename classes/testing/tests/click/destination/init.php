@@ -95,6 +95,9 @@ class init {
 	 */
 	public static function set_tracking(){
 		$groups = self::get_destination_tests();
+		if ( ! empty( $groups ) ) {
+			self::clear_invalid( $groups );
+		}
 		if( ! empty( $groups ) ){
 			foreach( $groups as $group_id ){
 				$group = group::read( $group_id );
@@ -216,6 +219,40 @@ class init {
 		}
 
 		return self::$tests[ $group_id ];
+
+	}
+
+	/**
+	 * Clear out invalid destination cookies
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param $groups
+	 */
+	public static function clear_invalid( array $groups ){
+		$cookies = cookie::get_all_cookies();
+
+		$clear = [];
+		if( empty( $cookies ) && ! empty( $groups )  ){
+			$clear = $groups;
+		}elseif( ! empty( $cookies ) && ! empty( $groups ) ){
+			foreach( $cookies as $group_id ){
+				if( ! in_array( $group_id, $groups ) || ! group::exists( $group_id ) ){
+					cookie::clear_cookie( $group_id );
+				}
+
+			}
+
+		}
+
+		if( ! empty( $clear ) ){
+			foreach( $clear as $group_id ){
+				cookie::clear_cookie( $group_id );
+			}
+
+		}
+
+
 
 	}
 
