@@ -195,9 +195,8 @@ class init {
 	 * @return int
 	 */
 	public static function get_test( $group_id ) {
-		self::$tests = [];
 		if ( ! isset( self::$tests[ $group_id ]) ) {
-			if ( 1== 1 || ! cookie::get_cookie( $group_id ) ) {
+			if ( ! cookie::get_cookie( $group_id ) ) {
 				$group = group::read( $group_id );
 				if( group::valid( $group ) && ! empty( $group[ 'variants' ] ) ){
 					$bandit  = new content( $group_id );

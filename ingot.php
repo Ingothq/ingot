@@ -52,7 +52,6 @@ function ingot_maybe_load() {
 	if( false == $fail ){
 		include_once( dirname(__FILE__ ) . '/ingot_bootstrap.php' );
 		add_action( 'plugins_loaded', array( 'ingot_bootstrap', 'maybe_load' ) );
-
 	}
 
 }
