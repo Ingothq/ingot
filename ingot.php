@@ -1,7 +1,7 @@
 <?php
 /**
 Plugin Name: Ingot
-Version: 1.1.0-b-1
+Version: 1.1.0-b-2
 Plugin URI:  http://IngotHQ.com
 Description: Conversion optimization made easy for WordPress
 Author:      Josh Pollock and Roy Sivan for Ingot LLC
@@ -11,7 +11,7 @@ Domain Path: /languages
  */
 
 
-define( 'INGOT_VER', '1.1.0-b-1' );
+define( 'INGOT_VER', '1.1.0-b-2' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
