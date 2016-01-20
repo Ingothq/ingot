@@ -129,6 +129,15 @@ class destination {
 			}
 		}
 
+		if ( 'hook' == $meta[ 'destination' ] ) {
+
+			if ( ! isset( $meta[ 'hook' ] ) ) {
+				return new \WP_Error( 'ingot-invalid-destination-hook', __( 'Hook destination types need a hook.', 'ingot' ) );
+			} else {
+				$meta[ 'hook' ] = trim( $meta[ 'hook' ] );
+			}
+		}
+
 		if( ! isset( $meta[ 'is_tagline' ] ) ){
 			$meta[ 'is_tagline' ] = false;
 		}
