@@ -545,11 +545,12 @@ ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$statePara
             angular.forEach( $scope.stats.variants, function( variant, i ) {
                 var name;
 
-                if( 'undefined' !== variant.name ) {
+                if( ! _.isUndefined( variant.name ) && !_.isEmpty( variant.name ) && ' ' != variant.name ) {
                     name = variant.name;
                 }else{
                     name = INGOT_TRANSLATION.stats.variant + ' ' + i;
                 }
+
                 $scope.chart_data.labels.push( name );
                 var rate = Math.round( variant.conversion_rate * 100 );
                 $scope.chart_data.datasets[0].data.push( rate );

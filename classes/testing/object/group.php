@@ -331,7 +331,7 @@ class group {
 		if( ! empty( $this->group[ 'variants' ] ) ){
 			$variants = variant::get_items( $this->get_ID() );
 			if (  ! empty( $variants ) ) {
-				$data[ 'variants' ] = $variants;
+				$data[ 'variants' ] = wp_list_pluck( $variants, 'content' );
 			}
 		}
 
