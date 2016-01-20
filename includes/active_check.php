@@ -50,3 +50,14 @@ function ingot_is_edd_active() {
 function ingot_is_woo_active() {
 	return class_exists( 'WooCommerce' );
 }
+
+/**
+ * Check if Give is active
+ *
+ * @since 1.1.0
+ *
+ * @return bool
+ */
+function ingot_is_give_active(){
+	return class_exists( 'Give' );
+}

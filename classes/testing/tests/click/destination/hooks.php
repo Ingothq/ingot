@@ -125,6 +125,17 @@ class hooks {
 	}
 
 	/**
+	 * Track Give donation
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool
+	 */
+	public function give_complete_purchase(){
+		return $this->check_if_victory( 'give' );
+	}
+
+	/**
 	 * Track WOO add to cart conversions
 	 *
 	 * @since 1.1.0
@@ -284,7 +295,7 @@ class hooks {
 		if( ! empty( $this->hook_tests ) && in_array( sanitize_key( current_action() ), $this->hook_tests ) ){
 			ingot_register_conversion( $this->hook_tests[ sanitize_key( current_action() ) ] );
 		}
-		
+
 	}
 
 	/**

@@ -190,6 +190,10 @@ class destination {
 			$hooks[ 'woocommerce_payment_complete_order_status' ] = null;
 		}
 
+		if( ingot_is_give_active() ){
+			$hooks[ 'give_complete_purchase' ] = null;
+		}
+
 		/**
 		 * Change or add hooks for destination conversion tracking
 		 *

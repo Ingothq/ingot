@@ -107,9 +107,13 @@ class types {
 				'name'        => __( 'Add To Cart -- WooCommerce', 'ingot' ),
 				'description' => __( 'Conversion is registered when a WooCommerce sale is completed.', 'ingot' ),
 			],
-			'hook' => [
-				'name' => __( 'Hook', 'ingot' ),
+			'hook'     => [
+				'name'        => __( 'Hook', 'ingot' ),
 				'description' => __( 'Conversion is registered when a hook is fired -- for developers.', 'ingot' )
+			],
+			'givewp'   => [
+				'name'        => __( 'Give', 'ingot' ),
+				'description' => __( 'Conversion is registered when a donation is made.', 'ingot' )
 			]
 		];
 
