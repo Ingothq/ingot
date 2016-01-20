@@ -248,11 +248,15 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
                     $scope.group = {};
                     $state.go('clickTests.list' );
                 } ).error( function( data ) {
-                    console.log( data );
+                    var text = INGOT_TRANSLATION.sorry;
+                    if( 'object' == typeof data  && 'undefined' != typeof data.message ){
+                        text = data.message;
+                    }
+
                     $state.go('clickTests.list' );
                     swal({
                         title: INGOT_TRANSLATION.fail,
-                        text: INGOT_TRANSLATION.sorry,
+                        text: text,
                         type: "error",
                         confirmButtonText: INGOT_TRANSLATION.close
                     });
@@ -378,10 +382,15 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 type: "success",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
-        } ).error(function(){
+        } ).error(function( res ){
+            var text = INGOT_TRANSLATION.sorry;
+            if( 'object' == typeof res && 'undefined' != res.message ){
+                text = res.message;
+            }
+
             swal({
                 title: INGOT_TRANSLATION.fail,
-                text: INGOT_TRANSLATION.sorry,
+                text: text,
                 type: "error",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
@@ -880,13 +889,19 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
                 type: "success",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
-        } ).error(function(){
+        } ).error(function( res ){
+            var text = INGOT_TRANSLATION.sorry;
+            if( 'object' == typeof res && 'undefined' != res.message ){
+                text = res.message;
+            }
+
             swal({
                 title: INGOT_TRANSLATION.fail,
-                text: INGOT_TRANSLATION.sorry,
+                text: text,
                 type: "error",
                 confirmButtonText: INGOT_TRANSLATION.close
             });
+
         })
     };
 
