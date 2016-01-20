@@ -461,6 +461,14 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         }
     };
 
+    $scope.is_hook = function(){
+        if ( 'undefined' != $scope.group.meta.destination ) {
+            if ( 'hook' == $scope.group.meta.destination ) {
+                return true;
+            }
+        }
+    };
+
     //set select option for destination type
     $scope.destinationSelected = function( destination ){
         if( 'undefined' == $scope.group.meta.destination || 'undefined' == destination.value ){

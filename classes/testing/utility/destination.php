@@ -97,6 +97,22 @@ class destination {
 	}
 
 	/**
+	 * Check if is a hook test
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $group Group config
+	 *
+	 * @return bool True if is valid group of the destination subtype
+	 */
+	public static function is_hook( array $group ) {
+		if ( 'hook' == \ingot\testing\utility\group::sub_type( $group ) ) {
+			return true;
+		}
+
+	}
+
+	/**
 	 * Prepare the meta in group config array
 	 *
 	 * @since 1.1.0

@@ -109,7 +109,7 @@ class types {
 			],
 			'hook' => [
 				'name' => __( 'Hook', 'ingot' ),
-				'description' => __( 'Conversion is registered when a hook is fired', 'ingot' )
+				'description' => __( 'Conversion is registered when a hook is fired -- for developers.', 'ingot' )
 			]
 		];
 

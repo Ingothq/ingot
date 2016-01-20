@@ -51,6 +51,17 @@ class hooks {
 	protected $groups_set = false;
 
 	/**
+	 * Hooks we are tracking
+	 *
+	 * @access protected
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array
+	 */
+	protected $hook_tests = [];
+
+	/**
 	 *
 	 * @since 1.1.0
 	 *
@@ -84,6 +95,8 @@ class hooks {
 					add_action( $hook, $callback );
 				}
 			}
+
+			$this->set_hook_tests();
 
 		}
 
@@ -238,6 +251,40 @@ class hooks {
 
 		}
 
+	}
+
+	/**
+	 * Setup tracking for hook tests
+	 *
+	 * @access protected
+	 *
+	 * @since 1.1.0
+	 */
+	protected function set_hook_tests(){
+		foreach (  $this->groups as $group  ) {
+			if( destination::is_hook( $group ) && isset( $group[ 'meta' ][ 'hook' ] ) ){
+				$hook = $group[ 'meta' ][ 'hook' ];
+				$variant_id = init::get_test( $group[ 'ID' ] );
+				if ( is_numeric( $variant_id ) ) {
+					$this->hook_tests[ sanitize_key( $hook ) ] = $variant_id;
+					add_action( $hook, [ $this, 'hook_test_cb' ], 55 );
+				}
+			}
+
+		}
+
+	}
+
+	/**
+	 * Generic callback for hook test tracking
+	 *
+	 * @since 1.1.0
+	 */
+	public function hook_test_cb(){
+		if( ! empty( $this->hook_tests ) && in_array( sanitize_key( current_action() ), $this->hook_tests ) ){
+			ingot_register_conversion( $this->hook_tests[ sanitize_key( current_action() ) ] );
+		}
+		
 	}
 
 	/**

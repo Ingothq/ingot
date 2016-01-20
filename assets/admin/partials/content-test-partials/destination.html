@@ -30,6 +30,13 @@
                 {{translate.group.destination_page_desc}}
             </span>
         </div>
+
+        <div class="form-group row" ng-show="is_hook()">
+            <label for="hook" class="col-md-4 col-sm-12">
+                {{translate.group.destination_hook}}
+            </label>
+            <input id="hook" class="col-md-8 col-sm-12" ng-model="group.meta.hook" type="text"/>
+        </div>
     </div>
     <div class="col-sm-6">
         <div id="tests" ng-repeat="variant in group.variants track by $index">
