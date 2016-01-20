@@ -249,7 +249,7 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
                     $state.go('clickTests.list' );
                 } ).error( function( data ) {
                     var text = INGOT_TRANSLATION.sorry;
-                    if( 'object' == typeof data  && 'undefined' != typeof data.message ){
+                    if( _.isObject( data ) && !_.isDefined( data.message ) ){
                         text = data.message;
                     }
 
@@ -384,8 +384,8 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             });
         } ).error(function( res ){
             var text = INGOT_TRANSLATION.sorry;
-            if( 'object' == typeof res && 'undefined' != res.message ){
-                text = res.message;
+            if( _.isObject( data ) && !_.isDefined( data.message ) ){
+                text = data.message;
             }
 
             swal({
@@ -900,8 +900,8 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
             });
         } ).error(function( res ){
             var text = INGOT_TRANSLATION.sorry;
-            if( 'object' == typeof res && 'undefined' != res.message ){
-                text = res.message;
+            if( _.isObject( data ) && !_.isDefined( data.message ) ){
+                text = data.message;
             }
 
             swal({
