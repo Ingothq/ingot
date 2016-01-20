@@ -44,6 +44,7 @@ class translations {
 			'no_tests'                 => esc_html__( 'This group has no tests', 'ingot' ),
 			'invalid_price_test_range' => esc_html__( 'Please enter a number between -.99 and .99', 'ingot' ),
 			'settings_saved'           => esc_html__( 'Settings Saved', 'ingot' ),
+			'price_coming_soon'              => esc_html__( 'Ingot Price Testing Is Coming Soon.', 'ingot' ),
 			'stats'                    => [
 				'stats_for' => esc_html__( 'Stats For Group', 'ingot' ),
 				'no_stats'  => esc_html__( 'No Stats for this group yet', 'ingot' ),

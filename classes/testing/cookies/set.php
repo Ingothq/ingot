@@ -32,15 +32,17 @@ class set {
 
 		$all_cookies = $cookies = array();
 
-/**
-		if( isset( $_COOKIE ) && is_array( $_COOKIE ) ) {
-			$all_cookies = $_COOKIE;
+
+		if ( INGOT_DEV_MODE ) {
+			if ( isset( $_COOKIE ) && is_array( $_COOKIE ) ) {
+				$all_cookies = $_COOKIE;
+			}
+
+
+			$cookies = init::create( $all_cookies );
+			self::setup_cookies( $cookies );
 		}
 
-
-		$cookies = init::create( $all_cookies );
-		self::setup_cookies( $cookies );
-**/
 		/**
 		 * Fires after Ingot Cookies Are Set
 		 *

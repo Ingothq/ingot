@@ -79,27 +79,8 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: INGOT_ADMIN.partials + "/click-group.stats.html",
             controller: 'clickStats'
         } )
-        //price tests
-        .state('priceTests', {
-            url: "/price-tests",
-            templateUrl: INGOT_ADMIN.partials + "/price-groups.html",
-            controller: 'priceGroups'
-        })
-        .state('priceTests.list', {
-            url: "/price-tests/all",
-            templateUrl: INGOT_ADMIN.partials + "/list.html",
-            controller: 'priceGroups'
-        } )
-        .state('priceTests.edit', {
-            url: "/price-tests/edit/:groupID",
-            templateUrl: INGOT_ADMIN.partials + "/price-group.html",
-            controller: 'priceGroup'
-        } )
-        .state('priceTests.new', {
-            url: "/price-tests/new/",
-            templateUrl: INGOT_ADMIN.partials + "/price-group.html",
-            controller: 'priceGroup'
-        } )
+
+
         //other
         .state('settings', {
             url: "/settings",
@@ -115,7 +96,51 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
             url : '/',
             templateUrl: INGOT_ADMIN.partials + "/welcome.html",
             controller: 'welcome'
-        })
+        });
+
+        //price tests
+        if( true == INGOT_ADMIN.dev_mode ){
+
+            $stateProvider.state( 'priceTests', {
+                url: "/price-tests",
+                templateUrl: INGOT_ADMIN.partials + "/price-groups.html",
+                controller: 'priceGroups'
+            } )
+            .state( 'priceTests.list', {
+                url: "/price-tests/all",
+                templateUrl: INGOT_ADMIN.partials + "/list.html",
+                controller: 'priceGroups'
+            } )
+            .state( 'priceTests.edit', {
+                url: "/price-tests/edit/:groupID",
+                templateUrl: INGOT_ADMIN.partials + "/price-group.html",
+                controller: 'priceGroup'
+            } )
+            .state( 'priceTests.new', {
+                url: "/price-tests/new/",
+                templateUrl: INGOT_ADMIN.partials + "/price-group.html",
+                controller: 'priceGroup'
+            } );
+        }else {
+            var coming_soon = '<div class="alert alert-info"><h1>' + INGOT_TRANSLATION.price_coming_soon + '</h1></div>';
+            $stateProvider.state( 'priceTests', {
+                url: "/price-tests",
+                template: coming_soon
+            } )
+            .state( 'priceTests.list', {
+                url: "/price-tests/all",
+                templateUrl: INGOT_ADMIN.partials + "/price-nope.html",
+            } )
+            .state( 'priceTests.edit', {
+                url: "/price-tests/edit/:groupID",
+                templateUrl: INGOT_ADMIN.partials + "/price-nope.html",
+
+            } )
+            .state( 'priceTests.new', {
+                url: "/price-tests/new/",
+                templateUrl: INGOT_ADMIN.partials + "/price-nope.html",
+            } );
+        }
 
 
 
