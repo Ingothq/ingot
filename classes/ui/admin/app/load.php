@@ -84,6 +84,7 @@ class load {
 		//other
 		wp_enqueue_script( 'jquery-ui-core');
 		wp_enqueue_script( 'jquery-ui-slider' );
+		wp_register_script( 'lodash', INGOT_URL . 'assets/vendor/lodash.min.js' );
 		wp_enqueue_style( 'jquery-ui', INGOT_URL . "assets/admin/css/jquery-ui.min.css" );
 		wp_enqueue_style( 'font-awesome', INGOT_URL . "assets/admin/css/font-awesome.min.css" );
 		wp_enqueue_script( 'angular-translatejs', INGOT_URL . "assets/vendor/js/angular-translate/angular-translate.js", array( 'angularjs' ), false, $version);
@@ -111,7 +112,7 @@ class load {
 		wp_enqueue_style( 'ingot-admin-dependencies', INGOT_URL . 'assets/admin/css/ingot-admin-dependencies.css' );
 
 		//ingot
-		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . "assets/admin/js/admin-app.js", array( 'jquery', 'angularjs' ), rand() );
+		wp_enqueue_script( 'ingot-admin-app', INGOT_URL . "assets/admin/js/admin-app.js", array( 'jquery', 'angularjs', 'lodash' ), rand() );
 		wp_enqueue_style( 'ingot-admin-app', INGOT_URL . 'assets/admin/css/admin-app.css' );
 
 		//data to use in admin app
