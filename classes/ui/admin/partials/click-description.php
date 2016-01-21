@@ -16,13 +16,16 @@
  <?php _e( 'Currently Supported Content Test Types', 'ingot' ); ?> :</h4>
 <ul>
 	<li>
-		<em><?php _e( 'Link', 'ingot' ); ?>:</em> <?php _e( 'Test the text of a link.', 'ingot' ); ?>
+		<em><?php _e( 'Link', 'ingot' ); ?>:</em> <?php _e( 'Test changes to a link\'s text and register a conversion when that link is clicked.', 'ingot' ); ?>
 	</li>
 	<li>
-		<em><?php _e( 'Button', 'ingot' ); ?>:</em> <?php _e( 'Test the text of a button.', 'ingot' ); ?>
+		<em><?php _e( 'Button', 'ingot' ); ?>:</em> <?php _e( 'Test changes to the text of a button and register a conversion when that button is clicked.', 'ingot' ); ?>
 	</li>
 	<li>
-		<em><?php _e( 'Button Color', 'ingot' ); ?>:</em> <?php _e( 'Test the color of a button.', 'ingot' ); ?>
+		<em><?php _e( 'Button Color', 'ingot' ); ?>:</em> <?php _e( 'Test changes to the color of a button and register a conversion when that button is clicked.', 'ingot' ); ?>
+	</li>
+	<li>
+		<em><?php _e( 'Destination Tests', 'ingot' ); ?>:</em> <?php _e( 'Test content, such as headline changes and register a conversion when a page is reached or a product is added to the cart, a sale is completed or a donation is made.', 'ingot' ); ?>
 	</li>
 </ul>
 <h4><?php _e( 'Content Test Types Coming Soon', 'ingot' ); ?>:</h4>
