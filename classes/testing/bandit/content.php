@@ -50,12 +50,16 @@ class content extends bandit {
 	 * @return bool
 	 */
 	protected function set_random(){
-		if( ! is_object( $this->obj ) ){
-			$this->set_group_obj();
-		}
+		if ( ! ingot_is_no_testing_mode() ) {
+			if ( ! is_object( $this->obj ) ) {
+				$this->set_group_obj();
+			}
 
-		$initial_calc = new initial( $this->obj );
-		$this->random_mode =  ! $initial_calc->is_passed_initial();
+			$initial_calc      = new initial( $this->obj );
+			$this->random_mode = ! $initial_calc->is_passed_initial();
+		}else{
+			$this->random_mode = true;
+		}
 	}
 
 	/**

@@ -139,8 +139,15 @@ abstract class bandit {
 			$levers = $levers[ $this->get_ID() ];
 		}
 
-		return array_rand( $levers );
+		if ( ingot_is_no_testing_mode() ) {
+			reset( $levers );
+			$key = key( $levers );
+		}else{
+			$key = array_rand( $levers );
+		}
 
+		return $levers[ $key ];
+		
 	}
 
 	/**
