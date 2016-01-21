@@ -93,7 +93,7 @@ abstract class bandit {
 	 * @return mixed
 	 */
 	public function choose() {
-		$record = ! ingot_is_bot();
+		$record = ! ingot_is_no_testing_mode();
 		$val = $this->bandit->chooseLever( $this->experiment, $record )->getValue();
 		return $val;
 

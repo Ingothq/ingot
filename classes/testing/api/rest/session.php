@@ -81,7 +81,7 @@ class session extends route {
 	 */
 	public function session( $request ) {
 		$session = $this->get_session_by_url_params( $request );
-		if( ingot_is_bot() ) {
+		if( ingot_is_no_testing_mode() ) {
 			$data[ 'ingot_ID' ] = $session[ 'ingot_ID' ];
 			$data[ 'tests' ] = [];
 			$data[ 'session_ID' ] = $session[ 'ID' ];

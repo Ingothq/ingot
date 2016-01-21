@@ -80,7 +80,7 @@ class ingot {
 
 		add_action( 'save_post', array( $this, 'track_groups' ), 15, 2 );
 
-		if ( ! ingot_is_bot() ) {
+		if ( ! ingot_is_no_testing_mode() ) {
 			add_action( 'wp_enqueue_scripts', function () {
 				$version = INGOT_VER;
 				$min = '.min';

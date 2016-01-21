@@ -761,3 +761,30 @@ function ingot_cookie_time(){
 	 */
 	return apply_filters( 'ingot_cookie_time', 15 * DAY_IN_SECONDS );
 }
+
+
+/**
+ * Check if in no testing mode
+ *
+ * If true, no iterations or conversions are recorded and a random variant is used.
+ *
+ * @since 1.1.0
+ *
+ * @return bool
+ */
+function ingot_is_no_testing_mode(){
+	$is_no_testing_mode = false;
+	if( ingot_is_bot() ) {
+		$is_no_testing_mode = true;
+	}
+
+	/**
+	 * Turn no testing mode on or of
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param bool $is_no_testing_mode
+	 */
+	return (bool) apply_filters( 'ingot_is_no_testing_mode', $is_no_testing_mode );
+
+}
