@@ -412,29 +412,28 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     $scope.change_step = function( step ) {
 
-        if ( 2 == step || 3 == step){
-            if( 'undefined' == $scope.group.name || '' == $scope.group.name ) {
-                swal( {
-                    title: INGOT_TRANSLATION.group.must_name,
-                    text: '',
-                    type: "error",
-                    confirmButtonText: INGOT_TRANSLATION.close
-                } );
-            }
+        if ( _.isUndefined( $scope.group.name ) || _.isEmpty( $scope.group.name ) ) {
+            swal( {
+                title: INGOT_TRANSLATION.group.must_name,
+                text: '',
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            } );
+            $scope.group_step  = 1;
+        } else if ( 2 != step && ( _.isUndefined( $scope.group.sub_type ) || _.isEmpty( $scope.group.sub_type ) ) ) {
+            swal( {
+                title: INGOT_TRANSLATION.group.must_type,
+                text: '',
+                type: "error",
+                confirmButtonText: INGOT_TRANSLATION.close
+            } );
+
+            $scope.group_step = 2;
+        } else {
+            $scope.group_step = step;
         }
 
-        if( 3 == step ) {
-            if( 'undefined' == $scope.group.sub_type || '' == $scope.group.sub_type ) {
-                swal( {
-                    title: INGOT_TRANSLATION.group.must_type,
-                    text: '',
-                    type: "error",
-                    confirmButtonText: INGOT_TRANSLATION.close
-                } );
-            }
-        }
 
-        $scope.group_step = step;
     };
 
     $scope.choose_group_type = function( type ) {
