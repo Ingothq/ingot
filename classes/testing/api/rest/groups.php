@@ -468,7 +468,7 @@ class groups extends route {
 		$variants = helpers::v( 'variants', $group, [] );
 
 		$product_id = null;
-		if ( 'price' == $group[ 'type' ] ) {
+ 		if ( 'price' == $group[ 'type' ] ) {
 			$product_id = helpers::v( 'product_ID', $group[ 'meta' ], null );
 			if( ! is_numeric( $product_id ) ){
 				return new \WP_Error( 'ingot-no-product-id', __( 'No product ID was set.', 'ingot') );

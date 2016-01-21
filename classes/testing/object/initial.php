@@ -121,10 +121,10 @@ class initial {
 	 * @return bool
 	 */
 	public function is_passed_initial(){
-		if( 0 == $this->total || $this->total < $this->initial ){
-			return true;
-		}else{
+		if( 0 == $this->total || (int) $this->total < (int) $this->initial ){
 			return false;
+		}else{
+			return true;
 		}
 
 	}
@@ -212,7 +212,9 @@ class initial {
 	 */
 	private function set_levers( $group ){
 		if( is_numeric( $group ) ){
-			$group = new group( $group );
+			$group = new \ingot\testing\object\group( $group );
+		}elseif( is_array( $group ) ){
+			$group = new \ingot\testing\object\group( $group );
 		}
 
 		if( is_object( $group ) ){

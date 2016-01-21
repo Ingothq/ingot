@@ -20,11 +20,6 @@ use MaBandit\CreateExperiment;
 
 class content extends bandit {
 
-	/**
-	 * @var \ingot\testing\object\group
-	 */
-	private $obj;
-
 
 	/**
 	 * Create persistor object
@@ -45,7 +40,6 @@ class content extends bandit {
 		 );
 		 return $persistor;
 
-
 	}
 
 	/**
@@ -55,13 +49,13 @@ class content extends bandit {
 	 *
 	 * @return bool
 	 */
-	protected function use_random(){
+	protected function set_random(){
 		if( ! is_object( $this->obj ) ){
 			$this->set_group_obj();
 		}
 
 		$initial_calc = new initial( $this->obj );
-		return $initial_calc->is_passed_initial();
+		$this->random_mode =  ! $initial_calc->is_passed_initial();
 	}
 
 	/**
@@ -154,17 +148,6 @@ class content extends bandit {
 
 		}
 
-	}
-
-	/**
-	 * Set obj property of class with group object
-	 *
-	 * @since 0.4.0
-	 *
-	 * @access private
-	 */
-	private function set_group_obj(){
-		$this->obj = new group( $this->get_ID() );
 	}
 
 	/**

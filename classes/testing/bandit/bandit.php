@@ -55,6 +55,24 @@ abstract class bandit {
 	 */
 	private $ID;
 
+	/**
+	 * Group object
+	 *
+	 * @since 0.4.0
+	 *
+	 * @var \ingot\testing\object\group
+	 */
+	protected $obj;
+
+	/**
+	 * Are we in totally random mode
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var bool
+	 */
+	protected $random_mode = false;
+
 
 	/**
 	 * Construct object
@@ -94,8 +112,34 @@ abstract class bandit {
 	 */
 	public function choose() {
 		$record = ! ingot_is_no_testing_mode();
-		$val = $this->bandit->chooseLever( $this->experiment, $record )->getValue();
+		if ( ! $this->random_mode ) {
+			$val    = $this->bandit->chooseLever( $this->experiment, $record )->getValue();
+		}else{
+			if( is_null( $this->obj ) ){
+				$this->set_group_obj();
+			}
+
+			$val = $this->random_lever( $this->obj->get_levers() );
+
+		}
+
 		return $val;
+
+	}
+
+	/**
+	 *
+	 *
+	 * @param $levers
+	 *
+	 * @return mixed
+	 */
+	protected function random_lever( $levers ){
+		if( isset( $levers[ $this->get_ID() ] ) && is_array($levers[ $this->get_ID() ] ) ){
+			$levers = $levers[ $this->get_ID() ];
+		}
+
+		return array_rand( $levers );
 
 	}
 
@@ -119,12 +163,9 @@ abstract class bandit {
 
 	 */
 	protected function go() {
+		$this->set_random();
+		$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery( 3 );
 
-		if ( $this->use_random() ) {
-			$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery( 1 );
-		}else{
-			$strategy = \MaBandit\Strategy\EpsilonGreedy::withExplorationEvery( 3 );
-		}
 		$persistor = $this->create_persistor();
 		$this->bandit = \MaBandit\MaBandit::withStrategy($strategy)->withPersistor($persistor);
 
@@ -144,8 +185,8 @@ abstract class bandit {
 	 *
 	 * @return bool
 	 */
-	protected function use_random(){
-		return false;
+	protected function set_random(){
+		$this->random_mode = false;
 	}
 
 	/**
@@ -158,6 +199,18 @@ abstract class bandit {
 	 * @return \ingot\testing\bandit\persistor
 	 */
 	abstract protected function create_persistor();
+
+	/**
+	 * Set obj property of class with group object
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 */
+	protected function set_group_obj(){
+		$this->obj = new \ingot\testing\object\group( $this->get_ID() );
+	}
+
 
 	protected function create_experiment() {
 		$group = group::read( $this->ID );
