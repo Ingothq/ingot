@@ -175,25 +175,27 @@ class ingot {
 	 * @since 0.3.0
 	 */
 	public function init_session(){
-		$id = null;
-		if( isset( $_GET[ 'ingot_session_ID' ] ) && ingot_verify_session_nonce( helpers::v( 'ingot_session_nonce', $_GET, '' ) ) ) {
-			$id = helpers::v( 'ingot_session_ID', $_GET, null );
+		if ( ! ingot_is_no_testing_mode() ) {
+			$id = null;
+			if ( isset( $_GET[ 'ingot_session_ID' ] ) && ingot_verify_session_nonce( helpers::v( 'ingot_session_nonce', $_GET, '' ) ) ) {
+				$id = helpers::v( 'ingot_session_ID', $_GET, null );
+			}
+
+			$session      = new \ingot\testing\object\session( $id );
+			$session_data = $session->get_session_info();
+
+			/**
+			 * Fired when Ingot session is setup at parse_request
+			 *
+			 * @since 0.3.0
+			 *
+			 * @param array $session_data has ID (session ID) and ingot_ID
+			 */
+			do_action( 'ingot_session_initialized', $session_data );
+
+
+			$this->current_session_data = $session_data;
 		}
-
-		$session = new \ingot\testing\object\session( $id );
-		$session_data = $session->get_session_info();
-
-		/**
-		 * Fired when Ingot session is setup at parse_request
-		 *
-		 * @since 0.3.0
-		 *
-		 * @param array $session_data has ID (session ID) and ingot_ID
-		 */
-		do_action( 'ingot_session_initialized', $session_data );
-
-
-		$this->current_session_data = $session_data;
 	}
 
 	/**
