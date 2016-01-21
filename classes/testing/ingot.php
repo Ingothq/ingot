@@ -66,6 +66,7 @@ class ingot {
 	 * @since 0.0.5
 	 */
 	private function __construct() {
+		$this->init_session();
 		$this->hooks();
 	}
 
@@ -93,8 +94,6 @@ class ingot {
 
 			} );
 
-
-			add_action( 'parse_request', array( $this, 'init_session' ), 50 );
 
 		}
 
