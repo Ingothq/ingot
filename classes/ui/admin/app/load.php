@@ -37,7 +37,7 @@ class load {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
-		if( $this->menu_slug === helpers::v( 'page', $_GET, 0 ) ) {
+		if( $this->should_load_scripts() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );;
 		}
 
@@ -65,9 +65,7 @@ class load {
 	/**
 	 * Load scripts
 	 *
-	 * @todo Figure out how much of this is uneeded, switch the rest to local files managed with Bower or whatever
-	 *
-	 * @uses "admin_enqueue_scripts
+	 * @uses "admin_enqueue_scripts"
 	 *
 	 * @since 0.2.0
 	 */
@@ -168,6 +166,24 @@ class load {
 			'dev_mode'            => INGOT_DEV_MODE
 		);
 
+	}
+
+	/**
+	 * Determine if admin scripts should be loaded
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool
+	 */
+	protected function should_load_scripts(){
+		/**
+		 * Should we load our admin scripts or not?
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param $load bool
+		 */
+		return (bool) apply_filters( 'ingot_admin_load_scripts', $this->menu_slug === helpers::v( 'page', $_GET, 0 ) );
 	}
 
 }
