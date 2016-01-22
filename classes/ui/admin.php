@@ -21,7 +21,7 @@ class admin {
 	 * @since 1.1.0
 	 *
 	 * @param string $file File name
-	 * @param array $data Array of data to make availble in partial. Will be extract()ed
+	 * @param array $data Array of data to make available in partial. Will be extract()ed
 	 *
 	 * @return string
 	 */
@@ -30,8 +30,21 @@ class admin {
 			extract( $data );
 		}
 		ob_start();
-		include( INGOT_DIR . '/classes/ui/admin/partials/' . $file );
+		include( self::partial_path( $file ) );
 		return ob_get_clean();
+	}
+
+	/**
+	 * Get file path for an admin partial
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $file File name
+	 *
+	 * @return string
+	 */
+	public static function partial_path( $file ){
+		return INGOT_DIR . '/classes/ui/admin/partials/' . $file;
 	}
 
 	/**

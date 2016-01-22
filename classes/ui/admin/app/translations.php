@@ -24,7 +24,7 @@ class translations {
 	 * @return array
 	 */
 	static public function strings() {
-		return [
+		$translation_strings = [
 			'group_saved'              => esc_html__( 'Group Saved', 'ingot' ),
 			'fail'                     => esc_html__( 'Could Not Save', 'ingot' ),
 			'sorry'                    => esc_html__( 'Please try again and/or contact support', 'ingot' ),
@@ -142,6 +142,15 @@ class translations {
 				'price_testing' => esc_html__( 'Raise or lower a product\'s price to maximize revenue', 'ingot' )
 			]
 		];
+
+		/**
+		 * Filter translation strings used in the admin app
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array $translation_strings The array of strings
+		 */
+		return apply_filters( 'ingot_ui_translation_strings', $translation_strings );
 	}
 
 

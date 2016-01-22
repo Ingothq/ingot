@@ -11,6 +11,7 @@
 
 namespace ingot\ui\admin\app;
 
+use ingot\ui\admin;
 use ingot\ui\admin\ingot_metabox;
 use ingot\testing\api\rest\util;
 use ingot\testing\types;
@@ -39,7 +40,7 @@ class load {
 		if( $this->menu_slug === helpers::v( 'page', $_GET, 0 ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );;
 		}
-		
+
 	}
 
 	/**
@@ -124,63 +125,23 @@ class load {
 	/**
 	 * Initial markup for admin page
 	 *
-	 * @TODO move this into a partial
-	 *
 	 * @since 0.2.0
 	 */
-	public function ingot_page() {?>
-		<div class="container" id="ingot-admin-app" ng-app="ingotApp">
-			<nav class="navbar navbar-default">
-				<div class="container-fluid">
-					<div class="navbar-header">
-						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-							<span class="sr-only">
-								<?php _e( 'Toogle Navigation', 'ingot' ); ?>
-							</span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</button>
-						<a class="navbar-brand active" ui-sref="otherwise" >
-							<?php
-								printf( '<img src="%s" alt="%s" class="nav-logo" />', INGOT_URL . 'assets/img/ingot-logo-s.png', __( 'Ingot', 'ingot' ) );
-								printf( ' <small>%s</small>',  INGOT_VER );
-							?>
-						</a>
-					</div>
-					<div id="navbar" class="navbar-collapse collapse">
-						<ul class="nav navbar-nav">
-							<li ng-class="isActiveNav('clickTests');">
-								<a ui-sref="clickTests">
-									<?php _e( 'Content Tests', 'ingot' ); ?>
-								</a>
-							</li>
-							<li ng-class="isActiveNav('price');">
-								<a ui-sref="priceTests">
-									<?php _e( 'Price Tests', 'ingot' ); ?>
-								</a>
-							</li>
-						</ul>
-						<ul class="nav navbar-nav navbar-right">
-							<li>
-								<a ui-sref="settings">
-									<?php _e( 'Settings', 'ingot' ); ?>
-								</a>
-							</li>
-							<li>
-								<a ui-sref="support">
-									<?php _e( 'Support', 'ingot' ); ?>
-								</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
-			<div ui-view></div>
+	public function ingot_page() {
+		/**
+		 * Change file path for main admin partial
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param null|string File path or null to use default
+		 */
+		$_path = apply_filters( 'ingot_main_admin_path', null );
+		if( $_path && file_exists( $_path ) ){
+			include( $_path );
+		}else{
+			echo admin::get_partial( 'main.php' );
+		}
 
-		</div>
-
-	<?php
 	}
 
 	/**
@@ -206,6 +167,7 @@ class load {
 			'destinations'        => \ingot\testing\tests\click\destination\types::destination_types( true, true ),
 			'dev_mode'            => INGOT_DEV_MODE
 		);
+
 	}
 
 }
