@@ -212,32 +212,4 @@ class load {
 		);
 	}
 
-	/**
-	 *
-	 * Ingot Meta Box Init
-	 * Ingot Meta Box View
-	 *
-	 */
-	function ingot_meta_box_init() {
-
-		$screens = array( 'post', 'page' );
-
-		foreach ( $screens as $screen ) {
-
-			add_meta_box(
-					'ingot_testing',
-					__( 'Ingot A/B Testing', 'ingot' ),
-					array( $this, 'ingot_meta_box_view' ),
-					$screen
-			);
-		}
-
-	}
-
-	function ingot_meta_box_view( $post ) {
-
-		ingot_metabox::box_view( $post );
-
-	}
-
 }
