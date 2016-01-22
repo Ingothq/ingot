@@ -40,6 +40,14 @@
 								<?php _e( 'Price Tests', 'ingot' ); ?>
 							</a>
 						</li>
+						<?php
+							/**
+							 * Fires, in admin markup, after left side nav items -- inside of ul
+							 *
+							 * @since 1.1.0
+							 */
+							do_action( 'ingot_nav_items_left' );
+						?>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li>
@@ -52,11 +60,34 @@
 								<?php _e( 'Support', 'ingot' ); ?>
 							</a>
 						</li>
+						<?php
+							/**
+							 * Fires, in admin markup, after right side nav items -- inside of ul
+							 *
+							 * @since 1.1.0
+							 */
+							do_action( 'ingot_nav_items_right' );
+						?>
 					</ul>
 				</div>
 			</div>
 		</nav>
+		<?php
+			/**
+			 * Fires, in admin markup, before ui-view.
+			 *
+			 * @since 1.1.0
+			 */
+			do_action( 'ingot_nav_before_ui_view' );
+		?>
 		<div ui-view></div>
-
+		<?php
+			/**
+			 * Fires, in admin markup, before ui-view.
+			 *
+			 * @since 1.1.0
+			 */
+			do_action( 'ingot_nav_after_ui_view' );
+		?>
 	</div>
 
