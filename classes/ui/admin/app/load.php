@@ -39,11 +39,7 @@ class load {
 		if( $this->menu_slug === helpers::v( 'page', $_GET, 0 ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );;
 		}
-
-		/**
-		 * Initiate Meta Box
-		 */
-		add_action( 'add_meta_boxes', array( $this, 'ingot_meta_box_init' ) );
+		
 	}
 
 	/**
