@@ -204,13 +204,40 @@ function ingot_sl_api( $license = false, $action ) {
 		)
 	);
 
+	/**
+	 * Filter licensing API request parameters before sending
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $api_params Data to send in body of request.
+	 */
+	$api_params = apply_filters( 'ingot_licensing_api_request_params', $api_params );
 
-	$response = wp_remote_post( INGOT_SL_STORE_URL, array(
+	/**
+	 * Filter URL for remote API
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $api_url The remote URL to request to
+	 */
+	$api_url = apply_filters( 'ingot_licensing_api_request_url', INGOT_SL_STORE_URL );
+
+	$response = wp_remote_post( $api_url, array(
 			'timeout'   => 15,
 			'sslverify' => false,
 			'body'      => $api_params
 		)
 	);
+
+	/**
+	 * Fires after the remote request to licensing API
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $response Return from wp_remote_post()
+	 * @param array $api_params Data sent in body of request.
+	 */
+	do_action( 'ingot_licensing_api_request_complete', $response, $api_params );
 
 	return $response;
 
