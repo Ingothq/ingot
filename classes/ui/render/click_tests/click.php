@@ -152,9 +152,17 @@ abstract class click {
 		return $this->group;
 	}
 
-	protected function set_variant( $variant_id ){
-		if( ! is_null( $variant_id ) ){
-			$this->variant = variant::read( $variant_id );
+	/**
+	 * Set variant property
+	 *
+	 * @param int|array|\MaBandit\lever|null $variant Variant ID, config, or lever. If null, one will be chosen
+	 */
+	protected function set_variant( $variant ){
+		if( ! is_null( $variant  ) && is_array( $variant ) && variant::valid( $variant )){
+			$this->variant = variant::read( $variant );
+		}if( is_a( $variant, 'MaBandit\lever') ){
+			/** @var \MaBandit\Lever $variant */
+			$this->variant = variant::read( $variant->getValue() );
 		}else{
 			$this->set_bandit();
 			$this->choose();
