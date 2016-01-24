@@ -84,18 +84,19 @@ class session {
 	 * @param $id
 	 */
 	private function set_up_session( $id ) {
-		if( is_null(  $id ) || ! is_array( \ingot\testing\crud\session::read( $id ) ) ) {
+
+		if( is_null(  $id ) || ! \ingot\testing\crud\session::valid( \ingot\testing\crud\session::read( $id ) ) ) {
 			$this->ID = \ingot\testing\crud\session::create( [
 				'uID' => get_current_user_id(),
 				'IP' => ingot_get_ip()
 			], true );
 
-
+		}else{
+			$this->ID = $id;
 		}
 
 		$this->session = \ingot\testing\crud\session::read( $this->ID );
-
-
+		
 		$this->ID = $this->session[ 'ID' ];
 
 		$this->ingot_id = $this->session[ 'ingot_ID' ];
