@@ -533,6 +533,10 @@ function ingot_is_rest_api() {
 
 	}
 
+	if( isset( $_SERVER, $_SERVER[ 'REQUEST_URI' ] ) && false !== strpos( $_SERVER[ 'REQUEST_URI' ], rest_get_url_prefix() ) ){
+		return true;
+	}
+
 }
 
 /**

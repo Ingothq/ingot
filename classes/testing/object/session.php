@@ -96,7 +96,7 @@ class session {
 		}
 
 		$this->session = \ingot\testing\crud\session::read( $this->ID );
-		
+
 		$this->ID = $this->session[ 'ID' ];
 
 		$this->ingot_id = $this->session[ 'ingot_ID' ];
