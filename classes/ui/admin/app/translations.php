@@ -19,6 +19,8 @@ class translations {
 	/**
 	 * Get all translation strings
 	 *
+	 * In admin app, this array is available as $rootScope.translate
+	 *
 	 * @since 1.1.0
 	 *
 	 * @return array

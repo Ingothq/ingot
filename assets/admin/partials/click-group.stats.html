@@ -1,4 +1,6 @@
-<a ui-sref="clickTests.edit({groupID:group_id})" class="btn btn-warning pull-right">Edit Group</a>
+<a ui-sref="clickTests.edit({groupID:group_id})" class="btn btn-warning pull-right">
+    {{translate.groups.edit}}
+</a>
 <h2>{{translate.stats.stats_for}} {{names.group}}</h2>
 
 <div ng-show="!stats_exist">
