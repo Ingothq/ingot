@@ -508,7 +508,13 @@ function ingot_acceptable_plugin_for_price_test( $plugin ){
  * @return bool
  */
 function ingot_is_front_end() {
-	if( is_admin() || ingot_is_admin_ajax() || ingot_is_rest_api() || ( defined( 'DOING_CRON' ) && DOING_CRON ) || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) ) {
+	if( is_admin()
+	    || ingot_is_admin_ajax()
+	    || ingot_is_rest_api()
+	    || ( defined( 'DOING_CRON' ) && DOING_CRON )
+	    || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST )
+	    || ( isset( $_REQUEST, $_REQUEST[ 'action ' ] ) &&'heartbeat' !== $_REQUEST[ 'action' ] )
+	) {
 		return false;
 	}
 

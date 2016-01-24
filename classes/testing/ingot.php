@@ -175,7 +175,7 @@ class ingot {
 	 * @since 0.3.0
 	 */
 	public function init_session(){
-		if ( ! ingot_is_no_testing_mode() && ! ingot_is_admin_ajax() && ! is_admin() && ! ingot_is_rest_api() ) {
+		if ( ingot_is_front_end() && ! ingot_is_no_testing_mode() && ! ingot_is_admin_ajax() && ! is_admin() && ! ingot_is_rest_api() ) {
 			$id = null;
 			if ( isset( $_GET[ 'ingot_session_ID' ] ) && ingot_verify_session_nonce( helpers::v( 'ingot_session_nonce', $_GET, '' ) ) ) {
 				$id = helpers::v( 'ingot_session_ID', $_GET, null );
