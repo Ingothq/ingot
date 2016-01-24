@@ -95,16 +95,16 @@ class types {
 				'name'        => __( 'Add To Cart -- Easy Digital Downloads', 'ingot' ),
 				'description' => __( 'Conversion is registered when an item is added to the Easy Digital Downloads cart.', 'ingot' ),
 			],
-			'cart_woo' => [
-				'name'        => __( 'Add To Cart -- WooCommerce', 'ingot' ),
-				'description' => __( 'Conversion is registered when an item is added to the WooCommerce cart.', 'ingot' ),
-			],
 			'sale_edd' => [
 				'name'        => __( 'Purchase -- Easy Digital Downloads', 'ingot' ),
 				'description' => __( 'Conversion is registered when an Easy Digital Downloads sale is completed.', 'ingot' ),
 			],
-			'sale_woo' => [
+			'cart_woo' => [
 				'name'        => __( 'Add To Cart -- WooCommerce', 'ingot' ),
+				'description' => __( 'Conversion is registered when an item is added to the WooCommerce cart.', 'ingot' ),
+			],
+			'sale_woo' => [
+				'name'        => __( 'Purchase -- WooCommerce', 'ingot' ),
 				'description' => __( 'Conversion is registered when a WooCommerce sale is completed.', 'ingot' ),
 			],
 			'hook'     => [
