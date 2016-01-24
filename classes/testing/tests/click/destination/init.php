@@ -204,6 +204,11 @@ class init {
 				if( group::valid( $group ) && ! empty( $group[ 'variants' ] ) ){
 					$bandit  = new content( $group_id );
 					$variant = $bandit->choose();
+					if( is_a( $variant, 'MaBandit\Lever' ) ){
+						/** @var \MaBandit\Lever $variant */
+						$variant = $variant->getValue();
+					}
+
 					if ( is_numeric( $variant ) ) {
 						cookie::set_cookie( $group_id, $variant );
 					}
@@ -233,7 +238,7 @@ class init {
 		$cookies = cookie::get_all_cookies();
 
 		$clear = [];
-		if( empty( $cookies ) && ! empty( $groups )  ){
+		if( empty( $groups ) ){
 			$clear = $groups;
 		}elseif( ! empty( $cookies ) && ! empty( $groups ) ){
 			foreach( $cookies as $group_id ){
