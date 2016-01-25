@@ -25,9 +25,10 @@ class cookie {
 	 * @param int $variant_id ID of chosen variant
 	 */
 	public static function set_cookie( $group_id, $variant_id ){
-		if ( ! headers_sent() ) {
+		$name = self::cookie_key( $group_id );
+		if ( ! headers_sent() && ! isset( $_COOKIE[ $name ] )) {
 			$expires = time() + ingot_cookie_time();
-			$name = self::cookie_key( $group_id );
+
 			$set = setcookie( $name, (string) $variant_id, $expires, COOKIEPATH, COOKIE_DOMAIN, false );
 			do_action( 'ingot_destination_cookie_set', $set, $name, $group_id, $variant_id, $expires  );
 		}

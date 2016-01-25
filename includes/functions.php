@@ -94,7 +94,11 @@ function ingot_click_html_link( $type, $group ) {
 			}else{
 				$group_id = $group;
 			}
-			$class = new \ingot\ui\render\click_tests\destination( $group, ingot\testing\tests\click\destination\init::get_test( $group_id ) );
+			$variant  = ingot\testing\tests\click\destination\init::get_test( $group_id );
+			if( ! is_numeric( $variant ) ){
+				$variant = null;
+			}
+			$class = new \ingot\ui\render\click_tests\destination( $group, $variant );
 			break;
 		default :
 			return '';

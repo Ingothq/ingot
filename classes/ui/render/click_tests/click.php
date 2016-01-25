@@ -72,13 +72,13 @@ abstract class click {
 	 * @since 0.0.5
 	 *
 	 * @param int|array $group ID of group to render, or group array
-	 * @Param int|null $variant_id Optional. Variant ID to render with. If null, one will be chosen
+	 * @Param int|null|array\MaBandit|Lever $variant Optional. Variant ID to render with. If null, one will be chosen
 	 */
-	public function __construct( $group, $variant_id = null ){
+	public function __construct( $group, $variant = null ){
 
 		$this->set_group( $group );
 		if( $this->group ) {
-			$this->set_variant( $variant_id );
+			$this->set_variant( $variant );
 			if( $this->variant ){
 				$this->make_html();
 			}
@@ -162,9 +162,11 @@ abstract class click {
 	 * @param int|array|\MaBandit\lever|null $variant Variant ID, config, or lever. If null, one will be chosen
 	 */
 	protected function set_variant( $variant ){
-		if( ! is_null( $variant  ) && is_array( $variant ) && variant::valid( $variant )){
-			$this->variant = variant::read( $variant );
-		}if( is_a( $variant, 'MaBandit\lever') ){
+		if( is_numeric( $variant ) && true === ( variant::valid($_variant =  variant::read( $variant ) ) ) ){
+			$this->variant = $_variant;
+		}elseif( is_array( $variant ) && variant::valid( $variant )){
+			$this->variant = $variant;
+		}elseif( is_a( $variant, 'MaBandit\lever') ){
 			/** @var \MaBandit\Lever $variant */
 			$this->variant = variant::read( $variant->getValue() );
 		}else{
