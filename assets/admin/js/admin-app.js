@@ -480,13 +480,14 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
     //show the right description on change of #destination
     $scope.destinationDescription = function(){
-        if( 'undefined' == $scope.group.meta.destination || 'undefined' ==  INGOT_ADMIN.destinations[ $scope.group.meta.destination ] ){
-            return false;
-        }
+        if( !_.isUndefined( $scope.group.meta.destination ) && _.has( INGOT_ADMIN.destinations, $scope.group.meta.destination ) ){
+            console.log( INGOT_ADMIN.destinations, $scope.group.meta.destination );
+            var description = INGOT_ADMIN.destinations[ $scope.group.meta.destination ];
+            var el = document.getElementById( 'destination-description' );
+            if ( null != el  ) {
+                el.innerHTML = description.description;
+            }
 
-        var el = document.getElementById( 'destination-description' );
-        if ( null != el && 'undefined' != INGOT_ADMIN.destinations[ $scope.group.meta.destination ].description ) {
-            el.innerHTML = INGOT_ADMIN.destinations[ $scope.group.meta.destination ].description;
         }
 
     }
