@@ -134,7 +134,7 @@ class tests_session_crud extends \WP_UnitTestCase {
 
 		$this->assertFalse( \ingot\testing\crud\session::exists( 99999 )  );
 
-		\ingot\testing\crud\group::delete( $id );
+		\ingot\testing\crud\session::delete( $id );
 		$this->assertFalse( \ingot\testing\crud\session::exists( $id ) );
 	}
 

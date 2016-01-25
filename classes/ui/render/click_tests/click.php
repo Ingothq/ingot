@@ -122,6 +122,10 @@ abstract class click {
 	 * @return int
 	 */
 	public function get_chosen_variant_id(){
+		if( is_null( $this->variant ) ){
+			$this->set_bandit();
+			$this->choose();
+		}
 		return (int) $this->variant[ 'ID' ];
 	}
 
@@ -175,14 +179,9 @@ abstract class click {
 	 * @since 0.4.0
 	 */
 	protected function choose(){
-		$variant_id =  $this->bandit->choose();
-		$variant = variant::read( $variant_id );
-		if( is_array( $variant ) ) {
-			$this->variant = $variant;
-		}else{
-			//@todo
+		$variant =  $this->bandit->choose();
+		$this->set_variant( $variant );
 
-		}
 	}
 
 	/**
@@ -223,7 +222,9 @@ abstract class click {
 	 * @access private
 	 */
 	private function set_bandit(){
-		$this->bandit = new content( (int) $this->group[ 'ID'] );
+		if ( is_null( $this->bandit ) ) {
+			$this->bandit = new content( (int) $this->group[ 'ID' ] );
+		}
 	}
 
 	/**

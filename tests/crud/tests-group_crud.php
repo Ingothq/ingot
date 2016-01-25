@@ -571,8 +571,6 @@ class group_crud extends \WP_UnitTestCase {
 	public function testForPriceEDD(){
 		$data = ingot_test_data_price::edd_tests();
 		if( is_wp_error( $data ) ) {
-			var_dump( $data );
-			wp_die();
 		}
 		$group_id =  $data[ 'group_ID' ];
 		$this->assertTrue( is_numeric( $group_id ) );
@@ -724,6 +722,9 @@ class group_crud extends \WP_UnitTestCase {
 	 */
 	public function testCreateDestinationTest(){
 		foreach( \ingot\testing\tests\click\destination\types::destination_types() as $type ){
+			if( 'hook' == $type ){
+				continue;
+			}
 			$args = ingot_test_desitnation::group_args( $type  );
 			$id = \ingot\testing\crud\group::create( $args );
 			$this->assertTrue( is_numeric( $id ) );

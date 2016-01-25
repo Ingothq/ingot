@@ -24,6 +24,9 @@ class test_utilities extends \WP_UnitTestCase {
 	 */
 	public function testPrepareMeta(){
 		foreach( \ingot\testing\tests\click\destination\types::destination_types() as $type ){
+			if( 'hook' == $type ) {
+				continue;
+			}
 			if ( \ingot\testing\tests\click\destination\types::allowed_destination_type( $type ) ) {
 				$args = ingot_test_desitnation::group_args( $type );
 				$id   = \ingot\testing\crud\group::create( $args );
@@ -97,6 +100,10 @@ class test_utilities extends \WP_UnitTestCase {
 	 */
 	public function testGetDestination(){
 		foreach( \ingot\testing\tests\click\destination\types::destination_types() as $type ){
+			if( 'hook' == $type ) {
+				continue;
+			}
+
 			$args = ingot_test_desitnation::group_args( $type  );
 			$data = ingot_test_desitnation::create( $type );
 			$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
@@ -118,7 +125,7 @@ class test_utilities extends \WP_UnitTestCase {
 	public function testGetPageID(){
 		$data = ingot_test_desitnation::create( 'page', true );
 		$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
-		$this->assertSame( $data[ 'page_ID' ], \ingot\testing\utility\destination::get_page_id( $group ) );
+		$this->assertSame( $data[ 'page' ], \ingot\testing\utility\destination::get_page_id( $group ) );
 	}
 
 

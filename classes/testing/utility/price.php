@@ -13,7 +13,7 @@ namespace ingot\testing\utility;
 
 
 use ingot\testing\cookies\init;
-use ingot\testing\crud\group;
+use ingot\testing\crud\crud;
 use ingot\testing\crud\variant;
 use ingot\testing\object\price\test;
 use ingot\testing\types;
@@ -209,10 +209,10 @@ class price {
 	 */
 	public static function get_product_ID( $group ){
 		if( is_numeric( $group ) ) {
-			$group = group::read( $group );
+			$group = \ingot\testing\crud\group::read( $group );
 		}
 
-		if( group::valid( $group ) ){
+		if( \ingot\testing\crud\group::valid( $group ) ){
 			return (int) helpers::v( 'product_ID', $group[ 'meta' ], null );
 		}
 	}
@@ -302,7 +302,7 @@ class price {
 	 */
 	public static function product_test_exists( $product_id ){
 		global $wpdb;
-		$table_name = group::get_table_name();
+		$table_name = \ingot\testing\crud\group::get_table_name();
 		$sql = sprintf( 'SELECT `ID` FROM `%s` WHERE `wp_ID` = %d AND `type` = "price"', $table_name, $product_id );
 		$result = $wpdb->query( $sql, ARRAY_A );
 		if( empty( $result ) ) {

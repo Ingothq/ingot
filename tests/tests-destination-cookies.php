@@ -33,6 +33,9 @@ class test_cookies extends \WP_UnitTestCase {
 		ingot_tests_data::make_groups();
 		$x = 0;
 		foreach ( \ingot\testing\tests\click\destination\types::destination_types() as $type ) {
+			if( 'hook' == $type ) {
+				continue;
+			}
 
 			$data = ingot_test_desitnation::create( $type );
 

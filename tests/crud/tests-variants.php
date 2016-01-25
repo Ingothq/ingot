@@ -286,8 +286,8 @@ class tests_variants extends \WP_UnitTestCase {
 	public function testExists(){
 		$params = [
 			'type'     => 'click',
-			'group_ID' => $i + rand(),
-			'content'  => $i
+			'group_ID' => rand(),
+			'content'  => rand()
 		];
 		$id = \ingot\testing\crud\variant::create( $params );
 
@@ -296,7 +296,7 @@ class tests_variants extends \WP_UnitTestCase {
 
 		$this->assertFalse( \ingot\testing\crud\variant::exists( 99999 )  );
 
-		\ingot\testing\crud\group::delete( $id );
+		\ingot\testing\crud\variant::delete( $id );
 		$this->assertFalse( \ingot\testing\crud\variant::exists( $id ) );
 	}
 

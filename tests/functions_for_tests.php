@@ -415,7 +415,7 @@ class ingot_test_desitnation {
 	public static function create( $type, $is_tagline = false ){
 		$page_id = 0;
 		if( 'page' == $type ){
-			$data[ 'page_ID' ] = $page_id = rand( 1, 5 );
+			$data[ 'page' ] = $page_id = rand( 1, 5 );
 		}
 
 		$args = self::group_args( $type, $page_id, $is_tagline );
@@ -427,18 +427,14 @@ class ingot_test_desitnation {
 
 		$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
 		if( is_wp_error( $group ) ){
-			var_dump( __CLASS__ . __METHOD__ . __LINE__  );
-			var_dump( $group );
-			die();
+
+			wp_die(__LINE__. __FUNCTION__ . $type  );
 		}
 		$group[ 'variants' ] = $data[ 'variants' ];
 		\ingot\testing\crud\group::update( $group, $data[ 'group_ID' ], true );
 		$group = \ingot\testing\crud\group::read( $data[ 'group_ID' ] );
 		if( is_wp_error( $group ) || empty( $group[ 'variants' ] ) ){
-			var_dump( $data );
-			var_dump( __CLASS__ . __METHOD__ . __LINE__  );
-			var_dump( $group );
-			die();
+			wp_die( __LINE__. __FUNCTION__ );
 		}
 
 		return $data;

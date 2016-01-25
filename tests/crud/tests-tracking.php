@@ -175,7 +175,9 @@ class tests_tracking extends \WP_UnitTestCase {
 
 		$this->assertFalse( \ingot\testing\crud\tracking::exists( 99999 )  );
 
-		\ingot\testing\crud\group::delete( $id );
+		$deleted = \ingot\testing\crud\tracking::delete( $id );
+
+		$this->assertTrue( $deleted );
 		$this->assertFalse( \ingot\testing\crud\tracking::exists( $id ) );
 	}
 

@@ -79,9 +79,13 @@ function ingot_sl_activate_license( $license = false ) {
 	}
 	$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
-	update_option( 'ingot_sl_license_status', $license_data->license );
+	if ( is_object( $license_data) ) {
+		update_option( 'ingot_sl_license_status', $license_data->license );
 
-	return $license_data->license;
+		return $license_data->license;
+	}
+
+	return false;
 
 }
 
