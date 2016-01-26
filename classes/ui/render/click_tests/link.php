@@ -26,7 +26,7 @@ class link extends \ingot\ui\render\click_tests\click {
 	 */
 	protected function make_html() {
 		$test_id = $this->get_variant()[ 'ID' ];
-		$text = $this->get_variant()[ 'content' ];
+		$text = $this->get_variant_content();
 		$link = $this->link();
 		$group_id = $this->get_group()[ 'ID' ];
 
@@ -36,7 +36,7 @@ class link extends \ingot\ui\render\click_tests\click {
 			esc_url( $link ),
 			esc_attr( $group_id ),
 			esc_attr( $test_id ),
-			esc_html( $text )
+			wp_kses_post( $text )
 		);
 
 	}

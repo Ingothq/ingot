@@ -25,7 +25,7 @@ class destination extends \ingot\ui\render\click_tests\click {
 	 */
 	protected function make_html() {
 		$test_id = $this->get_variant()[ 'ID' ];
-		$text = $this->get_variant()[ 'content' ];
+		$text = $this->get_variant_content();
 		$group_id = $this->get_group()[ 'ID' ];
 
 		$this->html = sprintf(
@@ -33,7 +33,7 @@ class destination extends \ingot\ui\render\click_tests\click {
 			esc_attr( $this->attr_id() ),
 			esc_attr( $group_id ),
 			esc_attr( $test_id ),
-			esc_html( $text )
+			wp_kses_post( $text )
 		);
 
 	}

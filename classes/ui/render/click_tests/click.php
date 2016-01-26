@@ -130,6 +130,26 @@ abstract class click {
 	}
 
 	/**
+	 * Get variant content
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
+	protected function get_variant_content(){
+		/**
+		 * Filter the content of the chosen variant before rendering the test
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $content The content
+		 * @param int $variant_ID The variant ID
+		 * @param int $gorup_ID The group ID
+		 */
+		return apply_filters( 'ingot_click_test_content', $this->variant[ 'content'], $this->variant[ 'ID' ], $this->group[ 'ID'] );
+	}
+
+	/**
 	 * Get variant property
 	 *
 	 * @since 0.4.0

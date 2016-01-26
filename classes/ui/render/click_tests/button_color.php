@@ -42,7 +42,7 @@ class button_color extends \ingot\ui\render\click_tests\button {
 			esc_url( $link ),
 			esc_attr( $test_id ),
 			$style,
-			esc_html( $text )
+			wp_kses_post( $text )
 		);
 
 		remove_filter( 'ingot_default_button_color', array( $this, 'get_group_default_color' ) );
