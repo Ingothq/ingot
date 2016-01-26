@@ -29,6 +29,8 @@ abstract class ingot_rest_test_case extends \WP_UnitTestCase {
 	/**
 	 * Namespaced route name
 	 *
+	 * DONT CHANGE THIS IN SUBCLASS LET $this->setNamespace() handle it
+	 *
 	 * @var string
 	 */
 	protected $namespaced_route = '';

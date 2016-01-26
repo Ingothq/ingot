@@ -27,11 +27,11 @@ abstract class click {
 	 *
 	 * @since 0.0.5
 	 *
-	 * @access private
+	 * @access protected
 	 *
 	 * @var array
 	 */
-	private $group;
+	protected $group;
 
 	/**
 	 * Rendered HTML
@@ -64,7 +64,7 @@ abstract class click {
 	 *
 	 * @var array
 	 */
-	private $variant;
+	protected $variant;
 
 	/**
 	 * Constructor for class
@@ -72,14 +72,14 @@ abstract class click {
 	 * @since 0.0.5
 	 *
 	 * @param int|array $group ID of group to render, or group array
+	 * @Param int|null|array\MaBandit|Lever $variant Optional. Variant ID to render with. If null, one will be chosen
 	 */
-	public function __construct( $group ){
+	public function __construct( $group, $variant = null ){
 
 		$this->set_group( $group );
 		if( $this->group ) {
-			$this->set_bandit();
-			if( $this->bandit ){
-				$this->choose();
+			$this->set_variant( $variant );
+			if( $this->variant ){
 				$this->make_html();
 			}
 
@@ -122,7 +122,31 @@ abstract class click {
 	 * @return int
 	 */
 	public function get_chosen_variant_id(){
+		if( is_null( $this->variant ) ){
+			$this->set_bandit();
+			$this->choose();
+		}
 		return (int) $this->variant[ 'ID' ];
+	}
+
+	/**
+	 * Get variant content
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
+	protected function get_variant_content(){
+		/**
+		 * Filter the content of the chosen variant before rendering the test
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $content The content
+		 * @param int $variant_ID The variant ID
+		 * @param int $gorup_ID The group ID
+		 */
+		return apply_filters( 'ingot_click_test_content', $this->variant[ 'content'], $this->variant[ 'ID' ], $this->group[ 'ID'] );
 	}
 
 	/**
@@ -153,19 +177,33 @@ abstract class click {
 	}
 
 	/**
+	 * Set variant property
+	 *
+	 * @param int|array|\MaBandit\lever|null $variant Variant ID, config, or lever. If null, one will be chosen
+	 */
+	protected function set_variant( $variant ){
+		if( is_numeric( $variant ) && true === ( variant::valid($_variant =  variant::read( $variant ) ) ) ){
+			$this->variant = $_variant;
+		}elseif( is_array( $variant ) && variant::valid( $variant )){
+			$this->variant = $variant;
+		}elseif( is_a( $variant, 'MaBandit\lever') ){
+			/** @var \MaBandit\Lever $variant */
+			$this->variant = variant::read( $variant->getValue() );
+		}else{
+			$this->set_bandit();
+			$this->choose();
+		}
+	}
+
+	/**
 	 * Choose a variant and set in the variant property
 	 *
 	 * @since 0.4.0
 	 */
 	protected function choose(){
-		$variant_id =  $this->bandit->choose();
-		$variant = variant::read( $variant_id );
-		if( is_array( $variant ) ) {
-			$this->variant = $variant;
-		}else{
-			//@todo
+		$variant =  $this->bandit->choose();
+		$this->set_variant( $variant );
 
-		}
 	}
 
 	/**
@@ -206,7 +244,9 @@ abstract class click {
 	 * @access private
 	 */
 	private function set_bandit(){
-		$this->bandit = new content( (int) $this->group[ 'ID'] );
+		if ( is_null( $this->bandit ) ) {
+			$this->bandit = new content( (int) $this->group[ 'ID' ] );
+		}
 	}
 
 	/**

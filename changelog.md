@@ -1,6 +1,13 @@
+# 1.1.0
+* ADDED: Shortcode insert button to post editor
+* ADDED: Destination Tests with support for WooCommerce, Easy Digital Downloads and Give
+* IMPROVED: User interface test creation flow
+* FIXED: Output of button color test
+
+
 # 1.0.2
-* Copy to clipboard for shortcode
-* Display conversion rates properly
+* ADDED: Copy to clipboard for shortcode
+* FIXED: Display conversion rates properly
 * Minor bug fixes
 
 # 1.0.1
@@ -28,12 +35,12 @@
 * Price testing for Easy Digital Downloads -- still experimental
 * Major UI improvements
 
-## 0.2.0.1
+# 0.2.0.1
 * Simpler verification of click tracking.
 * Better handling of failed click tracking.
 
-## 0.2.0
+# 0.2.0
 Major refactor and overhaul of UI
 
-## 0.1.0
+# 0.1.0
 Initial release

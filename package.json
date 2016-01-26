@@ -1,15 +1,15 @@
 {
   "name": "ingot",
-  "version": "1.0.2",
+  "version": "1.1.0-b-3",
   "description": "Ingot",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shelob9/ingot"
+    "url": "https://github.com/ingothq/ingot"
   },
   "author": "Josh Pollock",
   "license": "GPLv2+",
   "bugs": {
-    "url": "https://github.com/shelob9/ingot"
+    "url": "https://github.com/ingothq/ingot"
   },
   "devDependencies": {
     "bower": "*",
@@ -23,6 +23,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-git": "^0.3.3",
     "grunt-shell": "^1.1.1",
-    "grunt-text-replace": "^0.4.0"
+    "grunt-text-replace": "^0.4.0",
+    "grunt-wp-i18n": "^0.5.3",
+    "i18n": "^0.5.0"
   }
 }

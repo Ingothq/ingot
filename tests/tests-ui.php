@@ -21,7 +21,7 @@ class tests_ui extends \WP_UnitTestCase {
 	 */
 	public function testClickButton(){
 		$groups = ingot_tests_data::click_button_group( true, 1, 3 );
-		$this->check_render( $groups );
+		$this->check_render( $groups, __METHOD__ );
 	}
 
 	/**
@@ -35,7 +35,7 @@ class tests_ui extends \WP_UnitTestCase {
 	 */
 	public function testClickButtonColor(){
 		$groups = ingot_tests_data::click_button_color_group( true, 1, 3 );
-		$this->check_render( $groups );
+		$this->check_render( $groups, __METHOD__  );
 	}
 
 	/**
@@ -49,7 +49,7 @@ class tests_ui extends \WP_UnitTestCase {
 	 */
 	public function testClickLink(){
 		$groups = ingot_tests_data::click_link_group( true, 1, 3 );
-		$this->check_render( $groups );
+		$this->check_render( $groups, __METHOD__  );
 	}
 
 	/**
@@ -68,7 +68,7 @@ class tests_ui extends \WP_UnitTestCase {
 		$variants = $groups[ 'variants' ][ $groups[ 'ids' ][ 0 ] ];
 
 		for ( $i = 0; $i <= 5; $i++  ) {
-			$this->check_render( $groups );
+			$this->check_render( $groups, __METHOD__  );
 			$group = \ingot\testing\crud\group::read( $group_id );
 			$levers = $group[ 'levers' ];
 			$this->assertInternalType( 'array', $levers );
@@ -97,7 +97,7 @@ class tests_ui extends \WP_UnitTestCase {
 	 */
 	public function testConversion(){
 		$groups = ingot_tests_data::click_link_group( true, 1, 3 );
-		$chosen = $this->check_render( $groups );
+		$chosen = $this->check_render( $groups, __METHOD__ );
 		$group_id = $groups[ 'ids' ][ 0 ];
 
 		ingot_register_conversion($chosen);
@@ -141,7 +141,7 @@ class tests_ui extends \WP_UnitTestCase {
 		}
 
 		for ( $i = 0; $i <= 25; $i++  ) {
-			$chosen   = $this->check_render( $groups );
+			$chosen   = $this->check_render( $groups, __METHOD__  );
 			if ( in_array( $i, [ 2,3,5,8,13,21 ]) ) {
 				ingot_register_conversion( $chosen );
 				$expected[ $chosen ][ 'n' ] = $expected[ $chosen ][ 'n' ] + 1;
@@ -169,14 +169,17 @@ class tests_ui extends \WP_UnitTestCase {
 	 *
 	 * @return int ID of chosen variant
 	 */
-	protected function check_render( $groups ) {
+	protected function check_render( $groups, $test_name ) {
 		$render = new \ingot\ui\render\click_tests\button( $groups[ 'ids' ][ 0 ] );
 		$chosen = $render->get_chosen_variant_id();
-		$this->assertTrue( is_numeric( $chosen ) );
-		$this->assertTrue( in_array( (int) $chosen, $groups[ 'variants' ][ $groups[ 'ids' ][ 0 ] ] ) );
+		$this->assertTrue( is_numeric( $chosen ), $test_name );
+		if( ! in_array( $chosen, $groups[ 'variants' ][ $groups[ 'ids' ][ 0 ] ] ) ){
+			var_dump( $chosen,$groups[ 'variants' ][ $groups[ 'ids' ][ 0 ] ] );die();
+		}
+		$this->assertTrue( in_array( $chosen, $groups[ 'variants' ][ $groups[ 'ids' ][ 0 ] ], $test_name) );
 		$html = $render->get_html();
-		$this->assertInternalType( 'string', $html );
-		$this->assertNotEquals( 0, strlen( $html ) );
+		$this->assertInternalType( 'string', $html, $test_name );
+		$this->assertNotEquals( 0, strlen( $html ), $test_name );
 
 		return $chosen;
 

@@ -29,7 +29,7 @@ class button extends \ingot\ui\render\click_tests\click {
 	 */
 	protected function make_html() {
 		$test_id = (int) $this->get_variant()[ 'ID' ];
-		$text = $this->get_variant()[ 'content' ];
+		$text = $this->get_variant_content();
 		$link = $this->link();
 		$style = $this->make_style( $this->get_group() );
 		$group_id = $this->get_group()[ 'ID' ];
@@ -42,7 +42,7 @@ class button extends \ingot\ui\render\click_tests\click {
 			esc_url( $link ),
 			esc_attr( $test_id ),
 			$style,
-			esc_html( $text )
+			wp_kses_post( $text )
 		);
 
 		remove_filter( 'ingot_default_button_color', array( $this, 'get_group_default_color' ) );

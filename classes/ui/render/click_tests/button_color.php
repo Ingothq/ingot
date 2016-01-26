@@ -29,9 +29,9 @@ class button_color extends \ingot\ui\render\click_tests\button {
 	 */
 	protected function make_html() {
 		$test_id = (int) $this->get_variant()[ 'ID' ];
-		$text = $this->get_variant()[ 'content' ];
+		$text = $this->get_group()[ 'meta' ][ 'color_test_text' ];
 		$link = $this->link();
-		$style = $this->make_style( $this->get_group() );
+		$style = $this->make_style( $this->get_variant() );
 		$group_id = $this->get_group()[ 'ID' ];
 
 		$this->html = sprintf(
@@ -42,7 +42,7 @@ class button_color extends \ingot\ui\render\click_tests\button {
 			esc_url( $link ),
 			esc_attr( $test_id ),
 			$style,
-			esc_html( $text )
+			wp_kses_post( $text )
 		);
 
 		remove_filter( 'ingot_default_button_color', array( $this, 'get_group_default_color' ) );

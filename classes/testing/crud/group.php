@@ -12,7 +12,9 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\utility\destination;
 use ingot\testing\utility\helpers;
+use ingot\testing\utility\price;
 
 class group extends crud {
 
@@ -31,6 +33,46 @@ class group extends crud {
 	protected static function what() {
 		return 'group';
 	}
+
+
+	/**
+	 * Ensure an array has all the needed fields for a specific type
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	public static function valid( $data ){
+		if( parent::valid( $data ) ) {
+			if ( 'price' == $data[ 'type' ] ) {
+
+				return isset( $data[ 'meta' ][ 'product_ID' ] ) && is_numeric( $data[ 'meta' ][ 'product_ID' ] );
+			}
+
+			return true;
+
+		}
+
+	}
+
+	/**
+	 * Get a collection of items
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param array $params {
+	 *  $group_id int ID of group to get all
+	 *  $ids array Optional. Array of ids to get.
+	 *  $limit int Optional. Limit results, default is -1 which gets all.
+	 *  $page int Optional. Page of results, used with $limit. Default is 1
+	 *  $return string Optional. What to return all|IDs Return all fields or just IDs
+	 *  $type string|bool Optional  If false, the default, both price and click groups are returned if is price or click, those types are returned
+	 * }
+	 *
+	 * @return array
+	 */
 
 	/**
 	 * Save levers for a group
@@ -142,6 +184,11 @@ class group extends crud {
 
 		}
 
+		if( 'price' == $data[ 'type' ] ){
+			if( ! isset( $data[ 'wp_ID' ] ) || ! is_numeric( helpers::v( 'wp_ID', $data, null ) ) ) {
+				return new \WP_Error( 'ingot-invalid-price-group-config', __( 'Price groups must set a product ID in wp_ID field', 'ingot'  ) );
+			}
+		}
 		foreach( self::get_all_fields() as $field ){
 			if( ! in_array( $field, array( 'variants', 'meta', 'levers' ) ) ) {
 				$data[ $field ] = (string) $data[ $field ];
@@ -176,11 +223,15 @@ class group extends crud {
 	 */
 	protected static function prepare_meta( $data ) {
 		if( ! isset( $data[ 'meta' ] ) || empty( $data[ 'meta' ] || ! is_array( $data[ 'meta']) ) ){
-			$data[ 'meta'] = [];
+			$data[ 'meta' ] = [];
 			return $data;
 		}
 
 		if ( 'click' == $data[ 'type' ] ) {
+			if( 'destination' == $data[ 'sub_type' ] ){
+				return destination::prepare_meta( $data );
+			}
+
 			foreach ( [ 'color', 'background_color', 'color_test_text', 'link' ] as $field ) {
 				if ( isset( $data[ 'meta' ][ $field ] ) && ! empty( $data[ 'meta' ][ $field ] ) && is_string( $data[ 'meta' ][ $field ] ) ) {
 
@@ -199,6 +250,21 @@ class group extends crud {
 				}
 
 			}
+		}
+
+		if( 'price' == $data[ 'type' ] ) {
+
+			if( ! isset($data[ 'meta' ][ 'product_ID' ]  ) ){
+				return new \WP_Error( 'ingot-invalid-config-no-product-id', __( 'Ingot price tests must set product ID in meta.product_ID', 'ingot' ) );
+			}
+
+			if( isset( $data[ 'meta' ][ 'variable_prices' ] ) && is_array(  $data[ 'meta' ][ 'variable_prices' ] ) ){
+				$data[ 'meta' ][ 'variable_prices' ] = helpers::make_array_values_numeric( $data[ 'meta' ][ 'variable_prices' ] );
+			}else{
+				$data[ 'meta' ][ 'variable_prices' ] = [];
+			}
+
+
 		}
 
 		return $data;
@@ -294,7 +360,8 @@ class group extends crud {
 			'meta',
 			'modified',
 			'created',
-			'levers'
+			'levers',
+			'wp_ID'
 		);
 
 		return $needed;

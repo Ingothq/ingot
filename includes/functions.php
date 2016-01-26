@@ -23,16 +23,18 @@ function ingot_click_test( $id ) {
 	}
 
 	$type = $group[ 'sub_type' ];
-	switch( $type ) {
-		case in_array( $type, \ingot\testing\types::allowed_click_types() ) :
-			$html = ingot_click_html_link( $type, $group );
-			break;
-		case is_callable( $type ) :
-			$html = call_user_func( $type, $group );
-			break;
-		default :
-			$html = '';
+	if ( in_array( $type, \ingot\testing\types::allowed_click_types() ) ) {
+		switch ( $type ) {
+			case in_array( $type, \ingot\testing\types::internal_click_types() ) :
+				$html = ingot_click_html_link( $type, $group );
+				break;
+			case is_callable( $type ) :
+				$html = call_user_func( $type, $group );
+				break;
+			default :
+				$html = '';
 
+		}
 	}
 
 	return $html;
@@ -68,23 +70,35 @@ function ingot_shortcode( $atts ) {
  * @since 0.0.6
  *
  * @param string $type Test type
- * @param int $group Group ID
+ * @param int|array $group Group ID or config array
  *
  * @return string
  */
 function ingot_click_html_link( $type, $group ) {
 	switch ( $type ) {
-		case 'link' == $type :
+		case 'link' :
 			$class = new ingot\ui\render\click_tests\link( $group );
 			break;
-		case 'button' == $type :
+		case 'button' :
 			$class = new \ingot\ui\render\click_tests\button( $group );
 			break;
-		case 'button_color' == $type :
+		case 'button_color' :
 			$class = new \ingot\ui\render\click_tests\button_color( $group );
 			break;
-		case 'text' == $type :
+		case 'text' :
 			$class = new \ingot\ui\render\click_tests\text( $group );
+			break;
+		case 'destination' :
+			if( is_array( $group ) ){
+				$group_id = $group[ 'ID' ];
+			}else{
+				$group_id = $group;
+			}
+			$variant  = ingot\testing\tests\click\destination\init::get_test( $group_id );
+			if( ! is_numeric( $variant ) ){
+				$variant = null;
+			}
+			$class = new \ingot\ui\render\click_tests\destination( $group, $variant );
 			break;
 		default :
 			return '';
@@ -351,7 +365,7 @@ function ingot_sanitize_amount( $amount ) {
 	 *
 	 * @param string $thousands_separator
 	 */
-	$thousands_sep = apply_filters( 'thousands_separator', ',' );
+	$thousands_sep = apply_filters( 'ingot_thousands_separator', ',' );
 
 	/**
 	 * Chane decimal separator to use for price display
@@ -360,7 +374,7 @@ function ingot_sanitize_amount( $amount ) {
 	 *
 	 * @param string $decimal_separator
 	 */
-	$decimal_sep   = apply_filters( 'decimal_separator', '.' );
+	$decimal_sep   = apply_filters( 'ingot_decimal_separator', '.' );
 
 	// Sanitize the amount
 	if ( $decimal_sep == ',' && false !== ( $found = strpos( $amount, $decimal_sep ) ) ) {
@@ -421,8 +435,6 @@ function ingot_accepted_plugins_for_price_tests( $with_labels = false ) {
 		'woo' => __( 'WooCommerce', 'ingot' )
 	);
 
-
-
 	/**
 	 * Add or remove allowed plugins for price tests
 	 *
@@ -437,6 +449,46 @@ function ingot_accepted_plugins_for_price_tests( $with_labels = false ) {
 	}else{
 		return $plugins;
 	}
+}
+
+/**
+ * Get eCommerce plugins list with banner/active status
+ *
+ * @since 1.1.0
+ *
+ * @return array
+ */
+function ingot_ecommerce_plugins_list(){
+	$plugins = ingot_accepted_plugins_for_price_tests( true );
+	if ( ! empty( $plugins ) && is_array( $plugins ) ) {
+		foreach ( $plugins as $value => $label ){
+			$_plugins[ $value ] = [
+				'value' => $value,
+				'label' => $label
+			];
+		}
+
+		$plugins = $_plugins;
+
+		if ( isset( $plugins[ 'edd' ] ) ) {
+			$plugins[ 'edd' ][ 'logo' ] = esc_url_raw( INGOT_URL . 'assets/img/edd_logo.png' );
+		}
+		if ( isset( $plugins[ 'woo' ] ) ) {
+			$plugins[ 'woo' ][ 'logo' ] = esc_url_raw( INGOT_URL . 'assets/img/woocommerce_logo.png' );
+		}
+
+		foreach( $plugins as $plugin => $plugin_data ){
+
+			if( ingot_check_ecommerce_active( $plugin ) ){
+				$plugins[ $plugin ][ 'active' ] = true;
+			}else{
+				$plugins[ $plugin ][ 'active' ] = false;
+			}
+		}
+	}
+
+	return $plugins;
+
 }
 
 /**
@@ -460,7 +512,13 @@ function ingot_acceptable_plugin_for_price_test( $plugin ){
  * @return bool
  */
 function ingot_is_front_end() {
-	if( is_admin() || ingot_is_admin_ajax() || ingot_is_rest_api() || ( defined( 'DOING_CRON' ) && DOING_CRON ) || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) ) {
+	if( is_admin()
+	    || ingot_is_admin_ajax()
+	    || ingot_is_rest_api()
+	    || ( defined( 'DOING_CRON' ) && DOING_CRON )
+	    || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST )
+	    || ( isset( $_REQUEST, $_REQUEST[ 'action ' ] ) &&'heartbeat' !== $_REQUEST[ 'action' ] )
+	) {
 		return false;
 	}
 
@@ -481,6 +539,11 @@ function ingot_is_rest_api() {
 	}
 
 	if( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		return true;
+
+	}
+
+	if( isset( $_SERVER, $_SERVER[ 'REQUEST_URI' ] ) && false !== strpos( $_SERVER[ 'REQUEST_URI' ], rest_get_url_prefix() ) ){
 		return true;
 	}
 
@@ -523,10 +586,10 @@ function ingot_enable_price_testing() {
  * @since 0.2.0
  */
 function ingot_destroy(){
-	ingot_bootstrap::maybe_add_tracking_table( true );
-	ingot_bootstrap::maybe_add_session_table( true );
-	ingot_bootstrap::maybe_add_group_table( true );
-	ingot_bootstrap::maybe_add_variant_table( true );
+	\ingot\testing\db\delta::maybe_add_tracking_table( true );
+	\ingot\testing\db\delta::maybe_add_session_table( true );
+	\ingot\testing\db\delta::maybe_add_group_table( true );
+	\ingot\testing\db\delta::maybe_add_variant_table( true );
 
 }
 
@@ -592,18 +655,28 @@ function ingot_rest_response( $data, $code = 200, $total = null ){
  *
  * @since 0.4.0
  *
- * @param int $variant_ID ID of variant to register conversion for
+ * @param int|array $variant Variant config or Variant ID to register conversion for
  * @param int $session_ID Optional. Session ID. If a valid session ID is passed, that session will be marked as having converted with this vartiant ID.
  */
-function ingot_register_conversion( $variant_ID, $session_ID = 0 ){
-	$variant = \ingot\testing\crud\variant::read( $variant_ID );
-	if ( is_array( $variant ) ) {
+function ingot_register_conversion( $variant, $session_ID = 0 ){
+	if ( is_numeric( $variant ) ) {
+		$variant = \ingot\testing\crud\variant::read( $variant );
+	}
+
+	if ( \ingot\testing\crud\variant::valid( $variant ) ) {
 		$bandit = new \ingot\testing\bandit\content( $variant[ 'group_ID' ] );
-		$bandit->record_victory( $variant_ID );
+		$bandit->record_victory( $variant[ 'ID' ] );
 
 		if ( 0 < absint( $session_ID ) && is_array( $session = \ingot\testing\crud\session::read( $session_ID ) ) ) {
-			$session[ 'click_ID' ] = $variant_ID;
-			$session[ 'used' ] = true;
+
+		}else{
+			$session = \ingot\testing\ingot::instance()->get_current_session()[ 'session' ];
+
+		}
+
+		if ( \ingot\testing\crud\session::valid( $session ) ) {
+			$session[ 'click_ID' ] = $variant[ 'ID' ];
+			$session[ 'used' ]     = true;
 			if ( 0 !== ( $userID = get_current_user_id() ) ) {
 				$session[ 'click_url' ] = $userID;
 			}
@@ -662,9 +735,70 @@ function ingot_is_batman(){
 	 *
 	 * @since 0.4.0
 	 *
-	 * @param bool $is_bot Whether to treat current visitor as bot or not
+	 * @param bool $is_bot Whether to be suspicious that current site visitor might be The Batman or not.
 	 */
 	return (bool) apply_filters( 'ingot_is_batman', $is_batman );
 
 }
 
+/**
+ * Get price of a WooCommerce product
+ *
+ * @since 1.0.0
+ *
+ * @param int $id Product ID
+ *
+ * @return string
+ */
+function ingot_get_woo_price( $id ){
+	$product = wc_get_product( $id );
+	if( is_object( $product ) ) {
+		return $product->get_price();
+
+	}
+
+}
+
+
+/**
+ * Get cookie expiration time.
+ *
+ * @since 1.1.0
+ */
+function ingot_cookie_time(){
+	/**
+	 * Change cookie time
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param int $cookie_time Length to keep cookie. Default is 15 days
+	 */
+	return apply_filters( 'ingot_cookie_time', 15 * DAY_IN_SECONDS );
+}
+
+
+/**
+ * Check if in no testing mode
+ *
+ * If true, no iterations or conversions are recorded and a random variant is used.
+ *
+ * @since 1.1.0
+ *
+ * @return bool
+ */
+function ingot_is_no_testing_mode(){
+	$is_no_testing_mode = false;
+	if( ingot_is_bot() ) {
+		$is_no_testing_mode = true;
+	}
+
+	/**
+	 * Turn no testing mode on or of
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param bool $is_no_testing_mode
+	 */
+	return (bool) apply_filters( 'ingot_is_no_testing_mode', $is_no_testing_mode );
+
+}

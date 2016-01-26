@@ -46,6 +46,19 @@ class settings extends route {
 				'args'            => $this->args( false )
 			),
 		) );
+		register_rest_route( $namespace, '/' . $base . '/page-search', array(
+			array(
+				'methods'         => \WP_REST_Server::READABLE,
+				'callback'        => array( $this, 'page_search' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
+				'args'            => array(
+					'search' => array(
+						'default' => '',
+						'sanitize_callback' => 'sanitize_text_field'
+					)
+				)
+			)
+		));
 	}
 
 	/**
@@ -158,6 +171,38 @@ class settings extends route {
 	}
 
 	/**
+	 * Page search
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @param array $settings Optional. Current settings. If not used current settings will be queried
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function page_search( $request ){
+		$posts = [];
+		if( ! empty( $request->get_param( 'search' ) ) ){
+			$query = new \WP_Query( [
+				's' => $request->get_param( 'search' ),
+				'post_type' => 'page'
+			]);
+			if( $query->have_posts() ) {
+				$_posts = array_combine( wp_list_pluck( $query->posts, 'ID' ), wp_list_pluck( $query->posts, 'post_title' ) );
+				foreach( $_posts as $id => $title  ) {
+					$posts[ $id ] = [
+						'id' => $id,
+						'title' => $title
+					];
+				}
+			}
+
+		}
+
+		return ingot_rest_response( $posts );
+	}
+
+	/**
 	 * Permissions check
 	 *
 	 * @since 0.2.0
@@ -167,8 +212,5 @@ class settings extends route {
 	public function permissions_check() {
 		return current_user_can( 'manage_options' );
 	}
-
-
-
 
 }

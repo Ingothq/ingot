@@ -153,4 +153,32 @@ class tests_tracking extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test item exists method
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group tracking
+	 * @group tracking_crud
+	 * @group crud
+	 *
+	 * @covers  \ingot\testing\crud\group::tracking()
+	 */
+	public function testExists(){
+		$params = array(
+			'test_ID' => rand()
+		);
+		$id = \ingot\testing\crud\tracking::create( $params, true );
+
+		$this->assertTrue( is_numeric( $id ) );
+		$this->assertTrue( \ingot\testing\crud\tracking::exists( $id ) );
+
+		$this->assertFalse( \ingot\testing\crud\tracking::exists( 99999 )  );
+
+		$deleted = \ingot\testing\crud\tracking::delete( $id );
+
+		$this->assertTrue( $deleted );
+		$this->assertFalse( \ingot\testing\crud\tracking::exists( $id ) );
+	}
+
 }

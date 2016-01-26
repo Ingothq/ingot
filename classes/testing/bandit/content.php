@@ -15,13 +15,10 @@ namespace ingot\testing\bandit;
 
 
 use ingot\testing\object\group;
+use ingot\testing\object\initial;
+use MaBandit\CreateExperiment;
 
 class content extends bandit {
-
-	/**
-	 * @var \ingot\testing\object\group
-	 */
-	private $obj;
 
 
 	/**
@@ -43,7 +40,26 @@ class content extends bandit {
 		 );
 		 return $persistor;
 
+	}
 
+	/**
+	 * Decide, based on group type and average sessions if variant selection be at random
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool
+	 */
+	protected function set_random(){
+		if ( ! ingot_is_no_testing_mode() ) {
+			if ( ! is_object( $this->obj ) ) {
+				$this->set_group_obj();
+			}
+
+			$initial_calc      = new initial( $this->obj );
+			$this->random_mode = ! $initial_calc->is_passed_initial();
+		}else{
+			$this->random_mode = true;
+		}
 	}
 
 	/**
@@ -96,6 +112,10 @@ class content extends bandit {
 
 
 	/**
+	 * Get levers from group object
+	 *
+	 * @since 0.4.0
+	 *
 	 * @return array
 	 */
 	public function get_levers( $id ) {
@@ -111,7 +131,18 @@ class content extends bandit {
 	}
 
 
-
+	/**
+	 * Save levers using group object
+	 *
+	 * Note: this way is preferable as it bypasses capabilities checkes.
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param int $id Group ID
+ 	 * @param array $levers The Levers
+	 *
+	 * @return bool
+	 */
 	public function save_levers( $id, $levers  ) {
 		if ( $id == $this->get_ID() ) {
 			$this->obj->update_levers( $levers );
@@ -123,15 +154,24 @@ class content extends bandit {
 
 	}
 
-	private function set_group_obj(){
-		$this->obj = new group( $this->get_ID() );
-	}
-
+	/**
+	 * Create experiment -- the collection of levers for this group
+	 *
+	 * Using parent method to do the creation then set levers for group
+	 *
+	 * @since 0.4.0
+	 *
+	 * @access protected
+	 */
 	protected function create_experiment() {
 		parent::create_experiment();
+		if ( is_object( $this->experiment ) ) {
+			$levers[ $this->get_ID() ] = $this->experiment->getLevers();
+			$this->obj->update_levers( $levers );
+		}else{
+			//@todo
+		}
 
-		$levers[ $this->get_ID() ] = $this->experiment->getLevers();
-		$this->obj->update_levers( $levers );
 	}
 
 }

@@ -12,7 +12,7 @@
 namespace ingot\testing\object;
 
 
-final class session {
+class session {
 
 	/**
 	 *
@@ -45,17 +45,6 @@ final class session {
 	 */
 	protected $ingot_id;
 
-	/**
-	 * Holds class instance.
-	 *
-	 * @since 0.3.0
-	 *
-	 * @access private
-	 *
-	 * @var \ingot\testing\object\session
-	 */
-	private static $instance;
-
 
 	/**
 	 * Contructor
@@ -64,25 +53,10 @@ final class session {
 	 *
 	 * @param null|int $id Optional. Session ID or null, the default, to create a new session
 	 */
-	private function __construct( $id = null ){
+	public function __construct( $id = null ){
 		$this->set_up_session ( $id );
 	}
 
-	/**
-	 * Create or get class instance
-	 *
-	 * @param null|int $id Optional. Session ID or null, the default, to create a new session
-	 *
-	 * @return \ingot\testing\object\session
-	 */
-	public static function instance( $id = null ) {
-		if( is_null( self::$instance ) ) {
-			self::$instance = new self( $id );
-		}
-
-		return self::$instance;
-
-	}
 
 	/**
 	 * Get session ID and ingot_id
@@ -95,8 +69,10 @@ final class session {
 		return [
 			'ID' => $this->ID,
 			'ingot_ID' => $this->ID,
+			'session' => $this->session
 		];
 	}
+
 
 	/**
 	 * Set class properties
@@ -108,17 +84,18 @@ final class session {
 	 * @param $id
 	 */
 	private function set_up_session( $id ) {
-		if( is_null(  $id ) || ! is_array( \ingot\testing\crud\session::read( $id ) ) ) {
+
+		if( is_null(  $id ) || ! \ingot\testing\crud\session::valid( \ingot\testing\crud\session::read( $id ) ) ) {
 			$this->ID = \ingot\testing\crud\session::create( [
 				'uID' => get_current_user_id(),
 				'IP' => ingot_get_ip()
 			], true );
 
-
+		}else{
+			$this->ID = $id;
 		}
 
 		$this->session = \ingot\testing\crud\session::read( $this->ID );
-
 
 		$this->ID = $this->session[ 'ID' ];
 

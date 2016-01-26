@@ -16,6 +16,7 @@ use ingot\testing\crud\group;
 use ingot\testing\crud\sequence;
 use ingot\testing\crud\test;
 use ingot\testing\crud\variant;
+use ingot\testing\object\posts;
 use ingot\testing\types;
 use ingot\testing\utility\helpers;
 use ingot\testing\api\rest\util;
@@ -51,6 +52,27 @@ class groups extends route {
 				),
 			)
 		);
+		register_rest_route( $namespace, '/' . $base . '/post/(?P<id>[\d]+)/stats', array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_posts' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'args'                => array(),
+				),
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_posts' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'args'                => [
+						'group_ids' => [
+							'type' => 'array',
+							'required' => true,
+							''
+						]
+					],
+				),
+			)
+		);
 	}
 
 	/**
@@ -64,7 +86,8 @@ class groups extends route {
 	public function get_items( $request ) {
 		$args = array(
 			'page' => $request->get_param( 'page' ),
-			'limit' => $request->get_param( 'limit' )
+			'limit' => $request->get_param( 'limit' ),
+			'type' => $request->get_param( 'type' )
 		);
 
 		$groups = group::get_items( $args );
@@ -113,9 +136,8 @@ class groups extends route {
 				group::update( $item, $item[ 'ID' ] );
 				$item = group::read( $item[ 'ID' ] );
 				if ( is_array( $item ) ) {
-					if ( is_array( $item ) ) {
-						$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
-					}
+
+					$item = $this->prepare_group( $item, $request->get_param( 'context' ) );
 
 					return ingot_rest_response( $item, 201, 1 );
 
@@ -412,6 +434,16 @@ class groups extends route {
 			}
 		}
 
+		if( isset( $group_args[ 'meta' ][ 'destination' ] ) ){
+			if( is_object( $group_args[ 'meta' ][ 'destination' ] ) ) {
+				$group_args[ 'meta' ][ 'destination' ] = (array) $group_args[ 'meta' ][ 'destination' ];
+			}
+
+			if( is_array( $group_args[ 'meta' ][ 'destination' ] ) ){
+				$group_args[ 'meta' ][ 'destination' ] = helpers::v( 'value', $group_args[ 'meta' ][ 'destination' ], 'page' );
+			}
+		}
+
 		foreach ( $group_args as $key => $value ) {
 			if ( is_numeric( $key ) || ! in_array( $key, $allowed ) ) {
 				unset( $group_args[ $key ] );
@@ -434,6 +466,15 @@ class groups extends route {
 	protected function save_variants( $group ){
 		$variants_ids = [];
 		$variants = helpers::v( 'variants', $group, [] );
+
+		$product_id = null;
+ 		if ( 'price' == $group[ 'type' ] ) {
+			$product_id = helpers::v( 'product_ID', $group[ 'meta' ], null );
+			if( ! is_numeric( $product_id ) ){
+				return new \WP_Error( 'ingot-no-product-id', __( 'No product ID was set.', 'ingot') );
+			}
+		}
+
 		if( isset( $group[ 'ID' ] ) ){
 			$group_id = $group[ 'ID' ];
 		} elseif( isset( $group[ 'id'] ) ){
@@ -441,6 +482,8 @@ class groups extends route {
 		}else{
 			return new \WP_Error( 'ingot-generalized-failure' );
 		}
+
+
 		if ( ! empty( $variants ) ) {
 			foreach ( $variants as $variant ) {
 				if( is_numeric( $variant ) ) {
@@ -449,6 +492,10 @@ class groups extends route {
 
 				$variant[ 'group_ID' ] = $group_id;
 				$variant[ 'type' ]     = $group[ 'type' ];
+				if ( 'price' == $group[ 'type' ] ) {
+					$variant[ 'content' ] = $product_id;
+				}
+
 				if( ( ! isset( $variant[ 'content' ] ) || empty( $variant[ 'content'] ) ) && 'button_color' == $group[ 'sub_type'] )  {
 					$variant[ 'content' ] = '  ';
 				}
@@ -474,5 +521,50 @@ class groups extends route {
 
 	}
 
+	/**
+	 * Get groups associated with a post
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_groups( $request ){
+		$url = $request->get_url_params( );
+		$post_id = (int) helpers::v( 'id', $url, 0 );
+		$post = get_post( $post_id );
+		if( ! is_a( $post, 'WP_POST' ) ){
+			return ingot_rest_response(
+				[ 'message' => esc_html__( 'No group found', 'ingot') ]
+			);
+		}
+
+		$obj = new posts( $post );
+		return ingot_rest_response( $obj->get_groups() );
+	}
+
+	/**
+	 * Update groups associated with a post
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function update_posts( $request ){
+		$url = $request->get_url_params( );
+		$post_id = (int) helpers::v( 'id', $url, 0 );
+		$post = get_post( $post_id );
+		if( ! is_a( $post, 'WP_POST' ) ){
+			return ingot_rest_response(
+				[ 'message' => esc_html__( 'No group found', 'ingot') ]
+			);
+		}
+
+		$obj = new posts( $post );
+		$obj->add( $request->get_param( 'group_ids' ) );
+		return ingot_rest_response( $obj->get_groups() );
+		
+	}
 
 }

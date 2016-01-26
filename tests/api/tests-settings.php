@@ -45,6 +45,10 @@ class tests_settings extends ingot_rest_test_case {
 		);
 
 		foreach( $expected as $setting => $value ){
+			if( 'license_code' == $expected ) {
+				continue;
+			}
+
 			\ingot\testing\crud\settings::write( $setting, $value );
 		}
 

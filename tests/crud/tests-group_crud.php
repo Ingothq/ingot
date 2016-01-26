@@ -556,4 +556,215 @@ class group_crud extends \WP_UnitTestCase {
 		$this->assertSame( 4, count( $group[ 'levers' ][ $group_id ] ) );
 	}
 
+	/**
+	 * Test that when we can create price tests properly
+	 *
+	 * @since 0.4.0
+	 *
+	 * @group crud
+	 * @group group
+	 * @group group_crud
+	 * @group price
+	 *
+	 * @covers \ingot\testing\crud\group::create()
+	 */
+	public function testForPriceEDD(){
+		$data = ingot_test_data_price::edd_tests();
+		if( is_wp_error( $data ) ) {
+		}
+		$group_id =  $data[ 'group_ID' ];
+		$this->assertTrue( is_numeric( $group_id ) );
+		$group = \ingot\testing\crud\group::read( $group_id );
+		$this->assertTrue( is_array( $group ) );
+		$this->assertSame( 'price', $group[ 'type' ] );
+		$this->assertSame( 'edd', $group[ 'sub_type' ] );
+
+	}
+
+	/**
+	 * Test that when we can create price tests properly
+	 *
+	 * @since 0.4.0
+	 *
+	 * @group crud
+	 * @group group
+	 * @group group_crud
+	 * @group price
+	 *
+	 * @covers \ingot\testing\crud\group::get_items()
+	 */
+	public function testQueryByType(){
+		$data = ingot_test_data_price::edd_tests();
+		ingot_tests_make_groups( false, 11, 1 );
+		$data = ingot_test_data_price::edd_tests();
+		$group_id = $data[ 'group_ID' ];
+		$items = \ingot\testing\crud\group::get_items( [
+			'type' => 'price',
+			'limit' => 5
+		]);
+
+		$this->assertTrue( is_array( $items ) );
+		$this->assertNotEmpty( $items );
+		$this->assertSame( 2, count( $items ) );
+		foreach( $items as $item ){
+			$this->assertEquals( 'price', $item[ 'type' ] );
+		}
+	}
+
+
+	/**
+	 * Test that we can't create a price group for a product that is already being tested
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group group_crud
+	 * @group price
+	 *
+	 * @covers  \ingot\testing\crud\group::create()
+	 * @covers \ingot\testing\crud\crud::save()
+	 * @covers 	\ingot\testing\utility\price::product_test_exists()
+	 */
+	public function testPriceTestExists(){
+
+		$should_work = \ingot\testing\crud\group::create( [
+			'name'     => 'd',
+			'type'     => 'price',
+			'sub_type' => 'edd',
+			'meta'     => [
+				'product_ID' => 169,
+			],
+			'wp_ID' => 169
+		], true );
+
+		$this->assertTrue( is_numeric( $should_work ) );
+
+		$should_not_work = \ingot\testing\crud\group::create( [
+			'name'     => 'd',
+			'type'     => 'price',
+			'sub_type' => 'edd',
+			'meta'     => [
+				'product_ID' => 169,
+			],
+			'wp_ID' => 169
+		], true );
+
+		$this->assertWPError( $should_not_work );
+
+
+	}
+
+	/**
+	 * Test that we can't create a price group without wp_ID
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group group_crud
+	 * @group price
+	 *
+	 * @covers  \ingot\testing\crud\group::create()
+	 * @covers \ingot\testing\crud\crud::save()
+	 */
+	public function testPriceRequiresWpID(){
+		$should_not_work = \ingot\testing\crud\group::create( [
+			'name'     => 'd',
+			'type'     => 'price',
+			'sub_type' => 'edd',
+			'meta'     => [
+				'product_ID' => 169,
+			],
+		], true );
+
+		$this->assertWPError( $should_not_work );
+	}
+
+	/**
+	 * Test that we CAN create a click group with duplicate wp_ID
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group group_crud
+	 *
+	 * @covers  \ingot\testing\crud\group::create()
+	 * @covers \ingot\testing\crud\crud::save()
+	 */
+	public function testWpIDClickDuplicate(){
+		$params = array(
+			'type' => 'click',
+			'sub_type' => 'button',
+			'meta' => [ 'link' => 'https://bats.com' ],
+			'wp_ID' => 9
+		);
+
+		for( $i = 0; $i <= rand( 3, 5); $i++ ){
+
+			$this->assertTrue( is_numeric( \ingot\testing\crud\group::create( $params ) ) );
+		}
+
+
+	}
+
+	/**
+	 * Test that we can create all sorts of destination tests
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group group_crud
+	 * @group destination
+	 *
+	 * @covers  \ingot\testing\crud\group::create()
+	 * @covers \ingot\testing\crud\crud::save()
+	 * @covers \ingot\testing\tests\click\destination\types::destination_types()
+	 * @covers \ingot\testing\utility\destination::prepare_meta()
+	 */
+	public function testCreateDestinationTest(){
+		foreach( \ingot\testing\tests\click\destination\types::destination_types() as $type ){
+			if( 'hook' == $type ){
+				continue;
+			}
+			$args = ingot_test_desitnation::group_args( $type  );
+			$id = \ingot\testing\crud\group::create( $args );
+			$this->assertTrue( is_numeric( $id ) );
+			$group = \ingot\testing\crud\group::read( $id );
+			$this->assertInternalType( 'array', $group );
+			$this->assertTrue( \ingot\testing\crud\group::valid( $group ) );
+
+		}
+
+	}
+
+	/**
+	 * Test item exists method
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group group
+	 * @group group_crud
+	 * @group crud
+	 *
+	 * @covers  \ingot\testing\crud\group::exists()
+	 */
+	public function testExists(){
+		$id = \ingot\testing\crud\group::create( [
+			'name'     => 'd',
+			'type'     => 'price',
+			'sub_type' => 'edd',
+			'meta'     => [
+				'product_ID' => 169,
+			],
+			'wp_ID' => 169
+		], true );
+
+		$this->assertTrue( is_numeric( $id ) );
+		$this->assertTrue( \ingot\testing\crud\group::exists( $id ) );
+
+		$this->assertFalse( \ingot\testing\crud\group::exists( 99999 )  );
+
+		\ingot\testing\crud\group::delete( $id );
+		$this->assertFalse( \ingot\testing\crud\group::exists( $id ) );
+	}
+
 }

@@ -12,9 +12,34 @@
 namespace ingot\testing\crud;
 
 
+use ingot\testing\utility\helpers;
+
 class variant extends crud {
 
 	public static $what = 'variant';
+
+	/**
+	 * Get variants by group ID
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array|int $params Array with the key 'group_ID' or the group ID
+	 *
+	 * @return array
+	 */
+	public static function get_items( $params ){
+		if( is_numeric( $params ) ){
+			$group_id = $params;
+		}else{
+			$group_id = helpers::v( 'group_ID', $params, 0 );
+		}
+		if( 0 != absint( $group_id ) ){
+			$table_name = self::get_table_name();
+			$sql = sprintf( 'SELECT * FROM `%s` WHERE `group_ID` = %d', $table_name, $group_id  );
+			return self::bulk_query( $sql, true  );
+		}
+
+	}
 
 	/**
 	 * Validate item config
@@ -33,8 +58,8 @@ class variant extends crud {
 			return new \WP_Error( 'ingot-invalid-config', __(  'Variant\'s group_ID type field numeric', 'ingot'  ), $data );
 		}
 
-		if( 'price' == $data[ 'type' ] && ! is_numeric( $data[ 'type' ] ) ){
-			return new \WP_Error( 'ingot-invalid-config', __(  'Variants type field for price tests must be ID of a product', 'ingot'  ), $data );
+		if( 'price' == $data[ 'type' ] && ! is_numeric( $data[ 'content' ] ) ){
+			return new \WP_Error( 'ingot-invalid-config', __(  'Variant\'s content field for price tests must be ID of a product', 'ingot'  ), $data );
 		}
 
 		if ( false == self::validate_type( $data ) ) {
@@ -60,6 +85,29 @@ class variant extends crud {
 		}
 
 		return parent::fill_in( $data );
+	}
+
+	/**
+	 * Ensure  array has all the needed fields for a variant
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	public static function valid( $data ){
+		if( false == parent::valid( $data ) ) {
+			return false;
+		}
+
+		if( 'price' == $data[ 'type' ] ) {
+			return isset( $data[ 'meta'][ 'price' ] ) && is_numeric( $data[ 'content' ] );
+
+		}
+
+		return true;
+
 	}
 
 

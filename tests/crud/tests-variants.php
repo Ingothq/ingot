@@ -272,4 +272,32 @@ class tests_variants extends \WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test item exists method
+	 *
+	 * @since 1.1.0
+	 *
+	 * @group variant
+	 * @group variant_crud
+	 * @group crud
+	 *
+	 * @covers  \ingot\testing\crud\group::variant()
+	 */
+	public function testExists(){
+		$params = [
+			'type'     => 'click',
+			'group_ID' => rand(),
+			'content'  => rand()
+		];
+		$id = \ingot\testing\crud\variant::create( $params );
+
+		$this->assertTrue( is_numeric( $id ) );
+		$this->assertTrue( \ingot\testing\crud\variant::exists( $id ) );
+
+		$this->assertFalse( \ingot\testing\crud\variant::exists( 99999 )  );
+
+		\ingot\testing\crud\variant::delete( $id );
+		$this->assertFalse( \ingot\testing\crud\variant::exists( $id ) );
+	}
+
 }

@@ -1,0 +1,71 @@
+<div class="form-group row group-type-select">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="row">
+            <label for="destination" class="col-md-4 col-sm-12">
+                {{translate.group.destination_header}}
+            </label>
+            <select id="destination" ng-model="group.meta.destination" class="col-md-8 col-sm-12" ng-required="true"  ng-change="destinationDescription()" data-ng-init="destinationDescription()">
+                <option ng-repeat="destination in destinations" value="{{destination.value}}" ng-selected="destinationSelected(destination)">
+                    {{destination.name}}
+                </option>
+            </select>
+            </div>
+            <div class="row">
+                <div class="col-sm-10 col-push-2" id="destination-description" aria-live="assertive"></div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="is_tagline" class="col-md-4 col-sm-12">
+                {{translate.group.is_tagline}}
+            </label>
+            <input id="is_tagline" class="col-md-8 col-sm-12" ng-model="group.meta.is_tagline" type="checkbox"/>
+        </div>
+        <div class="form-group row" ng-show="is_page()">
+
+                <label for="destination-page" class="col-md-4 col-sm-12">
+                    {{translate.group.destination_page}}
+                </label>
+                <input id="destination-page" class="col-md-8 col-sm-12" ng-model="group.meta.page" type="search" />
+
+                <label for="destination-page" class="col-md-4 col-sm-12" ng-hide="showPageSearch()">
+                    {{translate.group.destination_page_results}}
+                </label>
+                <select ng-model="group.meta.page" id="destination-page-search-results" class="col-md-8 col-sm-12" ng-hide="showPageSearch()">
+                    <option ng-repeat="page in pages" value="{{page.id}}">{{page.title}}</option>
+                </select>
+                <div class="col-sm-12" ng-hide="showPageSearch()">
+                    {{translate.group.destination_page_desc}}
+                </div>
+        </div>
+
+        <div class="form-group row" ng-show="is_hook()">
+            <label for="hook" class="col-md-4 col-sm-12">
+                {{translate.group.destination_hook}}
+            </label>
+            <input id="hook" class="col-md-8 col-sm-12" ng-model="group.meta.hook" type="text"/>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div id="tests" ng-repeat="variant in group.variants track by $index">
+            <div id="test-{{variant.ID}}">
+                <ng-form name="innerForm">
+                    <div class="form-group row">
+                        <label for="text-{{variant.ID}}" class="col-sm-3">
+                            {{translate.group.text_label_test_setting}}
+                        </label>
+                        <input name="text" type="text" id="text-{{variant.ID}}" ng-model="variant.content" class="col-sm-7"/>
+                        <div class="col-sm-2 text-right">
+                            <a ng-click="removeTest( variant.ID )" class="delete" ng-href="" title="{{translate.group.delete}}">
+                                <i class="fa fa-minus-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </ng-form>
+            </div>
+        </div>
+        <a class="btn btn-default btn-block add-new-test" ng-click="addNewTest()" ng-href="">
+            {{translate.group.add_test}}
+        </a>
+    </div>
+</div>

@@ -20,7 +20,14 @@ module.exports = function (grunt) {
                 'build/'
             ],
             pre_compress: [
-                'build/releases'
+                'build/ingot/vendor/ingot/mabandit/test',
+                'build/ingot/vendor/ingot/mabandit/vendor/phpunit',
+                'build/ingot/vendor/ingot/mabandit/vendor/symfony',
+                'build/ingot/vendor/jaybizzle/crawler-detect/tests',
+                'build/ingot/vendor/blainesch/prettyarray/examples',
+                'build/ingot/vendor/bin',
+                'build/releases',
+                'build/ingot/build'
             ]
         },
         run: {
@@ -52,7 +59,9 @@ module.exports = function (grunt) {
                     '!phpunit.xml',
                     '!tests/**',
                     '!bower_components/**',
-                    '!bin/**'
+                    '!bin/**',
+                    '!vendor/ingot/mabandit/vendor/bin/**'
+
                 ],
                 dest: 'build/<%= pkg.name %>/'
             }
@@ -128,7 +137,7 @@ module.exports = function (grunt) {
             frontend: {
                 files: {
                     'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ],
-                    'assets/admin/js/ingot-admin-dependencies.min.js' : ['assets/admin/js/ingot-admin-dependencies.js' ]
+                    'assets/admin/js/ingot-post-editor.min.js' : ['assets/admin/js/ingot-post-editor.js' ]
                 }
             },
             admin:{
@@ -143,7 +152,32 @@ module.exports = function (grunt) {
                 'assets/front-end/js/ingot-click-test.js'
             ],
             tasks: ['default']
-        }
+        },
+        addtextdomain: {
+            options: {
+                textdomain: 'ignot',
+            },
+            target: {
+                files: {
+                    src: [ '*.php', '**/*.php', '!node_modules/**', '!tests/**', '!bin/**' ]
+                }
+            }
+        },
+        makepot: {
+            target: {
+                options: {
+                    domainPath: '/languages',
+                    mainFile: 'ingot.php',
+                    potFilename: 'ingot.pot',
+                    potHeaders: {
+                        poedit: true,
+                        'x-poedit-keywordslist': true
+                    },
+                    type: 'wp-plugin',
+                    updateTimestamp: true
+                }
+            }
+        },
 
     });
 
@@ -156,7 +190,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks( 'grunt-shell');
     grunt.loadNpmTasks( 'grunt-contrib-uglify');
     grunt.loadNpmTasks( 'grunt-contrib-watch');
-    grunt.loadNpmTasks( 'grunt-contrib-concat' );
+    grunt.loadNpmTasks( 'grunt-wp-i18n' );
+    grunt.registerTask( 'i18n', ['addtextdomain', 'makepot'] );
 
 
 
@@ -165,9 +200,9 @@ module.exports = function (grunt) {
 
     //release tasks
     grunt.registerTask( 'version_number', [ 'replace:core_file' ] );
-    grunt.registerTask( 'pre_vcs', [ 'shell:composer', 'shell:bower', 'version_number', 'copy', 'compress' ] );
+    grunt.registerTask( 'pre_vcs', [ 'shell:activate', 'version_number', 'copy', 'clean:pre_compress', 'compress' ] );
     grunt.registerTask( 'do_git', [ 'gitadd', 'gitcommit', 'gittag', 'gitpush' ] );
-    grunt.registerTask( 'just_build', [  'shell:composer', 'copy', 'compress' ] );
+    grunt.registerTask( 'just_build', [  'shell:composer', 'copy', 'clean:pre_compress', 'compress' ] );
     grunt.registerTask( 'install', [ 'shell:activate' ] );
 
     grunt.registerTask( 'release', [ 'pre_vcs', 'do_git', 'clean:post_build' ] );

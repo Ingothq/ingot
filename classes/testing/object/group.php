@@ -12,6 +12,7 @@
 namespace ingot\testing\object;
 
 use ingot\testing\crud\variant;
+use prettyArray\PrettyArray;
 
 class group {
 
@@ -178,6 +179,23 @@ class group {
 		return $this->levers;
 	}
 
+	/**
+	 * Get a lever by variant ID
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int $variant_id ID of variant
+	 *
+	 * @return \MaBandit\Lever|null
+	 */
+	public function get_lever( $variant_id ){
+		$levers = $this->get_levers();
+		if( is_array( $levers ) && isset( $levers[ $this->ID ], $levers[ $this->ID ][ $variant_id ] ) ){
+			return $levers[ $this->ID ][ $variant_id ];
+
+		}
+	}
+
 	protected function get_lever_ids(){
 		$levers = $this->levers;
 	}
@@ -311,28 +329,14 @@ class group {
 		];
 
 		if( ! empty( $this->group[ 'variants' ] ) ){
-			//this loop is dumb -- https://github.com/Ingothq/ingot/issues/101
-			foreach( $this->group[ 'variants' ] as $i => $variant_id ) {
-
-				if( is_array( $variant_id ) && isset( $variant_id[ 'content' ] ) ) {
-					$name = $variant_id[ 'content' ];
-					$variant_id = $variant_id[ 'ID' ];
-				}else{
-					$variant = variant::read( $variant_id );
-					if ( is_array( $variant ) ) {
-						$name = $variant[ 'content' ];
-					}
-				}
-
-				if ( is_numeric( $variant_id ) ) {
-					$data[ 'variants' ][ $variant_id ] = $name;
-				}
-
+			$variants = variant::get_items( $this->get_ID() );
+			if (  ! empty( $variants ) ) {
+				$data[ 'variants' ] = wp_list_pluck( $variants, 'content' );
 			}
-
 		}
 
 		return $data;
 	}
+
 
 }
