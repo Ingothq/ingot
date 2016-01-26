@@ -103,7 +103,8 @@ class translations {
 				'destination_header'                  => esc_html__( 'Destination Type', 'ingot' ),
 				'is_tagline' => esc_html__( 'Change site tagline?', 'ingot'),
 				'destination_page' => esc_html__( 'Page ID for conversions.', 'ingot' ),
-				'destination_page_desc' => esc_html__( 'Use the ID of a sign up page, contact page or sales page at the end of your sales funnel.', 'ingot' ),
+				'destination_page_results' => esc_html__( 'Select a page:', 'ingot' ),
+				'destination_page_desc' => esc_html__( 'Enter the ID of a page or search by title. When a visitor reaches this page, a conversion will be recorded.', 'ingot' ),
 				'destination_hook' => esc_html__( 'Action hook to track conversions with.', 'ingot' ),
 				'must_name' => esc_html__( 'Please name this group', 'ingot' ),
 				'must_type' => esc_html__( 'Please choose a group type', 'ingot')

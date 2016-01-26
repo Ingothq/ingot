@@ -278,6 +278,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     $scope.new_group = false;
     $scope.click_type_options = INGOT_ADMIN.click_type_options;
     $scope.destinations = INGOT_ADMIN.destinations;
+    $scope.pages = {};
 
     if( 'clickTests.new' == $state.current.name ) {
         is_new = true;
@@ -369,6 +370,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             data: $scope.group
         } ).success(function(data) {
             $scope.group = data;
+            $scope.pages = {};
 
             if( true === is_new ) {
                 is_new = false;
@@ -481,7 +483,6 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     //show the right description on change of #destination
     $scope.destinationDescription = function(){
         if( !_.isUndefined( $scope.group.meta.destination ) && _.has( INGOT_ADMIN.destinations, $scope.group.meta.destination ) ){
-            console.log( INGOT_ADMIN.destinations, $scope.group.meta.destination );
             var description = INGOT_ADMIN.destinations[ $scope.group.meta.destination ];
             var el = document.getElementById( 'destination-description' );
             if ( null != el  ) {
@@ -490,7 +491,35 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
 
         }
 
-    }
+    };
+
+    //do live search on the group meta page
+    $scope.$watch( 'group.meta.page', function( newValue, oldValue ) {
+        if ( newValue != oldValue  ) {
+            setTimeout(
+                function() {
+                $http( {
+                    url: INGOT_ADMIN.api + 'settings/page-search?search=' + newValue + '&_wpnonce=' + INGOT_ADMIN.nonce + '&context=admin',
+                    method: 'GET',
+                    headers: {
+                        'X-WP-Nonce': INGOT_ADMIN.nonce
+                    }
+                } ).success( function ( res ) {
+                    $scope.pages = res;
+                } );
+            },
+                500
+            );
+
+        }
+    });
+
+    //hide/show page search results logic
+    $scope.showPageSearch = function() {
+        return _.isEmpty( $scope.pages );
+    };
+
+
 
 
 }]);

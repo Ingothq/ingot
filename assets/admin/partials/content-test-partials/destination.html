@@ -22,13 +22,21 @@
             <input id="is_tagline" class="col-md-8 col-sm-12" ng-model="group.meta.is_tagline" type="checkbox"/>
         </div>
         <div class="form-group row" ng-show="is_page()">
-            <label for="page" class="col-md-4 col-sm-12">
-                {{translate.group.destination_page}}
-            </label>
-            <input id="page" class="col-md-8 col-sm-12" ng-model="group.meta.page" type="number"/>
-            <span class="col-sm-12">
-                {{translate.group.destination_page_desc}}
-            </span>
+
+                <label for="destination-page" class="col-md-4 col-sm-12">
+                    {{translate.group.destination_page}}
+                </label>
+                <input id="destination-page" class="col-md-8 col-sm-12" ng-model="group.meta.page" type="search" />
+
+                <label for="destination-page" class="col-md-4 col-sm-12" ng-hide="showPageSearch()">
+                    {{translate.group.destination_page_results}}
+                </label>
+                <select ng-model="group.meta.page" id="destination-page-search-results" class="col-md-8 col-sm-12" ng-hide="showPageSearch()">
+                    <option ng-repeat="page in pages" value="{{page.id}}">{{page.title}}</option>
+                </select>
+                <div class="col-sm-12" ng-hide="showPageSearch()">
+                    {{translate.group.destination_page_desc}}
+                </div>
         </div>
 
         <div class="form-group row" ng-show="is_hook()">
