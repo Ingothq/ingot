@@ -27,11 +27,11 @@ abstract class click {
 	 *
 	 * @since 0.0.5
 	 *
-	 * @access private
+	 * @access protected
 	 *
 	 * @var array
 	 */
-	private $group;
+	protected $group;
 
 	/**
 	 * Rendered HTML
@@ -64,7 +64,7 @@ abstract class click {
 	 *
 	 * @var array
 	 */
-	private $variant;
+	protected $variant;
 
 	/**
 	 * Constructor for class
