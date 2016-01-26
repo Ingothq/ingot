@@ -4,7 +4,7 @@ Plugin Name: Ingot
 Version: 1.1.0-b-3
 Plugin URI:  http://IngotHQ.com
 Description: Conversion optimization made easy for WordPress
-Author:      Josh Pollock and Roy Sivan for Ingot LLC
+Author:      Ingot LLC
 Author URI:  http://IngotHQ.com
 Text Domain: ingot
 Domain Path: /languages

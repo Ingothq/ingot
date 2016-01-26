@@ -52,10 +52,5 @@
             "includes/active_check.php",
             "includes/licensing.php"
         ]
-    },
-    "extra"       : {
-        "installer-paths": {
-            "wp-api" : ["type:wordpress-plugin"]
-        }
     }
 }
