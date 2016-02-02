@@ -44,12 +44,12 @@ class ingot_bootstrap {
 		if ( $load ) {
 
 			include_once( $autoloader );
-			self::maybe_add_tables();
+			$tables_existed = self::maybe_add_tables();
 			self::maybe_upgrade();
 			self::maybe_load_trial();
 
 
-			if( \ingot\testing\db\delta::check_if_tables_exist() ) {
+			if( $tables_existed || \ingot\testing\db\delta::check_if_tables_exist() ) {
 				ingot\testing\ingot::instance();
 
 				//make admin go in admin
@@ -117,11 +117,15 @@ class ingot_bootstrap {
 	 *
 	 * @access protected
 	 *
+	 * @return bool
 	 */
 	protected static function maybe_add_tables(){
 		if( false == \ingot\testing\db\delta::check_if_tables_exist() ){
 			\ingot\testing\db\delta::add_tables();
+			return false;
 		}
+
+		return true;
 
 	}
 
