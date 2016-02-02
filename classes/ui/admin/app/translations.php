@@ -52,7 +52,12 @@ class translations {
 				'no_stats'  => esc_html__( 'No Stats for this group yet', 'ingot' ),
 				'c_rate'    => esc_html__( 'Conversion Rate', 'ingot' ),
 				'variant'   => esc_html__( 'Variant', 'ingot' ),
-				'g_c_rate' => esc_html__( 'Group Average Conversion Rate', 'ingot' )
+				'g_avg_c_rate' => esc_html__( 'Group Average Conversion Rate', 'ingot' ),
+				'group_header' => esc_html__( 'Group Totals', 'ingot' ),
+				'group_total' => esc_html__( 'Iterations', 'ingot' ),
+				'group_conversions' => esc_html__( 'Conversions', 'ingot' ),
+				'g_c_rate' => esc_html__( 'Conversion Rate', 'ingot')
+
 			],
 			'groups'                   => [
 				'click_group_page_title' => esc_html__( 'Content Test Groups', 'ingot' ),

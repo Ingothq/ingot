@@ -619,7 +619,7 @@ ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$statePara
                 ctx.stroke();
                 ctx.font = "14px Arial";
                 ctx.fillStyle = 'black';
-                ctx.fillText( $rootScope.translate.stats.g_c_rate + '(' + Math.round( overlayBar * 100  ) / 100 + '%)', jQuery('#ingotChart').outerWidth(), y - 10 )
+                ctx.fillText( $rootScope.translate.stats.g_avg_c_rate + '(' + Math.round( overlayBar * 100  ) / 100 + '%)', jQuery('#ingotChart').outerWidth(), y - 10 )
             }
             ctx.closePath();
         }
