@@ -135,18 +135,24 @@ abstract class bandit {
 	 * @return mixed
 	 */
 	protected function random_lever( $levers ){
-		if( isset( $levers[ $this->get_ID() ] ) && is_array($levers[ $this->get_ID() ] ) ){
+		if( isset( $levers[ $this->get_ID() ] ) && is_array( $levers[ $this->get_ID() ] ) ){
 			$levers = $levers[ $this->get_ID() ];
 		}
 
 		if ( ingot_is_no_testing_mode() ) {
 			reset( $levers );
 			$key = key( $levers );
+			$lever = $levers[ $key ];
 		}else{
 			$key = array_rand( $levers );
+			$lever = $levers[ $key ];
+			/** @var \MaBandit\Lever $lever */
+			$lever->incrementDenominator();
+			$lever =  $this->bandit->validateLever( $this->bandit->getPersistor()->saveLever( $lever ) );
+
 		}
 
-		return $levers[ $key ];
+		return $lever;
 		
 	}
 
