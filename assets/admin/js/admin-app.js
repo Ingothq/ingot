@@ -147,40 +147,37 @@ ingotApp.config(function($stateProvider, $urlRouterProvider) {
 });
 
 
+/**Click Tests */
+
 /**
- * Click Tests
+ * Controller for click groups list
  *
- * @since 2.0.0
+ * @since 0.2.0
  */
-//Controller for click groups list
 ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', '$sce', function( $scope, $http,  groupsFactory, $sce ) {
 
     var page_limit = 10;
 
     $scope.description = $sce.trustAsHtml( INGOT_TRANSLATION.descriptions.click );
 
-    groupsFactory.query(
-        {
+    groupsFactory.query( {
             page: 1,
             limit: page_limit,
             context: 'admin',
             type: 'click'
         }, function ( res ) {
-            if ( res.data.indexOf( 'No matching' ) > -1 ) {
-                $scope.groups = {};
-                return;
+        if ( res.data.indexOf( 'No matching' ) > -1 ) {
+            $scope.groups = {};
+            return;
 
-            };
+        };
 
-            $scope.groups = JSON.parse( res.data );
-
-            var total_groups = parseInt( res.headers[ 'x-ingot-total' ] );
-            total_pages = total_groups / page_limit;
-            $scope.total_pages = new Array( Math.round( total_pages ) );
-            $scope.groups.shortcode = [];
-
-
-    });
+        $scope.groups = JSON.parse( res.data );
+        var total_groups = parseInt( res.headers[ 'x-ingot-total' ] );
+        var total_pages = total_groups / page_limit;
+        $scope.total_pages = new Array( Math.round( total_pages ) );
+        $scope.groups.shortcode = [];
+    } );
 
     $scope.paginate = function( page, $event ) {
 
@@ -191,8 +188,12 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', '$sce',
 	    jQuery( $event.currentTarget ).toggleClass('active');
 
 	    page = page + 1;
-        groupsFactory.query({page: page, limit: page_limit, context: 'admin'}, function(res){
-			if( res.data.indexOf('No matching groups found.') >= 0 ) { return; }
+        groupsFactory.query({
+            page: page, limit: page_limit, context: 'admin'
+        }, function(res){
+			if( res.data.indexOf('No matching groups found.') >= 0 ) {
+                return;
+            }
 		    $scope.groups = JSON.parse( res.data );
 	    });
     };
@@ -207,14 +208,17 @@ ingotApp.controller( 'clickGroups', ['$scope', '$http', 'groupsFactory', '$sce',
     $scope.exit = function( id ){
         setTimeout( function() {
             jQuery( '#shortcode-copy-' + id ).hide().attr( 'aria-hidden', 'true' ).css( 'visibility', 'hidden' );
-            jQuery('#shortcode-pre-' + id  ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
+            jQuery('#shortcode-pre-' + id ).show().attr( 'aria-hidden', 'false' ).css( 'visibility', 'visible' );
         }, 350 );
-
     };
 
 }]);
 
-//controller for deleting a group
+/**
+ * Controller for deleting a group
+ *
+ * @since 0.2.0
+ */
 ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state', function( $scope, $http, $stateParams, $state ){
     var groupID = $stateParams.groupID;
     if( 'undefined' == groupID ) {
@@ -261,17 +265,19 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
                         confirmButtonText: INGOT_TRANSLATION.close
                     });
                 });
-
             } else{
                 swal( INGOT_TRANSLATION.canceled, "", "success" );
                 $state.go('clickTests.list' );
             }
         } );
     }
-
 }]);
 
-//controller for creating/editing a click group
+/**
+ * Controller for creating/editing a click group
+ *
+ * @since 0.2.0
+ */
 ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'groupsFactory', function( $scope, $http, $stateParams, $rootScope, $state,  groupsFactory ) {
     var is_new = false;
     $scope.group_step = 1;
@@ -293,11 +299,13 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     } else {
         $scope.group_step = 3;
         var groupID = $stateParams.groupID;
-        groupsFactory.get({id: groupID}, function(res){
+        groupsFactory.get({
+            id: groupID
+        }, function(res){
             if( 'array' == typeof res.meta ) {
-                function toObject(arr) {
+                function toObject( arr) {
                     var rv = {};
-                    for (var i = 0; i < arr.length; ++i){
+                    for (var i = 0; i < arr.length; ++i ){
                         if (arr[i] !== undefined) rv[i] = arr[i];
                     }
                     return rv;
@@ -316,7 +324,6 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 confirmButtonText: INGOT_TRANSLATION.close
             });
         })
-
     }
 
     $scope.buttonStyle = function( id, type ) {
@@ -327,7 +334,6 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             }
 
             if ( $scope.group.variants[ id ] && $scope.group.variants[ id ].meta && $scope.group.variants[ id ].meta.color ) {
-
                 css[ 'color' ] = $scope.group.variants[ id ].meta.color;
             }
 
@@ -341,9 +347,10 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             if ( $scope.group.meta && $scope.group.meta.color ) {
                 css[ 'color' ] = $scope.group.meta.color;
             }
-            return css;
-        }
 
+            return css;
+
+        }
     };
 
     $scope.removeTest = function( index ) {
@@ -496,21 +503,17 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     //do live search on the group meta page
     $scope.$watch( 'group.meta.page', function( newValue, oldValue ) {
         if ( newValue != oldValue  ) {
-            setTimeout(
-                function() {
-                $http( {
-                    url: INGOT_ADMIN.api + 'settings/page-search?search=' + newValue + '&_wpnonce=' + INGOT_ADMIN.nonce + '&context=admin',
-                    method: 'GET',
-                    headers: {
-                        'X-WP-Nonce': INGOT_ADMIN.nonce
-                    }
-                } ).success( function ( res ) {
-                    $scope.pages = res;
-                } );
-            },
-                500
-            );
-
+            setTimeout( function() {
+                    $http( {
+                        url: INGOT_ADMIN.api + 'settings/page-search?search=' + newValue + '&_wpnonce=' + INGOT_ADMIN.nonce + '&context=admin',
+                        method: 'GET',
+                        headers: {
+                            'X-WP-Nonce': INGOT_ADMIN.nonce
+                        }
+                    } ).success( function ( res ) {
+                        $scope.pages = res;
+                    } );
+            }, 500 );
         }
     });
 
@@ -520,11 +523,13 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
     };
 
 
-
-
 }]);
 
-//controller for group stats
+/**
+ * Controller for group stats
+ *
+ * @since 0.3.0
+ */
 ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$stateParams', '$state', 'groupsFactory', function( $scope, $rootScope, $http, $stateParams, $state,  groupsFactory ) {
 
     var groupID = $stateParams.groupID;
@@ -641,12 +646,13 @@ ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$statePara
 
 }]);
 
+/** Price Tests*/
+
 /**
- * Price Tests
+ * Controller for price groups list
  *
  * @since 2.0.0
  */
-//Controller for price groups list
 ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', function( $scope, $http, groupsFactory ) {
     var page_limit = 10;
     $http({
@@ -687,11 +693,12 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', functio
             jQuery('.paginate a.active').toggleClass('active');
         }
 
-
         jQuery( $event.currentTarget ).toggleClass('active');
 
         page = page + 1;
-        groupsFactory.query({page: page, limit: page_limit, context: 'admin'}, function(res){
+        groupsFactory.query({
+            page: page, limit: page_limit, context: 'admin'
+        }, function(res){
             if( res.data.indexOf('No matching groups found.') >= 0 ) {
                 return;
             }
@@ -702,7 +709,11 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', functio
 
 }]);
 
-//controller for creating/editing a price group
+/**
+ * Controller for creating/editing a price group
+ *
+ * @since 0.2.0
+ */
 ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootScope', '$state', 'groupsFactory', function( $scope, $http, $stateParams, $rootScope, $state, groupsFactory ) {
     var newGroup = false;
     if ( 'priceTests.new' == $state.current.name ) {
@@ -834,8 +845,6 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
 		}, 50 );
 
     };
-
-
 
     $scope.products = function() {
         if( 'string' != typeof $scope.group.sub_type ){
