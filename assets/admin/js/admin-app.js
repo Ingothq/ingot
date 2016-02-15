@@ -247,24 +247,27 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
                     headers: {
                         'X-WP-Nonce': INGOT_ADMIN.nonce
                     }
-                } ).success( function(){
-                    swal( INGOT_TRANSLATION.deleted, "", "success" );
-                    $scope.group = {};
-                    $state.go('clickTests.list' );
-                } ).error( function( data ) {
-                    var text = INGOT_TRANSLATION.sorry;
-                    if( _.isObject( data ) && _.isDefined( data.message ) ){
-                        text = data.message;
+                } ).then(
+                    function successCallback() {
+                        swal( INGOT_TRANSLATION.deleted, "", "success" );
+                        $scope.group = {};
+                        $state.go('clickTests.list' );
+                    }, function errorCallback( response ) {
+                        var data = response.data;
+                        var text = INGOT_TRANSLATION.sorry;
+                        if( _.isObject( data ) && _.isDefined( data.message ) ){
+                            text = data.message;
+                        }
+                        $state.go('clickTests.list' );
+                        swal({
+                            title: INGOT_TRANSLATION.fail,
+                            text: text,
+                            type: "error",
+                            confirmButtonText: INGOT_TRANSLATION.close
+                        });
                     }
+                );
 
-                    $state.go('clickTests.list' );
-                    swal({
-                        title: INGOT_TRANSLATION.fail,
-                        text: text,
-                        type: "error",
-                        confirmButtonText: INGOT_TRANSLATION.close
-                    });
-                });
             } else{
                 swal( INGOT_TRANSLATION.canceled, "", "success" );
                 $state.go('clickTests.list' );
@@ -313,10 +316,9 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 res.meta = toObject( res.meta );
             }
 	        $scope.group = res;
-            $scope.choose_group_type($scope.group.sub_type);
+            $scope.choose_group_type( $scope.group.sub_type );
 
 		}, function(data, status, headers, config) {
-            console.log( data );
             swal({
                 title: INGOT_TRANSLATION.fail,
                 text: INGOT_TRANSLATION.sorry,
@@ -375,35 +377,39 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             },
             url: url,
             data: $scope.group
-        } ).success(function(data) {
-            $scope.group = data;
-            $scope.pages = {};
+        } ).then(
+            function successCallback( response ) {
 
-            if( true === is_new ) {
-                is_new = false;
-                $state.go( 'clickTests.edit', {
-                    groupID: $scope.group.ID
-                } );
-            }
-            swal({
-                title: INGOT_TRANSLATION.group_saved,
-                text: '',
-                type: "success",
-                confirmButtonText: INGOT_TRANSLATION.close
-            });
-        } ).error(function( res ){
-            var text = INGOT_TRANSLATION.sorry;
-            if( _.isObject( data ) && _.isDefined( data.message ) ){
-                text = data.message;
-            }
+                $scope.group = response.data;
+                $scope.pages = {};
 
-            swal({
-                title: INGOT_TRANSLATION.fail,
-                text: text,
-                type: "error",
-                confirmButtonText: INGOT_TRANSLATION.close
-            });
-        })
+                if( true === is_new ) {
+                    is_new = false;
+                    $state.go( 'clickTests.edit', {
+                        groupID: $scope.group.ID
+                    } );
+                }
+                swal({
+                    title: INGOT_TRANSLATION.group_saved,
+                    text: '',
+                    type: "success",
+                    confirmButtonText: INGOT_TRANSLATION.close
+                });
+            }, function errorCallback( response ) {
+                var data = response.data;
+                var text = INGOT_TRANSLATION.sorry;
+                if( _.isObject( data ) && _.isDefined( data.message ) ){
+                    text = data.message;
+                }
+
+                swal({
+                    title: INGOT_TRANSLATION.fail,
+                    text: text,
+                    type: "error",
+                    confirmButtonText: INGOT_TRANSLATION.close
+                });
+            }
+        );
     };
 
     //add tests to click group
@@ -415,7 +421,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
         }
 
         $scope.group.variants[ id ] = {
-            ID : id,
+            ID : id
         };
     };
 
@@ -510,9 +516,11 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
                         headers: {
                             'X-WP-Nonce': INGOT_ADMIN.nonce
                         }
-                    } ).success( function ( res ) {
-                        $scope.pages = res;
-                    } );
+                    } ).then(
+                        function successCallback( response ) {
+                            $scope.pages = response.data;
+                        }
+                    );
             }, 500 );
         }
     });
@@ -554,43 +562,45 @@ ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$statePara
             headers: {
                 'X-WP-Nonce': INGOT_ADMIN.nonce
             }
-        } ).success( function( res ){
-            $scope.stats_exist = true;
-            if( ! Object.keys(res.variants).length ) {
-                $scope.stats_exist = false;
-                return;
-            }
-
-            $scope.stats = res;
-            $scope.chart_data = {
-                labels: [],
-                datasets: [
-                    {
-                        label: [ INGOT_TRANSLATION.stats.c_rate ],
-                        fillColor: "rgba(220,220,220,0.5)",
-                        strokeColor: "rgba(220,220,220,0.8)",
-                        highlightFill: "rgba(220,220,220,0.75)",
-                        highlightStroke: "rgba(220,220,220,1)",
-                        data: []
-                    }
-                ]
-            };
-
-            angular.forEach( $scope.stats.variants, function( variant, i ) {
-                var name;
-
-                if( ! _.isUndefined( variant.name ) && !_.isEmpty( variant.name ) && ' ' != variant.name ) {
-                    name = variant.name;
-                }else{
-                    name = INGOT_TRANSLATION.stats.variant + ' ' + i;
+        } ).then(
+            function successCallback( response ){
+                var data = response.data;
+                $scope.stats_exist = true;
+                if( ! Object.keys( data.variants ).length ) {
+                    $scope.stats_exist = false;
+                    return;
                 }
 
-                $scope.chart_data.labels.push( name );
-                var rate = Math.round( variant.conversion_rate * 100 );
-                $scope.chart_data.datasets[0].data.push( rate );
-            });
+                $scope.stats = data;
+                $scope.chart_data = {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: [ INGOT_TRANSLATION.stats.c_rate ],
+                            fillColor: "rgba(220,220,220,0.5)",
+                            strokeColor: "rgba(220,220,220,0.8)",
+                            highlightFill: "rgba(220,220,220,0.75)",
+                            highlightStroke: "rgba(220,220,220,1)",
+                            data: []
+                        }
+                    ]
+                };
 
-            $scope.setChart( $scope.stats.group.average_conversion_rate * 100 );
+                angular.forEach( $scope.stats.variants, function( variant, i ) {
+                    var name;
+
+                    if( ! _.isUndefined( variant.name ) && !_.isEmpty( variant.name ) && ' ' != variant.name ) {
+                        name = variant.name;
+                    }else{
+                        name = INGOT_TRANSLATION.stats.variant + ' ' + i;
+                    }
+
+                    $scope.chart_data.labels.push( name );
+                    var rate = Math.round( variant.conversion_rate * 100 );
+                    $scope.chart_data.datasets[0].data.push( rate );
+                });
+
+                $scope.setChart( $scope.stats.group.average_conversion_rate * 100 );
 
         });
 
@@ -643,7 +653,6 @@ ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$statePara
 
     }
 
-
 }]);
 
 /** Price Tests*/
@@ -662,22 +671,23 @@ ingotApp.controller( 'priceGroups', ['$scope', '$http', 'groupsFactory', functio
             'X-WP-Nonce': INGOT_ADMIN.nonce
         }
 
-    }).success( function( data, status, headers, config ) {
-        $scope.plugins = data;
-        $scope.possible = false;
-        angular.forEach( data, function( value, key ) {
-            if ( false == $scope.possible ) {
-                if ( true == value.active ) {
-                    $scope.possible = true;
+    }).then(
+        function successCallback( data, status, headers, config ) {
+            $scope.plugins = response.data;
+            $scope.possible = false;
+            angular.forEach( data, function ( value, key ) {
+                if ( false == $scope.possible ) {
+                    if ( true == value.active ) {
+                        $scope.possible = true;
+                    }
                 }
-            }
-        });
-    } ).error( function ( data ) {
-        console.log( data );
-    } );
+            } );
+        }, function errorCallback(response) {
+            console.log( response );
+        }
+    );
 
     groupsFactory.query({page: 1, limit: page_limit, context: 'admin', type: 'price' }, function(res){
-
 		$scope.total_pages = false;
 		$scope.groups = JSON.parse( res.data );
 		if( res.headers['x-ingot-total'] ) {
@@ -727,12 +737,11 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
             'X-WP-Nonce': INGOT_ADMIN.nonce
         }
 
-    }).success( function( data, status, headers, config ) {
-        $scope.plugins = data;
-    } ).error( function ( data ) {
-        console.log( data );
-    } );
-
+    }).then(
+        function successCallback( response ) {
+            $scope.plugins = response.data;
+        }
+    );
 
     if( newGroup ) {
         $scope.group = {
@@ -769,11 +778,11 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 'X-WP-Nonce': INGOT_ADMIN.nonce
             }
 
-        }).success( function( data, status, headers, config ) {
-            $scope.basePrice = parseFloat( data.price );
-        } ).error( function ( data ) {
-            console.log( data );
-        } );
+        }).then(
+            function successCallback ( response ) {
+                $scope.basePrice = parseFloat( response.data.price );
+            }
+        )
 
     };
 
@@ -857,11 +866,11 @@ ingotApp.controller( 'priceGroup', ['$scope', '$http', '$stateParams', '$rootSco
                 'X-WP-Nonce': INGOT_ADMIN.nonce
             }
 
-        }).success( function( data, status, headers, config ) {
-            $scope.products = data;
-        } ).error( function ( data ) {
-            console.log( data );
-        } );
+        }).then(
+            function successCallback( response, status, headers, config ) {
+                $scope.products = response.data;
+            }
+        )
     }
 
 }]);
@@ -891,11 +900,11 @@ ingotApp.controller( 'welcome', ['$scope', '$http', function( $scope, $http ) {
             'X-WP-Nonce': INGOT_ADMIN.nonce
         }
 
-    }).success( function( data, status, headers, config ) {
-        $scope.welcome.settings = data;
-    }).error(function( data ){
-        console.log( data );
-    });
+    }).then(
+        function successCallback( data, status, headers, config ) {
+            $scope.welcome.settings = data;
+        }
+    );
 
 }]);
 
@@ -912,9 +921,10 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
         url:url,
         headers: {
             'X-WP-Nonce': INGOT_ADMIN.nonce
-        },
+        }
 
-    }).success( function( data, status, headers, config ) {
+    }).then(
+        function ( data, status, headers, config ) {
         $scope.settings = data;
     }).error(function( data ){
         console.log( data );
@@ -928,26 +938,27 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
             },
             url: url,
             data: $scope.settings
-        } ).success(function(data) {
-            $scope.settings =  data;
-            swal({
-                title: INGOT_TRANSLATION.settings_saved,
-                text: '',
-                type: "success",
-                confirmButtonText: INGOT_TRANSLATION.close
-            });
-        } ).error(function( res ){
-            var text = INGOT_TRANSLATION.sorry;
-            if( _.isObject( data ) && _.isDefined( data.message ) ){
-                text = data.message;
-            }
-
-            swal({
-                title: INGOT_TRANSLATION.fail,
-                text: text,
-                type: "error",
-                confirmButtonText: INGOT_TRANSLATION.close
-            });
+        } ).then(
+            function successCallback( response ) {
+                $scope.settings =  response.data;
+                    swal({
+                        title: INGOT_TRANSLATION.settings_saved,
+                        text: '',
+                        type: "success",
+                        confirmButtonText: INGOT_TRANSLATION.close
+                    });
+            }, function errorCallback( response ) {
+                var data = response.data;
+                var text = INGOT_TRANSLATION.sorry;
+                if( _.isObject( data ) && _.isDefined( data.message ) ){
+                    text = data.message;
+                }
+                swal({
+                    title: INGOT_TRANSLATION.fail,
+                    text: text,
+                    type: "error",
+                    confirmButtonText: INGOT_TRANSLATION.close
+                });
 
         })
     };
