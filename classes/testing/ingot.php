@@ -89,8 +89,12 @@ class ingot {
 					$min = '';
 					$version = rand();
 				}
+
+				$version = 1;
 				wp_enqueue_script( 'ingot', INGOT_URL . "/assets/front-end/js/ingot-click-test{$min}.js", array( 'jquery' ), $version, true );
 				wp_localize_script( 'ingot', 'INGOT_UI', ingot::js_vars() );
+				wp_enqueue_script( 'js-cookie', '//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.0/js.cookie.min.js' );
+
 
 			} );
 

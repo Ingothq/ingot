@@ -763,9 +763,13 @@ function ingot_get_woo_price( $id ){
 /**
  * Get cookie expiration time.
  *
+ * @param bool $return_days Optional. If true time is returned in days. If false, the default, time is returned in seconds
+ *
  * @since 1.1.0
+ *
+ * @return int Days or seconds until a new cookie should expire
  */
-function ingot_cookie_time(){
+function ingot_cookie_time( $return_days = false ){
 	/**
 	 * Change cookie time
 	 *
@@ -773,7 +777,12 @@ function ingot_cookie_time(){
 	 *
 	 * @param int $cookie_time Length to keep cookie. Default is 15 days
 	 */
-	return apply_filters( 'ingot_cookie_time', 15 * DAY_IN_SECONDS );
+	$time = apply_filters( 'ingot_cookie_time', 15 * DAY_IN_SECONDS );
+	if( $return_days ) {
+		$time = $time/ DAY_IN_SECONDS;
+	}
+
+	return $time;
 }
 
 

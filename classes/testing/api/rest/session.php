@@ -13,6 +13,8 @@ namespace ingot\testing\api\rest;
 
 
 use ingot\testing\crud\group;
+use ingot\testing\tests\click\destination\cookie;
+use ingot\testing\tests\click\destination\init;
 use ingot\testing\utility\helpers;
 
 class session extends route {
@@ -68,6 +70,27 @@ class session extends route {
 			)
 
 		);
+
+		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)/cookies',
+				[
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'check_cookies' ],
+					'permission_callback' => [ $this, 'verify_session_nonce' ],
+					'args' => [
+						'ingot_session_nonce' => [
+							'type'     => 'string',
+							'required' => true,
+						],
+						'cookies'             => [
+							'type'              => 'array',
+							'required'          => true,
+							'sanitize_callback' => [ $this, 'prepare_cookie_key' ]
+						],
+					],
+			]
+		);
+
+
 	}
 
 	/**
@@ -85,6 +108,7 @@ class session extends route {
 			$data[ 'ingot_ID' ] = $session[ 'ingot_ID' ];
 			$data[ 'tests' ] = [];
 			$data[ 'session_ID' ] = $session[ 'ID' ];
+			$data[ 'cookies' ] = $this->cookie_initial_data();
 			return $data;
 		}
 
@@ -103,7 +127,6 @@ class session extends route {
 				if( 0 != get_current_user_id() ) {
 					$new_session_args[ 'uID' ] = get_current_user_id();
 				}
-
 
 				$data[ 'session_ID' ] = \ingot\testing\crud\session::create( $new_session_args, true );
 				if ( is_numeric( $data[ 'session_ID' ] ) ) {
@@ -136,8 +159,7 @@ class session extends route {
 
 			$data[ 'ingot_ID' ] = $session[ 'ingot_ID' ];
 			$data[ 'tests' ] = $tests;
-
-
+			$data[ 'cookies' ] = $this->proccess_cookie_check( $request->get_param( 'cookies' ) );
 			return rest_ensure_response( $data );
 
 		}
@@ -214,7 +236,12 @@ class session extends route {
 				'type'              => 'integer',
 				'default'           => 0,
 				'sanitize_callback' => 'absint'
-			)
+			),
+			'cookies'             => [
+				'type'              => 'array',
+				'required'          => true,
+				'sanitize_callback' => [ $this, 'prepare_cookie_key' ]
+			],
 		];
 	}
 
@@ -294,5 +321,96 @@ class session extends route {
 		} else {
 			return ingot_rest_response( $session, 200 );
 		}
+	}
+
+	/**
+	 * Callback for cookie check route.
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function check_cookies( \WP_REST_Request $request ) {
+		$cookies = $request->get_param( 'cookies' );
+		$response = $this->proccess_cookie_check( $cookies );
+		return ingot_rest_response( $response );
+	}
+
+	/**
+	 * Prepare and sanatize cookie param
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param array $cookies
+	 *
+	 * @return array
+	 */
+	public function prepare_cookie_key( $cookies ) {
+		if ( ! empty( $cookies ) ) {
+			$_cookies = [ ];
+			foreach ( $cookies as $i => $cookie ) {
+				if ( isset( $cookie[ 'g' ], $cookie[ 'v' ] ) ) {
+					$_cookies[ absint( $cookie[ 'g' ] ) ] = absint( $cookie[ 'v' ] );
+				} else {
+					unset( $cookies[ $i ] );
+				}
+			}
+
+			$cookies = $_cookies;
+		}
+
+		return $cookies;
+	}
+
+	/**
+	 * Handle the cookie check
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $cookies
+	 *
+	 * @return array
+	 */
+	protected function proccess_cookie_check( $cookies ) {
+		$should_be = init::get_tests();
+		$response = $this->cookie_initial_data();
+		if ( ! empty( $cookies ) ) {
+			foreach ( $cookies as $g => $v ) {
+				if ( ! isset( $should_be[ $g ] ) ) {
+					$response[ 'remove' ][ $g ] = $v;
+				} elseif ( isset( $should_be[ $g ] ) && $v != $should_be[ $g ] ) {
+					$response[ 'wrong_variant' ][ $g ] = $should_be[ $g ];
+				}
+			}
+		}
+
+		if ( ! empty( $should_be ) ) {
+			foreach ( $should_be as $g => $v ) {
+				if ( ! isset( $cookies[ $g ] ) ) {
+					$response[ 'add' ] = $v;
+				}
+			}
+
+			return $response;
+		}
+
+		return $response;
+
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function cookie_initial_data() {
+		$response = [
+			'remove'        => [ ],
+			'add'           => [ ],
+			'wrong_variant' => [ ],
+			'length'        => ingot_cookie_time( true ),
+			'path'          => COOKIEPATH,
+			'domain'        => COOKIE_DOMAIN,
+		];
+
+		return $response;
 	}
 }

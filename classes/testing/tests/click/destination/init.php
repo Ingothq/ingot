@@ -19,6 +19,19 @@ use ingot\testing\utility\helpers;
 
 class init {
 
+	protected static $group_ids;
+
+	/**
+	 * Holds an array of tests that have been queried for using self::get_test()
+	 *
+	 * Handles situation where variant has been selected, but is not yet in cookie.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array
+	 */
+	protected static $tests = [];
+
 	/**
 	 * Get all destination tests
 	 *
@@ -29,6 +42,10 @@ class init {
 	 * @return array|null|object
 	 */
 	public static function get_destination_tests( $ids = true ){
+		if( $ids && ! empty( self::$group_ids ) ) {
+			return self::$group_ids;
+		}
+
 		global $wpdb;
 		if( $ids ) {
 			$select = '`ID`';
@@ -41,6 +58,7 @@ class init {
 		$results = $wpdb->get_results( $sql, ARRAY_A );
 		if( ! empty( $results ) ){
 			if ( $ids ) {
+				self::$group_ids = $results;
 				$results = wp_list_pluck( $results, 'ID' );
 			} else {
 				$results = group::bulk_results( $results );
@@ -176,17 +194,6 @@ class init {
 	}
 
 	/**
-	 * Holds an array of tests that have been queried for using self::get_test()
-	 *
-	 * Handles situation where variant has been selected, but is not yet in cookie.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @var array
-	 */
-	protected static $tests = [];
-
-	/**
 	 * Get variant ID, by group ID.
 	 *
 	 * If no variant chosen, makes selection
@@ -257,8 +264,27 @@ class init {
 
 		}
 
+	}
 
+	/**
+	 * Get current tests
+	 *
+	 * @since 1.1.1
+	 *
+	 * @return array group_ID => variant_ID
+	 */
+	public static function get_tests(){
+		if( empty( self::$group_ids ) ){
+			self::get_destination_tests( true );
+		}
+		//make sure self::$tests is set right
+		foreach( self::$group_ids as $group_id ){
+			if( ! isset( self::$tests[ $group_id[ 'ID' ] ] ) ) {
+				self::get_test( $group_id[ 'ID' ] );
+			}
+		}
 
+		return self::$tests;
 	}
 
 }
