@@ -600,6 +600,8 @@ ingotApp.controller( 'clickStats', ['$scope', '$rootScope', '$http', '$statePara
                     $scope.chart_data.datasets[0].data.push( rate );
                 });
 
+
+                $scope.stats.group.conversion_rate = Math.round( $scope.stats.group.conversion_rate * 100 );
                 $scope.setChart( $scope.stats.group.average_conversion_rate * 100 );
 
         });
