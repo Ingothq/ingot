@@ -105,7 +105,7 @@ jQuery( document ).ready( function ( $ ) {
         var ingot_cookies = [];
         if( 0 < keys.length ) {
             var key, variant;
-            for( var i = 0; i <= keys.length; i++ ){
+            for( i = 0; i <= keys.length; i++ ){
                 key = keys[ i ];
                 if( undefined != key && key.startsWith( prefix ) ){
                     variant = cookies[ keys[ i ] ];

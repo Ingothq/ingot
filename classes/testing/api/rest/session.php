@@ -256,7 +256,6 @@ class session extends route {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function verify_session_nonce( $request ) {
-		return true;
 		$allowed = util::verify_session_nonce( $request );
 		return (bool) $allowed;
 
@@ -373,6 +372,18 @@ class session extends route {
 	 */
 	protected function proccess_cookie_check( $cookies ) {
 		$should_be = init::get_tests();
+		$response = array_fill_keys(
+			[
+				'remove',
+				'add',
+				'wrong_variant'
+			], []
+		);
+
+		if( $should_be == $cookies ) {
+			return $response;
+		}
+
 		$response = $this->cookie_initial_data();
 		if ( ! empty( $cookies ) ) {
 			foreach ( $cookies as $g => $v ) {
