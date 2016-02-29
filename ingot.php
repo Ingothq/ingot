@@ -3,13 +3,18 @@
 Plugin Name: Ingot
 Version: 1.1.1-b-1
 Plugin URI:  http://IngotHQ.com
-Description: Conversion optimization made easy for WordPress
+Description: A/B testing made easy for WordPress
 Author:      Ingot LLC
 Author URI:  http://IngotHQ.com
 Text Domain: ingot
 Domain Path: /languages
  */
 
+/**
+ * Copyright 2015-2015 Ingot LLC
+ *
+ * Licensed under the terms of the GNU General Public License version 2 or later
+ */
 
 define( 'INGOT_VER', '1.1.1-b-1' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
