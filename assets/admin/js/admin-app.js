@@ -926,11 +926,20 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
         }
 
     }).then(
-        function ( data, status, headers, config ) {
-        $scope.settings = data;
-    }).error(function( data ){
-        console.log( data );
-    });
+        function successCallback( response ) {
+            $scope.settings = response.data;
+        }, function errorCallback( response ) {
+            var text = INGOT_TRANSLATION.sorry;
+            if ( _.isObject( response ) && _.isDefined( response.data.message ) ) {
+                swal( {
+                    title: INGOT_TRANSLATION.fail,
+                    text: response.data.message,
+                    type: "error",
+                    confirmButtonText: INGOT_TRANSLATION.close
+                } );
+            }
+        }
+    );
 
     $scope.submit = function(){
         $http({
