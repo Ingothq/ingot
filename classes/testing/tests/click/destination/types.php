@@ -34,6 +34,10 @@ class types {
 			unset( $types[ 'sale_edd' ] );
 		}
 
+		if( ! ingot_is_give_active() ) {
+			unset( $types[ 'givewp' ] );
+		}
+
 		/**
 		 * Allowed test types
 		 *
