@@ -27,6 +27,10 @@
       {
         "type":"git",
         "url":"https://github.com/ingothq/multiarmedbandit"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/ingothq/wordpress-sdk"
       }
     ],
     "require": {
@@ -35,7 +39,8 @@
         "oefenweb/statistics": "dev-master",
         "jaybizzle/crawler-detect": "1.*",
         "calderawp/caldera-modals": "^1.0",
-        "blainesch/prettyarray": "dev-master"
+        "blainesch/prettyarray": "dev-master",
+        "freemius/wordpress-sdk": "dev-master"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",

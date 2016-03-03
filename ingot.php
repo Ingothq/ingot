@@ -57,6 +57,10 @@ function ingot_maybe_load() {
 	if( false == $fail ){
 		include_once( dirname(__FILE__ ) . '/ingot_bootstrap.php' );
 		add_action( 'plugins_loaded', array( 'ingot_bootstrap', 'maybe_load' ) );
+		add_action( 'ingot_loaded', 'ingot_fs' );
+		add_action( 'ingot_loaded', function(){
+			\ingot\licensing\count::cta();
+		});
 	}
 
 }
@@ -74,6 +78,47 @@ function ingot_edd_sl_init(){
 		include( dirname( __FILE__ ) . '/includes/EDD_SL_Plugin_Updater.php' );
 	}
 }
+
+/**
+ * Load Freemius
+ *
+ * @return \Freemius
+ */
+function ingot_fs() {
+	global $ingot_fs;
+
+	if ( ! isset( $ingot_fs ) ) {
+
+		require_once dirname(__FILE__) . '/vendor/freemius/wordpress-sdk/start.php';
+		$args = array(
+			'id'                => '210',
+			'slug'              => 'ingot',
+			'public_key'        => 'pk_e6a19a3508bdb9bdc91a7182c8e0c',
+			'is_live'           => false,
+			'is_premium'        => true,
+			'has_addons'        => false,
+			'has_paid_plans'    => true,
+			'menu'              => array(
+				'slug'       => 'ingot-admin-app',
+				'support'    => false,
+			),
+
+		);
+
+		if( defined( 'INGOT_FS_SECRET' ) ){
+			$args[ 'secret_key' ] = INGOT_FS_SECRET;
+		}
+
+		$ingot_fs = fs_dynamic_init( $args );
+
+
+	}
+
+	return $ingot_fs;
+
+}
+
+
 
 
 /**

@@ -23,7 +23,7 @@ class license {
 	 *
 	 * @var license
 	 */
-	private static $instance;
+	protected static $instance;
 
 	/**
 	 * Plan object
@@ -32,7 +32,7 @@ class license {
 	 *
 	 * @var plan
 	 */
-	private $plan;
+	protected $plan;
 
 	/**
 	 * Key for the license details to be saved in
@@ -89,7 +89,7 @@ class license {
 	 *
 	 * @since 1.1.0
 	 */
-	private function set_plan(){
+	protected function set_plan(){
 		$details = get_option( $this->storage_key, [] );
 		$this->plan = new plan( helpers::v( 'plan', $details ) );
 	}

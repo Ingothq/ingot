@@ -174,11 +174,17 @@ class ingot_bootstrap {
 	}
 
 	/**
+	 * Setup licensing plan
 	 *
+	 * @since 1.1.1
 	 */
 	public static function init_plan(){
+		if( is_object( ingot_fs() ) ) {
+			\ingot\licensing\freemius::get_instance();
+		}else{
+			\ingot\licensing\license::get_instance();
+		}
 
-		\ingot\licensing\license::get_instance();
 	}
 
 }

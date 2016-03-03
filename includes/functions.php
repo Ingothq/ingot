@@ -811,3 +811,14 @@ function ingot_is_no_testing_mode(){
 	return (bool) apply_filters( 'ingot_is_no_testing_mode', $is_no_testing_mode );
 
 }
+
+/**
+ * Get URL for account page
+ *
+ * @since 1.1.0
+ */
+function ingot_account_page(){
+	ingot_fs()->get_account_url();
+}
+
+
