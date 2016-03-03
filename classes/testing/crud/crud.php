@@ -386,7 +386,9 @@ abstract class crud {
 	 */
 	protected static function save( $data, $id = null, $bypass_cap = false  ) {
 
-		$data = static::prepare_data( $data );
+		if ( ! is_wp_error( $data ) ) {
+			$data = static::prepare_data( $data );
+		}
 		if( is_wp_error( $data ) || ! is_array( $data ) ) {
 			return $data;
 		}
@@ -466,10 +468,12 @@ abstract class crud {
 	 *
 	 * @return int
 	 */
-	public static function total() {
+	public static function total(  ) {
 		global $wpdb;
 		$table_name = static::get_table_name();
 		$sql = sprintf( 'SELECT COUNT(ID) FROM %s', $table_name );
+
+
 		$results = $wpdb->get_results( $sql, ARRAY_A );
 		if( ! empty( $results ) && isset( $results[0], $results[0][ 'COUNT(ID)'] ) ){
 			return $results[0][ 'COUNT(ID)'];

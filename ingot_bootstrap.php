@@ -47,7 +47,7 @@ class ingot_bootstrap {
 			$tables_existed = self::maybe_add_tables();
 			self::maybe_upgrade();
 			self::maybe_load_trial();
-
+			self::init_plan();
 
 			if( $tables_existed || \ingot\testing\db\delta::check_if_tables_exist() ) {
 				ingot\testing\ingot::instance();
@@ -173,8 +173,12 @@ class ingot_bootstrap {
 
 	}
 
+	/**
+	 *
+	 */
+	public static function init_plan(){
 
-
-
+		\ingot\licensing\license::get_instance();
+	}
 
 }
