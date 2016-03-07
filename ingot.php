@@ -1,7 +1,7 @@
 <?php
 /**
 Plugin Name: Ingot
-Version: 1.1.1-b-1
+Version: 1.1.1-b-2
 Plugin URI:  http://IngotHQ.com
 Description: A/B testing made easy for WordPress
 Author:      Ingot LLC
@@ -16,7 +16,7 @@ Domain Path: /languages
  * Licensed under the terms of the GNU General Public License version 2 or later
  */
 
-define( 'INGOT_VER', '1.1.1-b-1' );
+define( 'INGOT_VER', '1.1.1-b-2' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
@@ -98,9 +98,11 @@ function ingot_fs() {
 			'is_premium'        => true,
 			'has_addons'        => false,
 			'has_paid_plans'    => true,
+			'is_org_compliant'  => false,
 			'menu'              => array(
 				'slug'       => 'ingot-admin-app',
 				'support'    => false,
+				'first-path' => 'admin.php?ingot-admin-app?welcome=true',
 			),
 
 		);
