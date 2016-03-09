@@ -44,12 +44,12 @@ class ingot_bootstrap {
 		if ( $load ) {
 
 			include_once( $autoloader );
-			self::maybe_add_tables();
+			$tables_existed = self::maybe_add_tables();
 			self::maybe_upgrade();
 			self::maybe_load_trial();
+			self::init_plan();
 
-
-			if( \ingot\testing\db\delta::check_if_tables_exist() ) {
+			if( $tables_existed || \ingot\testing\db\delta::check_if_tables_exist() ) {
 				ingot\testing\ingot::instance();
 
 				//make admin go in admin
@@ -117,11 +117,15 @@ class ingot_bootstrap {
 	 *
 	 * @access protected
 	 *
+	 * @return bool
 	 */
 	protected static function maybe_add_tables(){
 		if( false == \ingot\testing\db\delta::check_if_tables_exist() ){
 			\ingot\testing\db\delta::add_tables();
+			return false;
 		}
+
+		return true;
 
 	}
 
@@ -152,25 +156,33 @@ class ingot_bootstrap {
 	 * @return bool
 	 */
 	public static function maybe_load_trial(){
-		if( class_exists( '\ingot\trial\mojo\load' )){
-			new \ingot\trial\mojo\load();
-			add_action( 'ingot_loaded', function(){
-				if( ! \ingot\trial\mojo\trial::started() || \ingot\trial\mojo\trial::is_expired() ){
-					if ( ! did_action( 'ingot_trial_set' ) ) {
-						add_filter( 'ingot_is_no_testing_mode', '__return_false', 99 );
-						do_action( 'ingot_trial_set' );
-					}
-				}
-			}, 30 );
-			return true;
-		}
-
 		return false;
 
 	}
 
+	/**
+	 * Setup licensing plan
+	 *
+	 * @since 1.2.0
+	 */
+	public static function init_plan(){
+		if( is_object( ingot_fs() ) ) {
+			$type = 'freemius';
+			$object = \ingot\licensing\freemius::get_instance();
+		}else{
+			$type = 'edd';
+			$object = \ingot\licensing\license::get_instance();
+		}
 
-
-
+		/**
+		 * Runs after licence plan is set
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string $type
+		 * @param object $object
+		 */
+		do_action( 'ingot_plan_init', $type );
+	}
 
 }

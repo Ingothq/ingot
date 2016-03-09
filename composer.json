@@ -27,15 +27,34 @@
       {
         "type":"git",
         "url":"https://github.com/ingothq/multiarmedbandit"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/ingothq/wordpress-sdk"
+      },
+      {
+        "type":"git",
+        "url":"https://github.com/ingothq/ingot-core"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/Ingothq/ingot-woo-lib"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/Ingothq/ingot-give-lib"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/Ingothq/ingot-edd-lib"
       }
     ],
     "require": {
         "calderawp/dismissible-notice": "dev-master",
-        "ingot/mabandit" : "*",
-        "oefenweb/statistics": "dev-master",
-        "jaybizzle/crawler-detect": "1.*",
-        "calderawp/caldera-modals": "^1.0",
-        "blainesch/prettyarray": "dev-master"
+        "ingot/ingot-core" : "1.2.0",
+        "ingot/ingot-edd-lib" : "1.0.0",
+        "ingot/ingot-woo-lib" : "1.0.0",
+        "ingot/ingot-give-lib" : "1.0.0"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
@@ -44,13 +63,11 @@
         "10up/wp_mock": "dev-master"
     },
     "autoload": {
-        "psr-4": {
-            "ingot\\": "classes"
-        },
         "files": [
             "includes/functions.php",
             "includes/active_check.php",
-            "includes/licensing.php"
+            "includes/licensing.php",
+            "ingot-premium.php"
         ]
     }
 }

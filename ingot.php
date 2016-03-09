@@ -1,16 +1,22 @@
 <?php
 /**
 Plugin Name: Ingot
-Version: 1.1.0
+Version: 1.1.1-b-2
 Plugin URI:  http://IngotHQ.com
-Description: Conversion optimization made easy for WordPress
-Author:       Ingot LLC
+Description: A/B testing made easy for WordPress
+Author:      Ingot LLC
 Author URI:  http://IngotHQ.com
 Text Domain: ingot
 Domain Path: /languages
  */
 
-define( 'INGOT_VER', '1.1.0' );
+/**
+ * Copyright 2015-2015 Ingot LLC
+ *
+ * Licensed under the terms of the GNU General Public License version 2 or later
+ */
+
+define( 'INGOT_VER', '1.1.1-b-2' );
 define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 define( 'INGOT_DIR', dirname( __FILE__ ) );
 define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
@@ -21,7 +27,8 @@ define( 'INGOT_ROOT', basename( dirname( __FILE__ ) ) );
  * Actions to boot up plugin
  */
 add_action( 'plugins_loaded', 'ingot_maybe_load', 0 );
-add_action( 'ingot_loaded',  'ingot_edd_sl_init', 1 );
+add_action( 'ingot_plan_init', 'ingot_maybe_load_premium', 25 );
+
 /**
  * Load plugin if possible
  *
@@ -36,7 +43,7 @@ function ingot_maybe_load() {
 			$message = esc_html__( sprintf( 'Ingot requires PHP version 5.5.0 or later. Current version is %s.', PHP_VERSION ), 'ingot' );
 			echo caldera_warnings_dismissible_notice( $message, true, 'activate_plugins' );
 		}
-
+		
 	}
 	global $wp_version;
 	if ( ! version_compare( $wp_version, '4.4', '>=' ) ) {
@@ -46,11 +53,25 @@ function ingot_maybe_load() {
 			$message = esc_html__( sprintf( 'Ingot requires WordPress version 4.4 or later. Current version is %s.', $wp_version ), 'ingot' );
 			echo caldera_warnings_dismissible_notice( $message, true, 'activate_plugins' );
 		}
-
+		
 	}
 	if( false == $fail ){
+
+		/**
+		 * Runs before Ingot is loaded
+		 *
+		 * NOTE: Only runs if version checks pass
+		 *
+		 * @since 1.2.0
+		 */
+		do_action( 'ingot_before' );
+
 		include_once( dirname(__FILE__ ) . '/ingot_bootstrap.php' );
 		add_action( 'plugins_loaded', array( 'ingot_bootstrap', 'maybe_load' ) );
+		add_action( 'ingot_loaded', 'ingot_fs' );
+		add_action( 'ingot_loaded', function(){
+			\ingot\licensing\count::cta();
+		});
 	}
 
 }
@@ -68,6 +89,49 @@ function ingot_edd_sl_init(){
 		include( dirname( __FILE__ ) . '/includes/EDD_SL_Plugin_Updater.php' );
 	}
 }
+
+/**
+ * Load Freemius
+ *
+ * @return \Freemius
+ */
+function ingot_fs() {
+	global $ingot_fs;
+
+	if ( ! isset( $ingot_fs ) ) {
+
+		require_once dirname(__FILE__) . '/vendor/freemius/wordpress-sdk/start.php';
+		$args = array(
+			'id'                => '210',
+			'slug'              => 'ingot',
+			'public_key'        => 'pk_e6a19a3508bdb9bdc91a7182c8e0c',
+			'is_live'           => true,
+			'is_premium'        => true,
+			'has_addons'        => true,
+			'has_paid_plans'    => true,
+			'is_org_compliant'  => true,
+			'menu'              => array(
+				'slug'       => 'ingot-admin-app',
+				'support'    => false,
+				'first-path' => 'admin.php?ingot-admin-app',
+			),
+
+		);
+
+		if( defined( 'INGOT_FS_SECRET' ) ){
+			$args[ 'secret_key' ] = INGOT_FS_SECRET;
+		}
+
+		$ingot_fs = fs_dynamic_init( $args );
+
+
+	}
+
+	return $ingot_fs;
+
+}
+
+
 
 
 /**
