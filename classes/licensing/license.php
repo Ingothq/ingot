@@ -54,7 +54,6 @@ class license {
 		$this->set_plan();
 		if( ! $this->plan->is_full() ){
 			new pre_save( $this->plan );
-			new type_filters( $this->plan );
 		}
 	}
 
