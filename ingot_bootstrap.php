@@ -156,19 +156,6 @@ class ingot_bootstrap {
 	 * @return bool
 	 */
 	public static function maybe_load_trial(){
-		if( class_exists( '\ingot\trial\mojo\load' )){
-			new \ingot\trial\mojo\load();
-			add_action( 'ingot_loaded', function(){
-				if( ! \ingot\trial\mojo\trial::started() || \ingot\trial\mojo\trial::is_expired() ){
-					if ( ! did_action( 'ingot_trial_set' ) ) {
-						add_filter( 'ingot_is_no_testing_mode', '__return_false', 99 );
-						do_action( 'ingot_trial_set' );
-					}
-				}
-			}, 30 );
-			return true;
-		}
-
 		return false;
 
 	}
