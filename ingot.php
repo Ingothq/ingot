@@ -108,11 +108,11 @@ function ingot_fs() {
 			'is_premium'        => true,
 			'has_addons'        => true,
 			'has_paid_plans'    => true,
-			'is_org_compliant'  => true,
+			'is_org_compliant'  => false,
 			'menu'              => array(
 				'slug'       => 'ingot-admin-app',
 				'support'    => false,
-				'first-path' => 'admin.php?ingot-admin-app?welcome=true',
+				'first-path' => 'admin.php?ingot-admin-app',
 			),
 
 		);

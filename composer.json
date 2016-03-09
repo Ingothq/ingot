@@ -35,11 +35,26 @@
       {
         "type":"git",
         "url":"https://github.com/ingothq/ingot-core"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/Ingothq/ingot-woo-lib"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/Ingothq/ingot-give-lib"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/Ingothq/ingot-edd-lib"
       }
     ],
     "require": {
         "calderawp/dismissible-notice": "dev-master",
-        "ingot/ingot-core" : "*"
+        "ingot/ingot-core" : "*",
+        "ingot/ingot-edd-lib" : "*",
+        "ingot/ingot-woo-lib" : "*",
+        "ingot/ingot-give-lib" : "*"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
