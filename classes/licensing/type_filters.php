@@ -20,6 +20,7 @@ class type_filters extends filters {
 	 * @since 1.1.0
 	 */
 	protected function add_hooks(){
+		return;
 		if( $this->plan->is_nugget() ){
 			add_filter( 'ingot_allowed_types', [ $this, 'allowed_types' ] );
 			add_filter( 'ingot_allowed_click_types', [ $this, 'allowed_click_types' ] );

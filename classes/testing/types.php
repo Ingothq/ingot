@@ -127,11 +127,7 @@ class types {
 			'button_color' => [
 				'name'        => __( 'Button Color', 'ingot' ),
 				'description' => __( 'Use this to test button coloring on a call to action'),
-			],
-			'destination' => [
-				'name'        => __( 'Destination', 'ingot' ),
-				'description' => __( 'Change your site\'s headline, or tagline and track traffic to a page -- checkout, sign up, etc.' ),
-			],
+			]
 		];
 
 		if( false == $with_labels ) {
@@ -141,6 +137,22 @@ class types {
 
 		return $types;
 
+	}
+
+	/**
+	 * Give definition of a destination test
+	 *
+	 * @since 1.1.1
+	 *
+	 * @return array
+	 */
+	public static function destination_definition(){
+		return [
+			'destination' => [
+				'name'        => __( 'Destination', 'ingot' ),
+				'description' => __( 'Change your site\'s headline, or tagline and track traffic to a page -- checkout, sign up, etc.' ),
+			],
+		];
 	}
 
 }

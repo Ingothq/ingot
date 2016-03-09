@@ -24,20 +24,6 @@ class types {
 	public static function destination_types( $with_labels = false, $api_format = false ){
 		$types = self::get_internal_types();
 
-		if( ! ingot_is_woo_active() ) {
-			unset( $types[ 'cart_woo' ] );
-			unset( $types[ 'sale_woo' ] );
-		}
-
-		if( ! ingot_is_edd_active() ) {
-			unset( $types[ 'cart_edd' ] );
-			unset( $types[ 'sale_edd' ] );
-		}
-
-		if( ! ingot_is_give_active() ) {
-			unset( $types[ 'givewp' ] );
-		}
-
 		/**
 		 * Allowed test types
 		 *
@@ -47,7 +33,7 @@ class types {
 		 *
 		 * @param array $types The allowed click test types
 		 */
-		$types = apply_filters( 'ingot_allowed_click_types', $types );
+		$types = apply_filters( 'ingot_allowed_destination_types', $types );
 
 		if( $api_format ) {
 			$_types = [];
@@ -95,29 +81,9 @@ class types {
 				'name'        => __( 'Page', 'ingot' ),
 				'description' => __( 'Conversion is registered when user reaches a page.', 'ingot' ),
 			],
-			'cart_edd' => [
-				'name'        => __( 'Add To Cart -- Easy Digital Downloads', 'ingot' ),
-				'description' => __( 'Conversion is registered when an item is added to the Easy Digital Downloads cart.', 'ingot' ),
-			],
-			'sale_edd' => [
-				'name'        => __( 'Purchase -- Easy Digital Downloads', 'ingot' ),
-				'description' => __( 'Conversion is registered when an Easy Digital Downloads sale is completed.', 'ingot' ),
-			],
-			'cart_woo' => [
-				'name'        => __( 'Add To Cart -- WooCommerce', 'ingot' ),
-				'description' => __( 'Conversion is registered when an item is added to the WooCommerce cart.', 'ingot' ),
-			],
-			'sale_woo' => [
-				'name'        => __( 'Purchase -- WooCommerce', 'ingot' ),
-				'description' => __( 'Conversion is registered when a WooCommerce sale is completed.', 'ingot' ),
-			],
 			'hook'     => [
 				'name'        => __( 'Hook', 'ingot' ),
 				'description' => __( 'Conversion is registered when a hook is fired -- for developers.', 'ingot' )
-			],
-			'givewp'   => [
-				'name'        => __( 'Give', 'ingot' ),
-				'description' => __( 'Conversion is registered when a donation is made.', 'ingot' )
 			]
 		];
 

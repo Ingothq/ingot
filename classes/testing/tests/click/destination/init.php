@@ -147,7 +147,7 @@ class init {
 			}
 
 			if ( ! empty( $groups ) ) {
-				new \ingot\testing\tests\click\destination\hooks( $groups );
+				 \ingot\testing\tests\click\destination\hooks::get_instance( $groups );
 			}
 
 			return $groups;

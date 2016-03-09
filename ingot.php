@@ -55,6 +55,16 @@ function ingot_maybe_load() {
 		
 	}
 	if( false == $fail ){
+
+		/**
+		 * Runs before Ingot is loaded
+		 *
+		 * NOTE: Only runs if version checks pass
+		 *
+		 * @since 1.1.1
+		 */
+		do_action( 'ingot_before' );
+
 		include_once( dirname(__FILE__ ) . '/ingot_bootstrap.php' );
 		add_action( 'plugins_loaded', array( 'ingot_bootstrap', 'maybe_load' ) );
 		add_action( 'ingot_loaded', 'ingot_fs' );
@@ -96,9 +106,9 @@ function ingot_fs() {
 			'public_key'        => 'pk_e6a19a3508bdb9bdc91a7182c8e0c',
 			'is_live'           => false,
 			'is_premium'        => true,
-			'has_addons'        => false,
+			'has_addons'        => true,
 			'has_paid_plans'    => true,
-			'is_org_compliant'  => false,
+			'is_org_compliant'  => true,
 			'menu'              => array(
 				'slug'       => 'ingot-admin-app',
 				'support'    => false,

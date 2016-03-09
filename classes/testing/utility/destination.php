@@ -180,20 +180,6 @@ class destination {
 			'template_redirect' => null
 		];
 
-		if( ingot_is_edd_active() ) {
-			$hooks[ 'edd_post_add_to_cart' ] = null;
-			$hooks[ 'edd_complete_purchase' ] = null;
-		}
-
-		if( ingot_is_woo_active() ) {
-			$hooks[ 'woocommerce_add_to_cart' ] = null;
-			$hooks[ 'woocommerce_payment_complete_order_status' ] = null;
-		}
-
-		if( ingot_is_give_active() ){
-			$hooks[ 'give_complete_purchase' ] = null;
-		}
-
 		/**
 		 * Change or add hooks for destination conversion tracking
 		 *

@@ -51,7 +51,7 @@ class hooks {
 	protected $groups_set = false;
 
 	/**
-	 * Hooks we are tracking
+	 * Hooks tests are tracking
 	 *
 	 * @access protected
 	 *
@@ -62,12 +62,24 @@ class hooks {
 	protected $hook_tests = [];
 
 	/**
+	 * Hooks/callbacks added
+	 *
+	 * @access protected
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array
+	 */
+	protected $hooked = [];
+
+
+	/**
 	 *
 	 * @since 1.1.0
 	 *
 	 * @param array $tracking Groups/variants to track
 	 */
-	public function __construct( $tracking ){
+	protected function __construct( array $tracking ){
 		$this->set_tracking( $tracking );
 		if( ! empty( $this->tracking ) ){
 			$this->set_groups();
@@ -77,12 +89,39 @@ class hooks {
 	}
 
 	/**
+	 * Class instance
+	 *
+	 * @since 1.1.1
+	 *
+	 * @var hooks
+	 */
+	protected static $instance;
+
+	/**
+	 * @param array $tracking
+	 *
+	 * @param array $tracking Groups/variants to track
+	 *
+	 * @return hooks
+	 */
+	public static function get_instance( array $tracking = [] ){
+		if ( is_null( static::$instance ) ){
+			static::$instance = new self( $tracking );
+		}
+
+		return static::$instance;
+	}
+
+	/**
 	 * Add hooks for tracking
 	 *
 	 * @since 1.1.0
 	 */
 	public function add_hooks(){
 		foreach( destination::hooks() as $hook => $callback ){
+			if( in_array(  sanitize_key( $hook ), $this->hooked )){
+				continue;
+			}
 
 			if( is_null ( $callback ) && method_exists( $this, $hook ) ){
 				$callback = $hook;
@@ -96,32 +135,12 @@ class hooks {
 				}
 			}
 
+			$this->hooked[ sanitize_key( $hook ) ] = $hook;
+
 			$this->set_hook_tests();
 
 		}
 
-	}
-
-	/**
-	 * Track EDD add to cart conversions
-	 *
-	 * @since 1.1.0
-	 *
-	 * @return bool
-	 */
-	public function edd_post_add_to_cart(){
-		return $this->check_if_victory( 'cart_edd' );
-	}
-
-	/**
-	 * Track EDD sale complete conversions
-	 *
-	 * @since 1.1.0
-	 *
-	 * @return bool
-	 */
-	public function edd_complete_purchase(){
-		return $this->check_if_victory( 'sale_edd' );
 	}
 
 	/**
@@ -135,27 +154,6 @@ class hooks {
 		return $this->check_if_victory( 'give' );
 	}
 
-	/**
-	 * Track WOO add to cart conversions
-	 *
-	 * @since 1.1.0
-	 *
-	 * @return bool
-	 */
-	public function woocommerce_add_to_cart(){
-		return $this->check_if_victory( 'cart_woo' );
-	}
-
-	/**
-	 * Track WOO sale complete conversions
-	 *
-	 * @since 1.1.0
-	 *
-	 * @return bool
-	 */
-	public function woocommerce_payment_complete_order_status(){
-		return $this->check_if_victory( 'sale_woo' );
-	}
 
 	/**
 	 * Track got to page conversions
@@ -213,15 +211,13 @@ class hooks {
 	/**
 	 * Check if we can count current context as a conversion, if so register it
 	 *
-	 * @access protected
-	 *
 	 * @since 1.1.0
 	 *
 	 * @param string $type Destination type
 	 *
 	 * @return bool
 	 */
-	protected function check_if_victory( $type ) {
+	public function check_if_victory( $type ) {
 		foreach ( $this->tracking as $group_id => $variant_id ) {
 			$group = $this->get_group( $group_id );
 			if ( $group && $type === destination::get_destination( $group ) ) {
@@ -278,6 +274,7 @@ class hooks {
 				$variant_id = init::get_test( $group[ 'ID' ] );
 				if ( is_numeric( $variant_id ) ) {
 					$this->hook_tests[ sanitize_key( $hook ) ] = $variant_id;
+					$this->hooked[ sanitize_key( $hook ) ] = $hook;
 					add_action( $hook, [ $this, 'hook_test_cb' ], 55 );
 				}
 			}
