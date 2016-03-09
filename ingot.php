@@ -27,7 +27,7 @@ define( 'INGOT_ROOT', basename( dirname( __FILE__ ) ) );
  * Actions to boot up plugin
  */
 add_action( 'plugins_loaded', 'ingot_maybe_load', 0 );
-add_action( 'ingot_loaded',  'ingot_edd_sl_init', 1 );
+
 /**
  * Load plugin if possible
  *
