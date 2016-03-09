@@ -101,7 +101,8 @@ function ingot_fs() {
 	if ( ! isset( $ingot_fs ) ) {
 
 		require_once dirname(__FILE__) . '/vendor/freemius/wordpress-sdk/start.php';
-		$args = array(
+
+		$ingot_fs = fs_dynamic_init( array(
 			'id'                => '210',
 			'slug'              => 'ingot',
 			'public_key'        => 'pk_e6a19a3508bdb9bdc91a7182c8e0c',
@@ -116,15 +117,8 @@ function ingot_fs() {
 				'first-path' => 'admin.php?ingot-admin-app',
 			),
 
-		);
-
-		if( defined( 'INGOT_FS_SECRET' ) ){
-			$args[ 'secret_key' ] = INGOT_FS_SECRET;
-		}
-
-		$ingot_fs = fs_dynamic_init( $args );
-
-
+		) );
+		
 	}
 
 	return $ingot_fs;
