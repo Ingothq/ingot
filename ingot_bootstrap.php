@@ -176,15 +176,26 @@ class ingot_bootstrap {
 	/**
 	 * Setup licensing plan
 	 *
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 */
 	public static function init_plan(){
 		if( is_object( ingot_fs() ) ) {
-			\ingot\licensing\freemius::get_instance();
+			$type = 'freemius';
+			$object = \ingot\licensing\freemius::get_instance();
 		}else{
-			\ingot\licensing\license::get_instance();
+			$type = 'edd';
+			$object = \ingot\licensing\license::get_instance();
 		}
 
+		/**
+		 * Runs after licence plan is set
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string $type
+		 * @param object $object
+		 */
+		do_action( 'ingot_plan_init', $type );
 	}
 
 }

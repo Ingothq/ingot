@@ -27,6 +27,7 @@ define( 'INGOT_ROOT', basename( dirname( __FILE__ ) ) );
  * Actions to boot up plugin
  */
 add_action( 'plugins_loaded', 'ingot_maybe_load', 0 );
+add_action( 'ingot_plan_init', 'ingot_maybe_load_premium', 25 );
 
 /**
  * Load plugin if possible
@@ -61,7 +62,7 @@ function ingot_maybe_load() {
 		 *
 		 * NOTE: Only runs if version checks pass
 		 *
-		 * @since 1.1.1
+		 * @since 1.2.0
 		 */
 		do_action( 'ingot_before' );
 
@@ -104,11 +105,11 @@ function ingot_fs() {
 			'id'                => '210',
 			'slug'              => 'ingot',
 			'public_key'        => 'pk_e6a19a3508bdb9bdc91a7182c8e0c',
-			'is_live'           => false,
+			'is_live'           => true,
 			'is_premium'        => true,
 			'has_addons'        => true,
 			'has_paid_plans'    => true,
-			'is_org_compliant'  => false,
+			'is_org_compliant'  => true,
 			'menu'              => array(
 				'slug'       => 'ingot-admin-app',
 				'support'    => false,
