@@ -255,7 +255,7 @@ ingotApp.controller( 'clickDelete', ['$scope', '$http', '$stateParams', '$state'
                     }, function errorCallback( response ) {
                         var data = response.data;
                         var text = INGOT_TRANSLATION.sorry;
-                        if( _.isObject( data ) && _.isDefined( data.message ) ){
+                        if( _.isObject( data ) && typeof( data.message ) !== 'undefined' ){
                             text = data.message;
                         }
                         $state.go('clickTests.list' );
@@ -398,7 +398,7 @@ ingotApp.controller( 'clickGroup', ['$scope', '$http', '$stateParams', '$rootSco
             }, function errorCallback( response ) {
                 var data = response.data;
                 var text = INGOT_TRANSLATION.sorry;
-                if( _.isObject( data ) && _.isDefined( data.message ) ){
+                if( _.isObject( data ) && typeof( data.message ) !== 'undefined' ){
                     text = data.message;
                 }
 
@@ -930,7 +930,7 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
             $scope.settings = response.data;
         }, function errorCallback( response ) {
             var text = INGOT_TRANSLATION.sorry;
-            if ( _.isObject( response ) && _.isDefined( response.data.message ) ) {
+            if ( _.isObject( response ) && typeof( response.data.message ) !== 'undefined' ) {
                 swal( {
                     title: INGOT_TRANSLATION.fail,
                     text: response.data.message,
@@ -961,7 +961,7 @@ ingotApp.controller( 'settings', ['$scope', '$http', function( $scope, $http ) {
             }, function errorCallback( response ) {
                 var data = response.data;
                 var text = INGOT_TRANSLATION.sorry;
-                if( _.isObject( data ) && _.isDefined( data.message ) ){
+                if( _.isObject( data ) && typeof( data.message ) !== 'undefined' ){
                     text = data.message;
                 }
                 swal({

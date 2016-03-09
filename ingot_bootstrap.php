@@ -47,7 +47,7 @@ class ingot_bootstrap {
 			$tables_existed = self::maybe_add_tables();
 			self::maybe_upgrade();
 			self::maybe_load_trial();
-
+			self::init_plan();
 
 			if( $tables_existed || \ingot\testing\db\delta::check_if_tables_exist() ) {
 				ingot\testing\ingot::instance();
@@ -173,8 +173,29 @@ class ingot_bootstrap {
 
 	}
 
+	/**
+	 * Setup licensing plan
+	 *
+	 * @since 1.2.0
+	 */
+	public static function init_plan(){
+		if( is_object( ingot_fs() ) ) {
+			$type = 'freemius';
+			$object = \ingot\licensing\freemius::get_instance();
+		}else{
+			$type = 'edd';
+			$object = \ingot\licensing\license::get_instance();
+		}
 
-
-
+		/**
+		 * Runs after licence plan is set
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string $type
+		 * @param object $object
+		 */
+		do_action( 'ingot_plan_init', $type );
+	}
 
 }
