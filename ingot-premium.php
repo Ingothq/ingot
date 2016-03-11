@@ -62,3 +62,27 @@ function ingot_maybe_load_premium( $type ){
 	}
 }
 
+/**
+ * Set Ingot Plan
+ *
+ * @since 2.1.0
+ */
+function ingot_init_plan(){
+	if( is_object( ingot_fs() ) ) {
+		$type = 'freemius';
+		$object = \ingot\licensing\freemius::get_instance();
+	}else{
+		$type = 'edd';
+		$object = \ingot\licensing\license::get_instance();
+	}
+
+	/**
+	 * Runs after licence plan is set
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string $type
+	 * @param object $object
+	 */
+	do_action( 'ingot_plan_init', $type );
+}
