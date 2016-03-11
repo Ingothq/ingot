@@ -64,9 +64,6 @@
     },
     "autoload": {
         "files": [
-            "includes/functions.php",
-            "includes/active_check.php",
-            "includes/licensing.php",
             "ingot-premium.php"
         ]
     }
