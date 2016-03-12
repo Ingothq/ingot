@@ -136,20 +136,20 @@ module.exports = function (grunt) {
         uglify: {
             frontend: {
                 files: {
-                    'assets/front-end/js/ingot-click-test.min.js': [ 'assets/front-end/js/ingot-click-test.js' ],
-                    'assets/admin/js/ingot-post-editor.min.js' : ['assets/admin/js/ingot-post-editor.js' ]
+                    'vendor/ingot/ingot-core/assets/front-end/js/ingot-click-test.min.js': [ 'vendor/ingot/ingot-core/assets/front-end/js/ingot-click-test.js' ],
+                    'vendor/ingot/ingot-core/assets/admin/js/ingot-post-editor.min.js' : ['vendor/ingot/ingot-core/assets/admin/js/ingot-post-editor.js' ]
                 }
             },
             admin:{
                 files: {
-                    'assets/admin/js/admin-app.min.js': [ 'assets/admin/js/admin-app.js' ]
+                    'vendor/ingot/ingot-core/assets/admin/js/admin-app.min.js': [ 'vendor/ingot/ingot-core/assets/admin/js/admin-app.js' ]
                 }
             }
         },
         watch: {
             files: [
-                'assets/admin/js/admin-app.js',
-                'assets/front-end/js/ingot-click-test.js'
+                'vendor/ingot/ingot-core/assets/admin/js/admin-app.js',
+                'vendor/ingot/ingot-core/assets/front-end/js/ingot-click-test.js'
             ],
             tasks: ['default']
         },

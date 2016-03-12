@@ -41,7 +41,7 @@
   "install": {
     "path": {
       "css": "assets/vendor/css",
-      "js": "assets//vendor/js",
+      "js": "assets/vendor/js",
       "/[sc|le]ss$/": "assets/vendor/css"
     },
     "ignore": [

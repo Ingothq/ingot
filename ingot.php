@@ -23,7 +23,9 @@ if( defined( 'INGOT_VER' ) ){
 	define( 'INGOT_TYPE', 'FULL' );
 	define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 	define( 'INGOT_DIR', dirname( __FILE__ ) );
-	define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . '/classes/ui/admin/partials/' );
+	define( 'INGOT_ASSETS_DIR', trailingslashit( INGOT_DIR ) . 'vendor/ingot/ingot-core/assets' );
+	define( 'INGOT_ASSETS_URL', trailingslashit( INGOT_URL ) . 'vendor/ingot/ingot-core/assets' );
+	define( 'INGOT_UI_PARTIALS_DIR', dirname( __FILE__ ) . 'vendor/ingot/ingot-core/classes/ui/admin/partials/' );
 	define( 'INGOT_ROOT', basename( dirname( __FILE__ ) ) );
 
 
@@ -70,6 +72,9 @@ if( defined( 'INGOT_VER' ) ){
 			 */
 			do_action( 'ingot_before' );
 
+			include_once dirname( __FILE__ ) . '/vendor/ingot/ingot-core/includes/functions.php';
+			include_once dirname( __FILE__ ) . '/vendor/ingot/ingot-core/includes/licensing.php';
+			include_once dirname( __FILE__ ) . '/vendor/ingot/ingot-core/includes/active_check.php';
 			include_once( dirname(__FILE__ ) . '/ingot_bootstrap.php' );
 			add_action( 'plugins_loaded', array( 'ingot_bootstrap', 'maybe_load' ) );
 			add_action( 'ingot_loaded', 'ingot_fs' );
