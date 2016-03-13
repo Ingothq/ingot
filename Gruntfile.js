@@ -60,8 +60,21 @@ module.exports = function (grunt) {
                     '!tests/**',
                     '!bower_components/**',
                     '!bin/**',
-                    '!vendor/ingot/mabandit/vendor/bin/**'
-
+                    '!vendor/blainesch/prettyarray/tests/**',
+                    '!vendor/blainesch/prettyarray/examples/**',
+                    '!vendor/jaybizzle/crawler-detect/tests/**',
+                    '!vendor/oefenweb/statistics/tests/**',
+                    '!vendor/oefenweb/statistics/.travis/**',
+                    '!vendor/composer/installers/**',
+                    '!vendor/ingot/mabandit/vendor/bin/**',
+                    '!vendor/ingot/mabandit/test/**',
+                    '!vendor/ingot/mabandit/vendor/phpunit/**',
+                    '!vendor/ingot/mabandit/vendor/psy/**',
+                    '!vendor/ingot/mabandit/vendor/doctrine/**',
+                    '!vendor/ingot/mabandit/vendor/symfony/**',
+                    '!vendor/ingot/mabandit/vendor/sebastian/**',
+                    '!vendor/ingot/mabandit/vendor/nikic/**',
+                    '!vendor/ingot/mabandit/vendor/m6web/**'
                 ],
                 dest: 'build/<%= pkg.name %>/'
             }
