@@ -36,6 +36,14 @@ function ingot_premium() {
 	}
 
 
+	if( ! defined( 'INGOT_PMRPO_VER' ) ){
+		define( 'INGOT_PMRPO_VER', '1.0.0' );
+		if ( defined( 'PMPRO_VERSION' ) ) {
+			new ingot\addon\pmpro\add_destinations();
+			new ingot\addon\pmpro\tracking();
+		}
+	}
+
 
 }
 

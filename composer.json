@@ -46,6 +46,10 @@
       },
       {
         "type": "git",
+        "url": "https://github.com/Ingothq/ingot-pmpro-lib"
+      },
+      {
+        "type": "git",
         "url": "https://github.com/Ingothq/ingot-edd-lib"
       }
     ],
