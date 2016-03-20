@@ -32,7 +32,7 @@ if( defined( 'INGOT_VER' ) ){
 	/**
 	 * Actions to boot up plugin
 	 */
-	add_action( 'plugins_loaded', 'ingot_maybe_load', 0 );
+	add_action( 'plugins_loaded', 'ingot_maybe_load', 1 );
 	add_action( 'ingot_plan_init', 'ingot_maybe_load_premium', 25 );
 
 	/**
@@ -121,7 +121,7 @@ if( defined( 'INGOT_VER' ) ){
 				'menu'              => array(
 					'slug'       => 'ingot-admin-app',
 					'support'    => false,
-					'first-path' => 'admin.php?ingot-admin-app',
+					'first-path' => 'admin.php?page=ingot-admin-app#',
 				),
 
 			) );
@@ -131,9 +131,6 @@ if( defined( 'INGOT_VER' ) ){
 		return $ingot_fs;
 
 	}
-
-
-
 
 	/**
 	 * Load translations
