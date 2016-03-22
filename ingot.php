@@ -111,7 +111,7 @@ if( defined( 'INGOT_VER' ) ){
 
 			$ingot_fs = fs_dynamic_init( array(
 				'id'                => '210',
-				'slug'              => 'ingot',
+				'slug'              => 'nugget-by-ingot',
 				'public_key'        => 'pk_e6a19a3508bdb9bdc91a7182c8e0c',
 				'is_live'           => true,
 				'is_premium'        => true,
