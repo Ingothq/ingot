@@ -4,7 +4,7 @@ Tags: a/b testing, multi-varitant testing, ab testing, ab test, a/b testing, cro
 Donate link: https://ingothq.com
 Requires at least: 4.4.0
 Tested up to: 4.5
-Stable tag: 1.1.1
+Stable tag: 1.3.0
 License: GPL v2+
 
 A/B testing made easy for WordPress - Do less, convert more.
@@ -78,7 +78,12 @@ Yes. Many sites use a static HTML cache, which could be an issue if we didn't wo
 4. Creating a new A/B test group: Destination test settings
 
 == Changelog ==
-= 1.1.0 =
+
+= 1.3.0 =
+ADDED: Support For Paid Memberships Pro
+FIXED: Activation bugs
+
+= 1.2.0 =
 ADDED: A/B testing for Give
 FIXED: Bug preventing proper session tracking for destination A/B tests
 FIXED: Ensure that bots do not trigger an iteration of an A/B test always.
