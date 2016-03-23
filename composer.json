@@ -46,15 +46,20 @@
       },
       {
         "type": "git",
+        "url": "https://github.com/Ingothq/ingot-pmpro-lib"
+      },
+      {
+        "type": "git",
         "url": "https://github.com/Ingothq/ingot-edd-lib"
       }
     ],
     "require": {
         "calderawp/dismissible-notice": "dev-master",
-        "ingot/ingot-core" : "1.2.0",
+        "ingot/ingot-core" : "1.2.0.1",
         "ingot/ingot-edd-lib" : "1.0.0",
         "ingot/ingot-woo-lib" : "1.0.0",
-        "ingot/ingot-give-lib" : "1.0.0"
+        "ingot/ingot-give-lib" : "1.0.0",
+        "ingot/ingot-pmpro-lib" : "1.0.0"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master",
@@ -64,9 +69,6 @@
     },
     "autoload": {
         "files": [
-            "includes/functions.php",
-            "includes/active_check.php",
-            "includes/licensing.php",
             "ingot-premium.php"
         ]
     }
