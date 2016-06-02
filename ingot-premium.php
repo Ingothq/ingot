@@ -60,7 +60,7 @@ function ingot_premium() {
 function ingot_maybe_load_premium( $type ){
 	switch( $type ){
 		case 'freemius' :
-			if( 'premium' == ingot_fs()->get_plan() ){
+			if ( ingot_fs()->is_plan( 'premium' )  ){
 				ingot_premium();
 			}
 			break;
