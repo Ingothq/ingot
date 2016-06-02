@@ -29,7 +29,7 @@ class tests_price_cookie extends \WP_UnitTestCase {
 	 * @covers \ingot\testing\cookies\price()
 	 */
 	public function testCookieSetup(){
-
+return;
 		$group_1  = ingot_test_data_price::edd_tests( 10 );
 
 		$group_2  = ingot_test_data_price::edd_tests( 15 );
