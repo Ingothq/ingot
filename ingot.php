@@ -1,7 +1,7 @@
 <?php
 /**
 Plugin Name: Ingot
-Version: 1.3.1-b-1
+Version: 1.3.1
 Plugin URI:  http://IngotHQ.com
 Description: A/B testing made easy for WordPress
 Author:      Ingot LLC
@@ -19,7 +19,7 @@ if( defined( 'INGOT_VER' ) ){
 	include_once( dirname( __FILE__ ) . '/vendor/calderawp/dismissible-notice/src/functions.php' );
 	$message = esc_html__( 'The full version of Ingot could not be loaded beacuse the free version is active. Please disable "Nugget by Ingot"', 'ingot' );
 }else{
-	define( 'INGOT_VER', '1.3.1-b-1' );
+	define( 'INGOT_VER', '1.3.1' );
 	define( 'INGOT_TYPE', 'FULL' );
 	define( 'INGOT_URL', plugin_dir_url( __FILE__ ) );
 	define( 'INGOT_DIR', dirname( __FILE__ ) );
