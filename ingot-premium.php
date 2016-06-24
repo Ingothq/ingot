@@ -15,6 +15,16 @@
  * @since 1.1.0
  */
 function ingot_premium() {
+	
+	/**
+	 * Make sure we have destination tests
+	 *
+	 * @since 1.3.2
+	 */
+	add_filter( 'ingot_allowed_click_types', function( $types ){
+		return array_merge( $types, \ingot\testing\types::destination_definition() );
+	}, 0 );
+	
 	if( ! defined( 'INGOT_EDD_VER' ) && ingot_is_edd_active() ) {
 		define( 'INGOT_EDD_VER', '1.0.0' );
 		new ingot\addon\edd\add_destinations();
