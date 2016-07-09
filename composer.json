@@ -51,7 +51,7 @@
     ],
     "require": {
         "calderawp/dismissible-notice": "dev-master",
-        "ingot/ingot-core" : "1.2.2",
+        "ingot/ingot-core" : "1.2.3",
         "ingot/ingot-edd-lib" : "1.0.0",
         "ingot/ingot-woo-lib" : "1.0.0",
         "ingot/ingot-give-lib" : "1.0.0",
