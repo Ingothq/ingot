@@ -33,7 +33,8 @@
     "bootstrap-bower": "https://github.com/angular-ui/bootstrap-bower/",
     "ngclipboard": "~1.1.0",
     "select2": "~4.0.1",
-    "angular-bootstrap": "~1.3.2"
+    "angular-bootstrap": "~1.3.2",
+    "remodal": "~1.1.0"
   },
   "resolutions": {
     "angular": "1.3.0",
